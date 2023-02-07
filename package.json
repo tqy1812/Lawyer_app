@@ -1,0 +1,59 @@
+{
+  "name": "LawyerApp",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-community/push-notification-ios": "^1.10.1",
+    "@react-navigation/native": "^6.1.1",
+    "@react-navigation/stack": "^5.14.9",
+    "@stomp/stompjs": "^6.1.2",
+    "axios": "^1.2.1",
+    "chinese-lunar": "^0.1.4",
+    "date-fns": "^2.29.3",
+    "moment": "^2.29.4",
+    "prop-types": "^15.8.1",
+    "react": "18.0.0",
+    "react-native": "0.69.7",
+    "react-native-elements": "^3.4.2",
+    "react-native-gesture-bottom-sheet": "^1.1.0",
+    "react-native-gesture-handler": "^2.8.0",
+    "react-native-headless-task-worker": "^1.0.0",
+    "react-native-pager-view": "^6.1.2",
+    "react-native-push-notification": "^8.1.1",
+    "react-native-root-siblings": "^4.1.1",
+    "react-native-safe-area-context": "^4.4.1",
+    "react-native-screens": "^3.18.2",
+    "react-native-speech-iflytek": "^1.0.4",
+    "react-native-vector-icons": "^9.2.0",
+    "react-native-webview": "^11.25.1",
+    "react-native-webview-tencentx5": "^1.0.2",
+    "react-redux": "^8.0.5",
+    "recyclerlistview": "^4.2.0",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.2",
+    "rn-overlay": "^0.4.0",
+    "text-encoding": "^0.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.32.0",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.70.3",
+    "react-test-renderer": "18.0.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
