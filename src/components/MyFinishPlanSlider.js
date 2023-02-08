@@ -52,36 +52,43 @@ export default class MyFinishPlanSlider extends Component {
           }
         });
       }
+      this.loadDataThrottled();
        // if (JSON.stringify(caseList)==='{}') {
     //   dispatch(actionCase.reqCaseList()); 
     // }
-      dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
-        const rs = data.rs;
-        if(rs.length > 0) {
-          that.setState({page: 2, DATA: rs, totalTime: t, refreshing: false, loadFinish: isFinish });
-        } else {
-          that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish});
-        }
-      })); 
-      this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessFinish', 
-   		        () => { this.initList(); });
+      // dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
+      //   const rs = data.rs;
+      //   if(rs.length > 0) {
+      //     that.setState({page: 2, DATA: rs, totalTime: t, refreshing: false, loadFinish: isFinish });
+      //   } else {
+      //     that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish});
+      //   }
+      // })); 
+      // this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessFinish', 
+   		//         () => { this.initList(); });
     });
   }
 
   initList = () => {
     const {dispatch} = this.props;
     const that = this;
-    showLoading();
-    // that.setState({refreshing: true});
-    that.scollToTopNoAni();
+    // showLoading();
+    that.setState({refreshing: true});
+    // that.scollToTopNoAni();
     dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
       const rs = data.rs;
-      destroySibling();
+      // destroySibling();
       if(rs.length > 0) {
-        that.setState({page: 2, DATA: rs, totalTime: t, refreshing: false, loadFinish: isFinish },()=>{
+        that.setState({page: 2, DATA: rs, totalTime: t, loadFinish: isFinish },()=>{
+          setTimeout(()=>{
+            that.setState({refreshing: false})
+          }, 800) 
         });
       } else {
         that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish},()=>{
+          setTimeout(()=>{
+            that.setState({refreshing: false})
+          }, 800) 
         });
       }
     })); 
@@ -144,7 +151,8 @@ export default class MyFinishPlanSlider extends Component {
     if (loadFinish) {
       return;
     }
-    showLoading();
+    that.setState({refreshing: true});
+    // showLoading();
     dispatch(actionProcess.reqProcessFinishList(page, DATA[DATA.length-1], (rs, t, isFinish)=>{
       let flag = false;
       let newDate = DATA;
@@ -158,12 +166,20 @@ export default class MyFinishPlanSlider extends Component {
           flag = true;
         } 
       }
-      destroySibling();
+      // destroySibling();
       if (flag) {
-        that.setState({page: page + 1, DATA: newDate, totalTime: t, refreshing: false, loadFinish: isFinish});
+        that.setState({page: page + 1, DATA: newDate, totalTime: t, loadFinish: isFinish}, ()=>{
+          setTimeout(()=>{
+            that.setState({refreshing: false})
+          }, 800) 
+        });
       }
       else {
-        that.setState({totalTime: t, refreshing: false, loadFinish: isFinish });
+        that.setState({totalTime: t, refreshing: false, loadFinish: isFinish }, ()=>{
+          setTimeout(()=>{
+            that.setState({refreshing: false})
+          }, 800) 
+        });
       }
     })); 
   }
@@ -209,12 +225,17 @@ export default class MyFinishPlanSlider extends Component {
           style: "cancel"
         },
         { text: "确定", onPress: () => {
-            showLoading();
+            // showLoading();
+            that.setState({refreshing: true});
             dispatch(actionProcess.reqEnableProcess(item.id, (rs)=>{
               InteractionManager.runAfterInteractions(() => {
                 let temp = removeItem(DATA, item);
-                destroySibling();
-                that.setState({DATA: temp});
+                // destroySibling();
+                that.setState({DATA: temp}, ()=>{
+                  setTimeout(()=>{
+                    that.setState({refreshing: false})
+                  }, 800) 
+                });
               });
             }));  
           }
@@ -224,7 +245,7 @@ export default class MyFinishPlanSlider extends Component {
     
   }
   render() {
-    const { DATA, totalTime, caseList, loadFinish } = this.state;
+    const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
     // console.log(DATA, caseList)
     const Item = ({ item }) => (
       <Swipeable
@@ -237,9 +258,9 @@ export default class MyFinishPlanSlider extends Component {
 
     return (
           <View style={styles.container}>
-            {/* {refreshing && <View style={styles.mask}>
+            {refreshing && <View style={styles.mask}>
               <ActivityIndicator size="large" color="black" />
-            </View>} */}
+            </View>}
              <View style={styles.content}>
               <View style={styles.head}><Text style={styles.headFont}>计时</Text></View>
                {/* { getFinishBlankHeight(DATA) >= 100  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> } */}
@@ -278,13 +299,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     width: Common.window.width,
-    height: Common.window.height - 100,
-    marginTop: Common.statusBarHeight,
+    height: '100%',
+    // marginTop: Common.statusBarHeight,
   },
   mask: {
     flex: 1,
     width: Common.window.width,
-    height: Common.window.height - 100,
+    height: '100%',
     top: 0,
     backgroundColor: "#fff",
     opacity: 0.4,
@@ -297,7 +318,7 @@ const styles = StyleSheet.create({
   },
   content: {
     width: Common.window.width,
-    height: Common.window.height-100,
+    height: '100%',
     backgroundColor: "#FFF",
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
@@ -322,6 +343,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: 'column',
+    alignSelf:'flex-end'
   },
   totalTimeFont: {
     fontSize: 30,

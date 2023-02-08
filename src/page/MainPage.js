@@ -60,6 +60,7 @@ class MainPage extends Component {
     super(props);
     // 设置初始值
     this.planRef = React.createRef();
+    this.finishRef = React.createRef();
     this.state={
       appState:AppState.currentState,
       lastId:0,
@@ -101,15 +102,15 @@ class MainPage extends Component {
         // else 
         if(this.timeStampMove > 0 && gs.dy < -distance * 2){
           this.timeStampMove = 0;
-          this.finishRef.close();
+          // this.finishRef.close();
           that.setState({menuVisible: false})
           // this.planRef.open('plan');
           this.planRef && this.planRef.current.show()
         } else if (this.timeStampMove > 0 && gs.dy > distance * 2) {
           this.timeStampMove = 0;
           //  this.planRef.close();
-          this.finishRef.open('finish');
-          // this.finishRef.current.show()
+          // this.finishRef.open('finish');
+          this.finishRef && this.finishRef.current.show()
         }
       },
       onPanResponderRelease: (evt, gs) => {
@@ -168,12 +169,12 @@ class MainPage extends Component {
     //   close={this.showMenu}
     // /> );
     
-    showFinishModal(<DrawerModal
-      component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={this.handleFinishTimeEnd.bind(this)} {...this.props}/>}
-      ref={e => this.finishRef = e}
-      height={Common.window.height - 100}
-      showType={'top'}
-    />);
+    // showFinishModal(<DrawerModal
+    //   component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={this.handleFinishTimeEnd.bind(this)} {...this.props}/>}
+    //   ref={e => this.finishRef = e}
+    //   height={Common.window.height - 100}
+    //   showType={'top'}
+    // />);
   }
   componentWillUnmount(){
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -459,10 +460,12 @@ class MainPage extends Component {
           <Text style={styles.content} onLongPress={this.startRecord} onPressOut={this.stopRecord} {...this._panResponderMyPlan.panHandlers}>
           </Text>
           <View style={styles.sliderBottomBtn}></View>
-          <BottomSheet hasDraggableIcon ref={this.planRef} height={Common.window.height - 100} closeFunction={this.showMenu}>
+          <BottomSheet hasDraggableIcon ref={this.planRef} height={Common.window.height - 100} closeFunction={this.showMenu} sheetBackgroundColor={'#FFF'}>
             <MyPlanSlider {...this.props}/>
           </BottomSheet>
-          <MyFinishPlanSheet hasDraggableIcon ref={this.finishRef} height={Common.window.height - 100} />
+          <MyFinishPlanSheet hasDraggableIcon ref={this.finishRef} height={Common.window.height - 100} sheetBackgroundColor={'#FFF'}>
+            <MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={this.handleFinishTimeEnd.bind(this)} {...this.props}/>
+            </MyFinishPlanSheet>
         </View>
       </SafeAreaView>)
     }

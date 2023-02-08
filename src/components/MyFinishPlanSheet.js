@@ -7,13 +7,14 @@ import {
   PanResponder,
   StyleSheet
 } from "react-native";
-
+import Common from '../common/constants';
+import platform from '../utils/platform';
 class MyFinishPlanSheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
-      animatedHeight: new Animated.Value(0),
+      animatedTranslateY: new Animated.Value(-Common.window.height),
       pan: new Animated.ValueXY(),
     };
 
@@ -22,24 +23,25 @@ class MyFinishPlanSheet extends Component {
 
   setModalVisible(visible) {
     const { closeFunction, height } = this.props;
-    const { animatedHeight, pan } = this.state;
+    const { animatedTranslateY, pan } = this.state;
+     const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight 
     if (visible) {
       this.setState({ modalVisible: visible });
-      Animated.timing(animatedHeight, {
-        toValue: height,
+      Animated.timing(animatedTranslateY, {
+        toValue: 0,
         duration: 300,
         useNativeDriver: false,
       }).start();
     } else {
-      Animated.timing(animatedHeight, {
-        toValue: 0,
+      Animated.timing(animatedTranslateY, {
+        toValue: -Common.window.height,
         duration: 400,
         useNativeDriver: false,
       }).start(() => {
         pan.setValue({ x: 0, y: 0 });
         this.setState({
           modalVisible: visible,
-          animatedHeight: new Animated.Value(0),
+          animatedTranslateY: new Animated.Value(-Common.window.height),
         });
         if (typeof closeFunction === "function") closeFunction();
       });
@@ -48,20 +50,21 @@ class MyFinishPlanSheet extends Component {
 
   createPanResponder(props) {
     const { height } = props;
-    const { pan } = this.state;
+    const { pan, animatedTranslateY } = this.state;
     this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (e, gestureState) => {
         if (gestureState.dy < 0) {
-          Animated.event([null, { dy: pan.y }], {
+          console.log(gestureState.dy)
+          Animated.event([null, { dy: animatedTranslateY }], {
             useNativeDriver: false,
           })(e, gestureState);
         }
       },
       onPanResponderRelease: (e, gestureState) => {
-        const gestureLimitArea = height / 3;
+        const gestureLimitArea = - height / 3;
         const gestureDistance = gestureState.dy;
-        if (gestureDistance > gestureLimitArea) {
+        if (gestureDistance < gestureLimitArea) {
           this.setModalVisible(false);
         } else {
           Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false, }).start();
@@ -91,37 +94,35 @@ class MyFinishPlanSheet extends Component {
       onClose = () => this.close(),
       radius,
     } = this.props;
-    const { animatedHeight, pan, modalVisible } = this.state;
-    const panStyle = {
-      transform: pan.getTranslateTransform(),
-    };
+    const { animatedTranslateY, pan, modalVisible } = this.state;
+    // const panStyle = {
+    //   transform: pan.getTranslateTransform(),
+    // };
 
     return (
       <Modal transparent visible={modalVisible} onRequestClose={onRequestClose}>
         <View
           style={[
             styles.wrapper,
-            { backgroundColor: backgroundColor || "#25252599" },
+            { backgroundColor: backgroundColor || "#25252599", },
           ]}
         >
-          <TouchableOpacity
-            style={styles.background}
-            activeOpacity={1}
-            onPress={onClose}
-          />
           <Animated.View
             {...(draggable && this.panResponder.panHandlers)}
             style={[
-              panStyle,
               styles.container,
               {
-                height: animatedHeight,
+                transform: [{
+                  translateY: animatedTranslateY
+                }],
+                height: this.props.height,
                 borderBottomRightRadius: radius || 10,
                 borderBottomLeftRadius: radius || 10,
                 backgroundColor: sheetBackgroundColor || "#F3F3F3",
               },
             ]}
           >
+            {children}
             {hasDraggableIcon && (
               <View style={styles.draggableContainer}>
                 <View
@@ -135,8 +136,12 @@ class MyFinishPlanSheet extends Component {
                 />
               </View>
             )}
-            {children}
           </Animated.View>
+          <TouchableOpacity
+            style={styles.background}
+            activeOpacity={1}
+            onPress={onClose}
+          />
         </View>
       </Modal>
     );
@@ -147,12 +152,16 @@ export default MyFinishPlanSheet;
 const styles = StyleSheet.create({
     wrapper: {
       flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
       justifyContent: "flex-start",
       alignItems: "flex-start",
     },
     background: {
-      flex: 1,
+      width: '100%',
+      height: 100,
       backgroundColor: "transparent",
+      // backgroundColor: '#ff0000'
     },
     container: {
       width: "100%",
@@ -171,6 +180,6 @@ const styles = StyleSheet.create({
       height: 6,
       borderRadius: 3,
       margin: 10,
-      marginBottom: 0,
+      marginTop: 0,
     },
   });

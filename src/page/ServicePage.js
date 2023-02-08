@@ -15,6 +15,7 @@ import * as Storage from '../common/Storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
+import MyFinishPlanSheet from '../components/MyFinishPlanSheet';
 import {Calendar, Agenda} from 'react-native-calendars';
 // import { CheckBox } from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -37,6 +38,8 @@ class ServicePage extends Component {
 
     constructor(props) {
         super(props);
+        
+        this.finishRef = React.createRef();
         this.state = {
             
         };
@@ -48,10 +51,12 @@ class ServicePage extends Component {
 
     // 登录
     handSubmit() {
-        InteractionManager.runAfterInteractions(() => {
-            const {dispatch} = this.props;
-            this.props.navigation.goBack();
-        });
+      
+      this.finishRef.current.show()
+        // InteractionManager.runAfterInteractions(() => {
+        //     const {dispatch} = this.props;
+        //     this.props.navigation.goBack();
+        // });
     }
     handleDateSelected() {
     }
@@ -98,6 +103,8 @@ class ServicePage extends Component {
                     // startingDate={moment(new Date()).day() == 0 ? new Date() : moment(new Date()).endOf('isoWeek').add(-7, 'd')}
                 />
                 */}
+                
+          <MyFinishPlanSheet hasDraggableIcon ref={this.finishRef} height={Common.window.height - 100} />
                   <MyButton style={styles.loginBtn} onPress={this.handSubmit.bind(this)}>
                       <Text style={styles.loginText}>好的</Text>
                   </MyButton>
