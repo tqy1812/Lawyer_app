@@ -83,6 +83,7 @@ class CalendarDay extends Component {
       customStyle: this.getCustomDateStyle(props.date, props.customDatesStyles),
       marking: this.getDateMarking(props.date, props.markedDates),
       animatedValue: new Animated.Value(0),
+      selectedDay: (new Date).getDate(),
       ...this.calcSizes(props)
     };
 
@@ -145,9 +146,8 @@ class CalendarDay extends Component {
     }
 
     if ((prevProps.datesBlacklist !== this.props.datesBlacklist) ||
-        (prevProps.datesWhitelist !== this.props.datesWhitelist) ||
-        hasDateChanged)
-    {
+      (prevProps.datesWhitelist !== this.props.datesWhitelist) ||
+      hasDateChanged) {
       newState = { ...newState, enabled: this.isDateAllowed(this.props.date, this.props.datesBlacklist, this.props.datesWhitelist) };
       doStateUpdate = true;
     }
@@ -170,6 +170,8 @@ class CalendarDay extends Component {
   //Function to check if provided date is the same as selected one, hence date is selected
   //using isSame moment query with "day" param so that it check years, months and day
   isDateSelected = (date, selectedDate) => {
+    console.log(moment(selectedDate).format('DD'))
+    this.setState({ selectedDay: moment(selectedDate).format('DD') })
     if (!date || !selectedDate) {
       return date === selectedDate;
     }
@@ -394,6 +396,7 @@ class CalendarDay extends Component {
       customStyle,
       dateNameFontSize,
       dateNumberFontSize,
+      selectedDay
     } = this.state;
 
     let _dateNameStyle = [styles.dateName, enabled ? dateNameStyle : disabledDateNameStyle];
@@ -473,7 +476,7 @@ class CalendarDay extends Component {
 
     let day;
     if (DayComponent) {
-      day = (<DayComponent {...this.props} {...this.state}/>);
+      day = (<DayComponent {...this.props} {...this.state} />);
     }
     else {
       day = (
@@ -499,19 +502,43 @@ class CalendarDay extends Component {
             )} */}
             {showDayNumber && (
               <View style={_dateNumberContainerStyle}>
-                <Text
-                  style={[
-                    { fontSize: dateNumberFontSize },
-                    _dateNumberStyle
-                  ]}
-                  allowFontScaling={allowDayTextScaling}
-                >
-                  {date.date()}
-                </Text>
-
+                {
+                  selectedDay == (new Date).getDate() ?
+                    <Text
+                      style={[
+                        { fontSize: dateNumberFontSize },
+                        _dateNumberStyle,
+                      ]}
+                      allowFontScaling={allowDayTextScaling}
+                    >
+                      {date.date() < 10 ? "0" + date.date() : date.date()}
+                    </Text> :
+                    date.date() == (new Date).getDate() ?
+                      <Text
+                        style={[
+                          { fontSize: dateNumberFontSize },
+                          _dateNumberStyle,
+                          {
+                            color: "#007afe"
+                          }
+                        ]}
+                        allowFontScaling={allowDayTextScaling}
+                      >
+                        {date.date() < 10 ? "0" + date.date() : date.date()}
+                      </Text> :
+                      <Text
+                        style={[
+                          { fontSize: dateNumberFontSize },
+                          _dateNumberStyle,
+                        ]}
+                        allowFontScaling={allowDayTextScaling}
+                      >
+                        {date.date() < 10 ? "0" + date.date() : date.date()}
+                      </Text>
+                }
               </View>
             )}
-            { this.renderMarking() }
+            {this.renderMarking()}
           </View>
         </TouchableOpacity>
       );
@@ -520,7 +547,7 @@ class CalendarDay extends Component {
     return calendarAnimation && !scrollable ? (
       <Animated.View style={[
         styles.dateRootContainer,
-        {opacity: this.state.animatedValue}
+        { opacity: this.state.animatedValue }
       ]}>
         {day}
       </Animated.View>

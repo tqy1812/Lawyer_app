@@ -27,7 +27,7 @@ export default StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "flex-end",
     height:30,
-    paddingRight: 5,
+    // paddingRight: 5,
   },
   calendarHeader: {
     textAlign: "center",
