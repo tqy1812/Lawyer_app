@@ -15,7 +15,7 @@ class MyFinishPlanSheet extends Component {
     this.state = {
       modalVisible: false,
       animatedTranslateY: new Animated.Value(-Common.window.height),
-      pan: new Animated.ValueXY(),
+      pan: new Animated.ValueXY({x:0, y:-Common.window.height}),
     };
 
     this.createPanResponder(props);
@@ -27,21 +27,21 @@ class MyFinishPlanSheet extends Component {
      const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight 
     if (visible) {
       this.setState({ modalVisible: visible });
-      Animated.timing(animatedTranslateY, {
-        toValue: 0,
+      Animated.timing(pan, {
+        toValue: {x:0, y:0},
         duration: 300,
         useNativeDriver: false,
       }).start();
     } else {
-      Animated.timing(animatedTranslateY, {
-        toValue: -Common.window.height,
+      Animated.timing(pan, {
+        toValue: {x:0, y:-Common.window.height},
         duration: 400,
         useNativeDriver: false,
       }).start(() => {
-        pan.setValue({ x: 0, y: 0 });
+        // pan.setValue({ x: 0, y: 0 });
         this.setState({
           modalVisible: visible,
-          animatedTranslateY: new Animated.Value(-Common.window.height),
+          // animatedTranslateY: new Animated.Value(-Common.window.height),
         });
         if (typeof closeFunction === "function") closeFunction();
       });
@@ -53,10 +53,11 @@ class MyFinishPlanSheet extends Component {
     const { pan, animatedTranslateY } = this.state;
     this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: ()=> false,
       onPanResponderMove: (e, gestureState) => {
         if (gestureState.dy < 0) {
-          console.log(gestureState.dy)
-          Animated.event([null, { dy: animatedTranslateY }], {
+          // console.log(gestureState.dy)
+          Animated.event([null, { dy: pan.y }], {
             useNativeDriver: false,
           })(e, gestureState);
         }
@@ -68,6 +69,7 @@ class MyFinishPlanSheet extends Component {
           this.setModalVisible(false);
         } else {
           Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false, }).start();
+          // Animated.spring(animatedTranslateY, { toValue: -Common.window.height, useNativeDriver: false, }).start();
         }
       },
     });
@@ -95,10 +97,10 @@ class MyFinishPlanSheet extends Component {
       radius,
     } = this.props;
     const { animatedTranslateY, pan, modalVisible } = this.state;
-    // const panStyle = {
-    //   transform: pan.getTranslateTransform(),
-    // };
-
+    const panStyle = {
+      transform: pan.getTranslateTransform(),
+    };
+    // console.log(animatedTranslateY)
     return (
       <Modal transparent visible={modalVisible} onRequestClose={onRequestClose}>
         <View
@@ -110,11 +112,9 @@ class MyFinishPlanSheet extends Component {
           <Animated.View
             {...(draggable && this.panResponder.panHandlers)}
             style={[
+              panStyle,
               styles.container,
               {
-                transform: [{
-                  translateY: animatedTranslateY
-                }],
                 height: this.props.height,
                 borderBottomRightRadius: radius || 10,
                 borderBottomLeftRadius: radius || 10,

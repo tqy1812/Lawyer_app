@@ -1,9 +1,9 @@
 import { DeviceEventEmitter } from 'react-native';
 import { Client, Message } from '@stomp/stompjs';
-const url = 'ws://192.168.30.79:15674/ws';
-const name = 'root';
-const password = '123456';
-const host = 'demo_vhost';
+const url = 'ws://192.168.30.96:15674/ws';
+const name = 'ky_root';
+const password = 'KYlawyer2023';
+const host = 'lawyer_vhost';
 
 export default class WebSocketClient {
   static myInstance = null;
@@ -24,7 +24,7 @@ export default class WebSocketClient {
         onConnect: function (frame) {
             console.log('############connected'+WebSocketClient.ws.connected)
             // if(!WebSocketClient.subscription) {
-              WebSocketClient.subscription = WebSocketClient.ws.subscribe("/exchange/alarm-clock/employee_id.1", function (message) {
+              WebSocketClient.subscription = WebSocketClient.ws.subscribe("/exchange/alarm-clock/employee id.1", function (message) {
                 console.log('############'+message.body);
                 DeviceEventEmitter.emit('noticeMsg', message.body);
              });

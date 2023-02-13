@@ -1,8 +1,8 @@
 import authHelper from "../helpers/authHelper";
 import request from "../utils/request";
 import * as Storage from '../common/Storage';
-const api = 'https://lawyer-api.kykyai.cn/'
-// const api = 'http://192.168.30.238:5000/'
+// const api = 'https://lawyer-api.kykyai.cn/'
+const api = 'http://192.168.30.238:5000/'
 
 export const TYPE_AUTH_USER = "TYPE_AUTH_USER"; // 账号
 export function reqSaveUser(user, save = true, from = null, callback = null) {
@@ -37,12 +37,16 @@ export function login(phone, password, callback = null) {
         request_impl(api, 'login', data, (res, error) => {
             if(res) {
                 let retData = res.data;
-                console.log(retData)
                 retData.phone = phone;
                 retData.password = password;
                 dispatch(reqSaveUser(retData, true, "login"));
                 if (callback) {
                     callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
                 }
             }
         }, dispatch);
@@ -63,6 +67,11 @@ export function getCase(callback = null) {
                     callback(retData, error);
                 }
             }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
         }, dispatch);
     };
 }
@@ -78,6 +87,11 @@ export function addProcess(callback = null) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
                 }
             }
         }, dispatch);
@@ -97,14 +111,69 @@ export function getProcess(id, callback = null) {
                     callback(retData);
                 }
             }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
         }, dispatch);
     };
 }
 
-export function enableProcess(id, callback = null) {
+export function enableProcess(id, wakeup, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/process/enable'
+        let data = {
+            process_id: id,
+            is_wakeup: wakeup
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function wakeUpProcess(id, wakeup, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/process/wakeup'
+        let data = {
+            process_id: id,
+            is_wakeup: wakeup
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function deleteProcess(id, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/process/delete'
         let data = {
             process_id: id
         };
@@ -116,10 +185,39 @@ export function enableProcess(id, callback = null) {
                     callback(retData, error);
                 }
             }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
         }, dispatch);
     };
 }
 
+export function changeTimesProcess(id, content, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/change_process_times'
+        let data = {
+            process_id: id,
+            ask: content
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 
 
 export function getProcessList(page, isEnd, callback = null) {
@@ -133,6 +231,11 @@ export function getProcessList(page, isEnd, callback = null) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
                 }
             }
         }, dispatch);
@@ -153,6 +256,11 @@ export function getDailyProcessList(page, time, callback = null) {
                     callback(retData, error);
                 }
             }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
         }, dispatch);
     };
 }
@@ -171,6 +279,11 @@ export function addTalk(content, callback = null) {
                     callback(retData, error);
                 }
             }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
         }, dispatch);
     };
 }
@@ -186,7 +299,7 @@ function request_impl(url, method, data, callback, dispatch = null) {
             headers['token'] = obj.token;
             request.post(url, method, data, headers,
                 (rs, error) => {
-                    console.log(':::: error: ' + error);
+                    console.log(':::: request_impl: ' + JSON.stringify(rs));
                     if(callback) callback(rs, error);
                 },
                 (reqKey) => {

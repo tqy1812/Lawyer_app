@@ -10,12 +10,13 @@ import {
   Animated,
   TouchableOpacity,
   DeviceEventEmitter,
-  Alert
+  Alert,
+  Overlay
 } from 'react-native';
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, removeItem} from '../utils/utils';
+import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, removeItem, updateFinish} from '../utils/utils';
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
@@ -24,6 +25,7 @@ import FinishPlanItem from "../components/FinishPlanItem";
 import { destroySibling, showLoading } from "./ShowModal";
 import * as Storage from '../common/Storage';
 
+const Toast = Overlay.Toast;
 export default class MyFinishPlanSlider extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +42,7 @@ export default class MyFinishPlanSlider extends Component {
   }
 
   componentDidMount () {
-    // console.log('MyFinishPlanSlider')
+    console.log('.......MyFinishPlanSlider componentDidMount')
     InteractionManager.runAfterInteractions(() => {
       const {dispatch} = this.props;
       const {caseList} = this.state;
@@ -64,29 +66,30 @@ export default class MyFinishPlanSlider extends Component {
       //     that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish});
       //   }
       // })); 
-      // this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessFinish', 
-   		//         () => { this.initList(); });
+      this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessFinish', 
+   		        () => { this.loadDataThrottled(); });
     });
   }
 
   initList = () => {
     const {dispatch} = this.props;
     const that = this;
-    // showLoading();
-    that.setState({refreshing: true});
-    // that.scollToTopNoAni();
+    showLoading();
+    // that.setState({refreshing: true});
+    that.scollToTopNoAni();
     dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
       const rs = data.rs;
-      // destroySibling();
       if(rs.length > 0) {
         that.setState({page: 2, DATA: rs, totalTime: t, loadFinish: isFinish },()=>{
           setTimeout(()=>{
+            destroySibling();
             that.setState({refreshing: false})
           }, 800) 
         });
       } else {
         that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish},()=>{
           setTimeout(()=>{
+            destroySibling();
             that.setState({refreshing: false})
           }, 800) 
         });
@@ -100,7 +103,6 @@ export default class MyFinishPlanSlider extends Component {
   }
 
   setFinishTime = (item) => {
-    console.log(item)
     if(this.props.finishTime) {
       this.props.finishTime(item);
     }
@@ -138,21 +140,51 @@ export default class MyFinishPlanSlider extends Component {
         animated: false,
     });
   }
-  setFinishTimeEnd = () => {
+  setFinishTimeEnd = (value, callback) => {
     if(this.props.finishTimeEnd) {
-      this.props.finishTimeEnd();
+      this.props.finishTimeEnd(value, (id, content) => {
+        // console.log('.......updateProcess'+ id+ '....' + content)
+        this.updateProcess(id, content, (item)=>{
+          console.log('.......updateProcess'+ JSON.stringify(item))
+          if(moment(item.end_time).diff(moment(new Date())) < 0) {
+            updateFinish(this.state.DATA, item)
+          }
+          else {
+            this.loadDataThrottled();
+          }
+          // if(callback) callback(item);
+        })
+      });
     }
+  }
+
+  updateProcess = (id, content, callback) => {
+    const { dispatch } = this.props;
+    const that = this;
+    // that.setState({refreshing: true});
+    showLoading();
+    dispatch(actionProcess.reqChangeTimesProcess(id, content, (rs, error)=>{
+      destroySibling();
+      // console.log(rs)
+      if(error) {
+        Toast.show(error.info)
+      } else if( rs && rs.id) {
+         if(callback) callback(rs)
+      }
+      // that.setState({refreshing: false});
+    })); 
   }
 
   loadModeData = () => {
     const { DATA, page, loadFinish } = this.state;
     const {dispatch} = this.props;
     const that = this;
-    if (loadFinish) {
+    console.log('.......loadModeData')
+    if (loadFinish || page === 1) {
       return;
     }
-    that.setState({refreshing: true});
-    // showLoading();
+    // that.setState({refreshing: true});
+    showLoading();
     dispatch(actionProcess.reqProcessFinishList(page, DATA[DATA.length-1], (rs, t, isFinish)=>{
       let flag = false;
       let newDate = DATA;
@@ -166,17 +198,18 @@ export default class MyFinishPlanSlider extends Component {
           flag = true;
         } 
       }
-      // destroySibling();
       if (flag) {
         that.setState({page: page + 1, DATA: newDate, totalTime: t, loadFinish: isFinish}, ()=>{
           setTimeout(()=>{
-            that.setState({refreshing: false})
+            destroySibling();
+            that.setState({refreshing: false});
           }, 800) 
         });
       }
       else {
         that.setState({totalTime: t, refreshing: false, loadFinish: isFinish }, ()=>{
           setTimeout(()=>{
+            destroySibling();
             that.setState({refreshing: false})
           }, 800) 
         });
@@ -225,17 +258,24 @@ export default class MyFinishPlanSlider extends Component {
           style: "cancel"
         },
         { text: "确定", onPress: () => {
-            // showLoading();
-            that.setState({refreshing: true});
-            dispatch(actionProcess.reqEnableProcess(item.id, (rs)=>{
+            showLoading();
+            // that.setState({refreshing: true});
+            dispatch(actionProcess.reqDeleteProcess(item.id, (rs, error)=>{
               InteractionManager.runAfterInteractions(() => {
-                let temp = removeItem(DATA, item);
-                // destroySibling();
-                that.setState({DATA: temp}, ()=>{
-                  setTimeout(()=>{
-                    that.setState({refreshing: false})
-                  }, 800) 
-                });
+                if(error) {
+                  Toast.show(error.info);
+                  destroySibling();
+                  that.setState({refreshing: false})
+                }
+                else {
+                  let temp = removeItem(DATA, item);
+                  that.setState({DATA: temp}, ()=>{
+                    setTimeout(()=>{
+                      destroySibling();
+                      that.setState({refreshing: false})
+                    }, 800) 
+                  });
+                }
               });
             }));  
           }
@@ -246,13 +286,13 @@ export default class MyFinishPlanSlider extends Component {
   }
   render() {
     const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
-    // console.log(DATA, caseList)
+    console.log('................data==='+DATA.length)
     const Item = ({ item }) => (
       <Swipeable
-        friction={2}
+        friction={1}
         rightThreshold={40}
         renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
-          <FinishPlanItem item={item}  finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={this.setFinishTimeEnd} caseList={caseList} />
+          <FinishPlanItem item={item}  finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} caseList={caseList} />
       </Swipeable>
     );
 
@@ -263,7 +303,8 @@ export default class MyFinishPlanSlider extends Component {
             </View>}
              <View style={styles.content}>
               <View style={styles.head}><Text style={styles.headFont}>计时</Text></View>
-               {/* { getFinishBlankHeight(DATA) >= 100  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> } */}
+               { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
+               
                {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={{flex: 1}}><SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
@@ -283,6 +324,7 @@ export default class MyFinishPlanSlider extends Component {
                   />
                   </GestureHandlerRootView>
                   }
+                  
                 <View style={styles.footer}>
                   <Text style={styles.totalTimeFont} onLongPress={this.scollToTop}>{totalTime}</Text>
                   <Text style={styles.totalTimeDesFont}>本月  |   {moment(moment().month(moment().month()).startOf('month').valueOf()).format('YYYY.MM.DD')}~{moment(moment().month(moment().month() + 1).startOf('month').valueOf()).format('YYYY.MM.DD')}  计时总计</Text>
@@ -296,6 +338,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     width: Common.window.width,
@@ -324,6 +367,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   head: {
     width: Common.window.width,

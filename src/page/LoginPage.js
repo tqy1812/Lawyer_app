@@ -118,25 +118,6 @@ class LoginPage extends Component {
         this.setState({password: text});
     }
 
-    // XSS檢測
-    validateToastXSS(target) {
-        if (undefined !== target) {
-            let validateString = ['%20', '<script>', 'document', 'replace', 'javascript', '<html>', 'navigator', 'location'];
-            let count = 0;
-            for (let key in validateString) {
-                if (target.indexOf(validateString[key]) > -1) {
-                    target = target.replace(validateString[key], '');
-                    count++;
-                }
-            }
-            if (count > 0) {
-                console.log('遭受XSS攻擊');
-                target = '资料输入错误';
-            }
-        }
-        return target;
-    }
-
     // 登录
     handleLogin() {
         InteractionManager.runAfterInteractions(() => {
@@ -158,15 +139,20 @@ class LoginPage extends Component {
             }
             Toast.show("登录中", 10);
             dispatch(actionAuth.reqLogin(phone, password, (res, error) => {
+                console.log(res)
                 if (error) {
-                  Toast.show(this.validateToastXSS(error.toString()));
+                    console.log(error)
+                    //   Toast.show(this.validateToastXSS(error.toString()));
+                    if(error.code === 17004) {
+                        this.setState({code: 2});
+                    }
                 } else if (res && res.token) {
                     // if (autoLogin) {
                     Storage.setAutoLogin('1');
                     // }
                     dispatch(actionCase.reqCaseList());
                     this.props.navigation.navigate('Main');
-                    Toast.show("登录成功");
+                    // Toast.show("登录成功");
                 }
             }));
         });

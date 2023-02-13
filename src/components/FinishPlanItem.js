@@ -19,35 +19,41 @@ class FinishPlanItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      recoding: false
+      recoding: false,
+      item: props.item,
     };
     this.lastClickTime=0;
   }
 
   setFinishTime = (item) => {
-    if(!item.end_time) {
+    this.setState({recoding: true});
+    // if(!item.end_time) {
       if(this.props.finishTime) {
         this.props.finishTime(item);
       }
-      this.setState({recoding: true});
-    }
+    // }
   }
 
-  setFinishTimeEnd = (item) => {
-    if(!item.end_time) {
+  setFinishTimeEnd = (value, callback) => {
+    // console.log('.....setFinishTimeEnd===='+value.id)
+    // if(!item.end_time) {
       if(this.props.finishTimeEnd) {
-        this.props.finishTimeEnd();
+        this.props.finishTimeEnd(value, (rs)=>{
+            console.log('....................setFinishTimeEnd change=' + JSON.stringify(rs))
+            // if(rs && rs.id){
+            //   this.setState({item: {...rs, case: this.state.item.case} })
+            // }
+        });
       }
       this.setState({recoding: false});
-    }
+    // }
   }
 
   render() {
-    const {item} = this.props;
-    const {recoding} = this.state;
-    // console.log(recoding, item.id)
+    const {recoding, item} = this.state;
+    console.log(item)
     return (
-      <TouchableOpacity activeOpacity={!item.end_time ? 0.2 : 1} style={styles.listItemView} onLongPress={() => this.setFinishTime(item)} onPressOut={()=>this.setFinishTimeEnd(item)}>
+      <TouchableOpacity activeOpacity={!item.end_time ? 0.2 : 1} style={styles.listItemView} onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)}>
           <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''][2],}]}></View>
           <View style={styles.listItemContentView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text></View>
           <View style={styles.listItemTimeView}>
@@ -191,6 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007afe',
     borderRadius: 50,
     position: "absolute",
+    zIndex: 3,
     top: 0,
   },
   listItemTimeSplit: {

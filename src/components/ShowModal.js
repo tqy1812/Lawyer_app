@@ -35,6 +35,7 @@ export const destroyAllSibling = () =>  {
 
 export const update = (index, component) => sibling && sibling.update(<View>{component}</View>)
 export const showLoading = () => {
+    sibling && sibling.destroy()
     sibling = new RootSiblings(<View style={styles.maskStyle}>
         <View style={styles.backViewStyle}>
           <ActivityIndicator size="large" color="white" />

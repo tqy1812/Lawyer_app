@@ -34,14 +34,15 @@ export default class MyPlanItem extends Component {
 
   render() {
     const {item} = this.props;
+    // console.log(item.is_wakeup)
     // console.log(this.props.caseList, this.props.caseList[item.case.id+''][2])
     return ( 
-      <View style={styles.listItemView}>
+      <TouchableOpacity style={styles.listItemView} activeOpacity={1}>
         <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
         <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''][2],}]}></View>
         <View style={styles.listItemRightView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text></View>
-        <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => {this.changeEnable(item)}}><IcomoonIcon name='alert_0' size={30} color={item.is_enable ? '#007afe' : '#fff'} /></MyButton></View>
-    </View>
+        <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => {this.changeEnable(item)}}><IcomoonIcon name='alert_0' size={30} color={item.is_wakeup ? '#007afe' : '#fff'} /></MyButton></View>
+    </TouchableOpacity>
     );
   }
 }

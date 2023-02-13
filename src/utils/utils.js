@@ -347,7 +347,7 @@ export function getWeek (date) { // 参数时间戳
     item.data.map(it=>{
       // console.log(it.id === plan.id)
       if(it.id === plan.id){
-        it.is_enable = !plan.is_enable;
+        it.is_wakeup = !plan.is_wakeup;
         return it
       } else {
         return it
@@ -368,4 +368,23 @@ export function removeItem(list, plan) {
    }
  });
  return nList;
+}
+
+export function updateFinish(list, finish) {
+  let newList = JSON.parse(JSON.stringify(list));
+  newList.map(item=>{
+    item.data.map(it=>{
+      // console.log(it.id === plan.id)
+      if(it.id === plan.id){
+        it.wakeup_time = plan.wakeup_time;
+        it.start_time = plan.start_time;
+        it.end_time = plan.end_time;
+        it.fee_time = plan.fee_time;
+        return it
+      } else {
+        return it
+      }
+    })
+  });
+  return newList;
 }

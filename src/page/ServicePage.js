@@ -22,6 +22,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 // import Feather from 'react-native-vector-icons/Feather';
 import authHelper from '../helpers/authHelper';
 import moment from 'moment';
+import {showDrawerModal, DrawerModal, } from '../components/DrawerModal';
+import {destroySibling, destroyAllSibling, showLoading, showModal, showRecoding, showPlanModal, showFinishModal} from '../components/ShowModal';
 // import {locale} from '../utils/utils'
 
 import CalendarStrip from '../components/calendarStrip/CalendarStrip';
@@ -46,13 +48,18 @@ class ServicePage extends Component {
     }
 
     componentDidMount() {
-        
+      showPlanModal(<DrawerModal
+        component={<View style={{width: Common.window.width, flex:1, backgroundColor: '#ff0000'}}><Text>测试</Text></View>}
+        ref={e => this.planRef = e}
+        height={Common.window.height - 100}
+        showType={'bottom'}
+      /> );
     }
 
     // 登录
     handSubmit() {
       
-      this.finishRef.current.show()
+      this.planRef.open('plan')
         // InteractionManager.runAfterInteractions(() => {
         //     const {dispatch} = this.props;
         //     this.props.navigation.goBack();
@@ -104,7 +111,7 @@ class ServicePage extends Component {
                 />
                 */}
                 
-          <MyFinishPlanSheet hasDraggableIcon ref={this.finishRef} height={Common.window.height - 100} />
+          {/* <MyFinishPlanSheet hasDraggableIcon ref={this.finishRef} height={Common.window.height - 100} /> */}
                   <MyButton style={styles.loginBtn} onPress={this.handSubmit.bind(this)}>
                       <Text style={styles.loginText}>好的</Text>
                   </MyButton>

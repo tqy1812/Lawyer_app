@@ -50,6 +50,7 @@ export default class actionProcess {
           let totalTime = rs.data && rs.data.monthly_total_fee_time ?  getFeeTimeFormat(rs.data.monthly_total_fee_time) : '00:00’';
           // console.log(Math.ceil(rs.total / 10), rs.page, rs.page >= Math.ceil(rs.total / 10))
           let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / 10)  : true; 
+          // console.log('.....reqProcessFinishList='+ list.rs.length)
           if(callback) callback(list, totalTime, isFinish);
           if(page==1) {
             dispatch({type: actionProcess.TYPE_PROCESS_FINISH_LIST, data: list.rs});
@@ -88,12 +89,40 @@ export default class actionProcess {
     };
   }
 
-  static reqEnableProcess(id, callback) {
+  static reqEnableProcess(id, wakeup, callback) {
     return (dispatch, getState) => {
       let state = getState();
-      dispatch(request.enableProcess(id, (rs)=>{
-        if(callback) callback(rs);
+      dispatch(request.enableProcess(id, wakeup, (rs, error)=>{
+        if(callback) callback(rs, error);
       }));
     };
   }
+
+  static reqDeleteProcess(id, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.deleteProcess(id, (rs, error)=>{
+        if(callback) callback(rs, error);
+      }));
+    };
+  }
+  
+  static reqWakeUpProcess(id, wakeup, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.wakeUpProcess(id, wakeup, (rs, error)=>{
+        if(callback) callback(rs, error);
+      }));
+    };
+  }
+
+  static reqChangeTimesProcess(id, content, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.changeTimesProcess(id, content, (rs, error)=>{
+        if(callback) callback(rs, error);
+      }));
+    };
+  }
+  
 }

@@ -59,8 +59,9 @@ class MainPage extends Component {
   constructor (props){
     super(props);
     // 设置初始值
-    this.planRef = React.createRef();
-    this.finishRef = React.createRef();
+    // this.planRef = React.createRef();
+    // this.finishRef = React.createRef();
+    this.updateProcessCallback = null;
     this.state={
       appState:AppState.currentState,
       lastId:0,
@@ -70,10 +71,11 @@ class MainPage extends Component {
       talkSuccessModalVisible: false,
       talkContent: '',
       item: {},
-      itemNotice: 0,
+      itemNotice: false,
       isRecoding: false,
       loading: true,
       menuVisible: true,
+      updateItem: {},
     }
     DeviceEventEmitter.removeAllListeners();
     this.INJECTEDJAVASCRIPT = `
@@ -87,7 +89,19 @@ class MainPage extends Component {
     this.timeStampMove = 0;
     this._panResponderMyPlan = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
+      // onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder:  (e, gestureState) => {
+        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy)
+        if(Math.abs(gestureState.dy) > 25) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      },
+      onMoveShouldSetPanResponderCapture: () => false,
+      onStartShouldSetPanResponderCapture: () => false,
+      onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: (evt, gs) => {
         this.timeStampMove = evt.timeStamp; 
           console.log('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
@@ -102,15 +116,15 @@ class MainPage extends Component {
         // else 
         if(this.timeStampMove > 0 && gs.dy < -distance * 2){
           this.timeStampMove = 0;
-          // this.finishRef.close();
+          this.finishRef.close('finish');
           that.setState({menuVisible: false})
-          // this.planRef.open('plan');
-          this.planRef && this.planRef.current.show()
+          this.planRef.open('plan');
+          // this.planRef && this.planRef.current.show()
         } else if (this.timeStampMove > 0 && gs.dy > distance * 2) {
           this.timeStampMove = 0;
-          //  this.planRef.close();
-          // this.finishRef.open('finish');
-          this.finishRef && this.finishRef.current.show()
+           this.planRef.close('plan');
+          this.finishRef.open('finish');
+          // this.finishRef && this.finishRef.current.show()
         }
       },
       onPanResponderRelease: (evt, gs) => {
@@ -161,20 +175,20 @@ class MainPage extends Component {
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg', 
    		(msg) => { this.scheduleNotfication(msg); });
       
-    // showPlanModal(<DrawerModal
-    //   component={<MyPlanSlider {...this.props}/>}
-    //   ref={e => this.planRef = e}
-    //   height={Common.window.height - 100}
-    //   showType={'bottom'}
-    //   close={this.showMenu}
-    // /> );
+    showPlanModal(<DrawerModal
+      component={<MyPlanSlider {...this.props}/>}
+      ref={e => this.planRef = e}
+      height={Common.window.height - 100}
+      showType={'bottom'}
+      close={this.showMenu}
+    /> );
     
-    // showFinishModal(<DrawerModal
-    //   component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={this.handleFinishTimeEnd.bind(this)} {...this.props}/>}
-    //   ref={e => this.finishRef = e}
-    //   height={Common.window.height - 100}
-    //   showType={'top'}
-    // />);
+    showFinishModal(<DrawerModal
+      component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(item, callback)=>this.handleFinishTimeEnd(item, callback)} {...this.props}/>}
+      ref={e => this.finishRef = e}
+      height={Common.window.height - 100}
+      showType={'top'}
+    />);
   }
   componentWillUnmount(){
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -223,12 +237,6 @@ class MainPage extends Component {
         that.setState({loading: false});
       }
     });
-    // dispatch(actionProcess.reqAddTalk(value, (rs)=>{
-    //   // Toast.show(rs.answer ? rs.answer: '添加成功!');
-    //   console.log(rs)
-    //   that.setState({talkContent: '', talkModalVisible: false});
-    //   this.wv && this.wv.current && this.wv.current.injectJavaScript(`receiveMessage(${JSON.stringify(rs)});true;`); 
-    // })); 
   }
 
   startRecord = () => {
@@ -259,14 +267,21 @@ class MainPage extends Component {
     }
     if(e.result==''){
       Toast.show('不好意思，没听清楚');
+      this.setState({updateItem: {}});
       // this.sendRecording('stop_recording');
       return;
     }
-    console.log(e.result);
-    // this.setState({talkContent: e.result, talkModalVisible: true})
-    this.sendRecording(e.result);
+    console.log(e.result + "............." + JSON.stringify(this.state.updateItem));
+    if(this.state.updateItem && this.state.updateItem.id) {
+      console.log(e.result);
+      if(this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem.id, e.result);
+      this.setState({updateItem: {}});
+    }
+    else
+      this.sendRecording(e.result);
   }
  
+  
   onRecognizerError= (result) => {
     if (result.errorCode !== 0) {
       // alert(JSON.stringify(result));
@@ -331,15 +346,23 @@ class MainPage extends Component {
     this.setState({myFinishPlanState: false});
   }
   handleFinishTime = (item) => {
-    console.log(item)
     Recognizer.start();
+    this.updateProcessCallback = null;
+    // console.log('.....handleFinishTime' + JSON.stringify(item))
+    this.setState({updateItem: item});
   }
-  handleFinishTimeEnd = () => {
+  handleFinishTimeEnd = (item, callback) => {
+    const that = this;
+    // console.log('.....handleFinishTimeEnd' + JSON.stringify(item))
     Recognizer.isListening().then(value=>{
       console.log('stopRecord..........'+value)
       if(value) 
       {
         Recognizer.stop();
+        this.updateProcessCallback = callback;
+      }
+      else {
+        that.setState({updateItem: {}});
       }
     });
   }
@@ -365,12 +388,17 @@ class MainPage extends Component {
   sendTalkSuccess = () => {
     const that = this;
     const {dispatch} = this.props;
-    const { item } = this.state;
+    const { item, itemNotice } = this.state;
     showLoading();
-    dispatch(actionProcess.reqEnableProcess(item.id, (rs)=>{
+    dispatch(actionProcess.reqEnableProcess(item.id, itemNotice, (rs, error)=>{
       destroySibling();
-      DeviceEventEmitter.emit('refreshDailyProcess');
       that.setState({loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false});
+      if(error) {
+        Toast.show(error.info)
+      }
+      else{
+        DeviceEventEmitter.emit('refreshDailyProcess');
+      }
     })); 
   }
 
@@ -382,6 +410,7 @@ class MainPage extends Component {
   }
   render() {
     const { menuVisible } = this.state;
+    console.log('.........MainPage====')
      return (
       <SafeAreaView style={styles.container}>
         { this.state.loading && <View style={styles.mask}>
@@ -444,7 +473,8 @@ class MainPage extends Component {
           onLoadEnd={this.closeLoading.bind(this)}
         />
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
-        <View style={styles.contentView}>
+        <View style={styles.contentView} {...this._panResponderMyPlan.panHandlers}>
+          <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord} >
           <View style={styles.topMenu}>
             { menuVisible && <MyButton style={styles.menuBtnView} onPress={()=> this.props.navigation.navigate('Center')}>
               <IcomoonIcon name='center' size={30} style={{color: 'rgb(0, 122, 254)'}}/>
@@ -457,15 +487,16 @@ class MainPage extends Component {
             </MyButton> }
           </View>
           <View style={styles.sliderTopBtn}></View>
-          <Text style={styles.content} onLongPress={this.startRecord} onPressOut={this.stopRecord} {...this._panResponderMyPlan.panHandlers}>
+          <Text style={styles.content} >
           </Text>
           <View style={styles.sliderBottomBtn}></View>
-          <BottomSheet hasDraggableIcon ref={this.planRef} height={Common.window.height - 100} closeFunction={this.showMenu} sheetBackgroundColor={'#FFF'}>
+          </TouchableOpacity>
+          {/* <BottomSheet hasDraggableIcon ref={this.planRef} height={Common.window.height - 100} closeFunction={this.showMenu} sheetBackgroundColor={'#FFF'}>
             <MyPlanSlider {...this.props}/>
           </BottomSheet>
           <MyFinishPlanSheet hasDraggableIcon ref={this.finishRef} height={Common.window.height - 100} sheetBackgroundColor={'#FFF'}>
-            <MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={this.handleFinishTimeEnd.bind(this)} {...this.props}/>
-            </MyFinishPlanSheet>
+            <MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(callback)=>this.handleFinishTimeEnd.bind(this, callback)} {...this.props}/>
+            </MyFinishPlanSheet> */}
         </View>
       </SafeAreaView>)
     }

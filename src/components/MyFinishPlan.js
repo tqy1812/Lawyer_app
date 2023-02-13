@@ -200,7 +200,7 @@ export default class MyFinishPlan extends Component {
                   <Text style={styles.totalTimeFont} onLongPress={this.scollToTop}>01:59:00</Text>
                   <Text style={styles.totalTimeDesFont}>本月  |   {moment(moment().month(moment().month()).startOf('month').valueOf()).format('YYYY.MM.DD')}~{moment(moment().month(moment().month() + 1).startOf('month').valueOf()).format('YYYY.MM.DD')}  计时总计</Text>
                 </View>
-              </View >  
+              </View>  
           </View>
       </Modal>
     );

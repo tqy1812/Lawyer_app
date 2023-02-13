@@ -9,8 +9,9 @@ import {
   Animated,
   ActivityIndicator,
   TouchableHighlight,
-  DeviceEventEmitter,
-  Alert
+  Overlay,
+  Alert,
+  DeviceEventEmitter
 } from 'react-native';
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
@@ -22,6 +23,7 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import MyPlanItem from "../components/MyPlanItem";
 import { destroySibling, showLoading } from "./ShowModal";
 import * as Storage from '../common/Storage';
+const Toast = Overlay.Toast;
 export default class MyPlanSlider extends Component {
   renderRightAction = (text, color, x, progress, item) => {
     const trans = progress.interpolate({
@@ -95,8 +97,8 @@ export default class MyPlanSlider extends Component {
       // if (JSON.stringify(caseList)==='{}') {
       //   dispatch(actionCase.reqCaseList()); 
       // }
-      // this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessPlan', 
-   		//         () => { this.initList(); });
+      this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessPlan', 
+   		        () => { this.loadDataThrottled(); });
     });
   }
 
@@ -105,17 +107,24 @@ export default class MyPlanSlider extends Component {
     const {dispatch, } = this.props;
     const { caseList } = this.state;
     const that = this;
-    // showLoading();
-    // that.scollToTopNoAni();
-      that.setState({refreshing: true})
+    showLoading();
+    that.scollToTopNoAni();
+      // that.setState({refreshing: true})
     dispatch(actionProcess.reqProcessPlanList(1,  undefined,(data, isFinish)=>{
       const rs = data.rs;
-      // destroySibling();
       if(rs.length > 0) {
-        that.setState({page: 2,  DATA: rs, refreshing: false, loadFinish: isFinish});
+        that.setState({page: 2,  DATA: rs, refreshing: false, loadFinish: isFinish}, ()=>{
+          setTimeout(() => {   
+            destroySibling();
+          }, 800);
+        });
       }
       else {
-        that.setState({refreshing: false, DATA: [], loadFinish: isFinish})
+        that.setState({refreshing: false, DATA: [], loadFinish: isFinish}, ()=>{
+          setTimeout(() => {   
+            destroySibling();
+          }, 800);
+        })
       }
     })); 
   }
@@ -161,11 +170,11 @@ export default class MyPlanSlider extends Component {
     const { DATA, page, loadFinish } = this.state;
     const {dispatch} = this.props;
     const that = this;
-    if(loadFinish) {
+    if(loadFinish || page ===1) {
       return;
     }
-    that.setState({refreshing: true})
-    // showLoading();
+    // that.setState({refreshing: true})
+    showLoading();
     dispatch(actionProcess.reqProcessPlanList(page, DATA[DATA.length - 1], (rs, isFinish)=>{
       let flag = false;
       let newDate = DATA;
@@ -177,12 +186,19 @@ export default class MyPlanSlider extends Component {
         newDate =  newDate.concat(rs.rs)
         flag = true;
       } 
-      destroySibling();
       if (flag) {
-        that.setState({page: page + 1, DATA: newDate, refreshing: false, loadFinish: isFinish});
+        that.setState({page: page + 1, DATA: newDate, refreshing: false, loadFinish: isFinish}, ()=>{
+          setTimeout(() => {   
+            destroySibling();
+          }, 800);
+        });
       }
       else {
-        that.setState({refreshing: false, loadFinish: isFinish});
+        that.setState({refreshing: false, loadFinish: isFinish}, ()=>{
+          setTimeout(() => {   
+            destroySibling();
+          }, 800);
+        });
       }
     })); 
   }
@@ -191,13 +207,22 @@ export default class MyPlanSlider extends Component {
     const {DATA} = this.state;
     const that = this;
     // that.setState({refreshing: true});
-    dispatch(actionProcess.reqEnableProcess(item.id, (rs)=>{
-      InteractionManager.runAfterInteractions(() => {
-        let temp = produce(DATA, item);
+    showLoading();
+    dispatch(actionProcess.reqWakeUpProcess(item.id, !item.is_wakeup, (rs, error)=>{
+      if(error) {
+        Toast.show(error.info);
         destroySibling();
-        that.setState({DATA: temp, refreshing: false});
-        // that.setState({ refreshing: false});
-      });
+        that.setState({ refreshing: false});
+      }
+      else {
+        let temp = produce(DATA, item);
+        that.setState({DATA: temp}, ()=>{
+          setTimeout(()=>{
+            destroySibling();
+          },800);
+          // that.setState({ refreshing: false});
+        });
+      }
     })); 
   }
 
@@ -216,12 +241,24 @@ export default class MyPlanSlider extends Component {
         },
         { text: "确定", onPress: () => {
             showLoading();
-            dispatch(actionProcess.reqEnableProcess(item.id, (rs)=>{
-              InteractionManager.runAfterInteractions(() => {
-                let temp = removeItem(DATA, item);
+            // that.setState({refreshing: true})
+            dispatch(actionProcess.reqDeleteProcess(item.id, (rs, error)=>{
+              if(error) {
+                Toast.show(error.info);
                 destroySibling();
-                that.setState({DATA: temp});
-              });
+                that.setState({refreshing: false})
+              }
+              else {
+                InteractionManager.runAfterInteractions(() => {
+                  let temp = removeItem(DATA, item);
+                  that.setState({DATA: temp}, ()=>{
+                    setTimeout(()=>{
+                      destroySibling();
+                      that.setState({refreshing: false})
+                    }, 800) 
+                  });
+                });
+              }
             }));  
           }
         }
@@ -231,10 +268,10 @@ export default class MyPlanSlider extends Component {
   }
   render() {
     const {DATA, caseList, loadFinish, refreshing} = this.state;
-    // console.log(DATA)
+    console.log(loadFinish)
     const Item = ({ item }) => (
       <Swipeable
-        friction={2}
+        friction={1}
         rightThreshold={40}
         renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
           <MyPlanItem item={item} changeEnable={(item) => this.changeEnable(item)}  caseList={caseList} />
@@ -300,7 +337,7 @@ const styles = StyleSheet.create({
   },
   bottomContent: {
     width: Common.window.width,
-    height: Common.window.height -100,
+    height: '100%',
     backgroundColor: "#FFF",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
@@ -400,6 +437,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 5
   },
   emptyFont: {
     fontSize: 15,
