@@ -58,7 +58,6 @@ class ServicePage extends Component {
 
     // 登录
     handSubmit() {
-      
       this.planRef.open('plan')
         // InteractionManager.runAfterInteractions(() => {
         //     const {dispatch} = this.props;

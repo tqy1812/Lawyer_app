@@ -6,7 +6,8 @@ import {
     View,
     Image,
     Overlay,
-    ImageBackground, InteractionManager
+    ScrollView,
+    ImageBackground, InteractionManager, TouchableOpacity
 } from 'react-native';
 import Header from '../components/Header';
 import {connect} from 'react-redux';
@@ -22,6 +23,7 @@ import MyButton from '../components/MyButton';
 import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
 import IcomoonIcon from "../components/IcomoonIcon";
+import ImagePicker from 'react-native-image-crop-picker';
 const Toast = Overlay.Toast;
 
 class CenterPage extends Component {
@@ -32,6 +34,7 @@ class CenterPage extends Component {
         props.isLogin = authHelper.logined(state.Auth.user);
         props.caseList = state.Case.caseList;
         props.caseListInfo = state.Case.caseListInfo;
+        props.userInfo = state.Auth.userInfo;
         return props;
     }
 
@@ -39,7 +42,7 @@ class CenterPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+            imgAvatar: props.userInfo.avatar
         };
     }
 
@@ -57,19 +60,92 @@ class CenterPage extends Component {
         });
     }
 
+    pickSingleWithCamera(cropping, mediaType = 'photo') {
+      ImagePicker.openCamera({
+        cropping: cropping,
+        width: 500,
+        height: 500,
+        includeExif: true,
+        mediaType,
+      })
+        .then((image) => {
+          console.log('received image', image);
+          this.setState({
+            image: {
+              uri: image.path,
+              width: image.width,
+              height: image.height,
+              mime: image.mime,
+            },
+            images: null,
+          });
+        })
+        .catch((e) => alert(e));
+    }
+
+    handlePromiseSelectPhoto = () => {
+      const that = this;
+      const {dispatch} = this.props;
+      ImagePicker.openPicker({
+        width: 300,
+        height: 300,
+        cropping: true,
+        cropperCircleOverlay: true,
+      }).then(image => {
+        console.log('....handlePromiseSelectPhoto'+ JSON.stringify(image));
+        const file = {
+          uri: image.path,      
+          name: image.modificationDate +'.jpg',           
+          type: image.mime          
+        }
+        dispatch(actionAuth.reqUpload(file, (rs, error)=>{
+          if(error){
+            Toast.show(error.info)
+          }
+          else {
+            dispatch(actionAuth.reqUserUpdate(rs.url, (result, error)=>{
+              if(error){
+                Toast.show(error.info)
+              }
+              else {
+                that.setState({imgAvatar: rs.url})
+              }
+            }));
+          }
+        }));
+      });
+    };
+    cleanupImages() {
+      ImagePicker.clean()
+        .then(() => {
+          console.log('removed tmp images from tmp directory');
+        })
+        .catch((e) => {
+          alert(e);
+        });
+    }
     render() {
-      const {caseList, caseListInfo} = this.props;
+      const {caseList, caseListInfo, userInfo} = this.props;
+      const { imgAvatar} = this.state;
       console.log(caseList)
       return (
           <SafeAreaView style={styles.container}>  
-            <Header title='个人中心' close={true}  {...this.props}/>   
+            <Header title='个人中心' close={true}  {...this.props}/>  
+            <ScrollView style={styles.scrollView}>  
             <View style={styles.content}> 
               <View style={styles.infoContent}> 
-                <IcomoonIcon name='center' size={80} style={{color: 'rgb(0, 122, 254)'}}/>
+                <TouchableOpacity onPress={this.handlePromiseSelectPhoto} >
+                  {
+                    imgAvatar ?
+                    <Image style={styles.avatar} source={{uri: imgAvatar}}
+                  /> : <IcomoonIcon name='center' size={80} style={{color: 'rgb(0, 122, 254)'}}/>
+                  }
+                  
+                </TouchableOpacity>
                 <View style={styles.infoView}> 
-                  <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>匿名</Text>
+                  <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.name}</Text>
                   <Text style={styles.infoCompany} numberOfLines={1} ellipsizeMode={'tail'}>南昌市凌科安时律师事务所</Text>
-                  <Text style={styles.infoPhone} numberOfLines={1} ellipsizeMode={'tail'}>12345678901</Text>
+                  <Text style={styles.infoPhone} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.phone}</Text>
                 </View>
               </View>
               <View style={styles.menuView}> 
@@ -95,23 +171,24 @@ class CenterPage extends Component {
                   <Text style={styles.menuText}>通知提醒</Text>
                 </MyButton>
               </View>  
-              <View style={styles.menuView}> 
+              {/* <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
                   <Text style={styles.menuText}>关联应用</Text>
                 </MyButton>
-              </View>  
+              </View>   */}
             </View>          
             <View style={styles.bottom}>                    
                 <MyButton style={styles.logoutBtn} onPress={this.handSubmit.bind(this)}>
                     <Text style={styles.loginText}>退出账号</Text>
                 </MyButton>
             </View>
+            </ScrollView>
           </SafeAreaView>
       )
     }
 }
 export default connect(CenterPage.mapStateToProps)(CenterPage);
-
+const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -123,12 +200,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
  },
+ scrollView: {
+  flex: 1,
+ },
 content: {
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
+  minHeight: Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,
 },
 infoContent: {
   width: Common.window.width - 40,
@@ -143,6 +224,11 @@ infoContent: {
   flexDirection: 'row',
   justifyContent: 'center',
   alignContent: 'center',
+},
+avatar: {
+  width: 80,
+  height: 80,
+  borderRadius: 40,
 },
 infoView: {
   flex: 1,
@@ -225,6 +311,7 @@ bottom: {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
+  alignSelf: 'flex-end',
 },
 logoutBtn: {
   width: Common.window.width - 40,

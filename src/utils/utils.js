@@ -375,11 +375,11 @@ export function updateFinish(list, finish) {
   newList.map(item=>{
     item.data.map(it=>{
       // console.log(it.id === plan.id)
-      if(it.id === plan.id){
-        it.wakeup_time = plan.wakeup_time;
-        it.start_time = plan.start_time;
-        it.end_time = plan.end_time;
-        it.fee_time = plan.fee_time;
+      if(it.id === finish.id){
+        it.wakeup_time = finish.wakeup_time;
+        it.start_time = finish.start_time;
+        it.end_time = finish.end_time;
+        it.fee_time = finish.fee_time;
         return it
       } else {
         return it

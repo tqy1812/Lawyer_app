@@ -140,14 +140,21 @@ export default class MyFinishPlanSlider extends Component {
         animated: false,
     });
   }
+
   setFinishTimeEnd = (value, callback) => {
     if(this.props.finishTimeEnd) {
       this.props.finishTimeEnd(value, (id, content) => {
         // console.log('.......updateProcess'+ id+ '....' + content)
         this.updateProcess(id, content, (item)=>{
           console.log('.......updateProcess'+ JSON.stringify(item))
-          if(moment(item.end_time).diff(moment(new Date())) < 0) {
-            updateFinish(this.state.DATA, item)
+          if(moment(item.end_time).diff(moment(new Date())) < 0 && moment(item.end_time).format('YYYY-MM-DD') === moment(value.end_time).format('YYYY-MM-DD')) {
+            let temp = updateFinish(this.state.DATA, item);
+            let totalTime = this.state.totalTime - value.fee_time + item.fee_time
+            this.setState({DATA: temp, totalTime}, ()=>{
+              setTimeout(()=>{
+                destroySibling();
+              },800);
+            });
           }
           else {
             this.loadDataThrottled();
@@ -164,10 +171,10 @@ export default class MyFinishPlanSlider extends Component {
     // that.setState({refreshing: true});
     showLoading();
     dispatch(actionProcess.reqChangeTimesProcess(id, content, (rs, error)=>{
-      destroySibling();
+      // destroySibling();
       // console.log(rs)
       if(error) {
-        Toast.show(error.info)
+        Toast.show(error.info);
       } else if( rs && rs.id) {
          if(callback) callback(rs)
       }
@@ -305,7 +312,7 @@ export default class MyFinishPlanSlider extends Component {
               <View style={styles.head}><Text style={styles.headFont}>计时</Text></View>
                { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
                
-               {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={{flex: 1}}><SectionList
+               {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}><SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
                   ListFooterComponent={loadFinish  && <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View>}
@@ -326,7 +333,7 @@ export default class MyFinishPlanSlider extends Component {
                   }
                   
                 <View style={styles.footer}>
-                  <Text style={styles.totalTimeFont} onLongPress={this.scollToTop}>{totalTime}</Text>
+                  <Text style={styles.totalTimeFont} onLongPress={this.scollToTop}>{getFeeTimeFormat(totalTime)}</Text>
                   <Text style={styles.totalTimeDesFont}>本月  |   {moment(moment().month(moment().month()).startOf('month').valueOf()).format('YYYY.MM.DD')}~{moment(moment().month(moment().month() + 1).startOf('month').valueOf()).format('YYYY.MM.DD')}  计时总计</Text>
                 </View>
               </View >  
@@ -375,6 +382,10 @@ const styles = StyleSheet.create({
     height: 45,
     justifyContent: "center",
     alignItems: "center"
+  },
+  gestureStyle: {
+    flex: 1,
+    width: Common.window.width,
   },
   headFont: {
     fontSize: 18,

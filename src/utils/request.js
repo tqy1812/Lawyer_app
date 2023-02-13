@@ -23,7 +23,7 @@ let request = {
             headers: headers,
         }).then((rs) => {
             let err = null;
-            if(rs && rs.status && rs.code == 200){
+            if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
                     err = new Error(Error.ERR_REQ, rs.code, rs.msg, method);
                 }

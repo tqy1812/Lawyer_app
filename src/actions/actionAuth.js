@@ -5,9 +5,9 @@ import authHelper from '../helpers/authHelper';
 const updateUser = (dispatch, user, from=null, save=true) => {
     dispatch(request.reqSaveUser(user, save, from, null));
   };
-  
 export default class actionAuth {
 
+  static USER_INFO = 'USER_INFO'; //用户信息
     // 登录
   static reqLogin(user, password, callback) {
     return (dispatch, getState) => {
@@ -24,5 +24,29 @@ export default class actionAuth {
     };
   }
 
-  
+  static reqUserInfo(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.getInfo((rs, error)=>{
+          if(rs) {
+            console.log('......reqUserInfo='+JSON.stringify(rs))
+            dispatch({type: actionAuth.USER_INFO, data: rs});
+          }
+          if(callback) callback()
+      }));
+    };
+  }
+
+  static reqUpload(file, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.upload(file, callback));
+    };
+  }
+  static reqUserUpdate(url, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.userUpdate(url, callback));
+    };
+  }
 }

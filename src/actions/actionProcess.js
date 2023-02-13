@@ -47,7 +47,7 @@ export default class actionProcess {
       let state = getState();
       dispatch(request.getProcessList(page, true, (rs)=>{
           let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem) : {last: undefined, rs: []};
-          let totalTime = rs.data && rs.data.monthly_total_fee_time ?  getFeeTimeFormat(rs.data.monthly_total_fee_time) : '00:00’';
+          let totalTime = rs.data && rs.data.monthly_total_fee_time ? rs.data.monthly_total_fee_time : '00:00’';
           // console.log(Math.ceil(rs.total / 10), rs.page, rs.page >= Math.ceil(rs.total / 10))
           let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / 10)  : true; 
           // console.log('.....reqProcessFinishList='+ list.rs.length)

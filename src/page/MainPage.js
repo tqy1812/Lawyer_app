@@ -39,6 +39,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import MyFinishPlanSheet from "../components/MyFinishPlanSheet";
 import moment from 'moment';
+import actionAuth from '../actions/actionAuth';
 
 const {width: windowWidth,height: windowHeight} = Common.window;
 const Toast = Overlay.Toast;
@@ -53,6 +54,7 @@ class MainPage extends Component {
       props.caseList = state.Case.caseList;
       props.finishList = state.Process.finishList;
       props.planList = state.Process.planList;
+      props.userInfo = state.Auth.userInfo;
       return props;
   }
   
@@ -138,6 +140,7 @@ class MainPage extends Component {
       this.props.navigation.navigate('Login');
     }
     this.props.dispatch(actionCase.reqCaseList()); 
+    this.props.dispatch(actionAuth.reqUserInfo()); 
     let wc = WebSocketClient.getInstance();
     console.log(wc);
     wc.initWebSocket();
@@ -174,7 +177,7 @@ class MainPage extends Component {
     });
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg', 
    		(msg) => { this.scheduleNotfication(msg); });
-      
+    this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { wc.onSubscription(id); });
     showPlanModal(<DrawerModal
       component={<MyPlanSlider {...this.props}/>}
       ref={e => this.planRef = e}
@@ -194,6 +197,7 @@ class MainPage extends Component {
     AppState.removeEventListener('change', this.handleAppStateChange);
     this.recognizerEventEmitter.removeAllListeners('onRecognizerResult');
     this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
+    this.eventWsBind && this.eventWsBind.remove();
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
     DeviceEventEmitter.removeAllListeners();
   }

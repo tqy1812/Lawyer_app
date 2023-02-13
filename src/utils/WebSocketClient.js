@@ -24,10 +24,8 @@ export default class WebSocketClient {
         onConnect: function (frame) {
             console.log('############connected'+WebSocketClient.ws.connected)
             // if(!WebSocketClient.subscription) {
-              WebSocketClient.subscription = WebSocketClient.ws.subscribe("/exchange/alarm-clock/employee id.1", function (message) {
-                console.log('############'+message.body);
-                DeviceEventEmitter.emit('noticeMsg', message.body);
-             });
+            
+          DeviceEventEmitter.emit('wsBind');
             // }
             
         },
@@ -64,5 +62,12 @@ export default class WebSocketClient {
 
   onDisconnectWS() {
     WebSocketClient.ws && WebSocketClient.ws.forceDisconnect();
+  }
+
+  onSubscription(id) {
+     WebSocketClient.subscription = WebSocketClient.ws.subscribe("/exchange/alarm-clock/employee_id.1", function (message) {
+      console.log('############'+message.body);
+      DeviceEventEmitter.emit('noticeMsg', message.body);
+   });
   }
 }

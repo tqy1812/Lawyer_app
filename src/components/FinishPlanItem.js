@@ -51,7 +51,7 @@ class FinishPlanItem extends React.Component {
 
   render() {
     const {recoding, item} = this.state;
-    console.log(item)
+    // console.log(item)
     return (
       <TouchableOpacity activeOpacity={!item.end_time ? 0.2 : 1} style={styles.listItemView} onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)}>
           <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''][2],}]}></View>
@@ -180,6 +180,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   listItemView: {
+    width: '100%',
     display: 'flex',
     flexDirection: "row",
     backgroundColor: '#F5F7FA',

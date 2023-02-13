@@ -2,7 +2,7 @@ import authHelper from "../helpers/authHelper";
 import request from "../utils/request";
 import * as Storage from '../common/Storage';
 // const api = 'https://lawyer-api.kykyai.cn/'
-const api = 'http://192.168.30.238:5000/'
+const api = 'http://192.168.30.93:5000/'
 
 export const TYPE_AUTH_USER = "TYPE_AUTH_USER"; // 账号
 export function reqSaveUser(user, save = true, from = null, callback = null) {
@@ -40,6 +40,71 @@ export function login(phone, password, callback = null) {
                 retData.phone = phone;
                 retData.password = password;
                 dispatch(reqSaveUser(retData, true, "login"));
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function getInfo(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/employee/get';
+
+        request_impl_get(api, method, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function upload(file, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/upload_oss/avatar'
+        let data = new FormData();
+        data.append('file', file);
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch, { 'Content-Type': 'multipart/form-data'});
+    };
+}
+
+export function userUpdate(url, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/employee/update'
+        let data = {avatar: url};
+
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
                 if (callback) {
                     callback(retData, error);
                 }
@@ -288,11 +353,16 @@ export function addTalk(content, callback = null) {
     };
 }
 
-function request_impl(url, method, data, callback, dispatch = null) {
+function request_impl(url, method, data, callback, dispatch = null, header) {
     let headers = {};
      // 消息头
-     headers['Content-Type'] = 'application/json';
-     headers['Accept'] = 'application/json, application/xml, text/play, text/html, *.*';
+     if(header) {
+        headers = header;
+     }
+     else{
+        headers['Content-Type'] = 'application/json';
+        headers['Accept'] = 'application/json, application/xml, text/play, text/html, *.*';
+     }
      Storage.getUserRecord().then((user) => {
         if (user) {
             let obj = Object.assign({}, JSON.parse(user));
@@ -303,7 +373,7 @@ function request_impl(url, method, data, callback, dispatch = null) {
                     if(callback) callback(rs, error);
                 },
                 (reqKey) => {
-                    console.log('xyz:::: logout callback ' + reqKey);
+                    // console.log('xyz:::: logout callback ' + reqKey);
                     requestLoginout(dispatch, reqKey);
                 },
                 () => {

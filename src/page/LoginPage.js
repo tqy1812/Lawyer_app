@@ -25,6 +25,7 @@ import actionCase from '../actions/actionCase';
 import IcomoonIcon from "../components/IcomoonIcon";
 import WebSocketClient from "../utils/WebSocketClient";
 import PushNotification, {Importance} from 'react-native-push-notification';
+import moment from 'moment';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
 
@@ -177,7 +178,6 @@ class LoginPage extends Component {
       }
       
     render() {
-        // let bgUrl = '/login_bg.jpg';
         let logo = '/logo.png';
             return (
                 <View
