@@ -50,6 +50,8 @@ class CenterPage extends Component {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
+    
+      this.props.dispatch(actionAuth.reqUserInfo()); 
     }
 
   
@@ -127,7 +129,7 @@ class CenterPage extends Component {
     render() {
       const {caseList, caseListInfo, userInfo} = this.props;
       const { imgAvatar} = this.state;
-      console.log(caseList)
+      // console.log(caseList)
       return (
           <SafeAreaView style={styles.container}>  
             <Header title='个人中心' close={true}  {...this.props}/>  
