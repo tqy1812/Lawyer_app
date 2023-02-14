@@ -3,11 +3,25 @@ const { StatusBarManager } = NativeModules;
 
 const {width,height} = Dimensions.get('window')
 const wh = height/width
+
+let SAFE_AREA_BOTTOM = 0;
+if (Platform.OS === 'ios') {
+  const safeAreaBottom = NativeModules.AppDimens.safeAreaBottom;
+  SAFE_AREA_BOTTOM = safeAreaBottom;
+}
+
 let window = {
     width: width,
-    height: Platform.OS === 'ios'? height : wh  > 1.8 ? height + StatusBarManager.HEIGHT : height,
+    height: Platform.OS === 'ios'? height-SAFE_AREA_BOTTOM : wh  > 1.8 ? height + StatusBarManager.HEIGHT : height,
 };
-let statusBarHeight = StatusBarManager.HEIGHT;
+let statusBarHeight = Platform.OS === 'ios'? NativeModules.AppDimens.statusBarHeight : StatusBarManager.HEIGHT;
+let NAVIGATION_HEIGHT = 0;
+if (Platform.OS === 'ios') {
+  const navigationHeight = NativeModules.AppDimens.navigationHeight;
+  NAVIGATION_HEIGHT = navigationHeight;
+} else {
+  NAVIGATION_HEIGHT = 48;
+}
 let color = [
     ['rgba(144,3,255,.3)', 'rgb(144,3,255)', '#9003FF'], 
     ['rgba(255,206,31,.3)', 'rgb(255,206,31)', '#FFCE1F'], 

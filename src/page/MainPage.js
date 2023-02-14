@@ -16,8 +16,10 @@ import {
   Keyboard,
 } from 'react-native';
 import {
+  WebView as WebViewX5
+} from 'react-native-webview-tencentx5';import {
   WebView
-} from 'react-native-webview-tencentx5';
+} from 'react-native-webview';
 import { Recognizer } from 'react-native-speech-iflytek';
 // import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification, {Importance} from 'react-native-push-notification';
@@ -25,6 +27,7 @@ import {connect} from 'react-redux';
 import authHelper from '../helpers/authHelper';
 import MyModal from '../components/MyModal';
 import Common from "../common/constants";
+import platform from "../utils/platform";
 import {showDrawerModal, DrawerModal, } from '../components/DrawerModal';
 import {destroySibling, destroyAllSibling, showLoading, showModal, showRecoding, showPlanModal, showFinishModal} from '../components/ShowModal';
 import MyFinishPlanSlider from '../components/MyFinishPlanSlider';
@@ -127,13 +130,13 @@ class MainPage extends Component {
         //   console.log('由右向左');
         // } 
         // else 
-        if(this.timeStampMove > 0 && gs.dy < -distance * 2){
+        if(this.timeStampMove > 0 && gs.dy < -distance){
           this.timeStampMove = 0;
           this.finishRef.close('finish');
           that.setState({menuVisible: false})
           this.planRef.open('plan');
           // this.planRef && this.planRef.current.show()
-        } else if (this.timeStampMove > 0 && gs.dy > distance * 2) {
+        } else if (this.timeStampMove > 0 && gs.dy > distance) {
           this.timeStampMove = 0;
            this.planRef.close('plan');
           this.finishRef.open('finish');
@@ -493,7 +496,8 @@ class MainPage extends Component {
             </View>
            }
         </MyModal>
-        <WebView 
+        {
+          platform.isAndroid() ? <WebViewX5
           ref={this.wv}
           source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }} 
           // source={{ uri: 'https://human.kykyai.cn' }} 
@@ -507,7 +511,23 @@ class MainPage extends Component {
           userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
           incognito={true}
           onLoadEnd={this.closeLoading.bind(this)}
-        />
+        /> : <WebView 
+        ref={this.wv}
+        source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }} 
+        // source={{ uri: 'https://human.kykyai.cn' }} 
+        scalesPageToFit={false} 
+        bounces={false}
+        style={{width:windowWidth,height:'100%'}} 
+        javaScriptEnabled={true}
+        injectedJavaScript={this.INJECTEDJAVASCRIPT }
+        onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
+        mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+        incognito={true}
+        onLoadEnd={this.closeLoading.bind(this)}
+      />
+        }
+        
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
         <View style={styles.contentView} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord} >
@@ -538,8 +558,12 @@ class MainPage extends Component {
     }
 }
 
+const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight;
+const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 0; 
+console.log('................================'+STATUS_BAR_HEIGHT)
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     height: windowHeight,
     width: windowWidth,
   },
@@ -612,7 +636,7 @@ const styles = StyleSheet.create({
     height: windowHeight,
     width: windowWidth,
     // top:  windowHeight/4,
-    top: 0,
+    top: top,
     // left:  windowWidth/4,
     zIndex: 3,
     display: 'flex',

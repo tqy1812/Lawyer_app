@@ -197,7 +197,8 @@ class ActivityPage extends Component {
 }
 export default connect(ActivityPage.mapStateToProps)(ActivityPage);
 
-const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight
+const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight;
+const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 20; 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -206,9 +207,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         color: '#000',
         justifyContent: 'center',
-        paddingTop: 10,
+        // paddingTop: 10,
     },
-    backBtn: { height: 25, left: 10, top: 30, position: 'absolute', zIndex: 999 },
+    backBtn: { height: 25, left: 10, top: top, position: 'absolute', zIndex: 999 },
     content: {
         flex: 1,
         flexDirection: 'row'

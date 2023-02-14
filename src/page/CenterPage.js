@@ -144,7 +144,7 @@ class CenterPage extends Component {
                 </TouchableOpacity>
                 <View style={styles.infoView}> 
                   <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.name}</Text>
-                  <Text style={styles.infoCompany} numberOfLines={1} ellipsizeMode={'tail'}>南昌市凌科安时律师事务所</Text>
+                  <Text style={styles.infoCompany} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.org_name}</Text>
                   <Text style={styles.infoPhone} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.phone}</Text>
                 </View>
               </View>

@@ -1,6 +1,6 @@
 import { DeviceEventEmitter } from 'react-native';
 import { Client, Message } from '@stomp/stompjs';
-const url = 'ws://192.168.30.96:15674/ws';
+const url = 'ws://ws.kykyai.cn/ws';
 const name = 'ky_root';
 const password = 'KYlawyer2023';
 const host = 'lawyer_vhost';
