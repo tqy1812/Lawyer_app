@@ -12,7 +12,8 @@ import {
   TextInput,
   DeviceEventEmitter,
   TouchableHighlight,
-  ActivityIndicator
+  ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import {
   WebView
@@ -30,7 +31,7 @@ import MyFinishPlanSlider from '../components/MyFinishPlanSlider';
 import MyPlanSlider from '../components/MyPlanSlider';
 import actionProcess from '../actions/actionProcess';
 import * as Storage from '../common/Storage';
-import {getWeekXi} from '../utils/utils';
+import {getWeekXi, getHoliday} from '../utils/utils';
 import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import actionCase from "../actions/actionCase";
@@ -72,8 +73,18 @@ class MainPage extends Component {
       talkModalVisible: false,
       talkSuccessModalVisible: false,
       talkContent: '',
-      item: {},
+      item: {
+        id: 313,
+        name:'cessd',
+        case: {
+          id: 3,
+          name: 'dedddd',
+        },
+        start_time: '2022-01-02 11:00:00',
+        end_time: '2022-01-02 12:00:00'
+      },
       itemNotice: false,
+      itemName: 'cessd',
       isRecoding: false,
       loading: true,
       menuVisible: true,
@@ -146,6 +157,7 @@ class MainPage extends Component {
     wc.initWebSocket();
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
+    Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);  
     //监听内存报警事件
     // AppState.addEventListener('memoryWarning', function(){
     //   console.log("内存报警....");
@@ -199,8 +211,13 @@ class MainPage extends Component {
     this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
     this.eventWsBind && this.eventWsBind.remove();
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
+    Keyboard.removeListener('keyboardDidHide', this.processNameForceLoseFocus);   
     DeviceEventEmitter.removeAllListeners();
   }
+  processNameForceLoseFocus = () => {
+    this.item_name &&  this.item_name.blur();
+  }
+  
   handleAppStateChange = (nextAppState) => {
     console.log('****************nextAppState=='+nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
@@ -330,7 +347,7 @@ class MainPage extends Component {
         const id = codeArr[1].replace('id:', '')
         if(id) {
           dispatch(actionProcess.reqGetProcess(id, (rs)=>{
-            that.setState({loading: false, talkSuccessModalVisible: true, item: rs});
+            that.setState({loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name});
           })); 
         }
         else {
@@ -385,18 +402,22 @@ class MainPage extends Component {
     let content = text.trim();
     this.setState({talkContent: content});
   }
+  handleTalkNameChanged(text) {
+    let content = text.trim();
+    this.setState({itemName: content});
+  }
   closeTalkSuccess = () => {
-    this.setState({talkSuccessModalVisible: false, item: {}, itemNotice: false});
+    this.setState({talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: ''});
   }
 
   sendTalkSuccess = () => {
     const that = this;
     const {dispatch} = this.props;
-    const { item, itemNotice } = this.state;
+    const { item, itemNotice, itemName } = this.state;
     showLoading();
-    dispatch(actionProcess.reqEnableProcess(item.id, itemNotice, (rs, error)=>{
+    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, (rs, error)=>{
       destroySibling();
-      that.setState({loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false});
+      that.setState({loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: ''});
       if(error) {
         Toast.show(error.info)
       }
@@ -446,16 +467,27 @@ class MainPage extends Component {
             multiline
             textAlignVertical='top'
             />
-        </MyModal> */}
-        <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={true}>
+        </MyModal>*/} 
+        <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={false}>
           { this.props.caseList && this.state.item && this.state.item.id && JSON.stringify(this.props.caseList)!='{}' && <View style={styles.processInfo}>
             <View style={styles.listTitleView}>
-              <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(this.state.item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(this.state.item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>假日/节日</Text>}</View>
+              <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(this.state.item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(this.state.item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(this.state.item.start_time)}</Text>}</View>
             </View>
             <View style={styles.listItemView}>
               <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{this.state.item.start_time ? moment(this.state.item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{this.state.item.end_time ? moment(this.state.item.end_time).format('HH:mm') : '-- : --'}</Text></View>
               <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[this.state.item.case.id+''][2],}]}></View>
-              <View style={styles.listItemRightView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{this.state.item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{this.state.item.case.name}</Text></View>
+              <View style={styles.listItemRightView}>
+              {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{this.state.item.name}</Text> */}
+                <TextInput
+                  ref={(r)=> this.item_name = r}
+                  placeholder='内容'
+                  placeholderTextColor='#999'
+                  style={styles.talkNameInput}
+                  onChangeText={this.handleTalkNameChanged.bind(this)}
+                  value={this.state.itemName}
+                  />
+                <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{this.state.item.case.name}</Text>
+              </View>
               <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => {this.setState({itemNotice: !this.state.itemNotice})}}><IcomoonIcon name='alert_0' size={30} color={this.state.itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
             </View>
             </View>
@@ -669,6 +701,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     backgroundColor: '#eee',
+  },
+  talkNameInput: {
+    height: 30,
+    flex: 1,
+    borderColor: '#DDD',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#eee',
+    fontSize: 19,
+    padding: 0,
+    lineHeight: 19,
+    color: '#606266',
+    fontWeight: 'bold',
+    marginRight: 3,
   },
   processInfo: {
     width: Common.window.width - 40,

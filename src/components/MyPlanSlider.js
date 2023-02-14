@@ -16,7 +16,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, produce, removeItem} from '../utils/utils';
+import {getWeek, getWeekXi, produce, removeItem, getHoliday} from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
@@ -295,12 +295,12 @@ export default class MyPlanSlider extends Component {
                   keyExtractor={(item, index) => item + index}
                   renderItem={({ item }) => <Item item={item} />}
                   renderSectionHeader={({ section: { date,  isFestival, isShowYear} }) => moment(date).isSame(moment(), "day") ? 
-                  (<View style={styles.titleToday}><View style={styles.titleTime}><Text style={styles.titleTodayFont}>今天</Text><Text style={styles.titleTodayWeekFont}>{getWeekXi(new Date())}</Text></View><Text style={styles.titleTodayFont1}>假日/节日</Text></View>)
+                  (<View style={styles.titleToday}><View style={styles.titleTime}><Text style={styles.titleTodayFont}>今天</Text><Text style={styles.titleTodayWeekFont}>{getWeekXi(new Date())}</Text></View><Text style={styles.titleTodayFont1}>{getHoliday(date)}</Text></View>)
                   :
                   (
                     <View style={styles.listTitleView}>
                       {isShowYear && <Text style={styles.listTitleYearFont}>{moment(date).format('YYYY年')}</Text>}
-                    <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text></View>{ isFestival && <Text style={styles.titleTodayFont1}>假日/节日</Text>}</View>
+                    <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text></View>{ isFestival && <Text style={styles.titleTodayFont1}>{getHoliday(date)}</Text>}</View>
                     </View>)}
                   stickySectionHeadersEnabled={true}
                   onEndReachedThreshold={0.2}

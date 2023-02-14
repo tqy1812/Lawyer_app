@@ -1,8 +1,8 @@
 import authHelper from "../helpers/authHelper";
 import request from "../utils/request";
 import * as Storage from '../common/Storage';
-// const api = 'https://lawyer-api.kykyai.cn/'
-const api = 'http://192.168.30.93:5000/'
+const api = 'https://lawyer-api.kykyai.cn/'
+// const api = 'http://192.168.30.93:5000/'
 
 export const TYPE_AUTH_USER = "TYPE_AUTH_USER"; // 账号
 export function reqSaveUser(user, save = true, from = null, callback = null) {
@@ -174,6 +174,33 @@ export function getProcess(id, callback = null) {
                 let retData = res.data.process;
                 if (callback) {
                     callback(retData);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function submitProcess(id, wakeup, name, isEnable, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/process/update'
+        let data = {
+            id: id,
+            is_wakeup: wakeup,
+            name: name,
+            is_enable: isEnable,
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
                 }
             }
             else {

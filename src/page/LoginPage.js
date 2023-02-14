@@ -6,7 +6,8 @@ import {
     View,
     Image,
     Overlay,
-    ImageBackground, InteractionManager
+    ImageBackground, InteractionManager,
+    Keyboard
 } from 'react-native';
 import Header from '../components/Header';
 import {connect} from 'react-redux';
@@ -46,7 +47,12 @@ class LoginPage extends Component {
             autoLogin: false,
             lastId: 1,
             code: 0
-        };    
+        };  
+        Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);  
+    }
+
+    nameForceLoseFocus = () => {
+        this.login_name &&  this.login_name.blur();
     }
 
     componentDidMount() {
@@ -84,6 +90,7 @@ class LoginPage extends Component {
         console.log('......LoginPage componentWillUnmount')
         if(typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
             this.viewDidAppear && this.viewDidAppear.remove();
+       Keyboard.removeListener('keyboardDidHide', this.nameForceLoseFocus);      
             // WebSocketClient.getInstance().onDisconnectWS();
     }
 
@@ -233,7 +240,7 @@ class LoginPage extends Component {
                         <View style={[styles.formInput]}>
                             {/* <Text style={styles.loginLabel}>用户名</Text> */}
                             <TextInput
-                                ref="login_name"
+                                ref={(ref) => this.login_name = ref}
                                 placeholder='轻触此处输入账号'
                                 placeholderTextColor='#999'
                                 style={styles.loginInput}

@@ -98,6 +98,15 @@ export default class actionProcess {
     };
   }
 
+  static reqSubmitProcess(id, wakeup, name, isEnable, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.submitProcess(id, wakeup, name, isEnable, (rs, error)=>{
+        if(callback) callback(rs, error);
+      }));
+    };
+  }
+
   static reqDeleteProcess(id, callback) {
     return (dispatch, getState) => {
       let state = getState();

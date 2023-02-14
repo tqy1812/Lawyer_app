@@ -388,3 +388,20 @@ export function updateFinish(list, finish) {
   });
   return newList;
 }
+
+export function getHoliday(time) {
+   let week = moment(time).day();
+   let dates = moment(time).format('YYYY-MM-DD');
+
+   let holidys = Common.holidy.h;
+   let work = Common.holidy.d;
+   if(holidys.indexOf(dates)>=0) {
+      return '节日'
+   }
+   else if(work.indexOf(dates)>=0) {
+      return '调休'
+   } else if(week==6 || week==0) {
+      return '假日'
+   }
+   return '';
+}
