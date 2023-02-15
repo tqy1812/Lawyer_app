@@ -95,7 +95,7 @@ class MainPage extends Component {
       menuVisible: true,
       updateItem: {},
     }
-    DeviceEventEmitter.removeAllListeners();
+    // DeviceEventEmitter.removeAllListeners();
     this.INJECTEDJAVASCRIPT = `
     const meta = document.createElement('meta'); 
     meta.setAttribute('content', 'initial-scale=1, maximum-scale=1, user-scalable=0'); 
@@ -228,19 +228,19 @@ class MainPage extends Component {
   }
       
   onBackButtonPressAndroid = () => {
-    console.log("...............onBackButtonPressAndroid " + this.props.navigation.state.routeName)
-    if(this.props.navigation.state.routeName=="Main"){
-      if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-        //最近2秒内按过back键，可以退出应用。
-        BackHandler.exitApp()
-        return false
-      }
-      this.lastBackPressed = Date.now();
-      Toast.show('再按一次退出应用');
-      return true;
-    }else{
+    console.log("...............onBackButtonPressAndroid ")
+    // if(this.props.navigation.state.routeName=="Main"){
+    //   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+    //     //最近2秒内按过back键，可以退出应用。
+    //     BackHandler.exitApp()
+    //     return false
+    //   }
+    //   this.lastBackPressed = Date.now();
+    //   Toast.show('再按一次退出应用');
+    //   return true;
+    // }else{
       return false;
-    }
+    // }
   };
   
   handleAppStateChange = (nextAppState) => {

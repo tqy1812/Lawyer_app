@@ -10,6 +10,7 @@ import {
     ImageBackground, InteractionManager, TouchableOpacity
 } from 'react-native';
 import Header from '../components/Header';
+import { CommonActions } from '@react-navigation/native';
 import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
@@ -17,6 +18,7 @@ import platform from '../utils/platform';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
+import {TYPE_AUTH_USER} from '../actions/actionRequest';
 // import { CheckBox } from 'react-native-elements';
 // import AntDesign from 'react-native-vector-icons/AntDesign';
 // import Feather from 'react-native-vector-icons/Feather';
@@ -56,10 +58,13 @@ class CenterPage extends Component {
 
   
     handSubmit() {
-        InteractionManager.runAfterInteractions(() => {
-            const {dispatch} = this.props;
-            this.props.navigation.navigate('Login');
-        });
+      const {dispatch} = this.props;
+      // this.props.navigation.replace('Login');
+      dispatch({type: TYPE_AUTH_USER, data: {}});
+      this.props.navigation.dispatch(CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Login'}]
+      }));
     }
 
     pickSingleWithCamera(cropping, mediaType = 'photo') {

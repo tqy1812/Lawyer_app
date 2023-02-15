@@ -293,7 +293,7 @@ export default class MyFinishPlanSlider extends Component {
   }
   render() {
     const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
-    console.log('................data==='+DATA.length)
+    console.log('................data==='+totalTime)
     const Item = ({ item }) => (
       <Swipeable
         friction={1}
