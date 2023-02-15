@@ -131,7 +131,7 @@ export default class MyPlan extends Component {
     const Item = ({ item }) => item.wakeup_time ? (
       <View style={styles.listItemView}>
         <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
-        <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''][2],}]}></View>
+        <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''] ? this.props.caseList[item.case.id+''][2] : '#ff0000'}]}></View>
         <View style={styles.listItemRightView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.description}</Text></View>
       </View>
     ) : (<View style={styles.empty}><Text style={styles.emptyFont}>未来的日子只有假期~</Text></View>);

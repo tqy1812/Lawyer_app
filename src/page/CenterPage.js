@@ -129,6 +129,7 @@ class CenterPage extends Component {
     render() {
       const {caseList, caseListInfo, userInfo} = this.props;
       const { imgAvatar} = this.state;
+      console.log('..onBackButtonPressAndroid'+ JSON.stringify(this.props.navigation))
       // console.log(caseList)
       return (
           <SafeAreaView style={styles.container}>  
@@ -158,7 +159,7 @@ class CenterPage extends Component {
                 <View style={styles.caseView}>
                   {
                     JSON.stringify(caseList)!='{}' && caseListInfo && caseListInfo.length > 0 && caseListInfo.map((item)=>{
-                        return <View style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor:  caseList[item.id+''][2]}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
+                        return <View style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
                     })
                   }
                 </View>

@@ -7,7 +7,7 @@ import {
     Image,
     Overlay,
     ImageBackground, InteractionManager,
-    Keyboard
+    Keyboard,
 } from 'react-native';
 import Header from '../components/Header';
 import {connect} from 'react-redux';
@@ -48,9 +48,10 @@ class LoginPage extends Component {
             lastId: 1,
             code: 0
         };  
-        Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);  
+        this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);  
+        // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
-
+    
     nameForceLoseFocus = () => {
         this.login_name &&  this.login_name.blur();
     }
@@ -90,7 +91,8 @@ class LoginPage extends Component {
         console.log('......LoginPage componentWillUnmount')
         if(typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
             this.viewDidAppear && this.viewDidAppear.remove();
-       Keyboard.removeListener('keyboardDidHide', this.nameForceLoseFocus);      
+        this.nameListener && this.nameListener.remove();
+        // this.backHandler && this.backHandler.remove();
             // WebSocketClient.getInstance().onDisconnectWS();
     }
 
@@ -159,7 +161,7 @@ class LoginPage extends Component {
                     Storage.setAutoLogin('1');
                     // }
                     dispatch(actionCase.reqCaseList());
-                    this.props.navigation.navigate('Main');
+                    this.props.navigation.replace('Main');
                     // Toast.show("登录成功");
                 }
             }));
@@ -183,6 +185,11 @@ class LoginPage extends Component {
         }); 
         this.setState({lastId: (this.state.lastId+1)});
       }
+      
+    //   backAction = () => {
+    //     return false;
+    //   };
+
       
     render() {
         let logo = '/logo.png';

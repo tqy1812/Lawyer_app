@@ -141,12 +141,16 @@ export function getWeek (date) { // 参数时间戳
         else {
           if(!data[i].end_time) {
             endArray = [parseInt(startArray[0])+1, parseInt(startArray[0])== 23 ? 0 : parseInt(startArray[1])];
-          }
+          } 
           // if(!data[i].start_time) {
           //   startArray = [parseInt(endArray[0]) == 0 ? 0 : parseInt(endArray[0])-1, parseInt(endArray[0]) == 0 ? 0 : parseInt(endArray[1])];
           // }
           let start = parseInt(startArray[0]) + parseInt(startArray[1]) / 60
           let end = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
+          if(end<= start) {
+            endArray = [parseInt(startArray[0])+1, parseInt(startArray[0])== 23 ? 0 : parseInt(startArray[1])];
+            end = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
+          }
           // console.log(start, end, pos)
           if(pos.length > 0) {
             let flag = 0;
@@ -257,7 +261,8 @@ export function getWeek (date) { // 参数时间戳
     return []
   }
 
-  export function sortList(list) {
+  export function sortList(value) {
+    let list = JSON.parse(JSON.stringify(value))
     for(let i=0; i<list.length-1; i++){
       for(let j=0; j<list.length-i-1; j++) {
         let preArray = moment(list[j].start_time).format('HH:mm').split(':');
@@ -271,6 +276,7 @@ export function getWeek (date) { // 参数时间戳
           } 
       }
     }
+    return list;
   }
   function getStartEnd(temp, filtArr) {
     let newArr = [];

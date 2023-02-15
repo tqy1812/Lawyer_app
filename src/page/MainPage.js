@@ -14,6 +14,7 @@ import {
   TouchableHighlight,
   ActivityIndicator,
   Keyboard,
+  BackHandler,
 } from 'react-native';
 import {
   WebView as WebViewX5
@@ -68,6 +69,7 @@ class MainPage extends Component {
     // this.planRef = React.createRef();
     // this.finishRef = React.createRef();
     this.updateProcessCallback = null;
+    this.lastBackPressed = 0;
     this.state={
       appState:AppState.currentState,
       lastId:0,
@@ -77,17 +79,17 @@ class MainPage extends Component {
       talkSuccessModalVisible: false,
       talkContent: '',
       item: {
-        id: 313,
-        name:'cessd',
-        case: {
-          id: 3,
-          name: 'dedddd',
-        },
-        start_time: '2022-01-02 11:00:00',
-        end_time: '2022-01-02 12:00:00'
+        // id: 313,
+        // name:'cessd',
+        // case: {
+        //   id: 3,
+        //   name: 'dedddd',
+        // },
+        // start_time: '2022-01-02 11:00:00',
+        // end_time: '2022-01-02 12:00:00'
       },
       itemNotice: false,
-      itemName: 'cessd',
+      itemName: '',
       isRecoding: false,
       loading: true,
       menuVisible: true,
@@ -147,7 +149,8 @@ class MainPage extends Component {
           console.log('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
           that.stopRecord();
       }
-    })
+    });
+    this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);  
   }
   componentDidMount(){
     if(!this.props.isLogin) {
@@ -160,7 +163,6 @@ class MainPage extends Component {
     wc.initWebSocket();
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
-    Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);  
     //监听内存报警事件
     // AppState.addEventListener('memoryWarning', function(){
     //   console.log("内存报警....");
@@ -193,6 +195,9 @@ class MainPage extends Component {
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg', 
    		(msg) => { this.scheduleNotfication(msg); });
     this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { wc.onSubscription(id); });
+    if (platform.isAndroid()) {
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
+    }
     showPlanModal(<DrawerModal
       component={<MyPlanSlider {...this.props}/>}
       ref={e => this.planRef = e}
@@ -214,12 +219,29 @@ class MainPage extends Component {
     this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
     this.eventWsBind && this.eventWsBind.remove();
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
-    Keyboard.removeListener('keyboardDidHide', this.processNameForceLoseFocus);   
+    this.processName &&  this.processName.remove();  
+    this.backHandler && this.backHandler.remove();
     DeviceEventEmitter.removeAllListeners();
   }
   processNameForceLoseFocus = () => {
     this.item_name &&  this.item_name.blur();
   }
+      
+  onBackButtonPressAndroid = () => {
+    console.log("...............onBackButtonPressAndroid " + this.props.navigation.state.routeName)
+    if(this.props.navigation.state.routeName=="Main"){
+      if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+        //最近2秒内按过back键，可以退出应用。
+        BackHandler.exitApp()
+        return false
+      }
+      this.lastBackPressed = Date.now();
+      Toast.show('再按一次退出应用');
+      return true;
+    }else{
+      return false;
+    }
+  };
   
   handleAppStateChange = (nextAppState) => {
     console.log('****************nextAppState=='+nextAppState);
@@ -438,7 +460,7 @@ class MainPage extends Component {
   }
   render() {
     const { menuVisible } = this.state;
-    console.log('.........MainPage====')
+    console.log('..onBackButtonPressAndroid'+ JSON.stringify(this.props.navigation))
      return (
       <SafeAreaView style={styles.container}>
         { this.state.loading && <View style={styles.mask}>
@@ -507,7 +529,7 @@ class MainPage extends Component {
           javaScriptEnabled={true}
           injectedJavaScript={this.INJECTEDJAVASCRIPT }
           onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
-          mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+          // mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
           userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
           incognito={true}
           onLoadEnd={this.closeLoading.bind(this)}
@@ -521,7 +543,7 @@ class MainPage extends Component {
         javaScriptEnabled={true}
         injectedJavaScript={this.INJECTEDJAVASCRIPT }
         onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
-        mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+        // mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
         userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
         incognito={true}
         onLoadEnd={this.closeLoading.bind(this)}

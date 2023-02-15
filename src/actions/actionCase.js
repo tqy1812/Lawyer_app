@@ -14,8 +14,6 @@ export default class actionCase {
           let list = rs.data && rs.data.cases ? rs.data.cases : [];
           let caseList = new Map();
           for (let i=0; i < list.length; i++) {
-            // console.log(list[i]['id'], Common.color[i])
-            // caseList.set(list[i]['id'], Common.color[i]);
             caseList[list[i]['id']] = Common.color[i]
             // console.log(caseList)
           }
@@ -26,12 +24,15 @@ export default class actionCase {
             // console.log(list)
             if (list) {
               newData = Object.assign({}, JSON.parse(list));
+              let len =  Object.keys(newData).length
               // console.log(caseList)
+              let i = 0;
               for (let key in caseList) {
                 // console.log(!newData[key])
                 if(!newData[key]) {
                   // newData.set(key, caseList[key]);
-                  newData[key] = caseList[key];
+                  newData[key] = Common.color[len+i];
+                  i = i + 1;
                 }
               }
               // console.log(newData)

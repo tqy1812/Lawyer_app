@@ -1,7 +1,7 @@
 
 import * as request from './actionRequest';
 import moment from 'moment';
-import {getProcessList, getFeeTimeFormat} from '../utils/utils';
+import {getProcessList, getFeeTimeFormat, sortList} from '../utils/utils';
 
 export default class actionProcess {
 
@@ -64,7 +64,8 @@ export default class actionProcess {
     return (dispatch, getState) => {
       let state = getState();
       dispatch(request.getDailyProcessList(1, time, (rs)=>{
-          let list = rs.data && rs.data.processes ? rs.data.processes : [];
+          let list = rs.data && rs.data.processes && rs.data.processes.length>0 ? sortList(rs.data.processes) : [];
+          console.log(list)
           if(callback) callback(list);
           dispatch({type: actionProcess.TYPE_DAILY_PROCESS_LIST, data: list});
       }));
