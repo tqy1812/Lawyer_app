@@ -44,11 +44,11 @@ export default class MyFinishPlanSlider extends Component {
   componentDidMount () {
     console.log('.......MyFinishPlanSlider componentDidMount')
     InteractionManager.runAfterInteractions(() => {
-      const {dispatch} = this.props;
+      const {dispatch, user} = this.props;
       const {caseList} = this.state;
       const that = this;
       if (JSON.stringify(caseList)==='{}') {
-        Storage.getCaseList().then((list) => {
+        Storage.getCaseList(user.phone).then((list) => {
           if(list){
             that.setState({ caseList: JSON.parse(list)});
           }
@@ -293,7 +293,7 @@ export default class MyFinishPlanSlider extends Component {
   }
   render() {
     const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
-    console.log('................data==='+totalTime)
+    console.log('................data==='+DATA.length)
     const Item = ({ item }) => (
       <Swipeable
         friction={1}

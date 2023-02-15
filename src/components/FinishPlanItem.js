@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   listItemView: {
-    width: '100%',
+    width: Common.window.width - 20,
     display: 'flex',
     flexDirection: "row",
     backgroundColor: '#F5F7FA',

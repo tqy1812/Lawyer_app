@@ -71,11 +71,11 @@ export default class MyPlanSlider extends Component {
   componentDidMount () {
     console.log('.........MyPlanSlider .componentDidMount')
     InteractionManager.runAfterInteractions(() => {
-      const {dispatch} = this.props;
+      const {dispatch, user} = this.props;
       const { caseList } = this.state;
       const that = this;
       if (JSON.stringify(caseList)==='{}') {
-        Storage.getCaseList().then((list) => {
+        Storage.getCaseList(user.phone).then((list) => {
           if(list){
             that.setState({ caseList: JSON.parse(list)});
           }

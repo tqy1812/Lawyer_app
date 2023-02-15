@@ -339,12 +339,15 @@ export function getWeek (date) { // 参数时间戳
  }
 
  export function getFeeTimeFormat (min) {
-  let hour = parseInt(min / 60);
-  let hourStr = hour < 10 ? '0'+hour : hour;
-  let m = min % 60;
-  let mStr = m <  10 ? '0'+m : m;
-  // console.log(hourStr + ':' + mStr)
-  return  hourStr + ':' + mStr+ '’';
+  if(min) {
+    let hour = parseInt(min / 60);
+    let hourStr = hour < 10 ? '0'+hour : hour;
+    let m = min % 60;
+    let mStr = m <  10 ? '0'+m : m;
+    // console.log(hourStr + ':' + mStr)
+    return  hourStr + ':' + mStr+ '’';
+  }
+  return '00:00’';
  }
 
  export function produce(list, plan) {
