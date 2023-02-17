@@ -303,7 +303,7 @@ class LoginPage extends Component {
                                 containerStyle={styles.lawCheck}         
                                 onPress={() => this.setState({autoLogin: !this.state.autoLogin})}
                             />
-                             <View style={styles.lawStr}><Text style={styles.lawText}>我已经阅读并同意 </Text><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私政策》</Text><Text style={styles.lawText}> 和 </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《软件许可及服务协议》</Text></View>
+                             <View style={styles.lawStr}><Text style={styles.lawText} onPress={() => this.setState({autoLogin: !this.state.autoLogin})}>我已经阅读并同意 </Text><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私政策》</Text><Text style={styles.lawText}> 和 </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《软件许可及服务协议》</Text></View>
                         </View>
                         <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
                             <Text style={styles.loginText}>登录</Text>

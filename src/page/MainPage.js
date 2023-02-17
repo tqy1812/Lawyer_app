@@ -15,10 +15,13 @@ import {
   ActivityIndicator,
   Keyboard,
   BackHandler,
+  AppRegistry,
+  NativeModules
 } from 'react-native';
 import {
   WebView as WebViewX5
-} from 'react-native-webview-tencentx5';import {
+} from 'react-native-webview-tencentx5';
+import {
   WebView
 } from 'react-native-webview';
 import { Recognizer } from 'react-native-speech-iflytek';
@@ -45,6 +48,7 @@ import BottomSheet from "react-native-gesture-bottom-sheet";
 import MyFinishPlanSheet from "../components/MyFinishPlanSheet";
 import moment from 'moment';
 import actionAuth from '../actions/actionAuth';
+import BackgroundTimer from 'react-native-background-timer';
 
 const {width: windowWidth,height: windowHeight} = Common.window;
 const Toast = Overlay.Toast;
@@ -150,7 +154,8 @@ class MainPage extends Component {
           that.stopRecord();
       }
     });
-    this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);  
+    this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus); 
+    this.wc = WebSocketClient.getInstance(); 
   }
   componentDidMount(){
     if(!this.props.isLogin) {
@@ -158,9 +163,9 @@ class MainPage extends Component {
     }
     this.props.dispatch(actionCase.reqCaseList()); 
     this.props.dispatch(actionAuth.reqUserInfo()); 
-    let wc = WebSocketClient.getInstance();
-    console.log(wc);
-    wc.initWebSocket();
+    // NativeModules.WebSocketWorkManager.startBackgroundWork();
+    console.log(this.wc);
+    this.wc.initWebSocket(this.props.user.employee_id);
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
     //监听内存报警事件
@@ -194,7 +199,7 @@ class MainPage extends Component {
     });
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg', 
    		(msg) => { this.scheduleNotfication(msg); });
-    this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { wc.onSubscription(id); });
+    this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
     if (platform.isAndroid()) {
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
     }
@@ -215,12 +220,13 @@ class MainPage extends Component {
   }
   componentWillUnmount(){
     AppState.removeEventListener('change', this.handleAppStateChange);
-    this.recognizerEventEmitter.removeAllListeners('onRecognizerResult');
-    this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
+    this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onRecognizerResult');
+    this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
     this.eventWsBind && this.eventWsBind.remove();
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
     this.processName &&  this.processName.remove();  
     this.backHandler && this.backHandler.remove();
+    // NativeModules.WebSocketWorkManager.stopBackgroundWork();
     DeviceEventEmitter.removeAllListeners();
   }
   processNameForceLoseFocus = () => {
@@ -249,7 +255,10 @@ class MainPage extends Component {
         // this.wv && this.wv.current && this.wv.current.reload();
         // let map = {mouth: '{"height": [0.16, 0.4, 0.12, 0.0, 0.04, 0.08, 0.0, 0.04, 0.32, 0.12, 0.28, 0.16, 0.0, 0.0, 0.36, 0.28, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0, 0.12, 0.04, 0.0, 0.0, 0.2, 0.08, 0.04, 0.2, 0.28, 0.44, 0.16, 0.12, 0.2, 0.2, 0.2, 0.24, 0.28, 0.32, 0.2, 0.12, 0.12, 0.0, 0.04, 0.04, 0.12, 0.2, 0.16, 0.24, 0.0, 0.04, 0.32, 0.16, 0.4, 0.12, 0.04, 0.0, 0.0, 0.12, 0.08, 0.0, 0.0, 0.04, 0.0, 0.04, 0.04, 0.16, 0.16, 0.16, 0.04, 0.16, 0.0, 0.12, 0.0, 0.08, 0.0, 0.12, 0.04, 0.16, 0.0, 0.12, 0.0, 0.0, 0.0, 0.0, 0.24, 0.08, 0.12, 0.0, 0.16, 0.16, 0.16, 0.2, 0.36, 0.04, 0.0, 0.04, 0.0, 0.04, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.16, 0.36, 0.32, 0.28, 0.24, 0.2, 0.16, 0.0, 0.08, 0.0, 0.16, 0.08, 0.04, 0.0, 0.08, 0.08, 0.08, 0.0, 0.08, 0.2, 0.0, 0.12, 0.16, 0.08, 0.0, 0.0, 0.0, 0.0, 0.16, 0.12, 0.12, 0.08], "width": [0.04, 0.0, 0.0, 0.0, -0.04, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.04, 0.04, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0, 0.04, 0.08, 0.12, 0.08, 0.12, 0.04, 0.08, 0.04, 0.08, 0.04, 0.04, 0.04, 0.04, 0.12, 0.0, 0.0, 0.0, 0.0, 0.0, -0.04, 0.04, 0.04, -0.04, -0.04, 0.0, 0.04, 0.04, 0.08, 0.08, 0.04, 0.0, 0.0, 0.04, 0.0, 0.04, 0.04, 0.0, 0.04, 0.08, 0.0, 0.08, 0.04, 0.04, 0.04, 0.0, 0.0, 0.0, 0.0, 0.08, 0.04, 0.04, 0.04, 0.08, 0.04, 0.0, 0.04, 0.08, 0.04, 0.04, 0.0, 0.0, 0.04, 0.08, 0.04, 0.04, 0.0, 0.08, 0.0, 0.0, -0.04, 0.04, 0.0, 0.04, 0.0, 0.08, -0.04, 0.08, -0.04, 0.04, 0.0, 0.04, 0.08, 0.08, -0.04, 0.04, 0.04, 0.0, 0.0, 0.04, 0.08, 0.04, 0.04, 0.12, 0.0, 0.0, 0.04, 0.0, 0.0, 0.04, -0.04, 0.04, -0.04, 0.04, 0.08, 0.04, 0.04, 0.12, 0.12, 0.04, 0.04, 0.12, 0.12, 0.08, 0.04, 0.0, 0.0, -0.04, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0]}',
         // mp3_url: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/21pub_speak/20221117165947957459.mp3' }
-        // console.log('****************show'+ map.mouth);
+       
+        if(this.wc) this.wc.setIsBackground(false);
+        console.log('****************show', this.wc.keepSocket) ;
+        this.wc.keepSocket && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
         // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
         // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;'); 
         // Storage.getUserRecord().then((user) => {
@@ -260,10 +269,12 @@ class MainPage extends Component {
         //   }    
         // });
     }
-    // else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)){
-    //   console.log('***************hidden', this.wv);
-    //   this.wv && this.wv.current && this.wv.current.injectJavaScript(`receiveMessage("stop");true;`);
-    // }
+    else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)){
+      console.log('***************hidden', this.wc);
+      if(this.wc) this.wc.setIsBackground(true);
+      // this.wv && this.wv.current && this.wv.current.injectJavaScript(`receiveMessage("stop");true;`);
+      // AppRegistry.startHeadlessTask(1, 'WebSocketConnectService', {});
+    }
     this.setState({appState: nextAppState});
   };
 
@@ -448,6 +459,7 @@ class MainPage extends Component {
       }
       else{
         DeviceEventEmitter.emit('refreshDailyProcess');
+        this.planRef && this.planRef.open('plan');
       }
     })); 
   }
@@ -460,7 +472,7 @@ class MainPage extends Component {
   }
   render() {
     const { menuVisible } = this.state;
-    console.log('..onBackButtonPressAndroid'+ JSON.stringify(this.props.navigation))
+    // console.log('..onBackButtonPressAndroid', this.props.navigation)
      return (
       <SafeAreaView style={styles.container}>
         { this.state.loading && <View style={styles.mask}>

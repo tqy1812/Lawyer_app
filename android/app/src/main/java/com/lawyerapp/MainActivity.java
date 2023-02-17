@@ -24,10 +24,12 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import com.facebook.react.HeadlessJsTaskService;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.lawyerapp.task.WebSocketTask;
+import com.lawyerapp.task.WebSocketTaskService;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -102,6 +104,14 @@ public class MainActivity extends ReactActivity {
       Log.i("MainActivity", "通知权限已经开启");
 //      startNotice(this, "通知提醒", "这是个测试通知");
     }
+
+//    HeadlessJsTaskService.acquireWakeLockNow(getApplicationContext());
+//    Intent service = new Intent(getApplicationContext(), WebSocketTaskService.class);
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//      getApplicationContext().startForegroundService(service);
+//    } else {
+//      getApplicationContext().startService(service);
+//    }
   }
 
   @Override
@@ -130,6 +140,7 @@ public class MainActivity extends ReactActivity {
   protected void onPause() {
     super.onPause();
     Log.i("MainActivity", "******************************onPause====");
+
 //    PackageManager pm = getPackageManager();
 //    ResolveInfo homeInfo = pm.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0);
 //    ActivityInfo ai = homeInfo.activityInfo;

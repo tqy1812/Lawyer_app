@@ -7,10 +7,11 @@ import {
     Image,
     Overlay,
     ScrollView,
-    ImageBackground, InteractionManager, TouchableOpacity
+    ImageBackground, InteractionManager, TouchableOpacity,
+    NativeModules
 } from 'react-native';
 import Header from '../components/Header';
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions, StackActions } from '@react-navigation/native';
 import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
@@ -59,12 +60,17 @@ class CenterPage extends Component {
   
     handSubmit() {
       const {dispatch} = this.props;
-      // this.props.navigation.replace('Login');
       dispatch({type: TYPE_AUTH_USER, data: {}});
-      this.props.navigation.dispatch(CommonActions.reset({
-        index: 0,
-        routes: [{name: 'Login'}]
-      }));
+      // this.props.navigation.navigate('Login');
+      this.props.navigation.dispatch(state => {
+        console.log('.......logOut', state)
+        return CommonActions.reset({
+          ...state,
+          routes: [{name: 'Login'}],
+          index:0,
+        });
+        
+      });
     }
 
     pickSingleWithCamera(cropping, mediaType = 'photo') {
@@ -134,7 +140,7 @@ class CenterPage extends Component {
     render() {
       const {caseList, caseListInfo, userInfo} = this.props;
       const { imgAvatar} = this.state;
-      console.log('..onBackButtonPressAndroid'+ JSON.stringify(this.props.navigation))
+      // console.log('..onBackButtonPressAndroid', this.props.navigation)
       // console.log(caseList)
       return (
           <SafeAreaView style={styles.container}>  
@@ -175,15 +181,15 @@ class CenterPage extends Component {
                 </MyButton>
               </View> 
               <View style={styles.menuView}> 
-                <MyButton style={styles.menuButton} onPress={() => {}}>
+                <MyButton style={styles.menuButton} onPress={() => {NativeModules.NotifyOpen.open();}}>
                   <Text style={styles.menuText}>通知提醒</Text>
                 </MyButton>
               </View>  
-              {/* <View style={styles.menuView}> 
+              <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
-                  <Text style={styles.menuText}>关联应用</Text>
+                  <Text style={styles.menuText}>隐私条款</Text>
                 </MyButton>
-              </View>   */}
+              </View>  
             </View>          
             <View style={styles.bottom}>                    
                 <MyButton style={styles.logoutBtn} onPress={this.handSubmit.bind(this)}>

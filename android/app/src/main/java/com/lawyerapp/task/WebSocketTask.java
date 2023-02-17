@@ -24,7 +24,7 @@ public class WebSocketTask extends HeadlessJsTaskWorker {
                     "WebSocketConnect",
                     Arguments.makeNativeMap(data.getKeyValueMap()),
                     5000, // timeout for the task
-                    false
+                    true
                     // optional: defines whether or not  the task is allowed in foreground. Default is false
             );
         }

@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
 const userRecord = 'userRecord';
 const autoLogin = 'autoLogin';
-const caseList = 'caseList';
+const caseList = 'caseList_';
+const caseListUseColor = 'caseListUseColor_';
 export const getUserRecord = async () => {
     return await AsyncStorage.getItem(userRecord)
           .then((user) => {
@@ -40,8 +41,8 @@ export const getUserRecord = async () => {
     await AsyncStorage.setItem(autoLogin, login, null);
   };
   
-  export const getCaseList = async () => {
-    return await AsyncStorage.getItem(caseList)
+  export const getCaseList = async (phone) => {
+    return await AsyncStorage.getItem(caseList + phone)
           .then((item) => {
               if (item) {
                   return item;
@@ -55,6 +56,25 @@ export const getUserRecord = async () => {
           });
   };
   
-  export const setCaseList = async (list) => {
-    await AsyncStorage.setItem(caseList, list,null);
+  export const setCaseList = async (phone,list) => {
+    await AsyncStorage.setItem(caseList+phone, list,null);
+  };
+
+  export const getCaseListUserColor = async (phone) => {
+    return await AsyncStorage.getItem(caseListUseColor+phone)
+          .then((item) => {
+              if (item) {
+                  return item;
+              } else {
+                  return null;
+              }
+          })
+          .catch(error => {
+              // console.log("::::getUserRecord"+ error);
+              return null;
+          });
+  };
+  
+  export const setCaseListUserColor = async (phone,list) => {
+    await AsyncStorage.setItem(caseListUseColor+phone, list.toString(),null);
   };

@@ -147,7 +147,7 @@ export default class MyFinishPlanSlider extends Component {
         // console.log('.......updateProcess'+ id+ '....' + content)
         this.updateProcess(id, content, (item)=>{
           console.log('.......updateProcess'+ JSON.stringify(item))
-          if(moment(item.end_time).diff(moment(new Date())) < 0 && moment(item.end_time).format('YYYY-MM-DD') === moment(value.end_time).format('YYYY-MM-DD')) {
+          if(moment(item.end_time).diff(moment(new Date())) < 0 && moment(item.start_time).format('YYYY-MM-DD') === moment(value.start_time).format('YYYY-MM-DD')) {
             let temp = updateFinish(this.state.DATA, item);
             let totalTime = this.state.totalTime - value.fee_time + item.fee_time
             this.setState({DATA: temp, totalTime}, ()=>{
