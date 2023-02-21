@@ -28,6 +28,7 @@ import com.facebook.react.HeadlessJsTaskService;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.lawyerapp.task.WebSocketTask;
 import com.lawyerapp.task.WebSocketTaskService;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
@@ -39,6 +40,7 @@ public class MainActivity extends ReactActivity {
   private static int REQUEST_PERMISSION_CODE = 1;
   private static final String TAG_HUNG_UP = "HUNG_UP";
   private static final String ACTION_FROM_NOTIFICATION = BuildConfig.APPLICATION_ID + ".ACTION_FROM_NOTIFICATION";
+  Intent intent;
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
@@ -82,6 +84,9 @@ public class MainActivity extends ReactActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    intent = getIntent();
+
+
     MainApplication.getInstance().createNotificationChannel();
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
       if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -122,6 +127,30 @@ public class MainActivity extends ReactActivity {
         Log.i("MainActivity", "申请的权限为：" + permissions[i] + ",申请结果：" + grantResults[i]);
       }
     }
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+//    setIntent(intent);
+    Log.i("MainActivity", "******************************onNewIntent");
+    Bundle bundle = intent.getBundleExtra("notification");
+    if(bundle!=null){
+      Log.i("MainActivity", "MainActivity="+bundle.getBoolean("foreground"));
+      getReactInstanceManager().getCurrentReactContext()
+              .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+              .emit("noticeOpen", null);
+    }
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
   }
 
   @Override

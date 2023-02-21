@@ -60,7 +60,7 @@ let request = {
             // responseType: 'json'
         }).then((rs) => {
             let err = null;
-            console.log(rs)
+            // console.log(rs)
             if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
                     err = new Error(Error.ERR_REQ, rs.data.code, rs.data.data && rs.data.data.msg ?  rs.data.data.msg : rs.data.msg, method);

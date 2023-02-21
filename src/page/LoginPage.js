@@ -8,6 +8,7 @@ import {
     Overlay,
     ImageBackground, InteractionManager,
     Keyboard,
+    TouchableOpacity
 } from 'react-native';
 import Header from '../components/Header';
 import {connect} from 'react-redux';
@@ -41,24 +42,24 @@ class LoginPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            phone: '', 
-            password: '', 
-            eyed: false, 
+            phone: '',
+            password: '',
+            eyed: false,
             autoLogin: false,
             lastId: 1,
             code: 0
-        };  
-        this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);  
+        };
+        this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
-    
+
     nameForceLoseFocus = () => {
         this.login_name &&  this.login_name.blur();
     }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
-            const {dispatch, isLogin} = this.props;
+            const {dispatch, isLogin, navigation} = this.props;
             console.log("isLogin"+isLogin)
             if (isLogin) {
                 this.props.navigation.navigate('Main');
@@ -177,20 +178,20 @@ class LoginPage extends Component {
     }
 
     test = () => {
-        PushNotification.localNotification({ 
+        PushNotification.localNotification({
           channelId: 'NEW_MESSAGE_NOTIFICATION',
           title: "任务提醒-",
-          message: "test", 
+          message: "test",
           id: this.state.lastId,
-        }); 
+        });
         this.setState({lastId: (this.state.lastId+1)});
       }
-      
+
     //   backAction = () => {
     //     return false;
     //   };
 
-      
+
     render() {
         let logo = '/logo.png';
             return (
@@ -208,17 +209,17 @@ class LoginPage extends Component {
                         <Text
                             style={styles.topPartName}>{'言语之间，管理时间'}</Text>
                             {
-                                this.state.code ===1 ? 
+                                this.state.code ===1 ?
                                 (<View style={styles.topPartNotice}>
                                     <IcomoonIcon name='warning' size={22} style={{color: 'rgb(254, 149, 0)', marginBottom: 10}}/>
                                     <Text style={styles.topPartNoticeText}>{'请确认输入了正确的账号'}</Text>
-                                </View>) : 
-                                this.state.code === 2  ? 
+                                </View>) :
+                                this.state.code === 2  ?
                                 (<View style={styles.topPartNotice}>
                                     <IcomoonIcon name='error' size={22} style={{color: 'rgb(254, 61, 47)', marginBottom: 10}}/>
                                     <Text style={styles.topPartNoticeText}>{'请确认输入了正确的密码'}</Text>
-                                    <Text style={styles.topPartNoticeText}>{'您可以通过联系管理员确认'}</Text> 
-                                </View>) : 
+                                    <Text style={styles.topPartNoticeText}>{'您可以通过联系管理员确认'}</Text>
+                                </View>) :
                                 (<View style={styles.topPartNotice}>
                                     <IcomoonIcon name='info' size={22} style={{color: 'rgb(0, 122, 254)', marginBottom: 10}}/>
                                     <Text style={styles.topPartNoticeText}>{'登陆前请确认已使用权限'}</Text>
@@ -234,14 +235,14 @@ class LoginPage extends Component {
                         {/* <Ionicons name='close-circle' size={22} color='#FE3D2F' style={{marginBottom: 10}}/>
                         <Text
                             style={styles.topPartNoticeText}>{'请确认输入了正确的账号'}</Text> */}
-                            
+
                         {/* <Text name='info' size={22}  style={{width: 20, height: 20, marginBottom: 10}}>{'\ue909'}</Text> */}
                         {/* <IcomoonIcon name='info' size={22} color={'#ff0000'} />
                            <Text style={styles.topPartNoticeText}>{'登陆前请确认已使用权限'}</Text>
                         <Text
                             style={styles.topPartNoticeText}>{'并由管理员处获得账号与密码'}</Text>
                         </View> */}
-                        
+
                     </View>
                     <View style={styles.content}>
                         <View style={[styles.formInput]}>
@@ -258,7 +259,7 @@ class LoginPage extends Component {
                                     this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
                                         this.setState({phone: ''});
                                     }}>
-                                        <AntDesign name='closecircleo' size={15} color='#C0C4CC' /> 
+                                        <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
                                     </MyButton>
                                 }
                         </View>
@@ -292,18 +293,21 @@ class LoginPage extends Component {
                             />
                         </View> */}
                         <View style={styles.law}>
+                            <TouchableOpacity style={styles.argreeView}
+                                onPress={() => this.setState({autoLogin: !this.state.autoLogin})}>
                             <CheckBox
                                 title={null}
                                 checked={this.state.autoLogin}
                                 checkedIcon='dot-circle-o'
-                                uncheckedIcon='circle-o'   
-                                size={15}    
-                                checkedColor='#007afe' 
-                                uncheckedColor='#C0C4CC' 
-                                containerStyle={styles.lawCheck}         
-                                onPress={() => this.setState({autoLogin: !this.state.autoLogin})}
+                                uncheckedIcon='circle-o'
+                                size={15}
+                                checkedColor='#007afe'
+                                uncheckedColor='#C0C4CC'
+                                containerStyle={styles.lawCheck}
                             />
-                             <View style={styles.lawStr}><Text style={styles.lawText} onPress={() => this.setState({autoLogin: !this.state.autoLogin})}>我已经阅读并同意 </Text><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私政策》</Text><Text style={styles.lawText}> 和 </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《软件许可及服务协议》</Text></View>
+                            <Text style={styles.lawText}>我已经阅读并同意 </Text>
+                            </TouchableOpacity>
+                             <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私政策》</Text><Text style={styles.lawText1}> 和 </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《软件许可及服务协议》</Text></View>
                         </View>
                         <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
                             <Text style={styles.loginText}>登录</Text>
@@ -423,15 +427,25 @@ law: {
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: -5,
-    marginTop: 5,
+    // marginTop: 5,
+  },
+  argreeView: {
+    flexDirection: 'row',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50
   },
   lawText: {
     fontSize: 10,
     color: '#C0C4CC',
+    marginTop: 5,
+    marginLeft: -10,
   },
   lawText1: {
     fontSize: 10,
     color: '#007afe',
+    marginTop: 5,
   },
 operate: {
     marginTop: 20,

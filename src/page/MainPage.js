@@ -66,7 +66,7 @@ class MainPage extends Component {
       props.userInfo = state.Auth.userInfo;
       return props;
   }
-  
+
   constructor (props){
     super(props);
     // 设置初始值
@@ -125,7 +125,7 @@ class MainPage extends Component {
       onStartShouldSetPanResponderCapture: () => false,
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: (evt, gs) => {
-        this.timeStampMove = evt.timeStamp; 
+        this.timeStampMove = evt.timeStamp;
           console.log('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
       },
       onPanResponderMove: (evt, gs) => {
@@ -134,8 +134,8 @@ class MainPage extends Component {
         //   this.timeStampMove = 0;
 
         //   console.log('由右向左');
-        // } 
-        // else 
+        // }
+        // else
         if(this.timeStampMove > 0 && gs.dy < -distance){
           this.timeStampMove = 0;
           this.finishRef.close('finish');
@@ -154,15 +154,15 @@ class MainPage extends Component {
           that.stopRecord();
       }
     });
-    this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus); 
-    this.wc = WebSocketClient.getInstance(); 
+    this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);
+    this.wc = WebSocketClient.getInstance();
   }
   componentDidMount(){
     if(!this.props.isLogin) {
       this.props.navigation.navigate('Login');
     }
-    this.props.dispatch(actionCase.reqCaseList()); 
-    this.props.dispatch(actionAuth.reqUserInfo()); 
+    this.props.dispatch(actionCase.reqCaseList());
+    this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
     console.log(this.wc);
     this.wc.initWebSocket(this.props.user.employee_id);
@@ -176,9 +176,9 @@ class MainPage extends Component {
      this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
      this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
      PushNotification.getChannels(function(channels) {
-       console.log('....channels:'+JSON.stringify(channels));
-     });
-     PushNotification.createChannel(
+      console.log('....channels:'+JSON.stringify(channels));
+    });
+    PushNotification.createChannel(
       {
         channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
         channelName: `任务通知`, // (required)
@@ -194,11 +194,13 @@ class MainPage extends Component {
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
-        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("'+obj.token+'");true;'); 
-      }    
+        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("'+obj.token+'");true;');
+      }
     });
-    this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg', 
+    this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg',
    		(msg) => { this.scheduleNotfication(msg); });
+    this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen',
+   		(msg) => { this.openNotfication(); });
     this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
     if (platform.isAndroid()) {
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
@@ -210,7 +212,7 @@ class MainPage extends Component {
       showType={'bottom'}
       close={this.showMenu}
     /> );
-    
+
     showFinishModal(<DrawerModal
       component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(item, callback)=>this.handleFinishTimeEnd(item, callback)} {...this.props}/>}
       ref={e => this.finishRef = e}
@@ -224,7 +226,8 @@ class MainPage extends Component {
     this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
     this.eventWsBind && this.eventWsBind.remove();
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
-    this.processName &&  this.processName.remove();  
+    this.eventNoticeOpen && this.eventNoticeOpen.remove();
+    this.processName &&  this.processName.remove();
     this.backHandler && this.backHandler.remove();
     // NativeModules.WebSocketWorkManager.stopBackgroundWork();
     DeviceEventEmitter.removeAllListeners();
@@ -232,7 +235,7 @@ class MainPage extends Component {
   processNameForceLoseFocus = () => {
     this.item_name &&  this.item_name.blur();
   }
-      
+
   onBackButtonPressAndroid = () => {
     console.log("...............onBackButtonPressAndroid ")
     // if(this.props.navigation.state.routeName=="Main"){
@@ -248,30 +251,28 @@ class MainPage extends Component {
       return false;
     // }
   };
-  
+
   handleAppStateChange = (nextAppState) => {
     console.log('****************nextAppState=='+nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
         // this.wv && this.wv.current && this.wv.current.reload();
-        // let map = {mouth: '{"height": [0.16, 0.4, 0.12, 0.0, 0.04, 0.08, 0.0, 0.04, 0.32, 0.12, 0.28, 0.16, 0.0, 0.0, 0.36, 0.28, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0, 0.12, 0.04, 0.0, 0.0, 0.2, 0.08, 0.04, 0.2, 0.28, 0.44, 0.16, 0.12, 0.2, 0.2, 0.2, 0.24, 0.28, 0.32, 0.2, 0.12, 0.12, 0.0, 0.04, 0.04, 0.12, 0.2, 0.16, 0.24, 0.0, 0.04, 0.32, 0.16, 0.4, 0.12, 0.04, 0.0, 0.0, 0.12, 0.08, 0.0, 0.0, 0.04, 0.0, 0.04, 0.04, 0.16, 0.16, 0.16, 0.04, 0.16, 0.0, 0.12, 0.0, 0.08, 0.0, 0.12, 0.04, 0.16, 0.0, 0.12, 0.0, 0.0, 0.0, 0.0, 0.24, 0.08, 0.12, 0.0, 0.16, 0.16, 0.16, 0.2, 0.36, 0.04, 0.0, 0.04, 0.0, 0.04, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.16, 0.36, 0.32, 0.28, 0.24, 0.2, 0.16, 0.0, 0.08, 0.0, 0.16, 0.08, 0.04, 0.0, 0.08, 0.08, 0.08, 0.0, 0.08, 0.2, 0.0, 0.12, 0.16, 0.08, 0.0, 0.0, 0.0, 0.0, 0.16, 0.12, 0.12, 0.08], "width": [0.04, 0.0, 0.0, 0.0, -0.04, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.04, 0.04, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0, 0.04, 0.08, 0.12, 0.08, 0.12, 0.04, 0.08, 0.04, 0.08, 0.04, 0.04, 0.04, 0.04, 0.12, 0.0, 0.0, 0.0, 0.0, 0.0, -0.04, 0.04, 0.04, -0.04, -0.04, 0.0, 0.04, 0.04, 0.08, 0.08, 0.04, 0.0, 0.0, 0.04, 0.0, 0.04, 0.04, 0.0, 0.04, 0.08, 0.0, 0.08, 0.04, 0.04, 0.04, 0.0, 0.0, 0.0, 0.0, 0.08, 0.04, 0.04, 0.04, 0.08, 0.04, 0.0, 0.04, 0.08, 0.04, 0.04, 0.0, 0.0, 0.04, 0.08, 0.04, 0.04, 0.0, 0.08, 0.0, 0.0, -0.04, 0.04, 0.0, 0.04, 0.0, 0.08, -0.04, 0.08, -0.04, 0.04, 0.0, 0.04, 0.08, 0.08, -0.04, 0.04, 0.04, 0.0, 0.0, 0.04, 0.08, 0.04, 0.04, 0.12, 0.0, 0.0, 0.04, 0.0, 0.0, 0.04, -0.04, 0.04, -0.04, 0.04, 0.08, 0.04, 0.04, 0.12, 0.12, 0.04, 0.04, 0.12, 0.12, 0.08, 0.04, 0.0, 0.0, -0.04, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0]}',
-        // mp3_url: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/21pub_speak/20221117165947957459.mp3' }
-       
         if(this.wc) this.wc.setIsBackground(false);
-        console.log('****************show', this.wc.keepSocket) ;
-        this.wc.keepSocket && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
+        console.log('****************show', this.wc.getKeepSocket()) ;
+        this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
         // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
-        // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;'); 
+        // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;');
         // Storage.getUserRecord().then((user) => {
         //   if (user) {
         //     let obj = Object.assign({}, JSON.parse(user));
         //     console.log(obj)
-        //     this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("1111", "'+obj.token+'");true;'); 
-        //   }    
+        //     this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("1111", "'+obj.token+'");true;');
+        //   }
         // });
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)){
       console.log('***************hidden', this.wc);
-      if(this.wc) this.wc.setIsBackground(true);
+      // if(this.wc) this.wc.setIsBackground(true);
+      if(this.wc) this.wc.backTimer();
       // this.wv && this.wv.current && this.wv.current.injectJavaScript(`receiveMessage("stop");true;`);
       // AppRegistry.startHeadlessTask(1, 'WebSocketConnectService', {});
     }
@@ -285,11 +286,11 @@ class MainPage extends Component {
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
-        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+value+'", "'+obj.token+'");true;'); 
+        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+value+'", "'+obj.token+'");true;');
         setTimeout(() => {
           that.setState({loading: false});
         }, 15000)
-      } 
+      }
       else{
         that.setState({loading: false});
       }
@@ -309,7 +310,7 @@ class MainPage extends Component {
     const that = this;
     Recognizer.isListening().then(value=>{
       console.log('stopRecord..........'+value)
-      if(value) 
+      if(value)
       {
         Recognizer.stop();
         destroySibling();
@@ -337,42 +338,52 @@ class MainPage extends Component {
     else
       this.sendRecording(e.result);
   }
- 
-  
+
+
   onRecognizerError= (result) => {
     if (result.errorCode !== 0) {
       // alert(JSON.stringify(result));
-      
+
     }
   }
 
-  scheduleNotfication = (content) =>{ 
+  scheduleNotfication = (content) =>{
     console.log('5555555555555555555555555===='+content);
     if(content) {
       let item = JSON.parse(content);
-      console.log('5555555555555555555555555===='+item.case_name);
-      PushNotification.localNotification({ 
-        channelId: 'NEW_MESSAGE_NOTIFICATION',
-        title: "任务提醒-" + item.case_name,
-        message: item.process_name + ',时间:' + item.start_time, 
-        id: this.state.lastId,
-        date: new Date(Date.now() + (60 * 1000))
-      }); 
-      this.setState({lastId: (this.state.lastId+1)});
+
+        PushNotification.localNotification({
+          channelId: 'NEW_MESSAGE_NOTIFICATION',
+          title: "任务提醒-" + item.case_name,
+          message: item.process_name + ',时间:' + item.start_time,
+          id: this.state.lastId,
+          date: new Date(Date.now()),
+          when: new Date().getTime()
+        });
+        this.setState({lastId: (this.state.lastId+1)});
+
     }
   }
- 
+
+  openNotfication = () =>{
+    this.props.navigation.navigate('Main');
+    this.finishRef && this.finishRef.close('finish');
+    this.setState({menuVisible: false});
+    this.planRef && this.planRef.open('plan');
+  }
+
   test = () => {
-    PushNotification.localNotification({ 
+    PushNotification.localNotification({
       channelId: 'NEW_MESSAGE_NOTIFICATION',
       title: "任务提醒-",
-      message: "test", 
+      message: "test",
       id: this.state.lastId,
-    }); 
+      when: new Date().getTime(),
+    });
     this.setState({lastId: (this.state.lastId+1)});
   }
-  
-  handleNativeMessage = (content) =>{ 
+
+  handleNativeMessage = (content) =>{
     console.log('handleNativeMessage===='+content);
     const {dispatch} = this.props;
     const that = this;
@@ -384,7 +395,7 @@ class MainPage extends Component {
         if(id) {
           dispatch(actionProcess.reqGetProcess(id, (rs)=>{
             that.setState({loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name});
-          })); 
+          }));
         }
         else {
           that.setState({loading: false});
@@ -413,7 +424,7 @@ class MainPage extends Component {
     // console.log('.....handleFinishTimeEnd' + JSON.stringify(item))
     Recognizer.isListening().then(value=>{
       console.log('stopRecord..........'+value)
-      if(value) 
+      if(value)
       {
         Recognizer.stop();
         this.updateProcessCallback = callback;
@@ -461,7 +472,7 @@ class MainPage extends Component {
         DeviceEventEmitter.emit('refreshDailyProcess');
         this.planRef && this.planRef.open('plan');
       }
-    })); 
+    }));
   }
 
   closeLoading = () => {
@@ -504,7 +515,7 @@ class MainPage extends Component {
             multiline
             textAlignVertical='top'
             />
-        </MyModal>*/} 
+        </MyModal>*/}
         <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={false}>
           { this.props.caseList && this.state.item && this.state.item.id && JSON.stringify(this.props.caseList)!='{}' && <View style={styles.processInfo}>
             <View style={styles.listTitleView}>
@@ -533,11 +544,11 @@ class MainPage extends Component {
         {
           platform.isAndroid() ? <WebViewX5
           ref={this.wv}
-          source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }} 
-          // source={{ uri: 'https://human.kykyai.cn' }} 
-          scalesPageToFit={false} 
+          source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+          // source={{ uri: 'https://human.kykyai.cn' }}
+          scalesPageToFit={false}
           bounces={false}
-          style={{width:windowWidth,height:'100%'}} 
+          style={{width:windowWidth,height:'100%'}}
           javaScriptEnabled={true}
           injectedJavaScript={this.INJECTEDJAVASCRIPT }
           onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
@@ -545,13 +556,13 @@ class MainPage extends Component {
           userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
           incognito={true}
           onLoadEnd={this.closeLoading.bind(this)}
-        /> : <WebView 
+        /> : <WebView
         ref={this.wv}
-        source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }} 
-        // source={{ uri: 'https://human.kykyai.cn' }} 
-        scalesPageToFit={false} 
+        source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+        // source={{ uri: 'https://human.kykyai.cn' }}
+        scalesPageToFit={false}
         bounces={false}
-        style={{width:windowWidth,height:'100%'}} 
+        style={{width:windowWidth,height:'100%'}}
         javaScriptEnabled={true}
         injectedJavaScript={this.INJECTEDJAVASCRIPT }
         onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
@@ -561,7 +572,7 @@ class MainPage extends Component {
         onLoadEnd={this.closeLoading.bind(this)}
       />
         }
-        
+
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
         <View style={styles.contentView} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord} >
@@ -593,7 +604,7 @@ class MainPage extends Component {
 }
 
 const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight;
-const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 0; 
+const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 0;
 console.log('................================'+STATUS_BAR_HEIGHT)
 const styles = StyleSheet.create({
   container: {
@@ -643,7 +654,7 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 5,
     backgroundColor: 'rgb(0, 122, 254)',
-    position: 'absolute', 
+    position: 'absolute',
     zIndex: 2,
     top: 50,
     left: windowWidth/2 - 25,
@@ -653,7 +664,7 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 5,
     backgroundColor: 'rgb(0, 122, 254)',
-    position: 'absolute', 
+    position: 'absolute',
     zIndex: 2,
     bottom: 50,
     left: windowWidth/2 - 25,
