@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -109,13 +111,13 @@ public class MainActivity extends ReactActivity {
       Log.i("MainActivity", "通知权限已经开启");
 //      startNotice(this, "通知提醒", "这是个测试通知");
     }
-
+    registerReceiver();
 //    HeadlessJsTaskService.acquireWakeLockNow(getApplicationContext());
-//    Intent service = new Intent(getApplicationContext(), WebSocketTaskService.class);
+//    Intent service = new Intent(this, WebSocketTaskService.class);
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//      getApplicationContext().startForegroundService(service);
+//      startForegroundService(service);
 //    } else {
-//      getApplicationContext().startService(service);
+//      startService(service);
 //    }
   }
 
@@ -189,6 +191,12 @@ public class MainActivity extends ReactActivity {
 //            .enqueue(headlessJsTaskWorkRequest);
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    unregisterReceiver(mReceiver);
+  }
+
   private static void openNotify(Context context) {
 
     Intent intent = new Intent();
@@ -240,4 +248,22 @@ public class MainActivity extends ReactActivity {
     intent.setClass(mContext, MainActivity.class);
     return PendingIntent.getActivity(mContext, 1,intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
+
+  public void registerReceiver() {
+    IntentFilter intentFilter = new IntentFilter();
+    intentFilter.addAction("com.alive.ticket");
+    registerReceiver(mReceiver, intentFilter);
+  }
+
+  private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      String action = intent.getAction();
+      if(action.equals("com.alive.ticket")){
+        String eventName = intent.getStringExtra("eventName");
+        getReactInstanceManager().getCurrentReactContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, null);
+      }
+    }
+  };
 }

@@ -38,6 +38,6 @@ moment.locale('zh-cn', {
     }
 });
 AppRegistry.registerComponent(appName, () => App);
-// AppRegistry.registerHeadlessTask('WebSocketConnectService', () =>
-//     require('./src/utils/WebSocketTask')
-// );
+AppRegistry.registerHeadlessTask('WebSocketConnectService', () =>
+    require('./src/utils/WebSocketTask')
+);

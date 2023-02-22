@@ -115,4 +115,12 @@ export default class WebSocketClient {
               }
             }, 5000);
   }
+
+  keepAlive () {
+    console.log('.....state', WebSocketClient.ws.webSocket.readyState)
+    if (this.isBackground && WebSocketClient.ws.webSocket.readyState === 1) {
+      WebSocketClient.ws.webSocket.send('\x0A');
+      console.log('>>> PING');
+    }
+  }
 }

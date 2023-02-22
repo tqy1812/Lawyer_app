@@ -199,8 +199,8 @@ class MainPage extends Component {
     });
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg',
    		(msg) => { this.scheduleNotfication(msg); });
-    this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen',
-   		(msg) => { this.openNotfication(); });
+    this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen', () => { this.openNotfication(); });
+    this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
     this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
     if (platform.isAndroid()) {
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
@@ -227,9 +227,10 @@ class MainPage extends Component {
     this.eventWsBind && this.eventWsBind.remove();
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
     this.eventNoticeOpen && this.eventNoticeOpen.remove();
+    this.eventKeepAliveSocket && this.eventKeepAliveSocket.remove();
     this.processName &&  this.processName.remove();
     this.backHandler && this.backHandler.remove();
-    // NativeModules.WebSocketWorkManager.stopBackgroundWork();
+    NativeModules.WebSocketWorkManager.stopBackgroundWork();
     DeviceEventEmitter.removeAllListeners();
   }
   processNameForceLoseFocus = () => {
@@ -257,8 +258,9 @@ class MainPage extends Component {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
         // this.wv && this.wv.current && this.wv.current.reload();
         if(this.wc) this.wc.setIsBackground(false);
+        NativeModules.WebSocketWorkManager.stopBackgroundWork();
         console.log('****************show', this.wc.getKeepSocket()) ;
-        this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
+        // this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
         // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
         // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;');
         // Storage.getUserRecord().then((user) => {
@@ -271,8 +273,9 @@ class MainPage extends Component {
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)){
       console.log('***************hidden', this.wc);
-      // if(this.wc) this.wc.setIsBackground(true);
-      if(this.wc) this.wc.backTimer();
+      if(this.wc) this.wc.setIsBackground(true);
+      NativeModules.WebSocketWorkManager.startBackgroundWork();
+      // if(this.wc) this.wc.backTimer();
       // this.wv && this.wv.current && this.wv.current.injectJavaScript(`receiveMessage("stop");true;`);
       // AppRegistry.startHeadlessTask(1, 'WebSocketConnectService', {});
     }

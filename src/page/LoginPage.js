@@ -304,6 +304,7 @@ class LoginPage extends Component {
                                 checkedColor='#007afe'
                                 uncheckedColor='#C0C4CC'
                                 containerStyle={styles.lawCheck}
+                                onPress={() => this.setState({autoLogin: !this.state.autoLogin})}
                             />
                             <Text style={styles.lawText}>我已经阅读并同意 </Text>
                             </TouchableOpacity>

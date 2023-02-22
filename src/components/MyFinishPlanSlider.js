@@ -22,6 +22,7 @@ import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
 import FinishPlanItem from "../components/FinishPlanItem";
+import MyButton from "./MyButton";
 import { destroySibling, showLoading } from "./ShowModal";
 import * as Storage from '../common/Storage';
 
@@ -231,12 +232,12 @@ export default class MyFinishPlanSlider extends Component {
     });
     return (
       <Animated.View style={{ flex: 1, transform: [{ translateX: trans }] }}>
-        <RectButton
-          style={[styles.rightAction, { backgroundColor: color }]}
+        <MyButton
+          style={[styles.rightAction, { width: x, backgroundColor: color }]}
           onPress={() => this.deleteItem(item)}>
             <IcomoonIcon name='delete' color='#fff' size={20}/>
           {/* <Text style={styles.actionText}>{text}</Text> */}
-        </RectButton>
+        </MyButton>
       </Animated.View>
     );
   };
