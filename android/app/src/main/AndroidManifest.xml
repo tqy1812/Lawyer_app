@@ -72,6 +72,8 @@
         </intent-filter>
       </activity>
 
-        <service android:name="com.lawyerapp.task.WebSocketTaskService" android:enabled="true"/>
+        <service android:name="com.lawyerapp.task.WebSocketTaskService"
+            android:enabled="true"
+            android:process=":remote" />
     </application>
 </manifest>
