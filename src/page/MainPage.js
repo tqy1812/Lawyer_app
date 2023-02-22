@@ -202,9 +202,9 @@ class MainPage extends Component {
     this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen', () => { this.openNotfication(); });
     this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
     this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
-    if (platform.isAndroid()) {
-      this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
-    }
+    // if (platform.isAndroid()) {
+    //   this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
+    // }
     showPlanModal(<DrawerModal
       component={<MyPlanSlider {...this.props}/>}
       ref={e => this.planRef = e}
@@ -229,7 +229,7 @@ class MainPage extends Component {
     this.eventNoticeOpen && this.eventNoticeOpen.remove();
     this.eventKeepAliveSocket && this.eventKeepAliveSocket.remove();
     this.processName &&  this.processName.remove();
-    this.backHandler && this.backHandler.remove();
+    // this.backHandler && this.backHandler.remove();
     NativeModules.WebSocketWorkManager.stopBackgroundWork();
     DeviceEventEmitter.removeAllListeners();
   }
@@ -237,8 +237,8 @@ class MainPage extends Component {
     this.item_name &&  this.item_name.blur();
   }
 
-  onBackButtonPressAndroid = () => {
-    console.log("...............onBackButtonPressAndroid ")
+  // onBackButtonPressAndroid = () => {
+  //   console.log("...............onBackButtonPressAndroid ")
     // if(this.props.navigation.state.routeName=="Main"){
     //   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
     //     //最近2秒内按过back键，可以退出应用。
@@ -249,9 +249,9 @@ class MainPage extends Component {
     //   Toast.show('再按一次退出应用');
     //   return true;
     // }else{
-      return false;
+      // return false;
     // }
-  };
+  // };
 
   handleAppStateChange = (nextAppState) => {
     console.log('****************nextAppState=='+nextAppState);
@@ -486,7 +486,7 @@ class MainPage extends Component {
   }
   render() {
     const { menuVisible } = this.state;
-    // console.log('..onBackButtonPressAndroid', this.props.navigation)
+    // console.log('..onBackButtonPressAndroid', this.props.navigation.getState())
      return (
       <SafeAreaView style={styles.container}>
         { this.state.loading && <View style={styles.mask}>
@@ -555,7 +555,7 @@ class MainPage extends Component {
           javaScriptEnabled={true}
           injectedJavaScript={this.INJECTEDJAVASCRIPT }
           onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
-          // mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+          mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
           userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
           incognito={true}
           onLoadEnd={this.closeLoading.bind(this)}
@@ -569,7 +569,7 @@ class MainPage extends Component {
         javaScriptEnabled={true}
         injectedJavaScript={this.INJECTEDJAVASCRIPT }
         onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
-        // mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+        mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
         userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
         incognito={true}
         onLoadEnd={this.closeLoading.bind(this)}
@@ -578,9 +578,9 @@ class MainPage extends Component {
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
         <View style={styles.contentView} {...this._panResponderMyPlan.panHandlers}>
-          <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord} >
+          <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord}>
           <View style={styles.topMenu}>
-            { menuVisible && <MyButton style={styles.menuBtnView} onPress={()=> this.props.navigation.navigate('Center')}>
+            { menuVisible && <MyButton style={styles.menuBtnView} onPress={()=> this.props.navigation.navigate('Center', {key: this.props.navigation.getState().key})}>
               <IcomoonIcon name='center' size={30} style={{color: 'rgb(0, 122, 254)'}}/>
             </MyButton>}
             {/* <View style={styles.sliderView}>

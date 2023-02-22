@@ -3,6 +3,8 @@ import {Provider} from 'react-redux';
 import {
     Animated,
     Easing,
+    BackHandler,
+    Overlay,
   } from 'react-native';
 import {createStackNavigator, CardStyleInterpolators, TransitionPresets } from '@react-navigation/stack';
 import store from '../store/store';
@@ -15,9 +17,12 @@ import ServicePage from '../page/ServicePage';
 import CenterPage from '../page/CenterPage';
 
 
+const Toast = Overlay.Toast;
 const Stack = createStackNavigator();
 
 stateHelper.store = store;
+
+let lastBackPressed = Date.now();
 
 export default function StackRouter() {
   const forLeftSlide = ({ current, next, inverted, layouts: { screen } }) => {
@@ -94,9 +99,26 @@ export default function StackRouter() {
           },
         };
       };
+
     return (
         <Provider store={store}>
-            <Stack.Navigator initialRouteName="Login" screenOptions={{ cardStyleInterpolator: forRightSlide }}>
+            <Stack.Navigator initialRouteName="Login" screenOptions={props => {
+              const { navigation, route } = props;
+              // if (route.name === 'Main' && navigation.isFocused()) {
+              //     BackHandler.addEventListener('hardwareBackPress',  () => {
+              //       if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
+              //         BackHandler.exitApp();
+              //         return false;
+              //       }
+              //       lastBackPressed = Date.now();
+              //       Toast('再按一次退出应用');
+              //       return true;
+              //     });
+              // } else if (route.name !== 'Main' && navigation.isFocused()) {
+              //     console.log("==-=-=-=other");
+              //     BackHandler.removeEventListener('hardwareBackPress', () => { return true; });
+              // }
+              return { cardStyleInterpolator: forRightSlide }}}>
                 <Stack.Screen
                     name="Main"
                     component={MainPage}

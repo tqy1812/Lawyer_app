@@ -53,15 +53,23 @@ class CenterPage extends Component {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
-    
+      // console.log('....................' , this.props.navigation.getState());
+      // this.setState({ routes: this.props.navigation.getState().routes});
       this.props.dispatch(actionAuth.reqUserInfo()); 
     }
 
   
     handSubmit() {
       const {dispatch} = this.props;
+      const {routes} = this.state;
       dispatch({type: TYPE_AUTH_USER, data: {}});
-      // this.props.navigation.navigate('Login');
+      // console.log('.....#################',routes)
+      // const route = routes.find(r=> r.name == 'Center');
+      // console.log('.....',route)
+      // if(route && route.params.key) {
+      //   this.props.navigation.goBack(route.params.key);
+      // }
+      
       this.props.navigation.dispatch(state => {
         console.log('.......logOut', state)
         return CommonActions.reset({
@@ -69,7 +77,6 @@ class CenterPage extends Component {
           routes: [{name: 'Login'}],
           index:0,
         });
-        
       });
     }
 

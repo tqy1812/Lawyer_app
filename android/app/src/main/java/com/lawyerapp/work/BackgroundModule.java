@@ -48,7 +48,9 @@ public class BackgroundModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void stopBackgroundWork() {
 //        WorkManager.getInstance(mContext).cancelUniqueWork("testWork");
-        mContext.stopService(service);
+        if(service!=null) {
+            mContext.stopService(service);
+        }
     }
 
     @Nonnull

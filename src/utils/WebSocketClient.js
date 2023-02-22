@@ -53,6 +53,9 @@ export default class WebSocketClient {
           //   }, 5000);
           // }
         },
+        onChangeState:  (state) => {
+          console.log('STOMP onChangeState details: ', state);
+        },
         onWebSocketError:  (evn) => {
           console.log('STOMP onWebSocketError details: ');
         },
@@ -78,8 +81,12 @@ export default class WebSocketClient {
     if (!WebSocketClient.ws || !WebSocketClient.ws.webSocket) {
       WebSocketClient.ws = new Client(this.stompConfig);  
     }
-    console.log('############'+WebSocketClient.ws.connected + '.....id' + id)
+    console.log('############'+WebSocketClient.ws.connected + "" + WebSocketClient.ws.active + '.....id' + id)
     if(!WebSocketClient.ws.connected) {
+      WebSocketClient.ws.activate();
+    } else if (WebSocketClient.ws.webSocket && WebSocketClient.ws.webSocket.readyState!==1){
+      console.log('############'+WebSocketClient.ws.webSocket.readyState)
+      WebSocketClient.ws = new Client(this.stompConfig);  
       WebSocketClient.ws.activate();
     }
     WebSocketClient.userId = id;
@@ -121,6 +128,10 @@ export default class WebSocketClient {
     if (this.isBackground && WebSocketClient.ws.webSocket.readyState === 1) {
       WebSocketClient.ws.webSocket.send('\x0A');
       console.log('>>> PING');
+    }
+    else {
+      WebSocketClient.ws = new Client(this.stompConfig);  
+      WebSocketClient.ws.activate();
     }
   }
 }

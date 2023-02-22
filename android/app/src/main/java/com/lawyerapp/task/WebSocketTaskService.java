@@ -1,9 +1,14 @@
 package com.lawyerapp.task;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,6 +36,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import javax.annotation.Nullable;
 
 import io.github.wjaykim.rnheadlesstaskworker.HeadlessJsTaskWorker;
+import android.app.Notification.Builder;
+import android.net.Uri;
 
 public class WebSocketTaskService extends Service {
 
@@ -38,6 +45,7 @@ public class WebSocketTaskService extends Service {
     private Runnable runnable;
     private PowerManager powerManager;
     private PowerManager.WakeLock wakeLock;
+    private NotificationManager notificationManager;
     private final LifecycleEventListener listener = new LifecycleEventListener(){
         @Override
         public void onHostResume() {}
@@ -50,6 +58,24 @@ public class WebSocketTaskService extends Service {
             if (wakeLock.isHeld()) wakeLock.release();
         }
     };
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationManager.getNotificationChannel("PUSH_TRANSIENT_NTC_ID") == null) {
+                NotificationChannel channel = new NotificationChannel("PUSH_TRANSIENT_NTC_ID", this.getClass().getSimpleName(), NotificationManager.IMPORTANCE_LOW);
+                channel.enableLights(false);
+                channel.enableVibration(false);
+                channel.setSound((Uri)null, (AudioAttributes)null);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            Notification notification = (new Builder(this, "PUSH_TRANSIENT_NTC_ID")).setContentTitle(WebSocketTaskService.class.getSimpleName()).build();
+            this.startForeground(2147483647, notification);
+        }
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
