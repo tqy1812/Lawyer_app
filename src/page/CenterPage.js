@@ -188,7 +188,7 @@ class CenterPage extends Component {
                 </MyButton>
               </View> 
               <View style={styles.menuView}> 
-                <MyButton style={styles.menuButton} onPress={() => {NativeModules.NotifyOpen.open();}}>
+                <MyButton style={styles.menuButton} onPress={() => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.open();}}>
                   <Text style={styles.menuText}>通知提醒</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
