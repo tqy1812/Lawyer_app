@@ -8,16 +8,7 @@ let window = {
     width: width,
     height: Platform.OS === 'ios'? height : wh  > 1.8 ? height + StatusBarManager.HEIGHT : height,
 };
-let statusBarHeight = 0;
-if(Platform.OS === 'ios'){
-  StatusBarManager.getHieght(height => {
-    statusBarHeight = height;
-    console.log('......iosBarHeight:' + height);
-  });
-}
-else {
-  statusBarHeight = StatusBarManager.HEIGHT;
-}
+let statusBarHeight = StatusBarManager.HEIGHT;
 
 // let NAVIGATION_HEIGHT = 0;
 // if (Platform.OS === 'ios') {
