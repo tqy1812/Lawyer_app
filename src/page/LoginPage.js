@@ -162,7 +162,7 @@ class LoginPage extends Component {
                     Storage.setAutoLogin('1');
                     // }
                     dispatch(actionCase.reqCaseList());
-                    this.props.navigation.navigate('Main');
+                    this.props.navigation.replace('Main');
                     // Toast.show("登录成功");
                 }
             }));

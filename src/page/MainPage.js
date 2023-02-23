@@ -202,9 +202,9 @@ class MainPage extends Component {
     this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen', () => { this.openNotfication(); });
     this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
     this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
-    // if (platform.isAndroid()) {
-    //   this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
-    // }
+    if (platform.isAndroid()) {
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
+    }
     showPlanModal(<DrawerModal
       component={<MyPlanSlider {...this.props}/>}
       ref={e => this.planRef = e}
@@ -237,8 +237,8 @@ class MainPage extends Component {
     this.item_name &&  this.item_name.blur();
   }
 
-  // onBackButtonPressAndroid = () => {
-  //   console.log("...............onBackButtonPressAndroid ")
+  onBackButtonPressAndroid = () => {
+    console.log("...............onBackButtonPressAndroid ")
     // if(this.props.navigation.state.routeName=="Main"){
     //   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
     //     //最近2秒内按过back键，可以退出应用。
@@ -249,9 +249,9 @@ class MainPage extends Component {
     //   Toast.show('再按一次退出应用');
     //   return true;
     // }else{
-      // return false;
+      return false;
     // }
-  // };
+  };
 
   handleAppStateChange = (nextAppState) => {
     console.log('****************nextAppState=='+nextAppState);

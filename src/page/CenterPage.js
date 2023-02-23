@@ -21,7 +21,7 @@ import Common from '../common/constants';
 import MyButton from '../components/MyButton';
 import {TYPE_AUTH_USER} from '../actions/actionRequest';
 // import { CheckBox } from 'react-native-elements';
-// import AntDesign from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 // import Feather from 'react-native-vector-icons/Feather';
 import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
@@ -190,7 +190,9 @@ class CenterPage extends Component {
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {NativeModules.NotifyOpen.open();}}>
                   <Text style={styles.menuText}>通知提醒</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
+                
               </View>  
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
@@ -290,9 +292,10 @@ menuButton: {
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'flex-start',
-  alignContent: 'center',
+  alignItems: 'center',
 },
 menuText: {
+  flex: 1,
   color: '#606266',
   fontSize: 17,
   marginLeft: 5,

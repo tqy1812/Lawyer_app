@@ -324,7 +324,11 @@ export default class MyFinishPlanSlider extends Component {
                   renderSectionFooter={({ section: { date,  total, isShowYear} }) => (
                     <View style={styles.listTitleView}>
                       {isShowYear && <Text style={styles.listTitleYearFont}>{moment(date).format('YYYY年')}</Text>}
-                    <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text></View><Text style={styles.titleTimeFont}>{total}</Text></View>
+                    <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text>
+                    <Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text>
+                    </View>
+                    <Text style={styles.titleTimeFont}>共 {total > 0 ? getFeeTimeFormat(total) : '00:00'}</Text>
+                    </View>
                     </View>)}
                   stickySectionHeadersEnabled={true}
                   onEndReachedThreshold={0.2}
@@ -444,7 +448,6 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
-    width: 78,
     fontWeight: 'bold',
     textAlign: 'right'
   },

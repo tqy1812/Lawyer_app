@@ -39,6 +39,8 @@ import io.github.wjaykim.rnheadlesstaskworker.HeadlessJsTaskWorker;
 import android.app.Notification.Builder;
 import android.net.Uri;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class WebSocketTaskService extends Service {
 
     private Handler handler;
@@ -58,27 +60,31 @@ public class WebSocketTaskService extends Service {
             if (wakeLock.isHeld()) wakeLock.release();
         }
     };
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    private void createNotification() {
         notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager.getNotificationChannel("PUSH_TRANSIENT_NTC_ID") == null) {
-                NotificationChannel channel = new NotificationChannel("PUSH_TRANSIENT_NTC_ID", this.getClass().getSimpleName(), NotificationManager.IMPORTANCE_LOW);
+                NotificationChannel channel = new NotificationChannel("PUSH_TRANSIENT_NTC_ID", this.getClass().getSimpleName(), NotificationManager.IMPORTANCE_HIGH);
                 channel.enableLights(false);
                 channel.enableVibration(false);
                 channel.setSound((Uri)null, (AudioAttributes)null);
+                channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
                 notificationManager.createNotificationChannel(channel);
             }
 
             Notification notification = (new Builder(this, "PUSH_TRANSIENT_NTC_ID")).setContentTitle(WebSocketTaskService.class.getSimpleName()).build();
-            this.startForeground(2147483647, notification);
+            this.startForeground(2147483646, notification);
         }
+    }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        createNotification();
         this.startTimer();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -130,8 +136,13 @@ public class WebSocketTaskService extends Service {
         Log.e("com.lawyerapp", "WebSocketTaskService onDestroy");
 //        if (wakeLock.isHeld()) wakeLock.release();
 //        if (handler != null) handler.removeCallbacks(runnable);
-//        Intent service = new Intent(this, WebSocketTaskService.class);
-//        startService(service);
+        Intent service = new Intent(this, WebSocketTaskService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(service);
+        } else {
+            startService(service);
+        }
+//        stopForeground(true);
         super.onDestroy();
     }
 

@@ -325,10 +325,24 @@ export function getWeek (date) { // 参数时间戳
   for (let key in plan){
     let timeYear = moment(key).year();
     if(preItem && preItem.date && index == 0 && key== preItem.date){
-      last = {date: preItem.date, data: preItem.data.concat(plan[key]), isShowYear: preItem.isShowYear, isFestival: preItem.isFestival}
+      let total = 0;
+      for(let i=0; i < preItem.data.length; i++){
+        let item =  preItem.data[i];
+        total = total + item.fee_time;
+      }
+      for(let i=0; i < plan[key].length; i++){
+        let item =  plan[key][i];
+        total = total + item.fee_time;
+      }
+      last = {date: preItem.date, data: preItem.data.concat(plan[key]), total, isShowYear: preItem.isShowYear, isFestival: preItem.isFestival}
     }
     else{
-      let map = {date: key, data: plan[key], isShowYear: year !== timeYear && preYear && preYear !== timeYear, isFestival: true}
+      let total = 0;
+      for(let i=0; i < plan[key].length; i++){
+        let item =  plan[key][i];
+        total = total + item.fee_time;
+      }
+      let map = {date: key, data: plan[key], total, isShowYear: year !== timeYear && preYear && preYear !== timeYear, isFestival: true}
       rs.push(map)
     }
     preYear = timeYear;
