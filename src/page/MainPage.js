@@ -166,7 +166,7 @@ class MainPage extends Component {
     this.props.dispatch(actionCase.reqCaseList());
     this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
-    console.log(this.wc,  React.Component.prototype.InsetsTop);
+    console.log(this.wc);
     this.wc.initWebSocket(this.props.user.employee_id);
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -581,7 +581,7 @@ class MainPage extends Component {
         }
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
-        <View style={[styles.contentView, {top: platform.isIOS() ?  STATUS_BAR_HEIGHT : 0,}]} {...this._panResponderMyPlan.panHandlers}>
+        <View style={[styles.contentView, {top: platform.isIOS() ?  STATUS_BAR_HEIGHT : 0, height: windowHeight - STATUS_BAR_HEIGHT,}]} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord}>
           <View style={styles.topMenu}>
             { menuVisible && <MyButton style={styles.menuBtnView} onPress={()=> this.props.navigation.navigate('Center', {key: this.props.navigation.getState().key})}>
@@ -682,7 +682,6 @@ const styles = StyleSheet.create({
   },
   contentView: {
     position: 'absolute',
-    height: windowHeight,
     width: windowWidth,
     // top:  windowHeight/4,
     // left:  windowWidth/4,

@@ -27,6 +27,7 @@ import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
 import IcomoonIcon from "../components/IcomoonIcon";
 import ImagePicker from 'react-native-image-crop-picker';
+import GlobalData from '../utils/GlobalData';
 const Toast = Overlay.Toast;
 
 class CenterPage extends Component {
@@ -47,6 +48,7 @@ class CenterPage extends Component {
         this.state = {
             imgAvatar: props.userInfo.avatar
         };
+        this.globalDate = GlobalData.getInstance();
     }
 
     componentDidMount() {
@@ -147,13 +149,14 @@ class CenterPage extends Component {
     render() {
       const {caseList, caseListInfo, userInfo} = this.props;
       const { imgAvatar} = this.state;
+      const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
       // console.log('..onBackButtonPressAndroid', this.props.navigation)
       // console.log(caseList)
       return (
           <SafeAreaView style={styles.container}>  
             <Header title='个人中心' close={true}  {...this.props}/>  
             <ScrollView style={styles.scrollView}>  
-            <View style={styles.content}> 
+            <View style={[styles.content, { minHeight: Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
               <View style={styles.infoContent}> 
                 <TouchableOpacity onPress={this.handlePromiseSelectPhoto} >
                   {
@@ -211,7 +214,6 @@ class CenterPage extends Component {
     }
 }
 export default connect(CenterPage.mapStateToProps)(CenterPage);
-const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop  : Common.statusBarHeight 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -232,7 +234,6 @@ content: {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  minHeight: Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,
 },
 infoContent: {
   width: Common.window.width - 40,

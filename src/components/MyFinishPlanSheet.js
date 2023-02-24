@@ -8,6 +8,7 @@ import {
   StyleSheet
 } from "react-native";
 import Common from '../common/constants';
+import GlobalData from "../utils/GlobalData";
 import platform from '../utils/platform';
 class MyFinishPlanSheet extends Component {
   constructor(props) {
@@ -17,14 +18,14 @@ class MyFinishPlanSheet extends Component {
       animatedTranslateY: new Animated.Value(-Common.window.height),
       pan: new Animated.ValueXY({x:0, y:-Common.window.height}),
     };
-
+    this.globalData = GlobalData.getInstance();
     this.createPanResponder(props);
   }
 
   setModalVisible(visible) {
     const { closeFunction, height } = this.props;
     const { animatedTranslateY, pan } = this.state;
-     const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop :  Common.statusBarHeight 
+     const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() :  Common.statusBarHeight 
     if (visible) {
       this.setState({ modalVisible: visible });
       Animated.timing(pan, {

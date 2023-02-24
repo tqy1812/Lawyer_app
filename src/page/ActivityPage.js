@@ -23,6 +23,7 @@ import { showLoading, destroySibling } from "../components/ShowModal"
 import platform from '../utils/platform';
 import { is } from 'date-fns/locale';
 import { isToday } from 'date-fns';
+import GlobalData from '../utils/GlobalData';
 // import {locale} from '../utils/utils'
 const Toast = Overlay.Toast;
 
@@ -45,6 +46,7 @@ class ActivityPage extends Component {
             list: [],
             isToday: true
         };
+        this.globalData = GlobalData.getInstance();
     }
 
     componentDidMount() {
@@ -116,12 +118,15 @@ class ActivityPage extends Component {
     render() {
         const time = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'];
         const { list, today, isToday } = this.state;
+
+        const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight;
+        const top = platform.isIOS() ?  STATUS_BAR_HEIGHT + 20 : 20; 
         //   console.log(today)
         // console.log(this.props)
         return (
             <SafeAreaView style={styles.container}>
                 {/* <StatusBar translucent={true} barStyle="dark-content" /> */}
-                <MyButton style={styles.backBtn}
+                <MyButton style={[styles.backBtn, {top: top}]}
                     activeOpacity={0.75} onPress={this.back.bind(this)}>
                     <AntDesign name='left' size={23} color='#5c5c5c' />
                 </MyButton>
@@ -196,9 +201,6 @@ class ActivityPage extends Component {
     }
 }
 export default connect(ActivityPage.mapStateToProps)(ActivityPage);
-
-const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop : Common.statusBarHeight;
-const top = platform.isIOS() ?  STATUS_BAR_HEIGHT + 20 : 20; 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -209,7 +211,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         // paddingTop: 10,
     },
-    backBtn: { height: 25, left: 10, top: top, position: 'absolute', zIndex: 999 },
+    backBtn: { height: 25, left: 10, position: 'absolute', zIndex: 999 },
     content: {
         flex: 1,
         flexDirection: 'row'

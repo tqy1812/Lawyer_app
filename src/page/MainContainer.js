@@ -17,6 +17,7 @@ import platform from '../utils/platform';
 import Common from "../common/constants";
 import actionCase from "../actions/actionCase";
 import WebSocketClient from "../utils/WebSocketClient";
+import GlobalData from '../utils/GlobalData';
 
 const {width: windowWidth,height: windowHeight} = Common.window
 
@@ -37,6 +38,7 @@ class MainContainer extends Component {
       page: 0,
       scrollEnabled: false,
     }
+    this.globalData = GlobalData.getInstance();
     this.refPagerView=React.createRef();
     DeviceEventEmitter.removeAllListeners();
   }
@@ -64,10 +66,12 @@ class MainContainer extends Component {
   }
   render() {
       const { scrollEnabled } = this.state;
+      const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight   //StatusBar.currentHeight
+      console.log("****STATUS_BAR_HEIGHT"+STATUS_BAR_HEIGHT)
      return (
       <SafeAreaView style={[styles.container]}>
         <StatusBar translucent={true} barStyle="dark-content" />
-        <PagerView style={styles.pagerView} ref={this.refPagerView} initialPage={this.state.page} scrollEnabled={scrollEnabled}>
+        <PagerView style={[styles.pagerView, {height: windowHeight - STATUS_BAR_HEIGHT}]} ref={this.refPagerView} initialPage={this.state.page} scrollEnabled={scrollEnabled}>
           {/* <View key="1">
             <Text>First page</Text>
             <Button 
@@ -85,15 +89,12 @@ class MainContainer extends Component {
     </SafeAreaView>)
     }
 }
-const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop : Common.statusBarHeight   //StatusBar.currentHeight
-console.log("****STATUS_BAR_HEIGHT"+STATUS_BAR_HEIGHT)
 const styles = StyleSheet.create({
   container: {
     height: windowHeight,
     width: windowWidth,
   },
   pagerView: {
-    height: windowHeight - STATUS_BAR_HEIGHT,
     width: windowWidth,
   },
 });
