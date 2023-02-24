@@ -156,7 +156,7 @@ class CenterPage extends Component {
           <SafeAreaView style={styles.container}>  
             <Header title='个人中心' close={true}  {...this.props}/>  
             <ScrollView style={styles.scrollView}>  
-            <View style={[styles.content, { minHeight: Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
+            <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
               <View style={styles.infoContent}> 
                 <TouchableOpacity onPress={this.handlePromiseSelectPhoto} >
                   {
@@ -218,7 +218,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    height: Common.window.height,
     backgroundColor: '#eee',
     display: 'flex',
     flexDirection: 'column',
