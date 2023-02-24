@@ -43,6 +43,7 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import actionCase from "../actions/actionCase";
 import WebSocketClient from "../utils/WebSocketClient";
+import GlobalData from "../utils/GlobalData";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import MyFinishPlanSheet from "../components/MyFinishPlanSheet";
@@ -54,6 +55,7 @@ const {width: windowWidth,height: windowHeight} = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
 
+const globalData = GlobalData.getInstance();
 class MainPage extends Component {
 
   static mapStateToProps(state) {
@@ -606,9 +608,9 @@ class MainPage extends Component {
     }
 }
 
-const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop : Common.statusBarHeight;
+const STATUS_BAR_HEIGHT = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
 const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 0;
-console.log('................================'+STATUS_BAR_HEIGHT)
+console.log('................================'+globalData.getTop())
 const styles = StyleSheet.create({
   container: {
     flex: 1,

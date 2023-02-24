@@ -67,15 +67,6 @@ class FinishPlanItem extends React.Component {
   }
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    width: Common.window.width,
-    height: '100%',
-    marginTop: Common.statusBarHeight
-  },
   mask: {
     flex: 1,
     width: Common.window.width,

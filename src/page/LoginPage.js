@@ -28,6 +28,7 @@ import actionCase from '../actions/actionCase';
 import IcomoonIcon from "../components/IcomoonIcon";
 import WebSocketClient from "../utils/WebSocketClient";
 import PushNotification, { Importance } from 'react-native-push-notification';
+import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
@@ -50,6 +51,7 @@ class LoginPage extends Component {
             lastId: 1,
             code: 0
         };
+        this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
@@ -61,9 +63,9 @@ class LoginPage extends Component {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin, navigation, insets } = this.props;
-            console.log("isLogin......" + isLogin, insets.top)
-            React.Component.prototype.InsetsTop = insets.top;
-            console.log("InsetsTop....." , React.Component.prototype.InsetsTop)
+            console.log("isLogin" + isLogin, insets.top)
+            this.globalData.setTop(3);
+            console.log("isLogin" + isLogin, this.globalData.getTop())
             if (isLogin) {
                 this.props.navigation.navigate('Main');
                 return;
