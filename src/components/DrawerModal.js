@@ -59,7 +59,7 @@ export class DrawerModal extends React.Component {
       panPlan: new Animated.ValueXY({x:0, y: Common.window.height}),
       panFinish: new Animated.ValueXY({x:0, y:-Common.window.height}),
     }
-    this.STATUS_BAR_HEIGHT = Common.statusBarHeight 
+    this.STATUS_BAR_HEIGHT =  platform.isIOS() ? React.Component.prototype.InsetsTop : Common.statusBarHeight 
     this._panResponderPlan = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
         console.log('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
@@ -102,7 +102,7 @@ export class DrawerModal extends React.Component {
         if (gestureDistance > 50) {
           this.close('plan', this.props.close)
         } else {
-          Animated.spring(this.state.panPlan, { toValue: { x: 0, y:  -this.STATUS_BAR_HEIGHT }, useNativeDriver: false, }).start();
+          Animated.spring(this.state.panPlan, { toValue: { x: 0, y:  platform.isIOS() ? -this.STATUS_BAR_HEIGHT + 100 : -this.STATUS_BAR_HEIGHT }, useNativeDriver: false, }).start();
         }
       },
     });
@@ -138,7 +138,7 @@ export class DrawerModal extends React.Component {
         if (gestureDistance < -50) {
           this.close('finish', this.props.close)
         } else {
-          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: 0 }, useNativeDriver: false, }).start();
+          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: platform.isIOS() ? React.Component.prototype.InsetsTop : 0 }, useNativeDriver: false, }).start();
         }
       },
     });
@@ -158,7 +158,7 @@ export class DrawerModal extends React.Component {
   open = (type) => {
     if(type==='finish') {
       Animated.timing(this.state.panFinish, {
-        toValue: {x:0, y:0},
+        toValue: {x:0, y: platform.isIOS() ? React.Component.prototype.InsetsTop : 0},
         duration: 400,
         easing: Easing.ease,
         useNativeDriver: false
@@ -170,7 +170,7 @@ export class DrawerModal extends React.Component {
     }
     else {
       Animated.timing(this.state.panPlan, {
-        toValue: {x:0, y: -this.STATUS_BAR_HEIGHT},
+        toValue: {x:0, y: platform.isIOS() ? -this.STATUS_BAR_HEIGHT + 100 : -this.STATUS_BAR_HEIGHT},
         duration: 400,
         easing: Easing.ease,
         useNativeDriver: false

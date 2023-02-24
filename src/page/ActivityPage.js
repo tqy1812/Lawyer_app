@@ -197,8 +197,8 @@ class ActivityPage extends Component {
 }
 export default connect(ActivityPage.mapStateToProps)(ActivityPage);
 
-const STATUS_BAR_HEIGHT =  Common.statusBarHeight;
-const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 20; 
+const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop : Common.statusBarHeight;
+const top = platform.isIOS() ?  STATUS_BAR_HEIGHT + 20 : 20; 
 const styles = StyleSheet.create({
     container: {
         flex: 1,

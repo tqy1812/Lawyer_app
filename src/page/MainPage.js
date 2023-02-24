@@ -164,7 +164,7 @@ class MainPage extends Component {
     this.props.dispatch(actionCase.reqCaseList());
     this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
-    console.log(this.wc);
+    console.log(this.wc,  React.Component.prototype.InsetsTop);
     this.wc.initWebSocket(this.props.user.employee_id);
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -606,7 +606,7 @@ class MainPage extends Component {
     }
 }
 
-const STATUS_BAR_HEIGHT = Common.statusBarHeight;
+const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop : Common.statusBarHeight;
 const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 0;
 console.log('................================'+STATUS_BAR_HEIGHT)
 const styles = StyleSheet.create({

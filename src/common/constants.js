@@ -10,7 +10,7 @@ let statusBarHeight =  platform.isIOS() ? (platform.isiPhoneX() ? 60 : 50) : Sta
 
 let window = {
     width: width,
-    height: platform.isIOS() ? height - statusBarHeight : wh  > 1.8 ? height + StatusBarManager.HEIGHT : height,
+    height: platform.isIOS() ? height : wh  > 1.8 ? height + StatusBarManager.HEIGHT : height,
 };
 
 // let NAVIGATION_HEIGHT = 0;

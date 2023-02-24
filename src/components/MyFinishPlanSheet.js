@@ -24,7 +24,7 @@ class MyFinishPlanSheet extends Component {
   setModalVisible(visible) {
     const { closeFunction, height } = this.props;
     const { animatedTranslateY, pan } = this.state;
-     const STATUS_BAR_HEIGHT =  Common.statusBarHeight 
+     const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop :  Common.statusBarHeight 
     if (visible) {
       this.setState({ modalVisible: visible });
       Animated.timing(pan, {

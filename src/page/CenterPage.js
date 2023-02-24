@@ -211,7 +211,7 @@ class CenterPage extends Component {
     }
 }
 export default connect(CenterPage.mapStateToProps)(CenterPage);
-const STATUS_BAR_HEIGHT = Common.statusBarHeight 
+const STATUS_BAR_HEIGHT = platform.isIOS() ? React.Component.prototype.InsetsTop  : Common.statusBarHeight 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
