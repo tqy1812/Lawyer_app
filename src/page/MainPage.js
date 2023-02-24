@@ -488,7 +488,9 @@ class MainPage extends Component {
   }
   render() {
     const { menuVisible } = this.state;
+    const STATUS_BAR_HEIGHT = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     // console.log('..onBackButtonPressAndroid', this.props.navigation.getState())
+    console.log('................================'+globalData.getTop())
      return (
       <SafeAreaView style={styles.container}>
         { this.state.loading && <View style={styles.mask}>
@@ -579,7 +581,7 @@ class MainPage extends Component {
         }
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
-        <View style={styles.contentView} {...this._panResponderMyPlan.panHandlers}>
+        <View style={[styles.contentView, {top: platform.isIOS() ?  STATUS_BAR_HEIGHT : 0,}]} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord}>
           <View style={styles.topMenu}>
             { menuVisible && <MyButton style={styles.menuBtnView} onPress={()=> this.props.navigation.navigate('Center', {key: this.props.navigation.getState().key})}>
@@ -608,9 +610,6 @@ class MainPage extends Component {
     }
 }
 
-const STATUS_BAR_HEIGHT = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 0;
-console.log('................================'+globalData.getTop())
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -686,7 +685,6 @@ const styles = StyleSheet.create({
     height: windowHeight,
     width: windowWidth,
     // top:  windowHeight/4,
-    top: top,
     // left:  windowWidth/4,
     zIndex: 3,
     display: 'flex',
