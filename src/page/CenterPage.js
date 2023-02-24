@@ -211,7 +211,7 @@ class CenterPage extends Component {
     }
 }
 export default connect(CenterPage.mapStateToProps)(CenterPage);
-const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight 
+const STATUS_BAR_HEIGHT = Common.statusBarHeight 
 const styles = StyleSheet.create({
   container: {
     flex: 1,

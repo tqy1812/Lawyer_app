@@ -59,7 +59,7 @@ export class DrawerModal extends React.Component {
       panPlan: new Animated.ValueXY({x:0, y: Common.window.height}),
       panFinish: new Animated.ValueXY({x:0, y:-Common.window.height}),
     }
-    this.STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight 
+    this.STATUS_BAR_HEIGHT = Common.statusBarHeight 
     this._panResponderPlan = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
         console.log('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)

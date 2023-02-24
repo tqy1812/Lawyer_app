@@ -1,14 +1,17 @@
 import {Dimensions,NativeModules, Platform} from 'react-native';
+import platform from '../utils/platform';
 const { StatusBarManager } = NativeModules;
 
 const {width,height} = Dimensions.get('window')
 const wh = height/width
 
+
+let statusBarHeight =  platform.isIOS() ? (platform.isiPhoneX() ? 60 : 50) : StatusBarManager.HEIGHT;
+
 let window = {
     width: width,
-    height: Platform.OS === 'ios'? height : wh  > 1.8 ? height + StatusBarManager.HEIGHT : height,
+    height: platform.isIOS() ? height - statusBarHeight : wh  > 1.8 ? height + StatusBarManager.HEIGHT : height,
 };
-let statusBarHeight = StatusBarManager.HEIGHT;
 
 // let NAVIGATION_HEIGHT = 0;
 // if (Platform.OS === 'ios') {

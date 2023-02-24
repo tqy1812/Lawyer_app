@@ -85,7 +85,7 @@ class MainContainer extends Component {
     </SafeAreaView>)
     }
 }
-const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight   //StatusBar.currentHeight
+const STATUS_BAR_HEIGHT =  Common.statusBarHeight   //StatusBar.currentHeight
 console.log("****STATUS_BAR_HEIGHT"+STATUS_BAR_HEIGHT)
 const styles = StyleSheet.create({
   container: {
