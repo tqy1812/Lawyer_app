@@ -64,7 +64,7 @@ class LoginPage extends Component {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin, navigation, insets } = this.props;
             console.log("isLogin" + isLogin, insets.top)
-            this.globalData.setTop(3);
+            this.globalData.setTop(insets.top);
             console.log("isLogin" + isLogin, this.globalData.getTop())
             if (isLogin) {
                 this.props.navigation.navigate('Main');

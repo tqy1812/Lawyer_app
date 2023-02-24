@@ -71,7 +71,7 @@ export default class WebSocketClient {
    * @returns {WebSocketClient}
    */
   static getInstance() {
-      if (!WebSocketClient.ws) {
+      if (!WebSocketClient.myInstance) {
         WebSocketClient.myInstance = new WebSocketClient();
       }
       return WebSocketClient.myInstance;
