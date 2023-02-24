@@ -197,7 +197,7 @@ class ActivityPage extends Component {
 }
 export default connect(ActivityPage.mapStateToProps)(ActivityPage);
 
-const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight;
+const STATUS_BAR_HEIGHT =  Common.statusBarHeight;
 const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 20; 
 const styles = StyleSheet.create({
     container: {

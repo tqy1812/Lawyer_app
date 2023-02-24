@@ -1,6 +1,6 @@
 import Common from "../common/constants";
 let React = require('react-native');
-let { Platform } = React;
+let { Platform, Dimensions } = React;
 // iPhone X、iPhone XS
 const X_WIDTH = 375;
 const X_HEIGHT = 812;
@@ -8,7 +8,7 @@ const X_HEIGHT = 812;
 const XSMAX_WIDTH = 414;
 const XSMAX_HEIGHT = 896;
 
-const { height: D_HEIGHT, width: D_WIDTH } = Common.window;
+const { height: D_HEIGHT, width: D_WIDTH } =Dimensions.get('window');
 export default class platform {
     static isAndroid() {
         return Platform.OS === 'android';

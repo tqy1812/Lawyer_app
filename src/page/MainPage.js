@@ -606,7 +606,7 @@ class MainPage extends Component {
     }
 }
 
-const STATUS_BAR_HEIGHT = platform.isIOS() ? (platform.isiPhoneX() ? 34 : 20) : Common.statusBarHeight;
+const STATUS_BAR_HEIGHT = Common.statusBarHeight;
 const top = platform.isIOS() ?  STATUS_BAR_HEIGHT : 0;
 console.log('................================'+STATUS_BAR_HEIGHT)
 const styles = StyleSheet.create({
