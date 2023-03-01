@@ -66,6 +66,9 @@ export class DrawerModal extends React.Component {
     this._panResponderPlan = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
         console.log('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
+        if(gestureState.dx==0 && gestureState.dy==0) {
+          return false
+        }
         return true
       },
       onMoveShouldSetPanResponder: (e, gestureState) => {
@@ -113,6 +116,9 @@ export class DrawerModal extends React.Component {
     this._panResponderFinish = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
         console.log('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
+        if(gestureState.dx==0 && gestureState.dy==0) {
+          return false
+        }
         return true
       },
       onMoveShouldSetPanResponder:  (e, gestureState) => {
@@ -124,9 +130,18 @@ export class DrawerModal extends React.Component {
           return false;
         }
       },
-      onMoveShouldSetPanResponderCapture: () => false,
-      onStartShouldSetPanResponderCapture: () => false,
-      onPanResponderTerminationRequest: () => false,
+      onMoveShouldSetPanResponderCapture: (e, gestureState) => {
+        // console.log('onMoveShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        return false
+      },
+      onStartShouldSetPanResponderCapture: (e, gestureState) => {
+        console.log('onStartShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        return false
+      },
+      onPanResponderTerminationRequest:  (e, gestureState) => {
+        // console.log('onPanResponderTerminationRequest..........'+gestureState.dx+'.............'+gestureState.dy)
+        return false
+      },
       onPanResponderGrant: (evt, gs) => {},
       onPanResponderMove:  (e, gestureState) => {
         if (gestureState.dy < 0) {

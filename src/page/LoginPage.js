@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     },
     topPartTitle: {
         alignItems: 'center',
-        fontSize: 55,
+        fontSize:69,
         color: '#007afe',
         fontWeight: 'bold'
     },
