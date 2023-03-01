@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Overlay,
   NativeEventEmitter,
-
+  AppState,
   PanResponder,
   TextInput,
   DeviceEventEmitter,
