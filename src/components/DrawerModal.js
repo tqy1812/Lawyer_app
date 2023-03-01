@@ -69,7 +69,7 @@ export class DrawerModal extends React.Component {
         return true
       },
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy)
+        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
         if(Math.abs(gestureState.dy) > 25) {
           return true;
         }
@@ -116,7 +116,7 @@ export class DrawerModal extends React.Component {
         return true
       },
       onMoveShouldSetPanResponder:  (e, gestureState) => {
-        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy)
+        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
         if(Math.abs(gestureState.dy) > 25) {
           return true;
         }

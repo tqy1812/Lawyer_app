@@ -22,7 +22,7 @@ target 'LawyerApp' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-
+  
   target 'LawyerAppTests' do
     inherit! :complete
     # Pods for testing
@@ -32,5 +32,4 @@ target 'LawyerApp' do
     react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
-  pod 'React-RCTPushNotification', :path => '../node_modules/react-native/Libraries/PushNotificationIOS'
 end

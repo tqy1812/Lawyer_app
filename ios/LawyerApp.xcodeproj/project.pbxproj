@@ -8,16 +8,31 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* LawyerAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* LawyerAppTests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-LawyerApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-LawyerApp.a */; };
+		101008049638ABCA3F76E4C1 /* libPods-LawyerApp-LawyerAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C7652B36155BAACCA88C605 /* libPods-LawyerApp-LawyerAppTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		25454CFA29769DDD00EAEAB2 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 25454CF729769DDD00EAEAB2 /* assets */; };
 		25454CFB29769DDD00EAEAB2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25454CF829769DDD00EAEAB2 /* Images.xcassets */; };
-		25454CFC29769DDD00EAEAB2 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 25454CF929769DDD00EAEAB2 /* main.jsbundle */; };
-		25454D332976A53800EAEAB2 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25454D222976A53800EAEAB2 /* icomoon.ttf */; };
-		7699B88040F8A987B510C191 /* libPods-LawyerApp-LawyerAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-LawyerApp-LawyerAppTests.a */; };
+		4F7C1141F5399D038963C855 /* libPods-LawyerApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ACCF571CF647DD9755AB4A46 /* libPods-LawyerApp.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A8395892299B3472004FCCE4 /* iflyMSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8395891299B3472004FCCE4 /* iflyMSC.framework */; };
+		A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A893F63B299A40E50013C5CC /* icomoon.ttf */; };
+		A8B079DB2994815900717228 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079DA2994815900717228 /* AVFoundation.framework */; };
+		A8B079DD2994818400717228 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079DC2994818400717228 /* SystemConfiguration.framework */; };
+		A8B079DF2994819700717228 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079DE2994819700717228 /* Foundation.framework */; };
+		A8B079E1299481A600717228 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079E0299481A500717228 /* CoreTelephony.framework */; };
+		A8B079E3299481B200717228 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079E2299481B200717228 /* AudioToolbox.framework */; };
+		A8B079E5299481BE00717228 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079E4299481BE00717228 /* UIKit.framework */; };
+		A8B079E7299481CA00717228 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079E6299481CA00717228 /* CoreLocation.framework */; };
+		A8B079E9299481D600717228 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079E8299481D600717228 /* Contacts.framework */; };
+		A8B079EB299481E600717228 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079EA299481E600717228 /* AddressBook.framework */; };
+		A8B079ED299481FC00717228 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079EC299481FC00717228 /* QuartzCore.framework */; };
+		A8B079EF2994821C00717228 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079EE2994821C00717228 /* CoreGraphics.framework */; };
+		A8B079F1299485EA00717228 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079F0299485EA00717228 /* libc++.tbd */; };
+		A8B079F32994860100717228 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079F22994860100717228 /* libz.tbd */; };
+		A8BA1AD729AC94F2004CFB20 /* OpenNoticeEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = A8BA1AD629AC94F2004CFB20 /* OpenNoticeEmitter.m */; };
+		A8BE2CF629AEEC5F00093B21 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A8BE2CF529AEEC5F00093B21 /* main.jsbundle */; };
+		A8E9657029A73EBD00F87AEF /* assets in Resources */ = {isa = PBXBuildFile; fileRef = A8E9656E29A73EBD00F87AEF /* assets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,19 +45,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		2540B1012977A5CC00345BE1 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* LawyerAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LawyerAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -53,15 +55,32 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = LawyerApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = LawyerApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = LawyerApp/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-LawyerApp-LawyerAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp-LawyerAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		25454CF729769DDD00EAEAB2 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = LawyerApp/assets; sourceTree = "<group>"; };
 		25454CF829769DDD00EAEAB2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = LawyerApp/Images.xcassets; sourceTree = "<group>"; };
-		25454CF929769DDD00EAEAB2 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = LawyerApp/main.jsbundle; sourceTree = "<group>"; };
-		25454D222976A53800EAEAB2 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = icomoon.ttf; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-LawyerApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C7652B36155BAACCA88C605 /* libPods-LawyerApp-LawyerAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp-LawyerAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70F184B7B09CD4466E30BE9C /* Pods-LawyerApp-LawyerAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LawyerApp-LawyerAppTests.debug.xcconfig"; path = "Target Support Files/Pods-LawyerApp-LawyerAppTests/Pods-LawyerApp-LawyerAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = LawyerApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9D4A580348D5DA73D582F7B5 /* Pods-LawyerApp-LawyerAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LawyerApp-LawyerAppTests.release.xcconfig"; path = "Target Support Files/Pods-LawyerApp-LawyerAppTests/Pods-LawyerApp-LawyerAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		A8395891299B3472004FCCE4 /* iflyMSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = iflyMSC.framework; sourceTree = "<group>"; };
+		A893F63B299A40E50013C5CC /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = "../../Desktop/未命名文件夹/Fonts/icomoon.ttf"; sourceTree = "<group>"; };
+		A8A9DC6A29AD910C006949DE /* LawyerApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LawyerApp.entitlements; path = LawyerApp/LawyerApp.entitlements; sourceTree = "<group>"; };
+		A8B079DA2994815900717228 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A8B079DC2994818400717228 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A8B079DE2994819700717228 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A8B079E0299481A500717228 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		A8B079E2299481B200717228 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		A8B079E4299481BE00717228 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A8B079E6299481CA00717228 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		A8B079E8299481D600717228 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		A8B079EA299481E600717228 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		A8B079EC299481FC00717228 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A8B079EE2994821C00717228 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		A8B079F0299485EA00717228 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		A8B079F22994860100717228 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		A8BA1AD629AC94F2004CFB20 /* OpenNoticeEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenNoticeEmitter.m; sourceTree = "<group>"; };
+		A8BA1AD829AC951B004CFB20 /* OpenNoticeEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNoticeEmitter.h; sourceTree = "<group>"; };
+		A8BE2CF529AEEC5F00093B21 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
+		A8E9656E29A73EBD00F87AEF /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../release_ios/assets; sourceTree = "<group>"; };
+		ACCF571CF647DD9755AB4A46 /* libPods-LawyerApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0AE06059ADCB426D7CC5C1F /* Pods-LawyerApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LawyerApp.release.xcconfig"; path = "Target Support Files/Pods-LawyerApp/Pods-LawyerApp.release.xcconfig"; sourceTree = "<group>"; };
 		E877517FE9BCF8F681B85F16 /* Pods-LawyerApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LawyerApp.debug.xcconfig"; path = "Target Support Files/Pods-LawyerApp/Pods-LawyerApp.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -72,7 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-LawyerApp-LawyerAppTests.a in Frameworks */,
+				101008049638ABCA3F76E4C1 /* libPods-LawyerApp-LawyerAppTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,7 +99,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-LawyerApp.a in Frameworks */,
+				A8B079F32994860100717228 /* libz.tbd in Frameworks */,
+				A8B079F1299485EA00717228 /* libc++.tbd in Frameworks */,
+				A8B079EF2994821C00717228 /* CoreGraphics.framework in Frameworks */,
+				A8395892299B3472004FCCE4 /* iflyMSC.framework in Frameworks */,
+				A8B079ED299481FC00717228 /* QuartzCore.framework in Frameworks */,
+				A8B079EB299481E600717228 /* AddressBook.framework in Frameworks */,
+				A8B079E9299481D600717228 /* Contacts.framework in Frameworks */,
+				A8B079E7299481CA00717228 /* CoreLocation.framework in Frameworks */,
+				A8B079E5299481BE00717228 /* UIKit.framework in Frameworks */,
+				A8B079E3299481B200717228 /* AudioToolbox.framework in Frameworks */,
+				A8B079E1299481A600717228 /* CoreTelephony.framework in Frameworks */,
+				A8B079DF2994819700717228 /* Foundation.framework in Frameworks */,
+				A8B079DD2994818400717228 /* SystemConfiguration.framework in Frameworks */,
+				A8B079DB2994815900717228 /* AVFoundation.framework in Frameworks */,
+				4F7C1141F5399D038963C855 /* libPods-LawyerApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,35 +151,43 @@
 		13B07FAE1A68108700A75B9A /* LawyerApp */ = {
 			isa = PBXGroup;
 			children = (
-				25454D212976A53800EAEAB2 /* Fonts */,
-				25454CF729769DDD00EAEAB2 /* assets */,
+				A8BE2CF529AEEC5F00093B21 /* main.jsbundle */,
+				A8A9DC6A29AD910C006949DE /* LawyerApp.entitlements */,
+				A8E9656E29A73EBD00F87AEF /* assets */,
+				A893F63B299A40E50013C5CC /* icomoon.ttf */,
 				25454CF829769DDD00EAEAB2 /* Images.xcassets */,
-				25454CF929769DDD00EAEAB2 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				A8BA1AD629AC94F2004CFB20 /* OpenNoticeEmitter.m */,
+				A8BA1AD829AC951B004CFB20 /* OpenNoticeEmitter.h */,
 			);
 			name = LawyerApp;
-			sourceTree = "<group>";
-		};
-		25454D212976A53800EAEAB2 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				25454D222976A53800EAEAB2 /* icomoon.ttf */,
-			);
-			name = Fonts;
-			path = "../../Desktop/未命名文件夹/Fonts";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A8395891299B3472004FCCE4 /* iflyMSC.framework */,
+				A8B079F22994860100717228 /* libz.tbd */,
+				A8B079F0299485EA00717228 /* libc++.tbd */,
+				A8B079EE2994821C00717228 /* CoreGraphics.framework */,
+				A8B079EC299481FC00717228 /* QuartzCore.framework */,
+				A8B079EA299481E600717228 /* AddressBook.framework */,
+				A8B079E8299481D600717228 /* Contacts.framework */,
+				A8B079E6299481CA00717228 /* CoreLocation.framework */,
+				A8B079E4299481BE00717228 /* UIKit.framework */,
+				A8B079E2299481B200717228 /* AudioToolbox.framework */,
+				A8B079E0299481A500717228 /* CoreTelephony.framework */,
+				A8B079DE2994819700717228 /* Foundation.framework */,
+				A8B079DC2994818400717228 /* SystemConfiguration.framework */,
+				A8B079DA2994815900717228 /* AVFoundation.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-LawyerApp.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-LawyerApp-LawyerAppTests.a */,
+				ACCF571CF647DD9755AB4A46 /* libPods-LawyerApp.a */,
+				3C7652B36155BAACCA88C605 /* libPods-LawyerApp-LawyerAppTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -218,7 +259,6 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
-				2540B1012977A5CC00345BE1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -277,11 +317,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25454CFA29769DDD00EAEAB2 /* assets in Resources */,
 				25454CFB29769DDD00EAEAB2 /* Images.xcassets in Resources */,
-				25454CFC29769DDD00EAEAB2 /* main.jsbundle in Resources */,
-				25454D332976A53800EAEAB2 /* icomoon.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				A8E9657029A73EBD00F87AEF /* assets in Resources */,
+				A8BE2CF629AEEC5F00093B21 /* main.jsbundle in Resources */,
+				A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -452,6 +492,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				A8BA1AD729AC94F2004CFB20 /* OpenNoticeEmitter.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -524,14 +565,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = LawyerApp/LawyerApp.entitlements;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/ImageCropPickerSDK",
+					"$(SRCROOT)/../node_modules/react-native-speech-iflytek/ios/libs/**",
 				);
 				INFOPLIST_FILE = LawyerApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -541,8 +588,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.ky.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = LawyerApp;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -555,12 +603,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = LawyerApp/LawyerApp.entitlements;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/ImageCropPickerSDK",
+					"$(SRCROOT)/../node_modules/react-native-speech-iflytek/ios/libs/**",
 				);
 				INFOPLIST_FILE = LawyerApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -570,8 +624,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.ky.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = LawyerApp;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

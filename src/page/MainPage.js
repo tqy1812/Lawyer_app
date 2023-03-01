@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -16,7 +16,8 @@ import {
   Keyboard,
   BackHandler,
   AppRegistry,
-  NativeModules
+  NativeModules,
+  Alert,
 } from 'react-native';
 import {
   WebView as WebViewX5
@@ -24,21 +25,21 @@ import {
 import {
   WebView
 } from 'react-native-webview';
-import { Recognizer } from 'react-native-speech-iflytek';
-// import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import PushNotification, {Importance} from 'react-native-push-notification';
-import {connect} from 'react-redux';
+import { Recognizer } from 'react-native-iflytek';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotification, { Importance } from 'react-native-push-notification';
+import { connect } from 'react-redux';
 import authHelper from '../helpers/authHelper';
 import MyModal from '../components/MyModal';
 import Common from "../common/constants";
 import platform from "../utils/platform";
-import {showDrawerModal, DrawerModal, } from '../components/DrawerModal';
-import {destroySibling, destroyAllSibling, showLoading, showModal, showRecoding, showPlanModal, showFinishModal} from '../components/ShowModal';
+import { showDrawerModal, DrawerModal, } from '../components/DrawerModal';
+import { destroySibling, destroyAllSibling, showLoading, showModal, showRecoding, showPlanModal, showFinishModal } from '../components/ShowModal';
 import MyFinishPlanSlider from '../components/MyFinishPlanSlider';
 import MyPlanSlider from '../components/MyPlanSlider';
 import actionProcess from '../actions/actionProcess';
 import * as Storage from '../common/Storage';
-import {getWeekXi, getHoliday} from '../utils/utils';
+import { getWeekXi, getHoliday } from '../utils/utils';
 import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import actionCase from "../actions/actionCase";
@@ -51,7 +52,7 @@ import moment from 'moment';
 import actionAuth from '../actions/actionAuth';
 import BackgroundTimer from 'react-native-background-timer';
 
-const {width: windowWidth,height: windowHeight} = Common.window;
+const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
 
@@ -59,26 +60,26 @@ const globalData = GlobalData.getInstance();
 class MainPage extends Component {
 
   static mapStateToProps(state) {
-      let props = {};
-      props.user = state.Auth.user;
-      props.isLogin = authHelper.logined(state.Auth.user);
-      props.caseList = state.Case.caseList;
-      props.finishList = state.Process.finishList;
-      props.planList = state.Process.planList;
-      props.userInfo = state.Auth.userInfo;
-      return props;
+    let props = {};
+    props.user = state.Auth.user;
+    props.isLogin = authHelper.logined(state.Auth.user);
+    props.caseList = state.Case.caseList;
+    props.finishList = state.Process.finishList;
+    props.planList = state.Process.planList;
+    props.userInfo = state.Auth.userInfo;
+    return props;
   }
 
-  constructor (props){
+  constructor(props) {
     super(props);
     // 设置初始值
     // this.planRef = React.createRef();
     // this.finishRef = React.createRef();
     this.updateProcessCallback = null;
     this.lastBackPressed = 0;
-    this.state={
-      appState:AppState.currentState,
-      lastId:0,
+    this.state = {
+      appState: AppState.currentState,
+      lastId: 0,
       myPlanState: false,
       myFinishPlanState: false,
       talkModalVisible: false,
@@ -108,15 +109,16 @@ class MainPage extends Component {
     meta.setAttribute('name', 'viewport'); 
     document.getElementsByTagName('head')[0].appendChild(meta);`
     this.wv = React.createRef();
+    // console.log('###########', Recognizer);
     Recognizer.init("ed00abad");
     const that = this;
     this.timeStampMove = 0;
     this._panResponderMyPlan = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       // onMoveShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder:  (e, gestureState) => {
-        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy)
-        if(Math.abs(gestureState.dy) > 25) {
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        // console.log('onMoveShouldSetPanResponder.......................' + gestureState.dy)
+        if (Math.abs(gestureState.dy) > 25) {
           return true;
         }
         else {
@@ -128,45 +130,45 @@ class MainPage extends Component {
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: (evt, gs) => {
         this.timeStampMove = evt.timeStamp;
-          console.log('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
+        // console.log('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
       },
       onPanResponderMove: (evt, gs) => {
-        console.log('正在移动：'+ evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
+        // console.log('正在移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
         // if (this.timeStampMove > 0 && gs.dx < -distance) {
         //   this.timeStampMove = 0;
 
         //   console.log('由右向左');
         // }
         // else
-        if(this.timeStampMove > 0 && gs.dy < -distance){
+        if (this.timeStampMove > 0 && gs.dy < -distance) {
           this.timeStampMove = 0;
           this.finishRef.close('finish');
-          that.setState({menuVisible: false})
+          that.setState({ menuVisible: false })
           this.planRef.open('plan');
           // this.planRef && this.planRef.current.show()
         } else if (this.timeStampMove > 0 && gs.dy > distance) {
           this.timeStampMove = 0;
-           this.planRef.close('plan');
+          this.planRef.close('plan');
           this.finishRef.open('finish');
           // this.finishRef && this.finishRef.current.show()
         }
       },
       onPanResponderRelease: (evt, gs) => {
-          console.log('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
-          that.stopRecord();
+        // console.log('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
+        that.stopRecord();
       }
     });
     this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);
     this.wc = WebSocketClient.getInstance();
   }
-  componentDidMount(){
-    if(!this.props.isLogin) {
+  componentDidMount() {
+    if (!this.props.isLogin) {
       this.props.navigation.navigate('Login');
     }
     this.props.dispatch(actionCase.reqCaseList());
     this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
-    console.log(this.wc);
+    // console.log(this.wc);
     this.wc.initWebSocket(this.props.user.employee_id);
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -174,33 +176,59 @@ class MainPage extends Component {
     // AppState.addEventListener('memoryWarning', function(){
     //   console.log("内存报警....");
     // });
-     this.recognizerEventEmitter = new NativeEventEmitter(Recognizer);
-     this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
-     this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
-     PushNotification.getChannels(function(channels) {
-      console.log('....channels:'+JSON.stringify(channels));
-    });
-    PushNotification.createChannel(
-      {
-        channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
-        channelName: `任务通知`, // (required)
-        channelDescription: "任务提醒通知", // (optional) default: undefined.
-        soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
-        importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-      },
-      (created) => console.log(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-    );
+    this.recognizerEventEmitter = new NativeEventEmitter(Recognizer);
+    this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
+    this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
+    if (platform.isAndroid()) {
+      PushNotification.getChannels(function (channels) {
+        console.log('....channels:' + JSON.stringify(channels));
+      });
+      PushNotification.createChannel(
+        {
+          channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
+          channelName: `任务通知`, // (required)
+          channelDescription: "任务提醒通知", // (optional) default: undefined.
+          soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+          importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+          vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+        },
+        (created) => console.log(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+      );
+    }
+    else {
+      PushNotificationIOS.addEventListener('register', this.onRegistered);
+      PushNotificationIOS.addEventListener('registrationError', this.onRegistrationError);
+      PushNotificationIOS.addEventListener('notification', this.onRemoteNotification);
+      PushNotificationIOS.addEventListener('localNotification', this.onLocalNotification);
+
+      PushNotificationIOS.requestPermissions({
+        alert: true,
+        badge: true,
+        sound: true,
+        critical: true,
+      }).then(
+        (data) => {
+          console.log('PushNotificationIOS.requestPermissions', data);
+        },
+        (data) => {
+          console.log('PushNotificationIOS.requestPermissions failed', data);
+        },
+      );
+      this.setNotificationCategories();
+      const { OpenNoticeEmitter } = NativeModules;
+      const eventEmitter = new NativeEventEmitter(OpenNoticeEmitter);
+      this.iosOpenNotice = eventEmitter.addListener('openNotice', this.openNotfication);
+    }
     destroySibling();
     destroyAllSibling();
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
-        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("'+obj.token+'");true;');
+        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("' + obj.token + '");true;');
       }
     });
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg',
-   		(msg) => { this.scheduleNotfication(msg); });
+      (msg) => { this.scheduleNotfication(msg); });
     this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen', () => { this.openNotfication(); });
     this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
     this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
@@ -208,21 +236,21 @@ class MainPage extends Component {
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
     }
     showPlanModal(<DrawerModal
-      component={<MyPlanSlider {...this.props}/>}
+      component={<MyPlanSlider {...this.props} />}
       ref={e => this.planRef = e}
       height={Common.window.height - 100}
       showType={'bottom'}
       close={this.showMenu}
-    /> );
+    />);
 
     showFinishModal(<DrawerModal
-      component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(item, callback)=>this.handleFinishTimeEnd(item, callback)} {...this.props}/>}
+      component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} />}
       ref={e => this.finishRef = e}
       height={Common.window.height - 100}
       showType={'top'}
     />);
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
     this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onRecognizerResult');
     this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
@@ -230,13 +258,149 @@ class MainPage extends Component {
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
     this.eventNoticeOpen && this.eventNoticeOpen.remove();
     this.eventKeepAliveSocket && this.eventKeepAliveSocket.remove();
-    this.processName &&  this.processName.remove();
+    this.processName && this.processName.remove();
+    if (platform.isIOS()) {
+      PushNotificationIOS.removeEventListener('register');
+      PushNotificationIOS.removeEventListener('registrationError');
+      PushNotificationIOS.removeEventListener('notification');
+      PushNotificationIOS.removeEventListener('localNotification');
+      this.iosOpenNotice && this.iosOpenNotice.remove();
+    }
     // this.backHandler && this.backHandler.remove();
-    NativeModules.WebSocketWorkManager && NativeModules.WebSocketWorkManager.stopBackgroundWork();
+    if (platform.isAndroid()) {
+      NativeModules.WebSocketWorkManager.stopBackgroundWork();
+    }
     DeviceEventEmitter.removeAllListeners();
   }
+  onRegistered = (deviceToken) => {
+    Alert.alert('远程消息推送已经注册', `注册令牌: ${deviceToken}`, [
+      {
+        text: '关闭',
+        onPress: null,
+      },
+    ]);
+  };
+  onRegistrationError = (error) => {
+    Alert.alert(
+      '远程消息推送注册失败',
+      `Error (${error.code}): ${error.message}`,
+      [
+        {
+          text: '关闭',
+          onPress: null,
+        },
+      ],
+    );
+  };
+  setNotificationCategories = () => {
+    PushNotificationIOS.setNotificationCategories([
+      {
+        id: 'userAction',
+        actions: [
+          { id: 'open', title: '打开', options: { foreground: true } },
+          {
+            id: 'ignore',
+            title: '忽略',
+            options: { foreground: true, destructive: true },
+          },
+        ],
+      },
+    ]);
+  };
+
+  onRemoteNotification = (notification) => {
+    const isClicked = notification.getData().userInteraction === 1;
+    console.log('##########isClicked=' + isClicked);
+    const result = `
+      Title:  ${notification.getTitle()};\n
+      Subtitle:  ${notification.getSubtitle()};\n
+      Message: ${notification.getMessage()};\n
+      badge: ${notification.getBadgeCount()};\n
+      sound: ${notification.getSound()};\n
+      category: ${notification.getCategory()};\n
+      content-available: ${notification.getContentAvailable()};\n
+      Notification is clicked: ${String(isClicked)}.`;
+    if (isClicked) {
+      this.openNotfication();
+      // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
+      //   PushNotificationIOS.setApplicationIconBadgeNumber(num-1);
+      // });
+    }
+    else {
+      this.sendLocalNotification(result);
+    }
+    // else if (notification.getTitle() == undefined) {
+    // Alert.alert('静默推送消息已接收', result, [
+    //   {
+    //     text: '发送本地推送',
+    //     onPress: this.sendLocalNotification(result),
+    //   },
+    // ]);
+    // } 
+    // else {
+    //   Alert.alert('消息推送已经接收', result, [
+    //     {
+    //       text: '关闭',
+    //       onPress: null,
+    //     },
+    //   ]);
+    // }
+    notification.finish('UIBackgroundFetchResultNoData')
+  };
+  onLocalNotification = (notification) => {
+    const isClicked = notification.getData().userInteraction === 1;
+    console.log('##########isClicked=' + isClicked);
+    if (isClicked) {
+      this.openNotfication();
+      PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
+        PushNotificationIOS.setApplicationIconBadgeNumber(num - 1);
+      });
+    }
+    // Alert.alert(
+    //   'Local Notification Received',
+    //   `Alert title:  ${notification.getTitle()},
+    //   Alert subtitle:  ${notification.getSubtitle()},
+    //   Alert message:  ${notification.getMessage()},
+    //   Badge: ${notification.getBadgeCount()},
+    //   Sound: ${notification.getSound()},
+    //   Thread Id:  ${notification.getThreadID()},
+    //   Action Id:  ${notification.getActionIdentifier()},
+    //   User Text:  ${notification.getUserText()},
+    //   Notification is clicked: ${String(isClicked)}.`,
+    //   [
+    //     {
+    //       text: '关闭',
+    //       onPress: null,
+    //     },
+    //   ],
+    // );
+  };
+  sendLocalNotification = (result) => {
+    // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
+    PushNotificationIOS.presentLocalNotification({
+      alertTitle: result.Title,
+      alertBody: result.Message,
+      applicationIconBadgeNumber: 0,
+      category: ''
+    });
+    // });
+  };
+
+  sendNotification = (result) => {
+    DeviceEventEmitter.emit('remoteNotificationReceived', {
+      remote: true,
+      aps: {
+        alert: { title: result.Title, subtitle: 'subtitle', body: result.Message },
+        badge: 1,
+        sound: 'default',
+        category: 'REACT_NATIVE',
+        'content-available': 1,
+        'mutable-content': 1,
+      },
+    });
+  };
   processNameForceLoseFocus = () => {
-    this.item_name &&  this.item_name.blur();
+    this.item_name && this.item_name.blur();
   }
 
   onBackButtonPressAndroid = () => {
@@ -251,59 +415,71 @@ class MainPage extends Component {
     //   Toast.show('再按一次退出应用');
     //   return true;
     // }else{
-      return false;
+    return false;
     // }
   };
 
   handleAppStateChange = (nextAppState) => {
-    console.log('****************nextAppState=='+nextAppState);
+    // console.log('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-        // this.wv && this.wv.current && this.wv.current.reload();
-        if(this.wc) this.wc.setIsBackground(false);
-        NativeModules.WebSocketWorkManager && NativeModules.WebSocketWorkManager.stopBackgroundWork();
-        console.log('****************show', this.wc.getKeepSocket()) ;
-        // this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
-        // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
-        // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;');
-        // Storage.getUserRecord().then((user) => {
-        //   if (user) {
-        //     let obj = Object.assign({}, JSON.parse(user));
-        //     console.log(obj)
-        //     this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("1111", "'+obj.token+'");true;');
-        //   }
-        // });
+      // this.wv && this.wv.current && this.wv.current.reload();
+      if (this.wc) this.wc.setIsBackground(false);
+      if (platform.isAndroid()) {
+        NativeModules.WebSocketWorkManager.stopBackgroundWork();
+      }
+      // console.log('****************show', this.wc.getKeepSocket());
+      // this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
+      // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
+      // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;');
+      // Storage.getUserRecord().then((user) => {
+      //   if (user) {
+      //     let obj = Object.assign({}, JSON.parse(user));
+      //     console.log(obj)
+      //     this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("1111", "'+obj.token+'");true;');
+      //   }
+      // });
     }
-    else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)){
-      console.log('***************hidden', this.wc);
-      if(this.wc) this.wc.setIsBackground(true);
-      NativeModules.WebSocketWorkManager && NativeModules.WebSocketWorkManager.startBackgroundWork();
+    else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
+      // console.log('***************hidden', this.wc);
+      if (this.wc) this.wc.setIsBackground(true);
+      if (platform.isAndroid()) {
+        NativeModules.WebSocketWorkManager.startBackgroundWork();
+      }
       // if(this.wc) this.wc.backTimer();
       // this.wv && this.wv.current && this.wv.current.injectJavaScript(`receiveMessage("stop");true;`);
       // AppRegistry.startHeadlessTask(1, 'WebSocketConnectService', {});
     }
-    this.setState({appState: nextAppState});
+    this.setState({ appState: nextAppState });
   };
 
   sendRecording = (value) => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     const that = this;
-    that.setState({talkContent: '', talkModalVisible: false, loading: true});
+    that.setState({ talkContent: '', talkModalVisible: false, loading: true });
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
-        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+value+'", "'+obj.token+'");true;');
+        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
         setTimeout(() => {
-          that.setState({loading: false});
+          that.setState({ loading: false });
         }, 15000)
       }
-      else{
-        that.setState({loading: false});
+      else {
+        that.setState({ loading: false });
       }
     });
   }
 
   startRecord = () => {
     console.log('startRecoding..........')
+    if(platform.isIOS()){
+      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
+      console.log('...........isHasMic', isHasMic);
+      if(isHasMic){
+        Toast.show('未检测到麦克风');
+        return;
+      }
+    }
     // Toast.show('请开始添加');
     showRecoding();
     // this.setState({isRecoding: true});
@@ -313,10 +489,9 @@ class MainPage extends Component {
 
   stopRecord = () => {
     const that = this;
-    Recognizer.isListening().then(value=>{
-      console.log('stopRecord..........'+value)
-      if(value)
-      {
+    Recognizer.isListening().then(value => {
+      console.log('stopRecord..........' + value)
+      if (value) {
         Recognizer.stop();
         destroySibling();
       }
@@ -325,38 +500,40 @@ class MainPage extends Component {
   }
 
   onRecognizerResult = (e) => {
+    console.log("result............." + JSON.stringify(e.result));
     if (!e.isLast) {
-        return;
+      return;
     }
-    if(e.result==''){
+    if (e.result == '') {
       Toast.show('不好意思，没听清楚');
-      this.setState({updateItem: {}});
+      this.setState({ updateItem: {} });
       // this.sendRecording('stop_recording');
       return;
     }
     console.log(e.result + "............." + JSON.stringify(this.state.updateItem));
-    if(this.state.updateItem && this.state.updateItem.id) {
+    if (this.state.updateItem && this.state.updateItem.id) {
       console.log(e.result);
-      if(this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem.id, e.result);
-      this.setState({updateItem: {}});
+      if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem.id, e.result);
+      this.setState({ updateItem: {} });
     }
     else
       this.sendRecording(e.result);
   }
 
 
-  onRecognizerError= (result) => {
+  onRecognizerError = (result) => {
+    console.log("error............." + JSON.stringify(e.result));
     if (result.errorCode !== 0) {
       // alert(JSON.stringify(result));
 
     }
   }
 
-  scheduleNotfication = (content) =>{
-    console.log('5555555555555555555555555===='+content);
-    if(content) {
+  scheduleNotfication = (content) => {
+    console.log('5555555555555555555555555====' + content);
+    if (content) {
       let item = JSON.parse(content);
-
+      if (platform.isAndroid()) {
         PushNotification.localNotification({
           channelId: 'NEW_MESSAGE_NOTIFICATION',
           title: "任务提醒-" + item.case_name,
@@ -365,115 +542,130 @@ class MainPage extends Component {
           date: new Date(Date.now()),
           when: new Date().getTime()
         });
-        this.setState({lastId: (this.state.lastId+1)});
-
+        this.setState({ lastId: (this.state.lastId + 1) });
+      }
+      else {
+        this.sendLocalNotification({ Title: "任务提醒-" + item.case_name, Message: item.process_name + ',时间:' + item.start_time });
+      }
     }
   }
 
-  openNotfication = () =>{
+  openNotfication = () => {
     this.props.navigation.navigate('Main');
     this.finishRef && this.finishRef.close('finish');
-    this.setState({menuVisible: false});
+    this.setState({ menuVisible: false });
     this.planRef && this.planRef.open('plan');
   }
 
   test = () => {
-    PushNotification.localNotification({
-      channelId: 'NEW_MESSAGE_NOTIFICATION',
-      title: "任务提醒-",
-      message: "test",
-      id: this.state.lastId,
-      when: new Date().getTime(),
-    });
-    this.setState({lastId: (this.state.lastId+1)});
+    if (platform.isAndroid()) {
+      PushNotification.localNotification({
+        channelId: 'NEW_MESSAGE_NOTIFICATION',
+        title: "任务提醒-",
+        message: "test",
+        id: this.state.lastId,
+        when: new Date().getTime(),
+      });
+      this.setState({ lastId: (this.state.lastId + 1) });
+    }
+    else {
+      this.sendLocalNotification({ Title: '任务提醒-', Message: '测试' });
+    }
   }
 
-  handleNativeMessage = (content) =>{
-    console.log('handleNativeMessage===='+content);
-    const {dispatch} = this.props;
+  handleNativeMessage = (content) => {
+    console.log('handleNativeMessage====' + content);
+    const { dispatch } = this.props;
     const that = this;
-    if(content.indexOf('talk:') === 0) {
+    if (content.indexOf('talk:') === 0) {
       const codeArr = content.split('&');
       const code = codeArr[0].replace('talk:', '')
-      if(code ==='0') {
+      if (code === '0') {
         const id = codeArr[1].replace('id:', '')
-        if(id) {
-          dispatch(actionProcess.reqGetProcess(id, (rs)=>{
-            that.setState({loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name});
+        if (id) {
+          dispatch(actionProcess.reqGetProcess(id, (rs) => {
+            that.setState({ loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name });
           }));
         }
         else {
-          that.setState({loading: false});
+          that.setState({ loading: false });
         }
       }
       else {
-        that.setState({loading: false});
+        that.setState({ loading: false });
       }
     }
   }
 
   closePlan = () => {
-    this.setState({myPlanState: false});
+    this.setState({ myPlanState: false });
   }
   closeFinishPlan = () => {
-    this.setState({myFinishPlanState: false});
+    this.setState({ myFinishPlanState: false });
   }
   handleFinishTime = (item) => {
+    if(platform.isIOS()){
+      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
+      console.log('...........isHasMic', isHasMic);
+      if(isHasMic){
+        Toast.show('未检测到麦克风');
+        return;
+      }
+    }
     Recognizer.start();
     this.updateProcessCallback = null;
     // console.log('.....handleFinishTime' + JSON.stringify(item))
-    this.setState({updateItem: item});
+    this.setState({ updateItem: item });
   }
   handleFinishTimeEnd = (item, callback) => {
     const that = this;
     // console.log('.....handleFinishTimeEnd' + JSON.stringify(item))
-    Recognizer.isListening().then(value=>{
-      console.log('stopRecord..........'+value)
-      if(value)
-      {
+    Recognizer.isListening().then(value => {
+      console.log('stopRecord..........' + value)
+      if (value) {
         Recognizer.stop();
         this.updateProcessCallback = callback;
       }
       else {
-        that.setState({updateItem: {}});
+        that.setState({ updateItem: {} });
       }
     });
   }
   closeTalk = () => {
-    this.setState({talkModalVisible: false});
+    this.setState({ talkModalVisible: false });
   }
-  handleSending = () =>{
-    if(this.state.talkContent) {
+  handleSending = () => {
+    if (this.state.talkContent) {
       this.sendRecording(this.state.talkContent);
     }
-    else{
-      this.setState({talkContent: '', talkModalVisible: false})
+    else {
+      this.setState({ talkContent: '', talkModalVisible: false })
     }
   }
   handleTalkContentChanged(text) {
     let content = text.trim();
-    this.setState({talkContent: content});
+    this.setState({ talkContent: content });
   }
   handleTalkNameChanged(text) {
     let content = text.trim();
-    this.setState({itemName: content});
+    this.setState({ itemName: content });
   }
   closeTalkSuccess = () => {
-    this.setState({talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: ''});
+    this.setState({ talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
   }
 
   sendTalkSuccess = () => {
     const that = this;
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     const { item, itemNotice, itemName } = this.state;
     showLoading();
-    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, (rs, error)=>{
+    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, (rs, error) => {
       destroySibling();
-      that.setState({loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: ''});
-      if(error) {
+      that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
+      if (error) {
         Toast.show(error.info)
       }
-      else{
+      else {
         DeviceEventEmitter.emit('refreshDailyProcess');
         this.planRef && this.planRef.open('plan');
       }
@@ -481,21 +673,21 @@ class MainPage extends Component {
   }
 
   closeLoading = () => {
-    this.setState({loading: false});
+    this.setState({ loading: false });
   }
   showMenu = () => {
-    this.setState({menuVisible: true});
+    this.setState({ menuVisible: true });
   }
   render() {
     const { menuVisible } = this.state;
     const STATUS_BAR_HEIGHT = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     // console.log('..onBackButtonPressAndroid', this.props.navigation.getState())
-    console.log('................================'+globalData.getTop())
-     return (
+    // console.log('................================' + globalData.getTop())
+    return (
       <SafeAreaView style={styles.container}>
-        { this.state.loading && <View style={styles.mask}>
-              <ActivityIndicator size="large" color="black" />
-            </View>}
+        {this.state.loading && <View style={styles.mask}>
+          <ActivityIndicator size="large" color="black" />
+        </View>}
         {/* <MyPlan isVisible={this.state.myPlanState} close={this.closePlan}  {...this.props}>
         </MyPlan> */}
         {/* <MyFinishPlan isVisible={this.state.myFinishPlanState} close={this.closeFinishPlan} finishTime={this.handleFinishTime} finishTimeEnd={this.handleFinishTimeEnd} caseList={this.props.caseList}>
@@ -524,80 +716,80 @@ class MainPage extends Component {
             />
         </MyModal>*/}
         <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={false}>
-          { this.props.caseList && this.state.item && this.state.item.id && JSON.stringify(this.props.caseList)!='{}' && <View style={styles.processInfo}>
+          {this.props.caseList && this.state.item && this.state.item.id && JSON.stringify(this.props.caseList) != '{}' && <View style={styles.processInfo}>
             <View style={styles.listTitleView}>
               <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(this.state.item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(this.state.item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(this.state.item.start_time)}</Text>}</View>
             </View>
             <View style={styles.listItemView}>
               <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{this.state.item.start_time ? moment(this.state.item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{this.state.item.end_time ? moment(this.state.item.end_time).format('HH:mm') : '-- : --'}</Text></View>
-              <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[this.state.item.case.id+''][2],}]}></View>
+              <View style={[styles.listItemTimeSplit, { backgroundColor: this.props.caseList[this.state.item.case.id + ''][2], }]}></View>
               <View style={styles.listItemRightView}>
-              {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{this.state.item.name}</Text> */}
+                {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{this.state.item.name}</Text> */}
                 <TextInput
-                  ref={(r)=> this.item_name = r}
+                  ref={(r) => this.item_name = r}
                   placeholder='内容'
                   placeholderTextColor='#999'
                   style={styles.talkNameInput}
                   onChangeText={this.handleTalkNameChanged.bind(this)}
                   value={this.state.itemName}
-                  />
+                />
                 <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{this.state.item.case.name}</Text>
               </View>
-              <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => {this.setState({itemNotice: !this.state.itemNotice})}}><IcomoonIcon name='alert_0' size={30} color={this.state.itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
+              <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={this.state.itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
             </View>
-            </View>
-           }
+          </View>
+          }
         </MyModal>
         {
           platform.isAndroid() ? <WebViewX5
-          ref={this.wv}
-          source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
-          // source={{ uri: 'https://human.kykyai.cn' }}
-          scalesPageToFit={false}
-          bounces={false}
-          style={{width:windowWidth,height:'100%'}}
-          javaScriptEnabled={true}
-          injectedJavaScript={this.INJECTEDJAVASCRIPT }
-          onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
-          mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
-          userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-          incognito={true}
-          onLoadEnd={this.closeLoading.bind(this)}
-        /> : <WebView
-        ref={this.wv}
-        source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
-        // source={{ uri: 'https://human.kykyai.cn' }}
-        scalesPageToFit={false}
-        bounces={false}
-        style={{width:windowWidth,height:'100%'}}
-        javaScriptEnabled={true}
-        injectedJavaScript={this.INJECTEDJAVASCRIPT }
-        onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
-        mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
-        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-        incognito={true}
-        onLoadEnd={this.closeLoading.bind(this)}
-      />
+            ref={this.wv}
+            source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+            // source={{ uri: 'https://human.kykyai.cn' }}
+            scalesPageToFit={false}
+            bounces={false}
+            style={{ width: windowWidth, height: '100%' }}
+            javaScriptEnabled={true}
+            injectedJavaScript={this.INJECTEDJAVASCRIPT}
+            onMessage={(event) => { this.handleNativeMessage(event.nativeEvent.data) }}
+            mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+            incognito={true}
+            onLoadEnd={this.closeLoading.bind(this)}
+          /> : <WebView
+            ref={this.wv}
+            source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+            // source={{ uri: 'https://human.kykyai.cn' }}
+            scalesPageToFit={false}
+            bounces={false}
+            style={{ width: windowWidth, height: '100%' }}
+            javaScriptEnabled={true}
+            injectedJavaScript={this.INJECTEDJAVASCRIPT}
+            onMessage={(event) => { this.handleNativeMessage(event.nativeEvent.data) }}
+            mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+            incognito={true}
+            onLoadEnd={this.closeLoading.bind(this)}
+          />
         }
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
-        <View style={[styles.contentView, {top: platform.isIOS() ?  STATUS_BAR_HEIGHT : 0, height: windowHeight - STATUS_BAR_HEIGHT,}]} {...this._panResponderMyPlan.panHandlers}>
-          <TouchableOpacity activeOpacity={1} style={styles.content}  onLongPress={this.startRecord} onPressOut={this.stopRecord}>
-          <View style={styles.topMenu}>
-            { menuVisible && <MyButton style={styles.menuBtnView} onPress={()=> this.props.navigation.navigate('Center', {key: this.props.navigation.getState().key})}>
-              <IcomoonIcon name='center' size={30} style={{color: 'rgb(0, 122, 254)'}}/>
-            </MyButton>}
-            {/* <View style={styles.sliderView}>
+        <View style={[styles.contentView, { top: platform.isIOS() ? STATUS_BAR_HEIGHT : 0, height: windowHeight - STATUS_BAR_HEIGHT, }]} {...this._panResponderMyPlan.panHandlers}>
+          <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={this.startRecord} onPressOut={this.stopRecord}>
+            <View style={styles.topMenu}>
+              {menuVisible && <MyButton style={styles.menuBtnView} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
+                <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
+              </MyButton>}
+              {/* <View style={styles.sliderView}>
               <View style={styles.sliderBtn}></View>
             </View> */}
-            { menuVisible && <MyButton style={styles.menuBtnView} onPress={()=> this.props.navigation.navigate('Daily')}>
-              <IcomoonIcon name='calendar' size={30} style={{color: 'rgb(0, 122, 254)'}}/>
-            </MyButton> }
-          </View>
-          <View style={styles.sliderTopBtn}></View>
-          <Text style={styles.content} >
-          </Text>
-          <View style={styles.sliderBottomBtn}></View>
+              {menuVisible && <MyButton style={styles.menuBtnView} onPress={() => this.props.navigation.navigate('Daily')}>
+                <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
+              </MyButton>}
+            </View>
+            <View style={styles.sliderTopBtn}></View>
+            <Text style={styles.content} >
+            </Text>
+            <View style={styles.sliderBottomBtn}></View>
           </TouchableOpacity>
           {/* <BottomSheet hasDraggableIcon ref={this.planRef} height={Common.window.height - 100} closeFunction={this.showMenu} sheetBackgroundColor={'#FFF'}>
             <MyPlanSlider {...this.props}/>
@@ -607,14 +799,12 @@ class MainPage extends Component {
             </MyFinishPlanSheet> */}
         </View>
       </SafeAreaView>)
-    }
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: windowHeight,
-    width: windowWidth,
   },
   item: {
     backgroundColor: "#f9c2ff",
@@ -661,7 +851,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 2,
     top: 50,
-    left: windowWidth/2 - 25,
+    left: windowWidth / 2 - 25,
   },
   sliderBottomBtn: {
     width: 50,
@@ -671,7 +861,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 2,
     bottom: 50,
-    left: windowWidth/2 - 25,
+    left: windowWidth / 2 - 25,
   },
   header: {
     fontSize: 32,
@@ -698,9 +888,9 @@ const styles = StyleSheet.create({
   },
   contentPress: {
     height: windowHeight,
-    width: windowWidth/2,
+    width: windowWidth / 2,
     top: 0,
-    left:  windowWidth/4,
+    left: windowWidth / 4,
     // backgroundColor: '#ff0000'
   },
   mask: {
@@ -741,10 +931,10 @@ const styles = StyleSheet.create({
     height: 230,
     width: '100%',
     bottom: 50,
-    display:'flex',
-    flexDirection:'column',
-    justifyContent:'center',
-    alignItems:'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 2
   },
   pressBtn: {
@@ -753,10 +943,10 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: '#4C5164',
     opacity: 0.6,
-    display:'flex',
-    flexDirection:'column',
-    justifyContent:'center',
-    alignItems:'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pressBtnTxt: {
     fontSize: 16,
@@ -864,7 +1054,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  titleTime:{
+  titleTime: {
     display: 'flex',
     flexDirection: 'row',
     flex: 1,

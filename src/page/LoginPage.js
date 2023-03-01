@@ -200,7 +200,6 @@ class LoginPage extends Component {
     render() {
         let logo = '/logo.png';
         const { insets } = this.props;
-        console.log('...........insets', this.props.insets.top)
 
         return (
             <SafeAreaView style={styles.container}>
