@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Overlay,
   NativeEventEmitter,
-  AppState,
+
   PanResponder,
   TextInput,
   DeviceEventEmitter,
@@ -336,7 +336,7 @@ class MainPage extends Component {
     //     onPress: this.sendLocalNotification(result),
     //   },
     // ]);
-    // } 
+    // }
     // else {
     //   Alert.alert('消息推送已经接收', result, [
     //     {
