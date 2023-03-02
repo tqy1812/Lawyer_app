@@ -43,10 +43,10 @@ export default class actionAuth {
       dispatch(request.upload(file, callback));
     };
   }
-  static reqUserUpdate(url, callback) {
+  static reqUserUpdate(url, iosToken, callback) {
     return (dispatch, getState) => {
       let state = getState();
-      dispatch(request.userUpdate(url, callback));
+      dispatch(request.userUpdate(url, iosToken, callback));
     };
   }
 }

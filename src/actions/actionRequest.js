@@ -96,11 +96,11 @@ export function upload(file, callback = null) {
     };
 }
 
-export function userUpdate(url, callback = null) {
+export function userUpdate(url, iosToken, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/employee/update'
-        let data = {avatar: url};
+        let data = {avatar: url, ios_token: iosToken};
 
         request_impl(api, method, data, (res, error) => {
             if(res) {
@@ -117,7 +117,6 @@ export function userUpdate(url, callback = null) {
         }, dispatch);
     };
 }
-
 
 export function getCase(callback = null) {
     return (dispatch, getState) => {
