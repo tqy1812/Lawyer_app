@@ -8,6 +8,7 @@ import {
     Overlay,
     ImageBackground, InteractionManager,
     Keyboard,
+    StatusBar,
     TouchableOpacity
 } from 'react-native';
 import { SafeAreaInsetsContext, withSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
@@ -206,7 +207,7 @@ class LoginPage extends Component {
 
         return (
             <SafeAreaView style={styles.container}>
-
+                <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
                 <View style={styles.topPart}>
                     <Text
                         style={styles.topPartTitle}>{'律时'}</Text>
@@ -338,7 +339,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     topPart: {
         width: '100%',

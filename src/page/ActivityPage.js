@@ -120,11 +120,12 @@ class ActivityPage extends Component {
         const { list, today, isToday } = this.state;
 
         const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight;
-        const top = platform.isIOS() ?  STATUS_BAR_HEIGHT + 20 : 20; 
+        const top = STATUS_BAR_HEIGHT + 20; 
         //   console.log(today)
         // console.log(this.props)
         return (
             <SafeAreaView style={styles.container}>
+            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
                 {/* <StatusBar translucent={true} barStyle="dark-content" /> */}
                 <MyButton style={[styles.backBtn, {top: top}]}
                     activeOpacity={0.75} onPress={this.back.bind(this)}>

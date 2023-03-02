@@ -18,6 +18,7 @@ import {
   AppRegistry,
   NativeModules,
   Alert,
+  StatusBar,
 } from 'react-native';
 import {
   WebView as WebViewX5
@@ -691,6 +692,7 @@ class MainPage extends Component {
     // console.log('................================' + globalData.getTop())
     return (
       <SafeAreaView style={styles.container}>
+        <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
         </View>}
@@ -751,7 +753,7 @@ class MainPage extends Component {
             ref={this.wv}
             source={{ uri: Common.webUrl }}
             // source={{ uri: 'https://human.kykyai.cn' }}
-            scalesPageToFit={false}
+            scalesPageToFit={true}
             bounces={false}
             style={{ width: windowWidth, height: '100%' }}
             javaScriptEnabled={true}
@@ -779,20 +781,20 @@ class MainPage extends Component {
         }
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
-        <View style={[styles.contentView, { top: platform.isIOS() ? STATUS_BAR_HEIGHT : 0, height: windowHeight - STATUS_BAR_HEIGHT, }]} {...this._panResponderMyPlan.panHandlers}>
+        <View style={[styles.contentView, { top: 0, height: windowHeight, }]} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={this.startRecord} onPressOut={this.stopRecord}>
-            <View style={styles.topMenu}>
-              {menuVisible && <MyButton style={styles.menuBtnView} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
+            <View style={[styles.topMenu, {height: 50 + STATUS_BAR_HEIGHT}]}>
+              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + STATUS_BAR_HEIGHT}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
               {/* <View style={styles.sliderView}>
               <View style={styles.sliderBtn}></View>
             </View> */}
-              {menuVisible && <MyButton style={styles.menuBtnView} onPress={() => this.props.navigation.navigate('Daily')}>
+              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + STATUS_BAR_HEIGHT}]} onPress={() => this.props.navigation.navigate('Daily')}>
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
-            <View style={styles.sliderTopBtn}></View>
+            <View style={[styles.sliderTopBtn, {top: 50 + STATUS_BAR_HEIGHT}]}></View>
             <Text style={styles.content} >
             </Text>
             <View style={styles.sliderBottomBtn}></View>
@@ -811,6 +813,7 @@ class MainPage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'#ffffff'
   },
   item: {
     backgroundColor: "#f9c2ff",
@@ -819,7 +822,6 @@ const styles = StyleSheet.create({
   },
   topMenu: {
     width: windowWidth,
-    height: 50,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -856,7 +858,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(0, 122, 254)',
     position: 'absolute',
     zIndex: 2,
-    top: 50,
     left: windowWidth / 2 - 25,
   },
   sliderBottomBtn: {
@@ -1099,12 +1100,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   menuBtnView: {
-    width: 100,
-    height: 50,
+    width: 80,
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    paddingTop: 20,
+    justifyContent: 'flex-end',
   }
 });
 export default connect(MainPage.mapStateToProps)(MainPage);
