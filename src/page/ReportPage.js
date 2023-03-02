@@ -6,6 +6,7 @@ import {
     View,
     Image,
     Overlay,
+    StatusBar,
     ImageBackground, InteractionManager, ActivityIndicator
 } from 'react-native';
 import Header from '../components/Header';
@@ -69,7 +70,8 @@ class ReportPage extends Component {
     }
     render() {
             return (
-                <SafeAreaView style={styles.container}>     
+                <SafeAreaView style={styles.container}>   
+                  <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />  
                     <Header title='工时报告' back={true} {...this.props}/>  
                     { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />

@@ -156,7 +156,7 @@ export class DrawerModal extends React.Component {
         if (gestureDistance < -50) {
           this.close('finish', this.props.close)
         } else {
-          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: platform.isIOS() ? this.globalData.getTop() : 0 }, useNativeDriver: false, }).start();
+          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: platform.isIOS() ? this.globalData.getTop() : this.STATUS_BAR_HEIGHT}, useNativeDriver: false, }).start();
         }
       },
     });
@@ -176,7 +176,7 @@ export class DrawerModal extends React.Component {
   open = (type) => {
     if(type==='finish') {
       Animated.timing(this.state.panFinish, {
-        toValue: {x:0, y: platform.isIOS() ? this.globalData.getTop() : 0},
+        toValue: {x:0, y: platform.isIOS() ? this.globalData.getTop() : this.STATUS_BAR_HEIGHT},
         duration: 400,
         easing: Easing.ease,
         useNativeDriver: false
@@ -188,7 +188,7 @@ export class DrawerModal extends React.Component {
     }
     else {
       Animated.timing(this.state.panPlan, {
-        toValue: {x:0, y: platform.isIOS() ? 0 : -this.STATUS_BAR_HEIGHT},
+        toValue: {x:0, y: platform.isIOS() ? 0 : -this.STATUS_BAR_HEIGHT },
         duration: 400,
         easing: Easing.ease,
         useNativeDriver: false
@@ -213,7 +213,7 @@ export class DrawerModal extends React.Component {
   close = (type, callback) => {
     if(type==='finish') {
       Animated.timing(this.state.panFinish, {
-        toValue: {x:0, y:-Common.window.height},
+        toValue: {x:0, y:platform.isIOS() ? -Common.window.height - this.globalData.getTop() : -Common.window.height - this.STATUS_BAR_HEIGHT},
         duration: 300,
         easing: Easing.ease,
         useNativeDriver: false
@@ -221,7 +221,7 @@ export class DrawerModal extends React.Component {
     }
     else{
       Animated.timing(this.state.panPlan, {
-        toValue: {x:0, y: Common.window.height},
+        toValue: {x:0, y: platform.isIOS() ? Common.window.height + this.globalData.getTop() : Common.window.height + this.STATUS_BAR_HEIGHT },
         duration: 300,
         easing: Easing.ease,
         useNativeDriver: false
@@ -266,7 +266,6 @@ export class DrawerModal extends React.Component {
       inputRange: [0,0.2,0.3,0.5,0.9, 1],
       outputRange: [0,0,0,0,0,0.4]
     });
-    
     // console.log(".............this._panY="+this._panY)
     return (
       <>
@@ -315,7 +314,7 @@ export class DrawerModal extends React.Component {
             panPlanStyle,
             {
               width: Common.window.width,
-            height: Common.window.height,
+            height: Common.window.height + this.STATUS_BAR_HEIGHT,
             display: 'flex',
             flex: 1,
             justifyContent: "flex-end",
@@ -329,7 +328,7 @@ export class DrawerModal extends React.Component {
           } ]: [panStyle,
             {
               width: Common.window.width,
-            height: Common.window.height,
+            height: Common.window.height + this.STATUS_BAR_HEIGHT,
             display: 'flex',
             flex: 1,
             justifyContent: "flex-start",
