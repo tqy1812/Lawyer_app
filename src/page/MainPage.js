@@ -743,7 +743,7 @@ class MainPage extends Component {
         {
           platform.isAndroid() ? <WebViewX5
             ref={this.wv}
-            source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+            source={{ uri: Common.webUrl }}
             // source={{ uri: 'https://human.kykyai.cn' }}
             scalesPageToFit={false}
             bounces={false}
@@ -757,7 +757,7 @@ class MainPage extends Component {
             onLoadEnd={this.closeLoading.bind(this)}
           /> : <WebView
             ref={this.wv}
-            source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+            source={{ uri:  Common.webUrl }}
             // source={{ uri: 'https://human.kykyai.cn' }}
             scalesPageToFit={false}
             bounces={false}

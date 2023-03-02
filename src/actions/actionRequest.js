@@ -1,8 +1,8 @@
 import authHelper from "../helpers/authHelper";
 import request from "../utils/request";
 import * as Storage from '../common/Storage';
-const api = 'https://lawyer-api.kykyai.cn/'
-// const api = 'http://192.168.30.93:5000/'
+import Common from "../common/constants";
+const api = Common.apiUrl;
 
 export const TYPE_AUTH_USER = "TYPE_AUTH_USER"; // 账号
 export function reqSaveUser(user, save = true, from = null, callback = null) {

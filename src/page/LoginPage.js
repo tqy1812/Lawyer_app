@@ -162,6 +162,9 @@ class LoginPage extends Component {
                     if (error.code === 17004) {
                         this.setState({ code: 2 });
                     }
+                    else if (error.code === 17003) {
+                        this.setState({ code: 1 });
+                    }
                 } else if (res && res.token) {
                     // if (autoLogin) {
                     Storage.setAutoLogin('1');
