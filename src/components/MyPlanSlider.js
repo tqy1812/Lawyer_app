@@ -310,6 +310,7 @@ export default class MyPlanSlider extends Component {
                 /></GestureHandlerRootView>
                 }
             </View>
+                <Text style={styles.subTitleFont}>{moment(new Date()).format('YYYY年MM月DD日')} {getWeek(new Date())}</Text>
         </View>
     );
   }
@@ -338,13 +339,14 @@ const styles = StyleSheet.create({
   },
   bottomContent: {
     width: Common.window.width,
-    height: '100%',
+    flex: 1,
     backgroundColor: "#FFF",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     paddingTop: 5,
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    backgroundColor: '#ff0000'
   },
   title: {
     width: Common.window.width,
