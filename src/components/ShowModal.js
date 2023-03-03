@@ -2,11 +2,14 @@ import React from 'react';
 import {View, StyleSheet,ActivityIndicator} from 'react-native';
 import Common from '../common/constants';
 import Wave from './Wave';
+import GlobalData from "../utils/GlobalData";
+import platform from "../utils/platform";
 import RootSiblings from 'react-native-root-siblings';  //全局弹框组件
 let sibling = null;
 let planSibling = null;
 let finishSibling = null;
 let elements = [];
+const globalData = GlobalData.getInstance();
 export const showModal = (component) => {
     sibling && sibling.destroy()
     sibling = new RootSiblings(component);
@@ -47,12 +50,14 @@ export const showRecoding = () => {
     sibling = new RootSiblings(<View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View>);
       elements.push(sibling);
 };
+
+const headHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
 const styles = StyleSheet.create({
     maskStyle: {
         position: 'absolute',
         width: Common.window.width,
         backgroundColor: 'rgba(0,0,0,0.3)',
-        height: Common.window.height,
+        height: Common.window.height + headHeight,
         top: 0,
         zIndex: 99,
         display: 'flex',
@@ -71,7 +76,7 @@ const styles = StyleSheet.create({
     },
     isRecoding: {
       position: 'absolute',
-      height: Common.window.height,
+      height: Common.window.height + headHeight,
       width: Common.window.width,
       zIndex: 5,
       backgroundColor: "#000",

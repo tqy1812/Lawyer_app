@@ -313,7 +313,7 @@ export default class MyFinishPlanSlider extends Component {
               <ActivityIndicator size="large" color="black" />
             </View>}
              <View style={styles.content}>
-              <View style={[styles.head, {height: 45+headHeight}]}><Text style={styles.headFont}>计时</Text></View>
+              <View style={[styles.head, {height: 45, marginTop: headHeight}]}><Text style={styles.headFont}>计时</Text></View>
                { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
                
                {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}><SectionList
@@ -387,8 +387,10 @@ const styles = StyleSheet.create({
   },
   head: {
     width: Common.window.width,
+    display: 'flex',
+    flexDirection: 'column',
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   gestureStyle: {
     flex: 1,
@@ -397,7 +399,7 @@ const styles = StyleSheet.create({
   headFont: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#303133'
+    color: '#303133',
   },
   footer: {
     width: Common.window.width,
