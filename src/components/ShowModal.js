@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: Common.window.width,
         backgroundColor: 'rgba(0,0,0,0.3)',
-        height: Common.window.height + headHeight,
+        height: Common.window.height,
         top: 0,
         zIndex: 99,
         display: 'flex',
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     },
     isRecoding: {
       position: 'absolute',
-      height: Common.window.height + headHeight,
+      height: Common.window.height,
       width: Common.window.width,
       zIndex: 5,
       backgroundColor: "#000",

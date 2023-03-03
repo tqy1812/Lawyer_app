@@ -689,11 +689,12 @@ class MainPage extends Component {
   render() {
     const { menuVisible } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
+    console.log('statusBarHeight11......', StatusBar.currentHeight)
     // console.log('..onBackButtonPressAndroid', this.props.navigation.getState())
     // console.log('................================' + globalData.getTop())
     return (
       <View style={styles.container}>
-        <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+        <StatusBar translucent={true}  backgroundColor='transparent' barStyle="light-content" />
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
         </View>}

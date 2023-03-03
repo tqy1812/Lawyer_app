@@ -310,6 +310,7 @@ export default class MyPlanSlider extends Component {
                 /></GestureHandlerRootView>
                 }
             </View>
+                <Text style={styles.subTitleFont}>{moment(new Date()).format('YYYY年MM月DD日')} {getWeek(new Date())}</Text>
         </View>
     );
   }

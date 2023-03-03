@@ -108,7 +108,7 @@ export class DrawerModal extends React.Component {
         if (gestureDistance > 50) {
           this.close('plan', this.props.close)
         } else {
-          Animated.spring(this.state.panPlan, { toValue: { x: 0, y:  platform.isIOS() ?  0 : 0 }, useNativeDriver: false, }).start();
+          Animated.spring(this.state.panPlan, { toValue: { x: 0, y: 0 }, useNativeDriver: false, }).start();
         }
       },
     });
@@ -188,7 +188,7 @@ export class DrawerModal extends React.Component {
     }
     else {
       Animated.timing(this.state.panPlan, {
-        toValue: {x:0, y: platform.isIOS() ? 0 : this.STATUS_BAR_HEIGHT },
+        toValue: {x:0, y: 0 },
         duration: 400,
         easing: Easing.ease,
         useNativeDriver: false
