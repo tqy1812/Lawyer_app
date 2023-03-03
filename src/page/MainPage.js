@@ -276,6 +276,7 @@ class MainPage extends Component {
   }
   onRegistered = (deviceToken) => {
     const { dispatch } = this.props;
+    console.log('.......deviceToken='+deviceToken);
     dispatch(actionAuth.reqUserUpdate(undefined, deviceToken, (result, error)=>{
       if(error){
         Toast.show(error.info)
