@@ -19,6 +19,7 @@ import {
   NativeModules,
   Alert,
   StatusBar,
+  ImageBackground
 } from 'react-native';
 import {
   WebView as WebViewX5
@@ -52,7 +53,7 @@ import MyFinishPlanSheet from "../components/MyFinishPlanSheet";
 import moment from 'moment';
 import actionAuth from '../actions/actionAuth';
 import BackgroundTimer from 'react-native-background-timer';
-
+import ImageArr from '../common/ImageArr';
 const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
@@ -687,11 +688,11 @@ class MainPage extends Component {
   }
   render() {
     const { menuVisible } = this.state;
-    const STATUS_BAR_HEIGHT = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
+    const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     // console.log('..onBackButtonPressAndroid', this.props.navigation.getState())
     // console.log('................================' + globalData.getTop())
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
@@ -781,20 +782,20 @@ class MainPage extends Component {
         }
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
-        <View style={[styles.contentView, { top: 0, height: windowHeight, }]} {...this._panResponderMyPlan.panHandlers}>
+        <View style={[styles.contentView, { top: 0, height: windowHeight }]} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={this.startRecord} onPressOut={this.stopRecord}>
-            <View style={[styles.topMenu, {height: 50 + STATUS_BAR_HEIGHT}]}>
-              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + STATUS_BAR_HEIGHT}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
+            <View style={[styles.topMenu, {height: 50 + menuHeight}]}>
+              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
               {/* <View style={styles.sliderView}>
               <View style={styles.sliderBtn}></View>
             </View> */}
-              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + STATUS_BAR_HEIGHT}]} onPress={() => this.props.navigation.navigate('Daily')}>
+              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
-            <View style={[styles.sliderTopBtn, {top: 50 + STATUS_BAR_HEIGHT}]}></View>
+            <View style={[styles.sliderTopBtn, {top: 50 + menuHeight}]}></View>
             <Text style={styles.content} >
             </Text>
             <View style={styles.sliderBottomBtn}></View>
@@ -806,7 +807,7 @@ class MainPage extends Component {
             <MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(callback)=>this.handleFinishTimeEnd.bind(this, callback)} {...this.props}/>
             </MyFinishPlanSheet> */}
         </View>
-      </SafeAreaView>)
+        </View>)
   }
 }
 

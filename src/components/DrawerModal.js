@@ -156,7 +156,7 @@ export class DrawerModal extends React.Component {
         if (gestureDistance < -50) {
           this.close('finish', this.props.close)
         } else {
-          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: this.STATUS_BAR_HEIGHT}, useNativeDriver: false, }).start();
+          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: 0}, useNativeDriver: false, }).start();
         }
       },
     });
@@ -176,7 +176,7 @@ export class DrawerModal extends React.Component {
   open = (type) => {
     if(type==='finish') {
       Animated.timing(this.state.panFinish, {
-        toValue: {x:0, y: this.STATUS_BAR_HEIGHT},
+        toValue: {x:0, y: 0},
         duration: 400,
         easing: Easing.ease,
         useNativeDriver: false
@@ -328,7 +328,7 @@ export class DrawerModal extends React.Component {
           } ]: [panStyle,
             {
               width: Common.window.width,
-            height: platform.isIOS() ? Common.window.height - this.STATUS_BAR_HEIGHT:  Common.window.height + this.STATUS_BAR_HEIGHT,
+            height: platform.isIOS() ? Common.window.height:  Common.window.height + this.STATUS_BAR_HEIGHT,
             display: 'flex',
             flex: 1,
             justifyContent: "flex-start",

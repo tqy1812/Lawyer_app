@@ -25,7 +25,10 @@ import FinishPlanItem from "../components/FinishPlanItem";
 import MyButton from "./MyButton";
 import { destroySibling, showLoading } from "./ShowModal";
 import * as Storage from '../common/Storage';
+import platform from "../utils/platform";
+import GlobalData from "../utils/GlobalData";
 
+const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
 export default class MyFinishPlanSlider extends Component {
   constructor(props) {
@@ -303,14 +306,14 @@ export default class MyFinishPlanSlider extends Component {
           <FinishPlanItem item={item}  finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} caseList={caseList} />
       </Swipeable>
     );
-
+    const headHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     return (
           <View style={styles.container}>
             {refreshing && <View style={styles.mask}>
               <ActivityIndicator size="large" color="black" />
             </View>}
              <View style={styles.content}>
-              <View style={styles.head}><Text style={styles.headFont}>计时</Text></View>
+              <View style={[styles.head, {height: 45+headHeight}]}><Text style={styles.headFont}>计时</Text></View>
                { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
                
                {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}><SectionList
@@ -384,7 +387,6 @@ const styles = StyleSheet.create({
   },
   head: {
     width: Common.window.width,
-    height: 45,
     justifyContent: "center",
     alignItems: "center"
   },
