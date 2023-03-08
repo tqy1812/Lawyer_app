@@ -27,6 +27,7 @@ import { destroySibling, showLoading, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
 import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
+import {logger} from "../utils/utils";
 
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
@@ -46,7 +47,7 @@ export default class MyFinishPlanSlider extends Component {
   }
 
   componentDidMount () {
-    console.log('.......MyFinishPlanSlider componentDidMount')
+    logger('.......MyFinishPlanSlider componentDidMount')
     InteractionManager.runAfterInteractions(() => {
       const {dispatch, user} = this.props;
       const {caseList} = this.state;
@@ -148,9 +149,9 @@ export default class MyFinishPlanSlider extends Component {
   setFinishTimeEnd = (value, callback) => {
     if(this.props.finishTimeEnd) {
       this.props.finishTimeEnd(value, (id, content) => {
-        // console.log('.......updateProcess'+ id+ '....' + content)
+        // logger('.......updateProcess'+ id+ '....' + content)
         this.updateProcess(id, content, (item)=>{
-          console.log('.......updateProcess'+ JSON.stringify(item))
+          logger('.......updateProcess'+ JSON.stringify(item))
           if(moment(item.end_time).diff(moment(new Date())) < 0 && moment(item.start_time).format('YYYY-MM-DD') === moment(value.start_time).format('YYYY-MM-DD')) {
             let temp = updateFinish(this.state.DATA, item);
             let totalTime = this.state.totalTime - value.fee_time + item.fee_time
@@ -176,7 +177,7 @@ export default class MyFinishPlanSlider extends Component {
     showLoading();
     dispatch(actionProcess.reqChangeTimesProcess(id, content, (rs, error)=>{
       // destroySibling();
-      // console.log(rs)
+      // logger(rs)
       if(error) {
         destroySibling();
         Toast.show(error.info);
@@ -191,7 +192,7 @@ export default class MyFinishPlanSlider extends Component {
     const { DATA, page, loadFinish } = this.state;
     const {dispatch} = this.props;
     const that = this;
-    console.log('.......loadModeData')
+    logger('.......loadModeData')
     if (loadFinish || page === 1) {
       return;
     }
@@ -266,7 +267,7 @@ export default class MyFinishPlanSlider extends Component {
       [
         {
           text: "取消",
-          onPress: () => console.log("Cancel Pressed"),
+          onPress: () => logger("Cancel Pressed"),
           style: "cancel"
         },
         { text: "确定", onPress: () => {
@@ -298,7 +299,7 @@ export default class MyFinishPlanSlider extends Component {
   }
   render() {
     const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
-    console.log('................data==='+DATA.length)
+    logger('................data==='+DATA.length)
     const Item = ({ item }) => (
       <Swipeable
         friction={1}

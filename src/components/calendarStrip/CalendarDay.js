@@ -5,7 +5,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-
+import {logger} from "../../utils/utils"
 import { Text, View, Animated, Easing, LayoutAnimation, TouchableOpacity } from "react-native";
 import styles from "./Calendar.style.js";
 
@@ -170,7 +170,7 @@ class CalendarDay extends Component {
   //Function to check if provided date is the same as selected one, hence date is selected
   //using isSame moment query with "day" param so that it check years, months and day
   isDateSelected = (date, selectedDate) => {
-    console.log(moment(selectedDate).format('DD'))
+    logger(moment(selectedDate).format('DD'))
     this.setState({ selectedDay: moment(selectedDate).format('DD') })
     if (!date || !selectedDate) {
       return date === selectedDate;

@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { View, Animated, PixelRatio } from "react-native";
 
 import moment from "moment";
-
+import {logger} from "../../utils/utils"
 import CalendarHeader from "./CalendarHeader";
 import CalendarDay from "./CalendarDay";
 import CalendarDayName from './CalendarDayName';
@@ -181,7 +181,7 @@ class CalendarStrip extends Component {
       selectedDate = { selectedDate: this.setLocale(this.props.selectedDate)};
       days = this.createDays(startingDate.startingDate, selectedDate.selectedDate);
 
-    console.log('*************startingDate'+ startingDate.format('YYYYMMDD') + ' '+ selectedDate.format('YYYYMMDD'))
+    logger('*************startingDate'+ startingDate.format('YYYYMMDD') + ' '+ selectedDate.format('YYYYMMDD'))
       updateState = true;
     }
     if (updateState) {
@@ -232,7 +232,7 @@ class CalendarStrip extends Component {
   }
 
   getInitialStartingDate = () => {
-    console.log('*************getInitialStartingDate')
+    logger('*************getInitialStartingDate')
     if (this.props.startingDate) {
       return this.setLocale(this.props.startingDate);
     } else {
@@ -245,7 +245,7 @@ class CalendarStrip extends Component {
 
   //Set startingDate to the previous week
   getPreviousWeek = () => {
-    console.log('*************getPreviousWeek')
+    logger('*************getPreviousWeek')
     if (this.props.scrollable) {
       this.scroller.scrollLeft();
       return;
@@ -258,7 +258,7 @@ class CalendarStrip extends Component {
 
   //Set startingDate to the next week
   getNextWeek = () => {
-    console.log('*************getNextWeek')
+    logger('*************getNextWeek')
     if (this.props.scrollable) {
       this.scroller.scrollRight();
       return;
@@ -272,7 +272,7 @@ class CalendarStrip extends Component {
   // Set the current visible week to the selectedDate
   // When date param is undefined, an update always occurs (e.g. initialize)
   updateWeekStart = (newStartDate, originalStartDate = this.state.startingDate) => {
-    console.log('......updateWeekStart')
+    logger('......updateWeekStart')
     if (!this.props.updateWeek) {
       return originalStartDate;
     }
@@ -294,7 +294,7 @@ class CalendarStrip extends Component {
 
   // updateWeekView allows external callers to update the visible week.
   updateWeekView = date => {
-    console.log('.....updateWeekView', date)
+    logger('.....updateWeekView', date)
     if (this.props.scrollable) {
       this.scroller.scrollToDate(date);
       return;
@@ -309,7 +309,7 @@ class CalendarStrip extends Component {
 
   //Handling press on date/selecting date
   onDateSelected = selectedDate => {
-    console.log('*************onDateSelected')
+    logger('*************onDateSelected')
     let newState;
     if (this.props.scrollable) {
       newState = { selectedDate };
@@ -327,7 +327,7 @@ class CalendarStrip extends Component {
 
   // Get the currently selected date (Moment JS object)
   getSelectedDate = () => {
-    console.log('*************getSelectedDate')
+    logger('*************getSelectedDate')
     if (!this.state.selectedDate || this.state.selectedDate.valueOf() === 0) {
       return; // undefined (no date has been selected yet)
     }
@@ -336,7 +336,7 @@ class CalendarStrip extends Component {
 
   // Set the selected date.  To clear the currently selected date, pass in 0.
   setSelectedDate = date => {
-    console.log('*************setSelectedDate')
+    logger('*************setSelectedDate')
     let mDate = moment(date);
     this.onDateSelected(mDate);
     if (this.props.scrollToOnSetSelectedDate) {
@@ -350,7 +350,7 @@ class CalendarStrip extends Component {
   // Gather animations from each day. Sequence animations must be started
   // together to work around bug in RN Animated with individual starts.
   registerAnimation = animation => {
-    console.log('*************registerAnimation')
+    logger('*************registerAnimation')
     this.animations.push(animation);
     if (this.animations.length >= this.state.days.length) {
       if (this.props.calendarAnimation?.type.toLowerCase() === "sequence") {
@@ -365,7 +365,7 @@ class CalendarStrip extends Component {
   // Responsive sizing based on container width.
   // Debounce to prevent rapid succession of onLayout calls from thrashing.
   onLayout = event => {
-    console.log('*************onLayout')
+    logger('*************onLayout')
     if (event.nativeEvent.layout.width === this.layout.width) {
       return;
     }
@@ -380,7 +380,7 @@ class CalendarStrip extends Component {
   }
 
   onLayoutDebounce = layout => {
-    console.log('*************onLayoutDebounce')
+    logger('*************onLayoutDebounce')
     const {
       numDaysInWeek,
       responsiveSizingOffset,
@@ -422,13 +422,13 @@ class CalendarStrip extends Component {
   }
 
   getItemLayout = (data, index) => {
-    console.log('*************getItemLayout')
+    logger('*************getItemLayout')
     const length = this.state.height * 1.05; //include margin
     return { length, offset: length * index, index }
   }
 
   updateMonthYear = (weekStartDate, weekEndDate) => {
-    console.log('*************updateMonthYear')
+    logger('*************updateMonthYear')
     this.setState({
       weekStartDate,
       weekEndDate,
@@ -436,7 +436,7 @@ class CalendarStrip extends Component {
   }
 
   createDayProps = selectedDate => {
-    console.log('*************createDayProps selectedDate'+ this.state.startingDate.format('YYYYMMDD'))
+    logger('*************createDayProps selectedDate'+ this.state.startingDate.format('YYYYMMDD'))
     return {
       selectedDate,
       onDateSelected: this.onDateSelected,
@@ -476,7 +476,7 @@ class CalendarStrip extends Component {
   }
 
   createDays = (startingDate, selectedDate = this.state.selectedDate) => {
-    console.log('*************createDays')
+    logger('*************createDays')
     const {
       numDaysInWeek,
       useIsoWeekday,
@@ -544,8 +544,8 @@ class CalendarStrip extends Component {
     }
     // else Scroller sets weekStart/EndDate and fires onWeekChanged.
 
-    console.log(JSON.stringify(newState))
-    console.log(initialScrollerIndex)
+    logger(JSON.stringify(newState))
+    logger(initialScrollerIndex)
     return newState;
   }
 
@@ -605,7 +605,7 @@ class CalendarStrip extends Component {
     // calendarHeader renders above or below of the dates & left/right selectors if dates are shown.
     // However if dates are hidden, the header shows between the left/right selectors.
 
-    console.log('*************startingDate'+ this.state.startingDate.format('YYYYMMDD'))
+    logger('*************startingDate'+ this.state.startingDate.format('YYYYMMDD'))
     return (
       <View
         style={[
@@ -619,7 +619,7 @@ class CalendarStrip extends Component {
             this.renderHeader()
           }
           <View style={styles.dayName}>
-              {this.state.daysName && this.state.daysName.length> 0 &&  
+              {this.state.daysName && this.state.daysName.length> 0 &&
               this.state.daysName.map((item)=>{
                 return (
                   <CalendarDayName {...this.props} dateName={item}/>
@@ -641,8 +641,8 @@ class CalendarStrip extends Component {
             />}
 
             <View onLayout={this.onLayout} style={styles.calendarDates}>
-            
-             
+
+
               {this.props.showDate ? (
                 this.renderWeekView(this.state.days)
               ) : (

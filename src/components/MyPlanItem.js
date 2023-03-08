@@ -11,7 +11,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, produce} from '../utils/utils';
+import {getWeek, getWeekXi, produce, logger } from '../utils/utils';
 import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import { showLoading } from "./ShowModal";
@@ -34,9 +34,9 @@ export default class MyPlanItem extends Component {
 
   render() {
     const {item} = this.props;
-    // console.log(item.is_wakeup)
-    // console.log(this.props.caseList, this.props.caseList[item.case.id+''][2])
-    return ( 
+    //logger(item.is_wakeup)
+    //logger(this.props.caseList, this.props.caseList[item.case.id+''][2])
+    return (
       <TouchableOpacity style={styles.listItemView} activeOpacity={1}>
         <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
         <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''] ? this.props.caseList[item.case.id+''][2] : '#ff0000',}]}></View>

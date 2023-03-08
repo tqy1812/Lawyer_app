@@ -17,6 +17,7 @@ import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
+import {logger} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -57,7 +58,7 @@ class CenterPage extends Component {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
-      // console.log('....................' , this.props.navigation.getState());
+      // logger('....................' , this.props.navigation.getState());
       // this.setState({ routes: this.props.navigation.getState().routes});
       this.props.dispatch(actionAuth.reqUserInfo()); 
     }
@@ -67,15 +68,15 @@ class CenterPage extends Component {
       const {dispatch} = this.props;
       const {routes} = this.state;
       dispatch({type: TYPE_AUTH_USER, data: {}});
-      // console.log('.....#################',routes)
+      // logger('.....#################',routes)
       // const route = routes.find(r=> r.name == 'Center');
-      // console.log('.....',route)
+      // logger('.....',route)
       // if(route && route.params.key) {
       //   this.props.navigation.goBack(route.params.key);
       // }
       
       this.props.navigation.dispatch(state => {
-        console.log('.......logOut', state)
+        logger('.......logOut', state)
         return CommonActions.reset({
           ...state,
           routes: [{name: 'Login'}],
@@ -93,7 +94,7 @@ class CenterPage extends Component {
         mediaType,
       })
         .then((image) => {
-          console.log('received image', image);
+          logger('received image', image);
           this.setState({
             image: {
               uri: image.path,
@@ -116,7 +117,7 @@ class CenterPage extends Component {
         cropping: true,
         cropperCircleOverlay: true,
       }).then(image => {
-        console.log('....handlePromiseSelectPhoto'+ JSON.stringify(image));
+        logger('....handlePromiseSelectPhoto'+ JSON.stringify(image));
         const file = {
           uri: image.path,      
           name: image.modificationDate +'.jpg',           
@@ -142,7 +143,7 @@ class CenterPage extends Component {
     cleanupImages() {
       ImagePicker.clean()
         .then(() => {
-          console.log('removed tmp images from tmp directory');
+          logger('removed tmp images from tmp directory');
         })
         .catch((e) => {
           alert(e);
@@ -152,8 +153,8 @@ class CenterPage extends Component {
       const {caseList, caseListInfo, userInfo} = this.props;
       const { imgAvatar} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
-      // console.log('..onBackButtonPressAndroid', this.props.navigation)
-      // console.log(caseList)
+      // logger('..onBackButtonPressAndroid', this.props.navigation)
+      // logger(caseList)
       return (
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />

@@ -10,6 +10,7 @@ import { View } from "react-native";
 import PropTypes from "prop-types";
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 import moment from "moment";
+import { logger} from "../../utils/utils"
 
 export default class CalendarScroller extends Component {
   static propTypes = {
@@ -109,7 +110,7 @@ export default class CalendarScroller extends Component {
 
   // Scroll left, guarding against start index.
   scrollLeft = () => {
-    console.log('....scrollLeft')
+    logger('....scrollLeft')
     if (this.state.visibleStartIndex === 0) {
       return;
     }
@@ -120,7 +121,7 @@ export default class CalendarScroller extends Component {
   // Scroll right, guarding against end index.
   scrollRight = () => {
     const newIndex = this.state.visibleStartIndex + this.state.numVisibleItems;
-    console.log('....scrollRight'+ newIndex)
+    logger('....scrollRight'+ newIndex)
     if (newIndex >= (this.state.numDays - 1)) {
       this.rlv.scrollToEnd(true); // scroll to the very end, including padding
       return;
@@ -130,7 +131,7 @@ export default class CalendarScroller extends Component {
 
   // Scroll to given date, and check against min and max date if available.
   scrollToDate = (date) => {
-    console.log('.........scrollToDate')
+    logger('.........scrollToDate')
     let targetDate = moment(date).subtract(Math.round(this.state.numVisibleItems / 2) - 1, "days");
     const {
       minDate,
@@ -154,7 +155,7 @@ export default class CalendarScroller extends Component {
 
   // Shift dates when end of list is reached.
   shiftDaysForward = (visibleStartDate = this.state.visibleStartDate) => {
-    console.log('....shiftDaysForward')
+    logger('....shiftDaysForward')
     const prevVisStart = visibleStartDate.clone();
     const newStartDate = prevVisStart.clone().subtract(Math.floor(this.state.numDays / 3), "days");
     this.updateDays(prevVisStart, newStartDate);
@@ -162,14 +163,14 @@ export default class CalendarScroller extends Component {
 
   // Shift dates when beginning of list is reached.
   shiftDaysBackward = (visibleStartDate) => {
-    console.log('....shiftDaysBackward')
+    logger('....shiftDaysBackward')
     const prevVisStart = visibleStartDate.clone();
     const newStartDate = prevVisStart.clone().subtract(Math.floor(this.state.numDays * 2/3), "days");
     this.updateDays(prevVisStart, newStartDate);
   }
 
   updateDays = (prevVisStart, newStartDate) => {
-    console.log('*****updateDays')
+    logger('*****updateDays')
     if (this.shifting) {
       return;
     }
@@ -261,8 +262,8 @@ export default class CalendarScroller extends Component {
     //     }
     //   }
     // }
-    
-    console.log(visibleStartDate.format('YYYYMMDD'), visibleStartIndex, numVisibleItems)
+
+    logger(visibleStartDate.format('YYYYMMDD'), visibleStartIndex, numVisibleItems)
     this.setState({
       visibleStartDate,
       visibleEndDate,
@@ -271,11 +272,11 @@ export default class CalendarScroller extends Component {
   }
 
   onScroll = (event, x, y) =>{
-    // console.log(x, y)
+    // logger(x, y)
   }
 
   onScrollStart = (event) => {
-    console.log('............onScrollStart')
+    logger('............onScrollStart')
     const {onWeekScrollStart} = this.props;
     const {prevStartDate, prevEndDate} = this.state;
 
@@ -302,7 +303,7 @@ export default class CalendarScroller extends Component {
       onWeekScrollEnd,
     } = this.props;
     // Prev dates required only if scroll callbacks are defined
-    console.log('............onScrollBeginDrag='+ onWeekScrollStart +'  ' + onWeekScrollEnd)
+    logger('............onScrollBeginDrag='+ onWeekScrollStart +'  ' + onWeekScrollEnd)
     if (!onWeekScrollStart && !onWeekScrollEnd) {
       return;
     }
@@ -326,7 +327,7 @@ export default class CalendarScroller extends Component {
 
   onScrollEndDrag = (event) => {
     let x = event.nativeEvent.contentOffset.x;
-    console.log('............onScrollEndDrag' + x)
+    logger('............onScrollEndDrag' + x)
     // if(this.dragX - x > 0) {  //left
     //   this.scrollLeft();
     // }

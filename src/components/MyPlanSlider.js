@@ -16,7 +16,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, produce, removeItem, getHoliday} from '../utils/utils';
+import {getWeek, getWeekXi, produce, removeItem, getHoliday, logger} from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
@@ -70,7 +70,7 @@ export default class MyPlanSlider extends Component {
   }
 
   componentDidMount () {
-    console.log('.........MyPlanSlider .componentDidMount')
+    logger('.........MyPlanSlider .componentDidMount')
     InteractionManager.runAfterInteractions(() => {
       const {dispatch, user} = this.props;
       const { caseList } = this.state;
@@ -104,7 +104,7 @@ export default class MyPlanSlider extends Component {
   }
 
   initList = () => {
-    console.log('.........MyPlanSlider .initList')
+    logger('.........MyPlanSlider .initList')
     const {dispatch, } = this.props;
     const { caseList } = this.state;
     const that = this;
@@ -237,7 +237,7 @@ export default class MyPlanSlider extends Component {
       [
         {
           text: "取消",
-          onPress: () => console.log("Cancel Pressed"),
+          onPress: () => logger("Cancel Pressed"),
           style: "cancel"
         },
         { text: "确定", onPress: () => {
@@ -269,7 +269,7 @@ export default class MyPlanSlider extends Component {
   }
   render() {
     const {DATA, caseList, loadFinish, refreshing} = this.state;
-    console.log(loadFinish)
+    logger(loadFinish)
     const Item = ({ item }) => (
       <Swipeable
         friction={1}

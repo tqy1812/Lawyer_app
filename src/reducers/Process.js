@@ -1,9 +1,9 @@
 import {combineReducers} from 'redux';
 import actionProcess from '../actions/actionProcess';
-
+import {logger} from "../utils/utils"
 function planList(state = [], action) {
   if (action.type === actionProcess.TYPE_PROCESS_PLAN_LIST) {
-    // console.log(action.data)
+    // logger(action.data)
     return action.data
   }
   return state;
@@ -11,7 +11,7 @@ function planList(state = [], action) {
 
 function finishList(state = [], action) {
   if (action.type === actionProcess.TYPE_PROCESS_FINISH_LIST) {
-    // console.log(action.data)
+    // logger(action.data)
     return action.data
   }
   return state;
@@ -21,7 +21,7 @@ function finishList(state = [], action) {
 
 function dailyList(state = [], action) {
   if (action.type === actionProcess.TYPE_DAILY_PROCESS_LIST) {
-    // console.log(action.data)
+    // logger(action.data)
     return action.data
   }
   return state;

@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import {logger} from '../utils/utils'
 const userRecord = 'userRecord';
 const autoLogin = 'autoLogin';
 const caseList = 'caseList_';
@@ -13,15 +14,15 @@ export const getUserRecord = async () => {
               }
           })
           .catch(error => {
-              // console.log("::::getUserRecord"+ error);
+              // logger("::::getUserRecord"+ error);
               return null;
           });
   };
-  
+
   export const setUserRecord = async (user) => {
     await AsyncStorage.setItem(userRecord, user,null);
   };
-  
+
   export const getAutoLogin = async () => {
     return await AsyncStorage.getItem(autoLogin)
           .then((login) => {
@@ -32,15 +33,15 @@ export const getUserRecord = async () => {
               }
           })
           .catch(error => {
-              // console.log("::::getAutoLogin"+ error);
+              // logger("::::getAutoLogin"+ error);
               return '0';
           });
   };
-  
+
   export const setAutoLogin = async (login) => {
     await AsyncStorage.setItem(autoLogin, login, null);
   };
-  
+
   export const getCaseList = async (phone) => {
     return await AsyncStorage.getItem(caseList + phone)
           .then((item) => {
@@ -51,11 +52,11 @@ export const getUserRecord = async () => {
               }
           })
           .catch(error => {
-              // console.log("::::getUserRecord"+ error);
+              // logger("::::getUserRecord"+ error);
               return null;
           });
   };
-  
+
   export const setCaseList = async (phone,list) => {
     await AsyncStorage.setItem(caseList+phone, list,null);
   };
@@ -70,11 +71,11 @@ export const getUserRecord = async () => {
               }
           })
           .catch(error => {
-              // console.log("::::getUserRecord"+ error);
+              // logger("::::getUserRecord"+ error);
               return null;
           });
   };
-  
+
   export const setCaseListUserColor = async (phone,list) => {
     await AsyncStorage.setItem(caseListUseColor+phone, list.toString(),null);
   };

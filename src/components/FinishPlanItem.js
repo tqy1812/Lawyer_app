@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat} from '../utils/utils';
+import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, logger} from '../utils/utils';
 import IcomoonIcon from "./IcomoonIcon";
 import Wave from "./Wave";
 
@@ -35,11 +35,11 @@ class FinishPlanItem extends React.Component {
   }
 
   setFinishTimeEnd = (value, callback) => {
-    // console.log('.....setFinishTimeEnd===='+value.id)
+    // logger('.....setFinishTimeEnd===='+value.id)
     // if(!item.end_time) {
       if(this.props.finishTimeEnd) {
         this.props.finishTimeEnd(value, (rs)=>{
-            console.log('....................setFinishTimeEnd change=' + JSON.stringify(rs))
+            logger('....................setFinishTimeEnd change=' + JSON.stringify(rs))
             // if(rs && rs.id){
             //   this.setState({item: {...rs, case: this.state.item.case} })
             // }
@@ -51,7 +51,7 @@ class FinishPlanItem extends React.Component {
 
   render() {
     const {recoding, item} = this.state;
-    // console.log(item)
+    // logger(item)
     return (
       <TouchableOpacity activeOpacity={!item.end_time ? 0.2 : 1} style={styles.listItemView} onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)}>
           <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''] ? this.props.caseList[item.case.id+''][2] : '#ff0000'}]}></View>
@@ -59,7 +59,7 @@ class FinishPlanItem extends React.Component {
           <View style={styles.listItemTimeView}>
             <Text style={styles.listItemTime}>{item.start_time ? moment(item.start_time).format('HH:mm') : '--:--'} ~ {item.end_time ? moment(item.end_time).format('HH:mm') : ''}</Text>
             { item.end_time && <Text style={styles.listItemToatlTime}>{item.fee_time > 0 ? getFeeTimeFormat(item.fee_time) : '00:00'}</Text>}
-            { !item.end_time && <TouchableOpacity style={styles.setTimeView} onLongPress={() => this.setFinishTime(item)} onPressOut={()=>this.setFinishTimeEnd(item)}><IcomoonIcon name='clock-edit' size={20} color='#fff' /></TouchableOpacity>} 
+            { !item.end_time && <TouchableOpacity style={styles.setTimeView} onLongPress={() => this.setFinishTime(item)} onPressOut={()=>this.setFinishTimeEnd(item)}><IcomoonIcon name='clock-edit' size={20} color='#fff' /></TouchableOpacity>}
           </View>
           { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
         </TouchableOpacity >

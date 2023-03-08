@@ -10,6 +10,7 @@ import {
 import Common from '../common/constants';
 import GlobalData from "../utils/GlobalData";
 import platform from '../utils/platform';
+import {logger} from '../utils/utils';
 class MyFinishPlanSheet extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +26,7 @@ class MyFinishPlanSheet extends Component {
   setModalVisible(visible) {
     const { closeFunction, height } = this.props;
     const { animatedTranslateY, pan } = this.state;
-     const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() :  Common.statusBarHeight 
+     const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() :  Common.statusBarHeight
     if (visible) {
       this.setState({ modalVisible: visible });
       Animated.timing(pan, {
@@ -57,7 +58,7 @@ class MyFinishPlanSheet extends Component {
       onStartShouldSetPanResponderCapture: ()=> false,
       onPanResponderMove: (e, gestureState) => {
         if (gestureState.dy < 0) {
-          // console.log(gestureState.dy)
+          // logger(gestureState.dy)
           Animated.event([null, { dy: pan.y }], {
             useNativeDriver: false,
           })(e, gestureState);
@@ -101,7 +102,7 @@ class MyFinishPlanSheet extends Component {
     const panStyle = {
       transform: pan.getTranslateTransform(),
     };
-    // console.log(animatedTranslateY)
+    // logger(animatedTranslateY)
     return (
       <Modal transparent visible={modalVisible} onRequestClose={onRequestClose}>
         <View

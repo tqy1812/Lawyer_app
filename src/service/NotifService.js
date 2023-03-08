@@ -21,7 +21,7 @@ export default class NotifService {
   //   // });
     
   //   // PushNotification.getChannels(function(channels) {
-  //   //   console.log(channels);
+  //   //   logger(channels);
   //   // });
   // }
 
@@ -35,7 +35,7 @@ export default class NotifService {
   //       importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
   //       vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
   //     },
-  //     (created) => console.log(`createChannel '${this.defaultChannelid}' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+  //     (created) => logger(`createChannel '${this.defaultChannelid}' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
   //   );
   //   // PushNotification.createChannel(
   //   //   {
@@ -46,7 +46,7 @@ export default class NotifService {
   //   //     importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
   //   //     vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
   //   //   },
-  //   //   (created) => console.log(`createChannel '${this.soundChannelId}' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+  //   //   (created) => logger(`createChannel '${this.soundChannelId}' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
   //   // );
   // }
 
@@ -61,12 +61,12 @@ export default class NotifService {
   //       importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
   //       vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
   //     },
-  //     (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+  //     (created) => logger(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
   //   );
   // }
 
   // popInitialNotification() {
-  //   PushNotification.popInitialNotification((notification) => console.log('InitialNotication:', notification));
+  //   PushNotification.popInitialNotification((notification) => logger('InitialNotication:', notification));
   // }
 
   // localNotif(soundName, title, message) {

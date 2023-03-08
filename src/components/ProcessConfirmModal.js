@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
-import { getWeekXi, getHoliday } from '../utils/utils';
+import { getWeekXi, getHoliday, logger } from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
@@ -39,7 +39,7 @@ export default class ProcessConfirmModal extends Component {
   }
 
   componentDidMount() {
-    console.log('.......ProcessConfirmModal componentDidMount')
+    logger('.......ProcessConfirmModal componentDidMount')
 
   }
 
@@ -57,7 +57,7 @@ export default class ProcessConfirmModal extends Component {
     dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, (rs, error) => {
       destroySibling();
       if (error) {
-        console.log(error.info)
+        logger(error.info)
         Toast.show(error.info);
       }
       else {
@@ -73,7 +73,7 @@ render() {
   const { itemNotice, itemName } = this.state;
   return (
     <View style={styles.modalContainer}>
-      
+
       <View style={styles.container}>
         {caseList && item && item.id && JSON.stringify(caseList) != '{}' && <View style={styles.processInfo}>
           <View style={styles.listTitleView}>

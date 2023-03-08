@@ -2,7 +2,7 @@
 
 class NotificationHandler {
   // onNotification(notification) {
-  //   console.log('NotificationHandler:', notification);
+  //   logger('NotificationHandler:', notification);
 
   //   if (typeof this._onNotification === 'function') {
   //     this._onNotification(notification);
@@ -10,7 +10,7 @@ class NotificationHandler {
   // }
 
   // onRegister(token) {
-  //   console.log('NotificationHandler:', token);
+  //   logger('NotificationHandler:', token);
 
   //   if (typeof this._onRegister === 'function') {
   //     this._onRegister(token);
@@ -18,9 +18,9 @@ class NotificationHandler {
   // }
 
   // onAction(notification) {
-  //   console.log ('Notification action received:');
-  //   console.log(notification.action);
-  //   console.log(notification);
+  //   logger ('Notification action received:');
+  //   logger(notification.action);
+  //   logger(notification);
 
   //   if(notification.action === 'Yes') {
   //     PushNotification.invokeApp(notification);
@@ -29,7 +29,7 @@ class NotificationHandler {
 
   // // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
   // onRegistrationError(err) {
-  //   console.log(err);
+  //   logger(err);
   // }
   
   // attachRegister(handler) {

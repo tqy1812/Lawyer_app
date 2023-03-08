@@ -24,7 +24,7 @@ import platform from '../utils/platform';
 import { is } from 'date-fns/locale';
 import { isToday } from 'date-fns';
 import GlobalData from '../utils/GlobalData';
-// import {locale} from '../utils/utils'
+import {logger} from '../utils/utils'
 const Toast = Overlay.Toast;
 
 class ActivityPage extends Component {
@@ -92,7 +92,7 @@ class ActivityPage extends Component {
         this.handleList(currentTime);
     }
     backToday = () => {
-        //console.log('backToday')
+        //logger('backToday')
         const that = this;
         this.handleList(moment(new Date()).format('YYYY-MM-DD'), () => {
             that.myCalendar && that.myCalendar.setSelectedDate(moment(new Date()));
@@ -121,8 +121,8 @@ class ActivityPage extends Component {
 
         const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight;
         const top = STATUS_BAR_HEIGHT + 20; 
-        //   console.log(today)
-        // console.log(this.props)
+        //   logger(today)
+        // logger(this.props)
         return (
             <SafeAreaView style={styles.container}>
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -182,9 +182,9 @@ class ActivityPage extends Component {
                                 let startTime = item.start_time ? moment(item.start_time).format('HH:mm') : moment(item.wakeup_time).format('HH:mm');
                                 let endTime = item.end_time ? moment(item.end_time).format('HH:mm') : '';
                                 let top = getContentView(startTime, endTime);
-                                // console.log(startTime, endTime, top)
+                                // logger(startTime, endTime, top)
                                 let color = this.props.caseList[item.case.id + ''];
-                                // console.log(color)
+                                // logger(color)
                                 return (
                                     <View style={[styles.activityView, { backgroundColor: color[0], width: (Common.window.width - 51) / item.wSplit, height: top[1] < 1 ? 50 : top[1] * 50, top: 8 + top[0] * 50, left: 50 + item.lIndex * (Common.window.width - 50) / item.wSplit, borderRadius: 8, }]}>
                                         <View style={styles.activityLeft}><Text style={styles.activityLeftFont} numberOfLines={2} ellipsizeMode={'tail'}>{item.name}</Text>

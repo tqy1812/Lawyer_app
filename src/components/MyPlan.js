@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, getHoliday} from '../utils/utils';
+import {getWeek, getWeekXi, getHoliday, logger} from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 /**
@@ -54,7 +54,7 @@ export default class MyPlan extends Component {
       const { page } = this.state;
       const that = this;
       // if (JSON.stringify(caseList)==='{}') {
-      //   dispatch(actionCase.reqCaseList()); 
+      //   dispatch(actionCase.reqCaseList());
       // }
       dispatch(actionProcess.reqProcessPlanList(1, undefined, (data)=>{
         let todayItem = {
@@ -75,7 +75,7 @@ export default class MyPlan extends Component {
         else {
           that.setState({DATA: [todayItem]});
         }
-      })); 
+      }));
     });
   }
 
@@ -118,16 +118,16 @@ export default class MyPlan extends Component {
       if(rs.rs.length > 0) {
         DATA =  DATA.concat(rs)
         flag = true;
-      } 
+      }
       if (flag) {
         that.setState({page: page + 1, DATA: DATA});
       }
-      
-    })); 
+
+    }));
   }
   render() {
     const {DATA} = this.state;
-    console.log(DATA)
+    logger(DATA)
     const Item = ({ item }) => item.wakeup_time ? (
       <View style={styles.listItemView}>
         <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
@@ -135,7 +135,7 @@ export default class MyPlan extends Component {
         <View style={styles.listItemRightView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.description}</Text></View>
       </View>
     ) : (<View style={styles.empty}><Text style={styles.emptyFont}>未来的日子只有假期~</Text></View>);
-    
+
 
     return (
       <Modal
@@ -145,7 +145,7 @@ export default class MyPlan extends Component {
         onRequestClose={() => {
           this.setModalVisiable(false);
         }}
-      >     
+      >
         <View style={styles.bottomModalContainer}>
             <TouchableOpacity
               style={styles.bottomMask}
@@ -153,16 +153,16 @@ export default class MyPlan extends Component {
                 this.setModalVisiable(false);
               }}
             />
-            <View style={styles.bottomContent}>  
-                <View style={styles.title}><Text style={styles.titleFont} onLongPress={this.scollToTop}>计划</Text></View>      
-                <View style={styles.subTitle}><Text style={styles.subTitleFont}>{moment(new Date()).format('YYYY年MM月DD日')} {getWeek(new Date())}</Text></View>      
+            <View style={styles.bottomContent}>
+                <View style={styles.title}><Text style={styles.titleFont} onLongPress={this.scollToTop}>计划</Text></View>
+                <View style={styles.subTitle}><Text style={styles.subTitleFont}>{moment(new Date()).format('YYYY年MM月DD日')} {getWeek(new Date())}</Text></View>
                 {JSON.stringify(this.props.caseList)!='{}' && DATA && DATA.length > 0 && <SectionList
                   ref={ (ref) => { this.myPlanListRef = ref } }
                   ListHeaderComponent={null}
                   sections={DATA}
                   keyExtractor={(item, index) => item + index}
                   renderItem={({ item }) => <Item item={item} />}
-                  renderSectionHeader={({ section: { date,  isFestival, isShowYear} }) => moment(date).isSame(moment(), "day") ? 
+                  renderSectionHeader={({ section: { date,  isFestival, isShowYear} }) => moment(date).isSame(moment(), "day") ?
                   (<View style={styles.titleToday}><View style={styles.titleTime}><Text style={styles.titleTodayFont}>今天</Text><Text style={styles.titleTodayWeekFont}>{getWeekXi(new Date())}</Text></View><Text style={styles.titleTodayFont1}>{getHoliday(date)}</Text></View>)
                   :
                   (
