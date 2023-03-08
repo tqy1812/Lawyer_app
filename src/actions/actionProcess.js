@@ -84,8 +84,8 @@ export default class actionProcess {
   static reqGetProcess(id, callback) {
     return (dispatch, getState) => {
       let state = getState();
-      dispatch(request.getProcess(id, (rs)=>{
-        if(callback) callback(rs);
+      dispatch(request.getProcess(id, (rs, error)=>{
+        if(callback) callback(rs, error);
       }));
     };
   }

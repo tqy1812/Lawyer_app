@@ -286,8 +286,6 @@ PODS:
     - glog
   - react-native-background-timer (2.4.1):
     - React-Core
-  - react-native-iflytek (1.0.7):
-    - React
   - react-native-pager-view (6.1.2):
     - React-Core
   - react-native-safe-area-context (4.4.1):
@@ -437,7 +435,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
-  - react-native-iflytek (from `../node_modules/react-native-iflytek`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -522,8 +519,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-background-timer:
     :path: "../node_modules/react-native-background-timer"
-  react-native-iflytek:
-    :path: "../node_modules/react-native-iflytek"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
@@ -605,7 +600,6 @@ SPEC CHECKSUMS:
   React-jsinspector: 8134ee22182b8dd98dc0973db6266c398103ce6c
   React-logger: 1e7ac909607ee65fd5c4d8bea8c6e644f66b8843
   react-native-background-timer: 117fffdc9b0d6f144444bb49029f94275a45fdb5
-  react-native-iflytek: 91e3a6696af55ed3eb1ca418f3505a1c03bdc2c4
   react-native-pager-view: 8af1115b8f477db3a73d8e18083ab90b54a2c84e
   react-native-safe-area-context: ec0d85aca8110dae9327430a9541fec165352dab
   react-native-webview: d8de2d8d2f7226d56b23fcb45a7da60c52ed0312

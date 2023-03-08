@@ -12,12 +12,10 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { SafeAreaInsetsContext, withSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
-import Header from '../components/Header';
 import { connect } from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import Wave from '../components/Wave';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
 import { CheckBox } from 'react-native-elements';
@@ -31,6 +29,7 @@ import WebSocketClient from "../utils/WebSocketClient";
 import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
+import { showConfirmModal, showToast } from '../components/ShowModal';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
 
@@ -64,7 +63,7 @@ class LoginPage extends Component {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin, navigation, insets } = this.props;
-            console.log("isLogin" + isLogin, insets.top)
+            // console.log("isLogin" + isLogin, insets.top)
             this.globalData.setTop(insets.top);
             console.log("isLogin" + isLogin, this.globalData.getTop())
             if (isLogin) {
@@ -152,9 +151,10 @@ class LoginPage extends Component {
 
             if (autoLogin == false) {
                 Toast.show('请勾选同意政策和服务协议');
+                // Toast.show('请勾选同意政策和服务协议');
                 return;
             }
-            Toast.show("登录中", 10);
+            Toast.show("登录中");
             dispatch(actionAuth.reqLogin(phone, password, (res, error) => {
                 console.log(res)
                 if (error) {
@@ -208,7 +208,7 @@ class LoginPage extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-                <View style={styles.topPart}>
+                 <View style={styles.topPart}>
                     <Text
                         style={styles.topPartTitle}>{'律时'}</Text>
                     <Text

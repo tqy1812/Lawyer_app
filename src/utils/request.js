@@ -1,6 +1,7 @@
 import axios from "axios";
 import Error from "./Error";
 import {Overlay} from 'react-native';
+import { showToast } from "../components/ShowModal";
 const Toast = Overlay.Toast;
 
 axios.defaults.withCredentials = true; // 跨域请求时是否需要使用凭证

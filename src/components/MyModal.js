@@ -61,15 +61,15 @@ export default class MyModal extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
-    if (!_.isEmpty(this.props, newProps)) {
-      if (this.state.isVisible != newProps.isVisible) {
-        this.setState({
-          isVisible: newProps.isVisible
-        });
-      }
-    }
-  }
+  // componentWillReceiveProps(newProps) {
+  //   if (!_.isEmpty(this.props, newProps)) {
+  //     if (this.state.isVisible != newProps.isVisible) {
+  //       this.setState({
+  //         isVisible: newProps.isVisible
+  //       });
+  //     }
+  //   }
+  // }
 
   render() {
     return (

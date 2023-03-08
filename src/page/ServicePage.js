@@ -42,28 +42,26 @@ class ServicePage extends Component {
     constructor(props) {
         super(props);
         
-        this.finishRef = React.createRef();
+        // this.finishRef = React.createRef();
         this.state = {
             
         };
     }
 
     componentDidMount() {
-      showPlanModal(<DrawerModal
-        component={<View style={{width: Common.window.width, flex:1, backgroundColor: '#ff0000'}}><Text>测试</Text></View>}
-        ref={e => this.planRef = e}
-        height={Common.window.height - 100}
-        showType={'bottom'}
-      /> );
+      // showPlanModal(<DrawerModal
+      //   component={<View style={{width: Common.window.width, flex:1, backgroundColor: '#ff0000'}}><Text>测试</Text></View>}
+      //   ref={e => this.planRef = e}
+      //   height={Common.window.height - 100}
+      //   showType={'bottom'}
+      // /> );
     }
 
     // 登录
     handSubmit() {
-      this.planRef.open('plan')
-        // InteractionManager.runAfterInteractions(() => {
-        //     const {dispatch} = this.props;
-        //     this.props.navigation.goBack();
-        // });
+      // this.planRef.open('plan')
+      const {dispatch} = this.props;
+      this.props.navigation.goBack();
     }
     handleDateSelected() {
     }

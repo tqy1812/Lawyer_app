@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet,ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet,ActivityIndicator} from 'react-native';
 import Common from '../common/constants';
 import Wave from './Wave';
 import GlobalData from "../utils/GlobalData";
@@ -8,12 +8,17 @@ import RootSiblings from 'react-native-root-siblings';  //全局弹框组件
 let sibling = null;
 let planSibling = null;
 let finishSibling = null;
+let confirmModal = null;
 let elements = [];
 const globalData = GlobalData.getInstance();
 export const showModal = (component) => {
     sibling && sibling.destroy()
     sibling = new RootSiblings(component);
     elements.push(sibling);
+};
+export const showConfirmModal = (component) => {
+    confirmModal && confirmModal.destroy();
+    confirmModal = new RootSiblings(component);
 };
 
 export const showPlanModal = (component) => {
@@ -36,6 +41,10 @@ export const destroyAllSibling = () =>  {
     planSibling && planSibling.destroy();
 }
 
+export const destroyConfirmSibling = () =>  {
+    confirmModal && confirmModal.destroy();
+}
+
 export const update = (index, component) => sibling && sibling.update(<View>{component}</View>)
 export const showLoading = () => {
     sibling && sibling.destroy()
@@ -49,6 +58,14 @@ export const showLoading = () => {
 export const showRecoding = () => {
     sibling = new RootSiblings(<View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View>);
       elements.push(sibling);
+};
+
+export const showToast = (value) => {
+    sibling = new RootSiblings(<View style={styles.toastStyle}><View style={styles.toastViewStyle}>
+        <Text style={styles.toastFontStyle}>{value}</Text>
+      </View></View>);
+      elements.push(sibling);
+    setTimeout(destroySibling,1000)
 };
 
 const headHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
@@ -82,5 +99,29 @@ const styles = StyleSheet.create({
       backgroundColor: "#000",
       opacity: 0.5,
       top: 0,
+    },
+    toastStyle: {
+        position: 'absolute',
+        width: Common.window.width,
+        opacity: 1,
+        height: Common.window.height,
+        top: 0,
+        zIndex: 99,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    toastViewStyle: {
+        backgroundColor: '#000000e0',
+        padding: 10,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        minWidth: 32,
+    },
+    toastFontStyle: {
+        fontSize: 13,
+        color: '#fff'
     },
 })

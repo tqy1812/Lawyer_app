@@ -25,6 +25,9 @@ export default class WebSocketClient {
         brokerURL: url,
         debug: function (str) {
             console.log('debug STOMP: ' + str);
+            if(str=='Issuing close on the websocket') {
+              WebSocketClient.myInstance.initWebSocket(WebSocketClient.userId);
+            }
         },
         reconnectDelay: 200,
         onConnect: function (frame) {

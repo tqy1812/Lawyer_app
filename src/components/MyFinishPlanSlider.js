@@ -23,7 +23,7 @@ import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
 import FinishPlanItem from "../components/FinishPlanItem";
 import MyButton from "./MyButton";
-import { destroySibling, showLoading } from "./ShowModal";
+import { destroySibling, showLoading, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
 import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
@@ -178,6 +178,7 @@ export default class MyFinishPlanSlider extends Component {
       // destroySibling();
       // console.log(rs)
       if(error) {
+        destroySibling();
         Toast.show(error.info);
       } else if( rs && rs.id) {
          if(callback) callback(rs)
@@ -274,8 +275,8 @@ export default class MyFinishPlanSlider extends Component {
             dispatch(actionProcess.reqDeleteProcess(item.id, (rs, error)=>{
               InteractionManager.runAfterInteractions(() => {
                 if(error) {
-                  Toast.show(error.info);
                   destroySibling();
+                  Toast.show(error.info);
                   that.setState({refreshing: false})
                 }
                 else {

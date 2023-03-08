@@ -22,7 +22,7 @@ import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
 import MyPlanItem from "../components/MyPlanItem";
 import MyButton from "./MyButton";
-import { destroySibling, showLoading } from "./ShowModal";
+import { destroySibling, showLoading, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
 const Toast = Overlay.Toast;
 export default class MyPlanSlider extends Component {
@@ -211,8 +211,8 @@ export default class MyPlanSlider extends Component {
     showLoading();
     dispatch(actionProcess.reqWakeUpProcess(item.id, !item.is_wakeup, (rs, error)=>{
       if(error) {
-        Toast.show(error.info);
         destroySibling();
+        Toast.show(error.info);
         that.setState({ refreshing: false});
       }
       else {
@@ -245,8 +245,8 @@ export default class MyPlanSlider extends Component {
             // that.setState({refreshing: true})
             dispatch(actionProcess.reqDeleteProcess(item.id, (rs, error)=>{
               if(error) {
-                Toast.show(error.info);
                 destroySibling();
+                Toast.show(error.info);
                 that.setState({refreshing: false})
               }
               else {

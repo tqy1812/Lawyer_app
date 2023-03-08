@@ -27,7 +27,7 @@ import {
 import {
   WebView
 } from 'react-native-webview';
-import { Recognizer } from 'react-native-iflytek';
+import { Recognizer } from 'react-native-speech-iflytek';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification, { Importance } from 'react-native-push-notification';
 import { connect } from 'react-redux';
@@ -36,7 +36,7 @@ import MyModal from '../components/MyModal';
 import Common from "../common/constants";
 import platform from "../utils/platform";
 import { showDrawerModal, DrawerModal, } from '../components/DrawerModal';
-import { destroySibling, destroyAllSibling, showLoading, showModal, showRecoding, showPlanModal, showFinishModal } from '../components/ShowModal';
+import { destroySibling, destroyAllSibling, showLoading, showModal, showRecoding, showPlanModal, showFinishModal, showConfirmModal, showToast } from '../components/ShowModal';
 import MyFinishPlanSlider from '../components/MyFinishPlanSlider';
 import MyPlanSlider from '../components/MyPlanSlider';
 import actionProcess from '../actions/actionProcess';
@@ -54,6 +54,7 @@ import moment from 'moment';
 import actionAuth from '../actions/actionAuth';
 import BackgroundTimer from 'react-native-background-timer';
 import ImageArr from '../common/ImageArr';
+import ProcessConfirmModal from '../components/ProcessConfirmModal';
 const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
@@ -88,14 +89,14 @@ class MainPage extends Component {
       talkSuccessModalVisible: false,
       talkContent: '',
       item: {
-        // id: 313,
-        // name:'cessd',
-        // case: {
-        //   id: 3,
-        //   name: 'dedddd',
-        // },
-        // start_time: '2022-01-02 11:00:00',
-        // end_time: '2022-01-02 12:00:00'
+        id: 313,
+        name:'cessd',
+        case: {
+          id: 3,
+          name: 'dedddd',
+        },
+        start_time: '2022-01-02 11:00:00',
+        end_time: '2022-01-02 12:00:00'
       },
       itemNotice: false,
       itemName: '',
@@ -112,7 +113,13 @@ class MainPage extends Component {
     document.getElementsByTagName('head')[0].appendChild(meta);`
     this.wv = React.createRef();
     // console.log('###########', Recognizer);
-    Recognizer.init("ed00abad");
+    if(platform.isAndroid()) {
+      Recognizer.init("ed00abad");
+    }
+    else{
+      this.RecognizerIos = NativeModules.SpeechRecognizerModule;
+      this.RecognizerIos.init("ed00abad");
+    }
     const that = this;
     this.timeStampMove = 0;
     this._panResponderMyPlan = PanResponder.create({
@@ -178,7 +185,7 @@ class MainPage extends Component {
     // AppState.addEventListener('memoryWarning', function(){
     //   console.log("内存报警....");
     // });
-    this.recognizerEventEmitter = new NativeEventEmitter(Recognizer);
+    this.recognizerEventEmitter = new NativeEventEmitter(platform.isAndroid() ?  Recognizer : this.RecognizerIos);
     this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
     this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
     if (platform.isAndroid()) {
@@ -272,7 +279,7 @@ class MainPage extends Component {
     if (platform.isAndroid()) {
       NativeModules.WebSocketWorkManager.stopBackgroundWork();
     }
-    DeviceEventEmitter.removeAllListeners();
+    // DeviceEventEmitter.removeAllListeners();
   }
   onRegistered = (deviceToken) => {
     const { dispatch } = this.props;
@@ -484,36 +491,53 @@ class MainPage extends Component {
     if(platform.isIOS()){
       const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
       console.log('...........isHasMic', isHasMic);
-      if(isHasMic){
-        Toast.show('未检测到麦克风');
-        return;
-      }
+      // if(isHasMic){
+      //   Toast.show('未检测到麦克风');
+      //   return;
+      // }
     }
     // Toast.show('请开始添加');
     showRecoding();
     // this.setState({isRecoding: true});
     // this.sendRecording('recording')
-    Recognizer.start();
+    if(platform.isAndroid()){
+      Recognizer.start();
+    }
+    else{
+      this.RecognizerIos.start();
+    }
   }
 
   stopRecord = () => {
     const that = this;
-    Recognizer.isListening().then(value => {
-      console.log('stopRecord..........' + value)
-      if (value) {
-        Recognizer.stop();
+    if(platform.isAndroid()){
+      Recognizer.isListening().then(value => {
+        console.log('stopRecord..........' + value)
+        if (value) {
+          Recognizer.stop();
+        }
         destroySibling();
-      }
-      // that.setState({isRecoding: false});
-    });
+        // that.setState({isRecoding: false});
+      });
+    }
+    else {
+      this.RecognizerIos.isListening().then(value => {
+        console.log('stopRecord..........' + value)
+        if (value) {
+          this.RecognizerIos.stop();
+        }
+        destroySibling();
+        // that.setState({isRecoding: false});
+      });
+    }
   }
 
   onRecognizerResult = (e) => {
-    console.log("result............." + JSON.stringify(e.result));
+    console.log("result............." + JSON.stringify(e.result), '.....' + e.isLast);
     if (!e.isLast) {
       return;
     }
-    if (e.result == '') {
+    if (e.result== '' || JSON.stringify(e.result)=="" )  {
       Toast.show('不好意思，没听清楚');
       this.setState({ updateItem: {} });
       // this.sendRecording('stop_recording');
@@ -592,8 +616,15 @@ class MainPage extends Component {
       if (code === '0') {
         const id = codeArr[1].replace('id:', '')
         if (id) {
-          dispatch(actionProcess.reqGetProcess(id, (rs) => {
-            that.setState({ loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name });
+          dispatch(actionProcess.reqGetProcess(id, (rs, error) => {
+            if(error) {
+              Toast.show(error.info)
+            }
+            else {
+              that.showConfirm(rs);
+              that.setState({ loading: false});
+            }
+            // that.setState({ loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name });
           }));
         }
         else {
@@ -616,12 +647,17 @@ class MainPage extends Component {
     if(platform.isIOS()){
       const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
       console.log('...........isHasMic', isHasMic);
-      if(isHasMic){
-        Toast.show('未检测到麦克风');
-        return;
-      }
+      // if(isHasMic){
+      //   Toast.show('未检测到麦克风');
+      //   return;
+      // }
     }
-    Recognizer.start();
+    if(platform.isAndroid()){
+      Recognizer.start();
+    }
+    else {
+      this.RecognizerIos.start();
+    }
     this.updateProcessCallback = null;
     // console.log('.....handleFinishTime' + JSON.stringify(item))
     this.setState({ updateItem: item });
@@ -629,16 +665,32 @@ class MainPage extends Component {
   handleFinishTimeEnd = (item, callback) => {
     const that = this;
     // console.log('.....handleFinishTimeEnd' + JSON.stringify(item))
-    Recognizer.isListening().then(value => {
-      console.log('stopRecord..........' + value)
-      if (value) {
-        Recognizer.stop();
-        this.updateProcessCallback = callback;
-      }
-      else {
-        that.setState({ updateItem: {} });
-      }
-    });
+    if(platform.isAndroid()){
+      Recognizer.isListening().then(value => {
+        console.log('stopRecord..........' + value)
+        if (value) {
+          Recognizer.stop();
+          this.updateProcessCallback = callback;
+        }
+        else {
+          that.setState({ updateItem: {} });
+          
+        }
+      });
+    }
+    else {
+      this.RecognizerIos.isListening().then(value => {
+        console.log('stopRecord..........' + value)
+        if (value) {
+          this.RecognizerIos.stop();
+          this.updateProcessCallback = callback;
+        }
+        else {
+          that.setState({ updateItem: {} });
+          
+        }
+      });
+    }
   }
   closeTalk = () => {
     this.setState({ talkModalVisible: false });
@@ -672,7 +724,7 @@ class MainPage extends Component {
       destroySibling();
       that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
       if (error) {
-        Toast.show(error.info)
+        Toast.show(error.info);
       }
       else {
         DeviceEventEmitter.emit('refreshDailyProcess');
@@ -681,18 +733,31 @@ class MainPage extends Component {
     }));
   }
 
+  sendProcessConfirm = () => {
+    const that = this;
+    that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
+    DeviceEventEmitter.emit('refreshDailyProcess');
+    this.planRef && this.planRef.open('plan');
+  }
+
   closeLoading = () => {
     this.setState({ loading: false });
   }
   showMenu = () => {
     this.setState({ menuVisible: true });
   }
+
+  showConfirm = (item) => {
+    console.log(item)
+    if(item && item.id) {
+      showConfirmModal(<ProcessConfirmModal {...this.props} submint={this.sendProcessConfirm} item={item} close={this.closeTalkSuccess}/>);
+    }
+  }
   render() {
     const { menuVisible } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-    console.log('statusBarHeight11......', StatusBar.currentHeight)
+    // console.log('statusBarHeight11......', StatusBar.currentHeight)
     // console.log('..onBackButtonPressAndroid', this.props.navigation.getState())
-    // console.log('................================' + globalData.getTop())
     return (
       <View style={styles.container}>
         <StatusBar translucent={true}  backgroundColor='transparent' barStyle="light-content" />
@@ -776,7 +841,7 @@ class MainPage extends Component {
             javaScriptEnabled={true}
             injectedJavaScript={this.INJECTEDJAVASCRIPT}
             onMessage={(event) => { this.handleNativeMessage(event.nativeEvent.data) }}
-            mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+            mediaPlaybackRequiresUserAction={false}
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
             incognito={true}
             onLoadEnd={this.closeLoading.bind(this)}
@@ -784,7 +849,7 @@ class MainPage extends Component {
         }
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
-        <View style={[styles.contentView, { top: 0, height: windowHeight }]} {...this._panResponderMyPlan.panHandlers}>
+        <View style={[styles.contentView, { top: 0, height: windowHeight}]} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={this.startRecord} onPressOut={this.stopRecord}>
             <View style={[styles.topMenu, {height: 50 + menuHeight}]}>
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
