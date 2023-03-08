@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     fontSize: 19,
     padding: 0,
-    lineHeight: 19,
+    lineHeight: 24,
     color: '#606266',
     fontWeight: 'bold',
     marginRight: 3,
@@ -284,6 +284,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#909399',
     fontWeight: 'bold',
+    marginTop: 2,
   },
   setNoticeView: {
     backgroundColor: '#eee',

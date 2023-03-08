@@ -1,7 +1,7 @@
 
 import * as request from './actionRequest';
 import moment from 'moment';
-import {getProcessList, getFeeTimeFormat, sortList} from '../utils/utils';
+import {getProcessList, getFeeTimeFormat, sortList, logger} from '../utils/utils';
 
 export default class actionProcess {
 
@@ -36,7 +36,7 @@ export default class actionProcess {
               list.rs = [todayItem];
             }
           }
-          // console.log(list)
+          // logger(list)
           if(callback) callback(list, isFinish);
       }));
     };
@@ -48,9 +48,9 @@ export default class actionProcess {
       dispatch(request.getProcessList(page, true, (rs)=>{
           let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem) : {last: undefined, rs: []};
           let totalTime = rs.data && rs.data.monthly_total_fee_time ? rs.data.monthly_total_fee_time : 0;
-          // console.log(Math.ceil(rs.total / 10), rs.page, rs.page >= Math.ceil(rs.total / 10))
+          // logger(Math.ceil(rs.total / 10), rs.page, rs.page >= Math.ceil(rs.total / 10))
           let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / 10)  : true; 
-          // console.log('.....reqProcessFinishList='+ list.rs.length)
+          // logger('.....reqProcessFinishList='+ list.rs.length)
           if(callback) callback(list, totalTime, isFinish);
           if(page==1) {
             dispatch({type: actionProcess.TYPE_PROCESS_FINISH_LIST, data: list.rs});
@@ -65,7 +65,7 @@ export default class actionProcess {
       let state = getState();
       dispatch(request.getDailyProcessList(1, time, (rs)=>{
           let list = rs.data && rs.data.processes && rs.data.processes.length>0 ? sortList(rs.data.processes) : [];
-          console.log(list)
+          logger(list)
           if(callback) callback(list);
           dispatch({type: actionProcess.TYPE_DAILY_PROCESS_LIST, data: list});
       }));

@@ -2,6 +2,7 @@ import axios from "axios";
 import Error from "./Error";
 import {Overlay} from 'react-native';
 import { showToast } from "../components/ShowModal";
+import { logger } from "./utils";
 const Toast = Overlay.Toast;
 
 axios.defaults.withCredentials = true; // 跨域请求时是否需要使用凭证
@@ -16,8 +17,8 @@ let request = {
      * @param failCallback 请求失败回调
      */
     get: (url, method, headers, callback, failCallback) => {
-        console.log(url + method)
-        console.log(headers)
+        logger(url + method)
+        logger(headers)
         axios({
             url:url + method,
             method:'GET',
@@ -35,7 +36,7 @@ let request = {
                 if (callback) callback(rs.data, err);
             }
         }).catch((error) => {
-            console.log(error);
+            logger(error);
             Toast.show("网络错误");
             failCallback(error);
         });
@@ -51,8 +52,8 @@ let request = {
      * @param updateCallback
      */
     post: (url, method, data, headers, callback, logoutCallback, updateCallback) => {
-        console.log(url + method)
-        console.log(data)
+        logger(url + method)
+        logger(data)
         axios({
             url: url + method,
             method: 'POST',
@@ -61,7 +62,7 @@ let request = {
             // responseType: 'json'
         }).then((rs) => {
             let err = null;
-            // console.log(rs)
+            // logger(rs)
             if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
                     err = new Error(Error.ERR_REQ, rs.data.code, rs.data.data && rs.data.data.msg ?  rs.data.data.msg : rs.data.msg, method);
@@ -73,7 +74,7 @@ let request = {
                 if (callback) callback(rs.data, err);
             }
         }).catch((error) => {
-            console.log(error);
+            logger(error);
             Toast.show("网络错误");
         });
     },

@@ -119,7 +119,7 @@ export function getWeek (date) { // 参数时间戳
         startArray = [parseInt(endArray[0]) == 0 ? 0 : parseInt(endArray[0])-1, parseInt(endArray[0]) == 0 ? 0 :0];
       }
     }
-    // console.log(endArray)
+    // logger(endArray)
     // if(startArray.length<=1 && endArray.length<=1 ) {
     //   return [0, 0]
     // }
@@ -151,7 +151,7 @@ export function getWeek (date) { // 参数时间戳
             endArray = [parseInt(startArray[0])+1, parseInt(startArray[0])== 23 ? 0 : parseInt(startArray[1])];
             end = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
           }
-          // console.log(start, end, pos)
+          // logger(start, end, pos)
           if(pos.length > 0) {
             let flag = 0;
             let tp= [];
@@ -161,16 +161,16 @@ export function getWeek (date) { // 参数时间戳
               let poxy = getStartEnd(temp, longPos);
               let s = poxy[0];
               let e = poxy[1];
-              // console.log(s, e, data[i].id, JSON.stringify(pos1), !flag )
+              // logger(s, e, data[i].id, JSON.stringify(pos1), !flag )
               if(!flag && (start>=s && start < e)) {
                 for(let k=0; k < temp.length; k++) {
-                  // console.log('不在范围内',start, end,temp[k], end <= temp[k]['start'] || start>=temp[k]['end'])
+                  // logger('不在范围内',start, end,temp[k], end <= temp[k]['start'] || start>=temp[k]['end'])
                   if (end <= temp[k]['start'] || start>=temp[k]['end']) {  //不在范围内
-                    console.log('1******', data[i].id, j, pos.length-1, k, temp.length-1)
+                    logger('1******', data[i].id, j, pos.length-1, k, temp.length-1)
                     tp= [];
                     // tp1= [];
                     for(let p=0; p < k; p++) {
-                      // console.log('tp******', temp[p].id)
+                      // logger('tp******', temp[p].id)
                       tp.push({...temp[p], blank: true});
                       // tp1.push(temp[p].id);
                     }
@@ -181,7 +181,7 @@ export function getWeek (date) { // 参数时间戳
                     }
                   }
                   else if(start < temp[k]['start'] && end>=temp[k]['start']) {
-                    // console.log('2******', data[i].id)
+                    // logger('2******', data[i].id)
                     //前
                     pos[j].unshift({start, end, ...data[i], blank: false});
                     pos1[j].unshift(data[i].id);
@@ -190,7 +190,7 @@ export function getWeek (date) { // 参数时间戳
                     flag = 1;
                     break;
                   } else if( k < temp.length - 1 && start>=temp[k]['start'] && start < temp[k+1]['start'] && end > temp[k+1]['start']) {
-                    // console.log('3******', data[i].id)
+                    // logger('3******', data[i].id)
                     let p =  k + 1;    //后
                     pos[j].splice(p, 0, {start, end, ...data[i], blank: false});
                     pos1[j].splice(p, 0, data[i].id);
@@ -199,7 +199,7 @@ export function getWeek (date) { // 参数时间戳
                     flag = 1;
                     break;
                   } else if ( k == temp.length -1 && start>=temp[k]['start']  && start < temp[k]['end']) {
-                    // console.log('4******', data[i].id)
+                    // logger('4******', data[i].id)
                     pos[j].push({start, end, ...data[i], blank: false});
                     pos1[j].push(data[i].id);
                     tp= [];
@@ -230,7 +230,7 @@ export function getWeek (date) { // 参数时间戳
               // rs.push({...data[i], lIndex: 0, wSplit: 1});
               pos.push([{start, end, ...data[i], blank: false}]);
               pos1.push([data[i].id]);
-              // console.log('********' + i + '******' + rs.length)
+              // logger('********' + i + '******' + rs.length)
             }
           }
           else {
@@ -240,7 +240,7 @@ export function getWeek (date) { // 参数时间戳
           }
         }
       }
-      // console.log(pos)
+      // logger(pos)
       for (let j=0; j<pos.length; j++) {
         let temp = pos[j];
         for(let k=0; k < temp.length; k++) {
@@ -255,7 +255,7 @@ export function getWeek (date) { // 参数时间戳
           }
         }
       }
-      // console.log(rs)
+      // logger(rs)
       return rs
     }
     return []
@@ -281,9 +281,9 @@ export function getWeek (date) { // 参数时间戳
   function getStartEnd(temp, filtArr) {
     let newArr = [];
     let min=-1, max=-1; 
-    // console.log(temp, filtArr)
+    // logger(temp, filtArr)
     for (let i=0;  i< temp.length; i++) {
-      // console.log(temp[i], filtArr.find(o=> o.id == temp[i].id))
+      // logger(temp[i], filtArr.find(o=> o.id == temp[i].id))
       if(filtArr.find(o=> o.id == temp[i].id) && temp.length > 2) {
        
       }
@@ -302,7 +302,7 @@ export function getWeek (date) { // 参数时间戳
         }
       }
     }
-    // console.log(min, max)
+    // logger(min, max)
     return [min, max];
   }
 
@@ -348,7 +348,7 @@ export function getWeek (date) { // 参数时间戳
     preYear = timeYear;
     ++index;
   }
-  // console.log(rs)
+  // logger(rs)
   return {last, rs};
  }
 
@@ -358,7 +358,7 @@ export function getWeek (date) { // 参数时间戳
     let hourStr = hour < 10 ? '0'+hour : hour;
     let m = min % 60;
     let mStr = m <  10 ? '0'+m : m;
-    // console.log(hourStr + ':' + mStr)
+    // logger(hourStr + ':' + mStr)
     return  hourStr + ':' + mStr+ '’';
   }
   return '00:00’';
@@ -368,7 +368,7 @@ export function getWeek (date) { // 参数时间戳
   let newList = JSON.parse(JSON.stringify(list));
   newList.map(item=>{
     item.data.map(it=>{
-      // console.log(it.id === plan.id)
+      // logger(it.id === plan.id)
       if(it.id === plan.id){
         it.is_wakeup = !plan.is_wakeup;
         return it
@@ -397,7 +397,7 @@ export function updateFinish(list, finish) {
   let newList = JSON.parse(JSON.stringify(list));
   newList.map(item=>{
     item.data.map(it=>{
-      // console.log(it.id === plan.id)
+      // logger(it.id === plan.id)
       if(it.id === finish.id){
         it.wakeup_time = finish.wakeup_time;
         it.start_time = finish.start_time;
@@ -427,4 +427,10 @@ export function getHoliday(time) {
       return '假日'
    }
    return '';
+}
+
+export function logger(str, str1) {
+  if(Common.env == 'dev') {
+    console.log(str, str1)
+  }
 }

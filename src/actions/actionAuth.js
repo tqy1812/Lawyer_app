@@ -1,6 +1,7 @@
 
 import * as request from './actionRequest';
 import authHelper from '../helpers/authHelper';
+import { logger } from '../utils/utils';
 
 const updateUser = (dispatch, user, from=null, save=true) => {
     dispatch(request.reqSaveUser(user, save, from, null));
@@ -29,7 +30,7 @@ export default class actionAuth {
       let state = getState();
       dispatch(request.getInfo((rs, error)=>{
           if(rs) {
-            console.log('......reqUserInfo='+JSON.stringify(rs))
+            logger('......reqUserInfo='+JSON.stringify(rs))
             dispatch({type: actionAuth.USER_INFO, data: rs});
           }
           if(callback) callback()

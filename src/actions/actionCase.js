@@ -2,6 +2,7 @@
 import * as request from './actionRequest';
 import Common from "../common/constants";
 import * as Storage from '../common/Storage';
+import { logger } from '../utils/utils';
 export default class actionCase {
 
  static TYPE_CASE_LIST = 'TYPE_CASE_LIST'; // 任务列表
@@ -11,7 +12,7 @@ export default class actionCase {
     return (dispatch, getState) => {
       let state = getState();
       let user = state.Auth && state.Auth.user;
-      console.log ('reqCaseList....user........'+ JSON.stringify(user))
+      logger('reqCaseList....user........'+ JSON.stringify(user))
       dispatch(request.getCase((rs)=>{
           let list = rs.data && rs.data.cases ? rs.data.cases : [];
           let caseList = new Map();
@@ -19,13 +20,13 @@ export default class actionCase {
           for (let i=0; i < list.length; i++) {
             caseList[list[i]['id']] = Common.color[i+1];
             caseListUserColor.push(i+1);
-            // console.log(caseList)
+            // logger(caseList)
           }
-          // console.log(caseList)
+          // logger(caseList)
           dispatch({type: actionCase.TYPE_CASE_LIST_INFO, data: list});
           let newData = {};
           Storage.getCaseList(user.phone).then((list) => {
-            // console.log(list)
+            // logger(list)
             if (list) {
               newData = Object.assign({}, JSON.parse(list));
               let len =  Object.keys(newData).length;
@@ -35,7 +36,7 @@ export default class actionCase {
                 if(userColor){
                   newUserColor = userColor.split(',');
                   for (let key in caseList) {
-                    // console.log(!newData[key])
+                    // logger(!newData[key])
                     if(!newData[key]) {
                       if(newUserColor.indexOf(len+i)<0) {
                         newData[key] = Common.color[len+i];
@@ -57,7 +58,7 @@ export default class actionCase {
                 }
                 else {
                   for (let key in caseList) {
-                    // console.log(!newData[key])
+                    // logger(!newData[key])
                     if(!newData[key]) {
                       // newData.set(key, caseList[key]);
                       newData[key] = Common.color[len+i];
@@ -65,7 +66,7 @@ export default class actionCase {
                       i = i + 1;
                     }
                   }
-                  // console.log(newData)
+                  // logger(newData)
                 }
                 Storage.setCaseList(user.phone,JSON.stringify(newData));   
                 Storage.setCaseListUserColor(user.phone,JSON.stringify(newUserColor));   

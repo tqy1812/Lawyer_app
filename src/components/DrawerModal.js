@@ -13,6 +13,7 @@ import {destroySibling, showModal, showPlanModal, showFinishModal} from './ShowM
 import Common from '../common/constants';
 import platform from '../utils/platform';
 import GlobalData from '../utils/GlobalData';
+import { logger } from '../utils/utils';
 
 let ref = null;
 /**
@@ -65,14 +66,14 @@ export class DrawerModal extends React.Component {
     this.STATUS_BAR_HEIGHT =  platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight 
     this._panResponderPlan = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
-        console.log('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
+        logger('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
         if(gestureState.dx==0 && gestureState.dy==0) {
           return false
         }
         return true
       },
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
+        logger('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
         if(Math.abs(gestureState.dy) > 25) {
           return true;
         }
@@ -81,21 +82,21 @@ export class DrawerModal extends React.Component {
         }
       },
       onMoveShouldSetPanResponderCapture: (e, gestureState) => {
-        // console.log('onMoveShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        // logger('onMoveShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
         return false
       },
       onStartShouldSetPanResponderCapture: (e, gestureState) => {
-        // console.log('onStartShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        // logger('onStartShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
         return false
       },
       onPanResponderTerminationRequest:  (e, gestureState) => {
-        // console.log('onPanResponderTerminationRequest..........'+gestureState.dx+'.............'+gestureState.dy)
+        // logger('onPanResponderTerminationRequest..........'+gestureState.dx+'.............'+gestureState.dy)
         return false
       },
       onPanResponderGrant: (evt, gs) => {},
       onPanResponderMove:(e, gestureState) => {
         if (gestureState.dy > 0) {
-          console.log(gestureState.dy)
+          logger(gestureState.dy)
           Animated.event([null, { dy: this.state.panPlan.y }], {
             useNativeDriver: false,
           })(e, gestureState);
@@ -104,7 +105,7 @@ export class DrawerModal extends React.Component {
       onPanResponderRelease: (evt, gestureState) => {
         const gestureDistance = gestureState.dy;
         
-        console.log('gestureDistance.......................'+gestureState.dy)
+        logger('gestureDistance.......................'+gestureState.dy)
         if (gestureDistance > 50) {
           this.close('plan', this.props.close)
         } else {
@@ -115,14 +116,14 @@ export class DrawerModal extends React.Component {
 
     this._panResponderFinish = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
-        console.log('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
+        logger('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
         if(gestureState.dx==0 && gestureState.dy==0) {
           return false
         }
         return true
       },
       onMoveShouldSetPanResponder:  (e, gestureState) => {
-        console.log('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
+        logger('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
         if(Math.abs(gestureState.dy) > 25) {
           return true;
         }
@@ -131,21 +132,21 @@ export class DrawerModal extends React.Component {
         }
       },
       onMoveShouldSetPanResponderCapture: (e, gestureState) => {
-        // console.log('onMoveShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        // logger('onMoveShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
         return false
       },
       onStartShouldSetPanResponderCapture: (e, gestureState) => {
-        console.log('onStartShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        logger('onStartShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
         return false
       },
       onPanResponderTerminationRequest:  (e, gestureState) => {
-        // console.log('onPanResponderTerminationRequest..........'+gestureState.dx+'.............'+gestureState.dy)
+        // logger('onPanResponderTerminationRequest..........'+gestureState.dx+'.............'+gestureState.dy)
         return false
       },
       onPanResponderGrant: (evt, gs) => {},
       onPanResponderMove:  (e, gestureState) => {
         if (gestureState.dy < 0) {
-          // console.log(gestureState.dy)
+          // logger(gestureState.dy)
           Animated.event([null, { dy: this.state.panFinish.y }], {
             useNativeDriver: false,
           })(e, gestureState);
@@ -162,7 +163,7 @@ export class DrawerModal extends React.Component {
     });
   }
   componentDidMount() { 
-    console.log('***********drawermodal componentDidMount' );
+    logger('***********drawermodal componentDidMount' );
    
     // this.state.panPlan.setOffset(100)
     // Animated.timing(this.animated, {
@@ -237,7 +238,7 @@ export class DrawerModal extends React.Component {
   };
 
   render() {
-    // console.log(this.props.showType)
+    // logger(this.props.showType)
     const { panFinish, panPlan} = this.state;
     const panStyle = {
       transform: panFinish.getTranslateTransform(),
@@ -266,7 +267,7 @@ export class DrawerModal extends React.Component {
       inputRange: [0,0.2,0.3,0.5,0.9, 1],
       outputRange: [0,0,0,0,0,0.4]
     });
-    // console.log(".............this._panY="+this._panY)
+    // logger(".............this._panY="+this._panY)
     return (
       <>
         {/* <Animated.View

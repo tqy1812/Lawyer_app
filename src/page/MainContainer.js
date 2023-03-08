@@ -18,6 +18,7 @@ import Common from "../common/constants";
 import actionCase from "../actions/actionCase";
 import WebSocketClient from "../utils/WebSocketClient";
 import GlobalData from '../utils/GlobalData';
+import { logger } from '../utils/utils';
 
 const {width: windowWidth,height: windowHeight} = Common.window
 
@@ -67,7 +68,7 @@ class MainContainer extends Component {
   render() {
       const { scrollEnabled } = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight   //StatusBar.currentHeight
-      console.log("****STATUS_BAR_HEIGHT"+STATUS_BAR_HEIGHT)
+      logger("****STATUS_BAR_HEIGHT"+STATUS_BAR_HEIGHT)
      return (
       <SafeAreaView style={[styles.container]}>
         <StatusBar translucent={true} barStyle="dark-content" />

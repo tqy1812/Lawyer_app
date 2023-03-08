@@ -1,6 +1,7 @@
 import { DeviceEventEmitter } from 'react-native';
 import { Client, Message } from '@stomp/stompjs';
 import BackgroundTimer from 'react-native-background-timer';
+import { logger } from './utils';
 // const url = 'ws://192.168.30.96:15674/ws';
 // const url = 'ws://59.52.103.97:15674/ws';
 const url = 'wss://ws.kykyai.cn/ws';
@@ -24,43 +25,43 @@ export default class WebSocketClient {
         },
         brokerURL: url,
         debug: function (str) {
-            console.log('debug STOMP: ' + str);
+            logger('debug STOMP: ' + str);
             if(str=='Issuing close on the websocket') {
               WebSocketClient.myInstance.initWebSocket(WebSocketClient.userId);
             }
         },
         reconnectDelay: 200,
         onConnect: function (frame) {
-          console.log('############connected'+WebSocketClient.ws.connected, WebSocketClient.ws.webSocket, WebSocketClient.ws.active)
+          logger('############connected'+WebSocketClient.ws.connected, WebSocketClient.ws.webSocket, WebSocketClient.ws.active)
             // if(!WebSocketClient.subscription) {
           DeviceEventEmitter.emit('wsBind', WebSocketClient.userId);
             // }
  
         },
         onDisconnect: function (frame) {
-            console.log('STOMP onDisconnect details: ' + frame.body);
+          logger('STOMP onDisconnect details: ' + frame.body);
         },
         onStompError:  (frame) => {
-            console.log('STOMP onStompError details: ' + frame.body);
+          logger('STOMP onStompError details: ' + frame.body);
         },
         onWebSocketClose:  (evn) => {
-          console.log('STOMP onWebSocketClose details: ', this.isBackground);
+          logger('STOMP onWebSocketClose details: ', this.isBackground);
           WebSocketClient.myInstance.initWebSocket(WebSocketClient.userId);
           // if(this.isBackground)  {
           //   this.keepSocket = BackgroundTimer.setInterval(() => {
-          //     console.log('.....state', WebSocketClient.ws.webSocket.readyState)
+          //     logger('.....state', WebSocketClient.ws.webSocket.readyState)
           //     if (WebSocketClient.ws.webSocket.readyState === 1) {
           //       WebSocketClient.ws.webSocket.send('\x0A');
-          //       console.log('>>> PING');
+          //       logger('>>> PING');
           //     }
           //   }, 5000);
           // }
         },
         onChangeState:  (state) => {
-          console.log('STOMP onChangeState details: ', state);
+          logger('STOMP onChangeState details: ', state);
         },
         onWebSocketError:  (evn) => {
-          console.log('STOMP onWebSocketError details: ');
+          logger('STOMP onWebSocketError details: ');
         },
         forceBinaryWSFrames: true,
         appendMissingNULLonIncoming: true,
@@ -84,11 +85,11 @@ export default class WebSocketClient {
     if (!WebSocketClient.ws || !WebSocketClient.ws.webSocket) {
       WebSocketClient.ws = new Client(this.stompConfig);  
     }
-    console.log('############'+WebSocketClient.ws.connected + "" + WebSocketClient.ws.active + '.....id' + id)
+    logger('############'+WebSocketClient.ws.connected + "" + WebSocketClient.ws.active + '.....id' + id)
     if(!WebSocketClient.ws.connected) {
       WebSocketClient.ws.activate();
     } else if (WebSocketClient.ws.webSocket && WebSocketClient.ws.webSocket.readyState!==1){
-      console.log('############'+WebSocketClient.ws.webSocket.readyState)
+      logger('############'+WebSocketClient.ws.webSocket.readyState)
       WebSocketClient.ws = new Client(this.stompConfig);  
       WebSocketClient.ws.activate();
     }
@@ -103,7 +104,7 @@ export default class WebSocketClient {
     if(WebSocketClient.subscription) WebSocketClient.subscription.unsubscribe();
 
     WebSocketClient.subscription = WebSocketClient.ws.subscribe("/exchange/alarm-clock/employee_id."+id, function (message) {
-      console.log('############'+message.body);
+      clogger('############'+message.body);
       DeviceEventEmitter.emit('noticeMsg', message.body);
    });
   }
@@ -118,19 +119,19 @@ export default class WebSocketClient {
 
   backTimer () {
        this.keepSocket = BackgroundTimer.setInterval(() => {
-              console.log('.....state', WebSocketClient.ws.webSocket.readyState)
+        logger('.....state', WebSocketClient.ws.webSocket.readyState)
               if (WebSocketClient.ws.webSocket.readyState === 1) {
                 WebSocketClient.ws.webSocket.send('\x0A');
-                console.log('>>> PING');
+                logger('>>> PING');
               }
             }, 5000);
   }
 
   keepAlive () {
-    console.log('.....state', WebSocketClient.ws.webSocket.readyState)
+    logger('.....state', WebSocketClient.ws.webSocket.readyState)
     if (this.isBackground && WebSocketClient.ws.webSocket.readyState === 1) {
       WebSocketClient.ws.webSocket.send('\x0A');
-      console.log('>>> PING');
+      logger('>>> PING');
     }
     else {
       WebSocketClient.ws = new Client(this.stompConfig);  

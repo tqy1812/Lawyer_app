@@ -1,5 +1,6 @@
 let isCalled = false, timer;
 import { Overlay } from "react-native";
+import { logger } from "./utils";
 const Toast = Overlay.Toast;
 /**
  * @param functionTobeCalled method 对调函数体
@@ -15,7 +16,7 @@ export default function HandlerOnceTap(functionTobeCalled, interval = 900) {
     return functionTobeCalled();
   }
   else {
-    console.log('点击太快');
+    logger('点击太快');
     // Toast.info('点击太快', 1);
   }
 };

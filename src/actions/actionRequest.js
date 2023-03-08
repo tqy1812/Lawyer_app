@@ -2,6 +2,7 @@ import authHelper from "../helpers/authHelper";
 import request from "../utils/request";
 import * as Storage from '../common/Storage';
 import Common from "../common/constants";
+import { logger } from "../utils/utils";
 const api = Common.apiUrl;
 
 export const TYPE_AUTH_USER = "TYPE_AUTH_USER"; // 账号
@@ -10,10 +11,10 @@ export function reqSaveUser(user, save = true, from = null, callback = null) {
         if (user === undefined || user === null || user === {}) {
             user = {};
         } else if (user.token === null || user.token === undefined) {
-            console.log('::::::::: reqSaveUser:user.token为空，from:' + from);
+            logger('::::::::: reqSaveUser:user.token为空，from:' + from);
         }
         if (dispatch) {
-            // console.log('::::::::: reqSaveUser:user' + user);
+            // logger('::::::::: reqSaveUser:user' + user);
             dispatch({type: TYPE_AUTH_USER, data: user});
         }
         if ((from !== "loadRecord" || from !== "requestLoginout" ) && (user === null || user.access_token === null)) {
@@ -126,7 +127,7 @@ export function getCase(callback = null) {
         request_impl_get(api, method, (res, error) => {
             if(res) {
                 let retData = res.data;
-                // console.log(retData)
+                // logger(retData)
                 if (callback) {
                     callback(retData, error);
                 }
@@ -395,11 +396,11 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
             headers['token'] = obj.token;
             request.post(url, method, data, headers,
                 (rs, error) => {
-                    console.log(':::: request_impl: ' + JSON.stringify(rs));
+                    logger(':::: request_impl: ' + JSON.stringify(rs));
                     if(callback) callback(rs, error);
                 },
                 (reqKey) => {
-                    // console.log('xyz:::: logout callback ' + reqKey);
+                    // logger('xyz:::: logout callback ' + reqKey);
                     requestLoginout(dispatch, reqKey);
                 },
                 () => {
@@ -410,11 +411,11 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
         else{
             request.post(url, method, data, headers,
                 (rs, error) => {
-                    console.log(':::: error: ' + error);
+                    logger(':::: error: ' + error);
                     if(callback) callback(rs, error);
                 },
                 (reqKey) => {
-                    console.log('xyz:::: logout callback ' + reqKey);
+                    logger('xyz:::: logout callback ' + reqKey);
                     requestLoginout(dispatch, reqKey);
                 },
                 () => {
@@ -429,17 +430,17 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
 function request_impl_get(url, method, callback, dispatch = null) {
     let headers = {};
     Storage.getUserRecord().then((user) => {
-        console.log("request_impl_get",  user)
+        logger("request_impl_get",  user)
         if (user) {
             let obj = Object.assign({}, JSON.parse(user));
             headers['token'] = obj.token;
             request.get(url, method, headers,
                 (rs, error) => {
-                    console.log(':::: rs: ' + JSON.stringify(rs));
+                    logger(':::: rs: ' + JSON.stringify(rs));
                     if(callback) callback(rs, error);
                 },
                 (reqKey) => {
-                    console.log('xyz:::: logout callback ' + reqKey);
+                    logger('xyz:::: logout callback ' + reqKey);
                     // requestLoginout(dispatch, reqKey);
                 }
             );

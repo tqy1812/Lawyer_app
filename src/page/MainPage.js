@@ -41,7 +41,7 @@ import MyFinishPlanSlider from '../components/MyFinishPlanSlider';
 import MyPlanSlider from '../components/MyPlanSlider';
 import actionProcess from '../actions/actionProcess';
 import * as Storage from '../common/Storage';
-import { getWeekXi, getHoliday } from '../utils/utils';
+import { getWeekXi, getHoliday, logger } from '../utils/utils';
 import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import actionCase from "../actions/actionCase";
@@ -89,14 +89,14 @@ class MainPage extends Component {
       talkSuccessModalVisible: false,
       talkContent: '',
       item: {
-        id: 313,
-        name:'cessd',
-        case: {
-          id: 3,
-          name: 'dedddd',
-        },
-        start_time: '2022-01-02 11:00:00',
-        end_time: '2022-01-02 12:00:00'
+        // id: 313,
+        // name:'cessd',
+        // case: {
+        //   id: 3,
+        //   name: 'dedddd',
+        // },
+        // start_time: '2022-01-02 11:00:00',
+        // end_time: '2022-01-02 12:00:00'
       },
       itemNotice: false,
       itemName: '',
@@ -112,7 +112,7 @@ class MainPage extends Component {
     meta.setAttribute('name', 'viewport'); 
     document.getElementsByTagName('head')[0].appendChild(meta);`
     this.wv = React.createRef();
-    // console.log('###########', Recognizer);
+    // logger('###########', Recognizer);
     if(platform.isAndroid()) {
       Recognizer.init("ed00abad");
     }
@@ -126,7 +126,7 @@ class MainPage extends Component {
       onStartShouldSetPanResponder: () => true,
       // onMoveShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        // console.log('onMoveShouldSetPanResponder.......................' + gestureState.dy)
+        // logger('onMoveShouldSetPanResponder.......................' + gestureState.dy)
         if (Math.abs(gestureState.dy) > 25) {
           return true;
         }
@@ -139,14 +139,14 @@ class MainPage extends Component {
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: (evt, gs) => {
         this.timeStampMove = evt.timeStamp;
-        // console.log('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
+        // logger('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
       },
       onPanResponderMove: (evt, gs) => {
-        // console.log('正在移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
+        // logger('正在移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
         // if (this.timeStampMove > 0 && gs.dx < -distance) {
         //   this.timeStampMove = 0;
 
-        //   console.log('由右向左');
+        //   logger('由右向左');
         // }
         // else
         if (this.timeStampMove > 0 && gs.dy < -distance) {
@@ -163,7 +163,7 @@ class MainPage extends Component {
         }
       },
       onPanResponderRelease: (evt, gs) => {
-        // console.log('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
+        // logger('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
         that.stopRecord();
       }
     });
@@ -177,20 +177,20 @@ class MainPage extends Component {
     this.props.dispatch(actionCase.reqCaseList());
     this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
-    // console.log(this.wc);
+    // logger(this.wc);
     this.wc.initWebSocket(this.props.user.employee_id);
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
     //监听内存报警事件
     // AppState.addEventListener('memoryWarning', function(){
-    //   console.log("内存报警....");
+    //   logger("内存报警....");
     // });
     this.recognizerEventEmitter = new NativeEventEmitter(platform.isAndroid() ?  Recognizer : this.RecognizerIos);
     this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
     this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
     if (platform.isAndroid()) {
       PushNotification.getChannels(function (channels) {
-        console.log('....channels:' + JSON.stringify(channels));
+        logger('....channels:' + JSON.stringify(channels));
       });
       PushNotification.createChannel(
         {
@@ -201,7 +201,7 @@ class MainPage extends Component {
           importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
           vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
         },
-        (created) => console.log(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+        (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
       );
     }
     else {
@@ -217,10 +217,10 @@ class MainPage extends Component {
         critical: true,
       }).then(
         (data) => {
-          console.log('PushNotificationIOS.requestPermissions', data);
+          logger('PushNotificationIOS.requestPermissions', data);
         },
         (data) => {
-          console.log('PushNotificationIOS.requestPermissions failed', data);
+          logger('PushNotificationIOS.requestPermissions failed', data);
         },
       );
       this.setNotificationCategories();
@@ -283,7 +283,7 @@ class MainPage extends Component {
   }
   onRegistered = (deviceToken) => {
     const { dispatch } = this.props;
-    console.log('.......deviceToken='+deviceToken);
+    logger('.......deviceToken='+deviceToken);
     dispatch(actionAuth.reqUserUpdate(undefined, deviceToken, (result, error)=>{
       if(error){
         Toast.show(error.info)
@@ -326,7 +326,7 @@ class MainPage extends Component {
 
   onRemoteNotification = (notification) => {
     const isClicked = notification.getData().userInteraction === 1;
-    console.log('##########isClicked=' + isClicked);
+    logger('##########isClicked=' + isClicked);
     const result = `
       Title:  ${notification.getTitle()};\n
       Subtitle:  ${notification.getSubtitle()};\n
@@ -365,7 +365,7 @@ class MainPage extends Component {
   };
   onLocalNotification = (notification) => {
     const isClicked = notification.getData().userInteraction === 1;
-    console.log('##########isClicked=' + isClicked);
+    logger('##########isClicked=' + isClicked);
     if (isClicked) {
       this.openNotfication();
       PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
@@ -420,7 +420,7 @@ class MainPage extends Component {
   }
 
   onBackButtonPressAndroid = () => {
-    console.log("...............onBackButtonPressAndroid ")
+    logger("...............onBackButtonPressAndroid ")
     // if(this.props.navigation.state.routeName=="Main"){
     //   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
     //     //最近2秒内按过back键，可以退出应用。
@@ -436,27 +436,27 @@ class MainPage extends Component {
   };
 
   handleAppStateChange = (nextAppState) => {
-    // console.log('****************nextAppState==' + nextAppState);
+    // logger('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       // this.wv && this.wv.current && this.wv.current.reload();
       if (this.wc) this.wc.setIsBackground(false);
       if (platform.isAndroid()) {
         NativeModules.WebSocketWorkManager.stopBackgroundWork();
       }
-      // console.log('****************show', this.wc.getKeepSocket());
+      // logger('****************show', this.wc.getKeepSocket());
       // this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
       // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
       // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;');
       // Storage.getUserRecord().then((user) => {
       //   if (user) {
       //     let obj = Object.assign({}, JSON.parse(user));
-      //     console.log(obj)
+      //     logger(obj)
       //     this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("1111", "'+obj.token+'");true;');
       //   }
       // });
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
-      // console.log('***************hidden', this.wc);
+      // logger('***************hidden', this.wc);
       if (this.wc) this.wc.setIsBackground(true);
       if (platform.isAndroid()) {
         NativeModules.WebSocketWorkManager.startBackgroundWork();
@@ -487,10 +487,10 @@ class MainPage extends Component {
   }
 
   startRecord = () => {
-    console.log('startRecoding..........')
+    logger('startRecoding..........')
     if(platform.isIOS()){
       const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
-      console.log('...........isHasMic', isHasMic);
+      logger('...........isHasMic', isHasMic);
       // if(isHasMic){
       //   Toast.show('未检测到麦克风');
       //   return;
@@ -512,7 +512,7 @@ class MainPage extends Component {
     const that = this;
     if(platform.isAndroid()){
       Recognizer.isListening().then(value => {
-        console.log('stopRecord..........' + value)
+        logger('stopRecord..........' + value)
         if (value) {
           Recognizer.stop();
         }
@@ -522,7 +522,7 @@ class MainPage extends Component {
     }
     else {
       this.RecognizerIos.isListening().then(value => {
-        console.log('stopRecord..........' + value)
+        logger('stopRecord..........' + value)
         if (value) {
           this.RecognizerIos.stop();
         }
@@ -533,7 +533,7 @@ class MainPage extends Component {
   }
 
   onRecognizerResult = (e) => {
-    console.log("result............." + JSON.stringify(e.result), '.....' + e.isLast);
+    logger("result............." + JSON.stringify(e.result), '.....' + e.isLast);
     if (!e.isLast) {
       return;
     }
@@ -543,9 +543,9 @@ class MainPage extends Component {
       // this.sendRecording('stop_recording');
       return;
     }
-    console.log(e.result + "............." + JSON.stringify(this.state.updateItem));
+    logger(e.result + "............." + JSON.stringify(this.state.updateItem));
     if (this.state.updateItem && this.state.updateItem.id) {
-      console.log(e.result);
+      logger(e.result);
       if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem.id, e.result);
       this.setState({ updateItem: {} });
     }
@@ -555,7 +555,7 @@ class MainPage extends Component {
 
 
   onRecognizerError = (result) => {
-    console.log("error............." + JSON.stringify(e.result));
+    logger("error............." + JSON.stringify(e.result));
     if (result.errorCode !== 0) {
       // alert(JSON.stringify(result));
 
@@ -563,7 +563,7 @@ class MainPage extends Component {
   }
 
   scheduleNotfication = (content) => {
-    console.log('5555555555555555555555555====' + content);
+    logger('5555555555555555555555555====' + content);
     if (content) {
       let item = JSON.parse(content);
       if (platform.isAndroid()) {
@@ -607,7 +607,7 @@ class MainPage extends Component {
   }
 
   handleNativeMessage = (content) => {
-    console.log('handleNativeMessage====' + content);
+    logger('handleNativeMessage====' + content);
     const { dispatch } = this.props;
     const that = this;
     if (content.indexOf('talk:') === 0) {
@@ -646,7 +646,7 @@ class MainPage extends Component {
   handleFinishTime = (item) => {
     if(platform.isIOS()){
       const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
-      console.log('...........isHasMic', isHasMic);
+      logger('...........isHasMic', isHasMic);
       // if(isHasMic){
       //   Toast.show('未检测到麦克风');
       //   return;
@@ -659,15 +659,15 @@ class MainPage extends Component {
       this.RecognizerIos.start();
     }
     this.updateProcessCallback = null;
-    // console.log('.....handleFinishTime' + JSON.stringify(item))
+    // logger('.....handleFinishTime' + JSON.stringify(item))
     this.setState({ updateItem: item });
   }
   handleFinishTimeEnd = (item, callback) => {
     const that = this;
-    // console.log('.....handleFinishTimeEnd' + JSON.stringify(item))
+    // logger('.....handleFinishTimeEnd' + JSON.stringify(item))
     if(platform.isAndroid()){
       Recognizer.isListening().then(value => {
-        console.log('stopRecord..........' + value)
+        logger('stopRecord..........' + value)
         if (value) {
           Recognizer.stop();
           this.updateProcessCallback = callback;
@@ -680,7 +680,7 @@ class MainPage extends Component {
     }
     else {
       this.RecognizerIos.isListening().then(value => {
-        console.log('stopRecord..........' + value)
+        logger('stopRecord..........' + value)
         if (value) {
           this.RecognizerIos.stop();
           this.updateProcessCallback = callback;
@@ -748,7 +748,7 @@ class MainPage extends Component {
   }
 
   showConfirm = (item) => {
-    console.log(item)
+    logger(item)
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={this.sendProcessConfirm} item={item} close={this.closeTalkSuccess}/>);
     }
@@ -756,8 +756,8 @@ class MainPage extends Component {
   render() {
     const { menuVisible } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-    // console.log('statusBarHeight11......', StatusBar.currentHeight)
-    // console.log('..onBackButtonPressAndroid', this.props.navigation.getState())
+    // logger('statusBarHeight11......', StatusBar.currentHeight)
+    // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
     return (
       <View style={styles.container}>
         <StatusBar translucent={true}  backgroundColor='transparent' barStyle="light-content" />

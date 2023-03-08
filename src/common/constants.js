@@ -136,4 +136,5 @@ export default {
     holidy,
     apiUrl,
     webUrl,
+    env,
 };

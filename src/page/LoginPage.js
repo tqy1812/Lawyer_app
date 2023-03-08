@@ -30,6 +30,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
 import { showConfirmModal, showToast } from '../components/ShowModal';
+import { logger } from '../utils/utils';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
 
@@ -63,9 +64,9 @@ class LoginPage extends Component {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin, navigation, insets } = this.props;
-            // console.log("isLogin" + isLogin, insets.top)
+            // logger("isLogin" + isLogin, insets.top)
             this.globalData.setTop(insets.top);
-            console.log("isLogin" + isLogin, this.globalData.getTop())
+            logger("isLogin" + isLogin, this.globalData.getTop())
             if (isLogin) {
                 this.props.navigation.navigate('Main');
                 return;
@@ -88,13 +89,13 @@ class LoginPage extends Component {
                     importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
                     vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
                 },
-                (created) => console.log(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+                (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
             );
         });
     }
 
     componentWillUnmount() {
-        console.log('......LoginPage componentWillUnmount')
+        logger('......LoginPage componentWillUnmount')
         if (typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
             this.viewDidAppear && this.viewDidAppear.remove();
         this.nameListener && this.nameListener.remove();
@@ -105,7 +106,7 @@ class LoginPage extends Component {
     async autoLoginAction() {
         let savedUser = {};
         let user = await Storage.getUserRecord();
-        console.log("user" + user)
+        logger("user" + user)
         if (user) {
             savedUser = Object.assign({}, JSON.parse(user));
             if (savedUser.phone && savedUser.password) {
@@ -113,7 +114,7 @@ class LoginPage extends Component {
             }
         }
         // let autoLogin = await Storage.getAutoLogin();
-        // console.log("autoLogin" + autoLogin)
+        // logger("autoLogin" + autoLogin)
         // if (autoLogin === '1') {
         // this.setState({autoLogin: true});
         if (savedUser.phone && savedUser.password) {
@@ -156,9 +157,9 @@ class LoginPage extends Component {
             }
             Toast.show("登录中");
             dispatch(actionAuth.reqLogin(phone, password, (res, error) => {
-                console.log(res)
+                logger(res)
                 if (error) {
-                    console.log(error)
+                    logger(error)
                     //   Toast.show(this.validateToastXSS(error.toString()));
                     if (error.code === 17004) {
                         this.setState({ code: 2 });
