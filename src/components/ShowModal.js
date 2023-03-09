@@ -69,12 +69,13 @@ export const showToast = (value) => {
 };
 
 const headHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
+const screenHeight = globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height
 const styles = StyleSheet.create({
     maskStyle: {
         position: 'absolute',
         width: Common.window.width,
         backgroundColor: 'rgba(0,0,0,0.3)',
-        height: Common.window.height,
+        height: screenHeight,
         top: 0,
         zIndex: 99,
         display: 'flex',
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     },
     isRecoding: {
       position: 'absolute',
-      height: Common.window.height,
+      height: screenHeight,
       width: Common.window.width,
       zIndex: 5,
       backgroundColor: "#000",
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: Common.window.width,
         opacity: 1,
-        height: Common.window.height,
+        height: screenHeight,
         top: 0,
         zIndex: 99,
         display: 'flex',

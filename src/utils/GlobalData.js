@@ -1,6 +1,7 @@
 export default class GlobalData {
     static myInstance = null;
     top = 0;
+    screenHeight = 0;
     constructor() {
     }
 
@@ -16,5 +17,12 @@ export default class GlobalData {
     }
     getTop() {
         return this.top;
+    }
+
+    setScreenHeight (val) {
+        this.screenHeight = val;
+    }
+    getScreenHeight() {
+        return this.screenHeight;
     }
 }

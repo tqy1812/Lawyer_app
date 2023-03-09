@@ -59,11 +59,12 @@ export class DrawerModal extends React.Component {
     super(props);
     
     this.globalData = GlobalData.getInstance();
-    this.state = {
-      panPlan: new Animated.ValueXY({x:0, y: Common.window.height}),
-      panFinish: new Animated.ValueXY({x:0, y:-Common.window.height}),
-    }
     this.STATUS_BAR_HEIGHT =  platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight 
+    this.screenHeight = this.globalData.getScreenHeight() > 0 ? this.globalData.getScreenHeight() : Common.window.height
+    this.state = {
+      panPlan: new Animated.ValueXY({x:0, y: this.screenHeight}),
+      panFinish: new Animated.ValueXY({x:0, y:-this.screenHeight}),
+    }
     this._panResponderPlan = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
         logger('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
@@ -214,7 +215,7 @@ export class DrawerModal extends React.Component {
   close = (type, callback) => {
     if(type==='finish') {
       Animated.timing(this.state.panFinish, {
-        toValue: {x:0, y: -Common.window.height - this.STATUS_BAR_HEIGHT},
+        toValue: {x:0, y: -this.screenHeight - this.STATUS_BAR_HEIGHT},
         duration: 300,
         easing: Easing.ease,
         useNativeDriver: false
@@ -222,7 +223,7 @@ export class DrawerModal extends React.Component {
     }
     else{
       Animated.timing(this.state.panPlan, {
-        toValue: {x:0, y: Common.window.height + this.STATUS_BAR_HEIGHT },
+        toValue: {x:0, y: this.screenHeight + this.STATUS_BAR_HEIGHT },
         duration: 300,
         easing: Easing.ease,
         useNativeDriver: false
@@ -315,7 +316,7 @@ export class DrawerModal extends React.Component {
             panPlanStyle,
             {
               width: Common.window.width,
-            height:  Common.window.height ,
+            height:  this.screenHeight ,
             display: 'flex',
             flex: 1,
             justifyContent: "flex-end",
@@ -329,7 +330,7 @@ export class DrawerModal extends React.Component {
           } ]: [panStyle,
             {
               width: Common.window.width,
-            height:  Common.window.height,
+            height:  this.screenHeight,
             display: 'flex',
             flex: 1,
             justifyContent: "flex-start",
@@ -348,7 +349,7 @@ export class DrawerModal extends React.Component {
             }}
             style={{
               width: Common.window.width,
-              height: Common.window.height - this.props.height,
+              height: this.screenHeight - this.props.height,
             }}
           />
           {this.props.component}
