@@ -104,7 +104,7 @@ export default class WebSocketClient {
     if(WebSocketClient.subscription) WebSocketClient.subscription.unsubscribe();
 
     WebSocketClient.subscription = WebSocketClient.ws.subscribe("/exchange/alarm-clock/employee_id."+id, function (message) {
-      clogger('############'+message.body);
+      logger('############'+message.body);
       DeviceEventEmitter.emit('noticeMsg', message.body);
    });
   }
