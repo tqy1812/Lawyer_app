@@ -24,6 +24,8 @@ import MyPlanItem from "../components/MyPlanItem";
 import MyButton from "./MyButton";
 import { destroySibling, showLoading, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
+import GlobalData from "../utils/GlobalData";
+const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
 export default class MyPlanSlider extends Component {
   renderRightAction = (text, color, x, progress, item) => {
@@ -316,6 +318,7 @@ export default class MyPlanSlider extends Component {
   }
 }
 
+const screenHeight = globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height
 const styles = StyleSheet.create({
   bottomModalContainer: {
     flex: 1,
@@ -325,7 +328,7 @@ const styles = StyleSheet.create({
   },
   bottomMask: {
     flex: 1,
-    height: Common.window.height - 100,
+    height: screenHeight - 100,
     bottom: 0,
     width: Common.window.width,
     backgroundColor: "#fff",

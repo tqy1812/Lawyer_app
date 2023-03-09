@@ -9,7 +9,9 @@ import {
     ImageBackground, InteractionManager,
     Keyboard,
     StatusBar,
-    TouchableOpacity
+    TouchableOpacity,
+    NativeModules,
+    PixelRatio,
 } from 'react-native';
 import { SafeAreaInsetsContext, withSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
@@ -66,7 +68,18 @@ class LoginPage extends Component {
             const { dispatch, isLogin, navigation, insets } = this.props;
             // logger("isLogin" + isLogin, insets.top)
             this.globalData.setTop(insets.top);
-            logger("isLogin" + isLogin, this.globalData.getTop())
+            if(platform.isAndroid()) {
+                NativeModules.ScreenAdaptation.getHeight().then((height) => {
+                    logger('height:'+ height/PixelRatio.get()+ '    h:'+Common.window.height);
+                    if(height){
+                        this.globalData.setScreenHeight(height/PixelRatio.get())
+                    }
+                })
+                .catch((err) => {
+                    logger('err:', err);
+                });
+            }
+            // logger("isLogin" + isLogin, this.globalData.getTop())
             if (isLogin) {
                 this.props.navigation.navigate('Main');
                 return;

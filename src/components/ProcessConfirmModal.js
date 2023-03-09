@@ -29,9 +29,6 @@ const Toast = Overlay.Toast;
 export default class ProcessConfirmModal extends Component {
   constructor(props) {
     super(props);
-    this.isTouchMaskToClose = !!JSON.stringify(props.isTouchMaskToClose)
-      ? this.props.isTouchMaskToClose
-      : false;
     this.state = {
       itemNotice: props.item.is_wakeup || false,
       itemName: props.item.name,
@@ -71,6 +68,7 @@ export default class ProcessConfirmModal extends Component {
 render() {
   const { item, caseList } = this.props;
   const { itemNotice, itemName } = this.state;
+  logger(caseList)
   return (
     <View style={styles.modalContainer}>
 

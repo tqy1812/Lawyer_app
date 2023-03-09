@@ -1,6 +1,7 @@
 package com.lawyerapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -43,6 +44,11 @@ public class MainActivity extends ReactActivity {
   private static final String TAG_HUNG_UP = "HUNG_UP";
   private static final String ACTION_FROM_NOTIFICATION = BuildConfig.APPLICATION_ID + ".ACTION_FROM_NOTIFICATION";
   Intent intent;
+  private static MainActivity context;
+  public static Activity getActivity() {
+    return context;
+  }
+
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
@@ -88,7 +94,7 @@ public class MainActivity extends ReactActivity {
     super.onCreate(savedInstanceState);
     intent = getIntent();
 
-
+    context = this;
     MainApplication.getInstance().createNotificationChannel();
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
       if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

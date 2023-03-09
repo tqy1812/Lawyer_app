@@ -443,6 +443,8 @@ class MainPage extends Component {
       if (platform.isAndroid()) {
         NativeModules.WebSocketWorkManager.stopBackgroundWork();
       }
+      this.props.dispatch(actionCase.reqCaseList());
+      this.props.dispatch(actionAuth.reqUserInfo());
       // logger('****************show', this.wc.getKeepSocket());
       // this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
       // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
@@ -749,6 +751,17 @@ class MainPage extends Component {
 
   showConfirm = (item) => {
     logger(item)
+    // item=  {
+    //     id: 313,
+    //     name:'cessd',
+    //     case: {
+    //       id: 3,
+    //       name: 'dedddd',
+    //     },
+    //     start_time: '2022-01-02 11:00:00',
+    //     end_time: '2022-01-02 12:00:00'
+    //   }
+    
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={this.sendProcessConfirm} item={item} close={this.closeTalkSuccess}/>);
     }
