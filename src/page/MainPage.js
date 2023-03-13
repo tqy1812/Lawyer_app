@@ -281,7 +281,7 @@ class MainPage extends Component {
     if (platform.isAndroid()) {
       NativeModules.WebSocketWorkManager.stopBackgroundWork();
     }
-    // DeviceEventEmitter.removeAllListeners();
+    DeviceEventEmitter.removeAllListeners();
   }
   onRegistered = (deviceToken) => {
     const { dispatch } = this.props;
@@ -763,16 +763,16 @@ class MainPage extends Component {
 
   showConfirm = (item) => {
     logger(item)
-    item=  {
-        id: 313,
-        name:'cessd',
-        case: {
-          id: 3,
-          name: 'dedddd',
-        },
-        start_time: '2022-01-02 11:00:00',
-        end_time: '2022-01-02 12:00:00'
-      }
+    // item=  {
+    //     id: 313,
+    //     name:'cessd',
+    //     case: {
+    //       id: 3,
+    //       name: 'dedddd',
+    //     },
+    //     start_time: '2022-01-02 11:00:00',
+    //     end_time: '2022-01-02 12:00:00'
+    //   }
     
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess}/>);
@@ -883,7 +883,7 @@ class MainPage extends Component {
               {/* <View style={styles.sliderView}>
               <View style={styles.sliderBtn}></View>
             </View> */}
-              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.showConfirm('Daily')}>
+              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
