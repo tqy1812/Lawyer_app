@@ -72,12 +72,17 @@ export default class ProcessConfirmModal extends Component {
     this.setState({isIcon: value})
   }
 
+  handleSelect = (id, item) => {
+    logger(item)
+    if(item && item.id) {
+      this.setState({caseId: item.id})
+    }
+  }
 render() {
   const { item, caseList, caseListInfo} = this.props;
   const { itemNotice, itemName, open, isIcon } = this.state;
   const renderItem = (item) => {
-    
-    console.log(item)
+    // logger(item)
     return (
     <View style={styles.caseItem}>
       <View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View>
@@ -127,7 +132,6 @@ render() {
                 renderRow={(item, index, highlighted) => renderItem(item)}
                 renderButtonText={(item) => item.name}
                 renderRowText={(item) => item.name}
-                renderSeparator={() => <Text style={{height: 0}}></Text>}
                 renderRightComponent={() => (
                   <View style={styles.iconStyle}>
                   <MaterialCommunityIcons
@@ -138,8 +142,8 @@ render() {
                   </View>
                 )}
                 options={caseListInfo}
-                // defaultValue={defValue}
-                // onSelect={onChoosed}
+                defaultValue={item.case && item.case.name}
+                onSelect={(id, item)=> this.handleSelect(id, item)}
                 onDropdownWillShow={() => {
                   this.setIsIcon(true);
                   // dataInit && dataInit();
@@ -215,7 +219,7 @@ const styles = StyleSheet.create({
   dropText: {
     fontSize: 15,
     color: '#606266',
-    width: Common.window.width - 70,
+    width: Common.window.width - 95,
     height: 40,
     textAlignVertical: 'center',
   },
@@ -263,6 +267,7 @@ caseItemName:{
   fontSize: 16,
   lineHeight: 25,
   marginLeft: 5,
+  marginRight: 15,
 },
   dropdownTextHighlight: {
     flex: 1,
@@ -277,7 +282,7 @@ caseItemName:{
     position: 'absolute',
     width: Common.window.width,
     backgroundColor: 'rgba(0,0,0,0.3)',
-    height: Common.window.height,
+    height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,
     top: 0,
     zIndex: 4,
     display: 'flex',
@@ -459,7 +464,9 @@ caseItemName:{
     backgroundColor: '#eee',
     fontSize: 19,
     paddingLeft: 5,
-
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingRight: 0,
     lineHeight: 24,
     color: '#606266',
     fontWeight: 'bold',

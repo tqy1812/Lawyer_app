@@ -15,6 +15,8 @@ import {
   TextInput
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { logger } from '../utils/utils';
+import GlobalData from '../utils/GlobalData';
 
 const TOUCHABLE_ELEMENTS = [
   'TouchableHighlight',
@@ -23,6 +25,7 @@ const TOUCHABLE_ELEMENTS = [
   'TouchableNativeFeedback',
 ];
 
+const globalData = GlobalData.getInstance();
 export default class ModalDropdown extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
@@ -157,16 +160,16 @@ export default class ModalDropdown extends Component {
       }
     }
 
-    if (!loading !== !options) {
+    if (loading !== !options) {
       if (!newState) {
         newState = {};
       }
       newState.loading = !options;
     }
     // this compare only checks an array with no data, doesnt deep check, this comparison use for get api
-    if (options !== state.options) {
-      newState.options = options
-    }
+    // if (options !== state.options) {
+    //   newState.options = options
+    // }
     return newState;
   }
 
@@ -318,7 +321,7 @@ export default class ModalDropdown extends Component {
     const { dropdownStyle, style, adjustFrame, isFullWidth } = this.props;
     const dimensions = Dimensions.get('window');
     const windowWidth = dimensions.width;
-    const windowHeight = dimensions.height;
+    const windowHeight = globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : dimensions.height;
     const dropdownHeight =
       (dropdownStyle && StyleSheet.flatten(dropdownStyle).height) ||
       StyleSheet.flatten(styles.dropdown).height;
@@ -331,12 +334,12 @@ export default class ModalDropdown extends Component {
     const positionStyle = {
       height: dropdownHeight,
       top: showInBottom
-        ? this._buttonFrame.y + this._buttonFrame.h
+        ? this._buttonFrame.y   //+ this._buttonFrame.h
         : Math.max(0, this._buttonFrame.y - dropdownHeight),
     };
 
     if (showInLeft) {
-      positionStyle.left = this._buttonFrame.x;
+      positionStyle.left = this._buttonFrame.x - 5;
       if (isFullWidth) {
         positionStyle.right = rightSpace - this._buttonFrame.w;
       }
@@ -427,6 +430,7 @@ export default class ModalDropdown extends Component {
     const { selectedIndex } = this.state;
     const { options } = this.state;
 
+    // console.log(options)
     return (
       <FlatList
         {...dropdownListProps}
@@ -436,7 +440,7 @@ export default class ModalDropdown extends Component {
         scrollEnabled={scrollEnabled}
         initialScrollIndex={saveScrollPosition ? selectedIndex : -1}
         style={styles.list}
-        keyExtractor={(item, i) => (`key-${i}`)}
+        keyExtractor={(item, i) => (`key-${i}-${item.id}`)}
         renderItem={this._renderItem}
         ItemSeparatorComponent={renderSeparator || this._renderSeparator}
         automaticallyAdjustContentInsets={false}
@@ -470,7 +474,7 @@ export default class ModalDropdown extends Component {
     const highlighted = index === selectedIndex;
     const value =
       (renderRowText && renderRowText(item)) || item.toString();
-      console.log(item)
+      // logger(index)
     const row = !renderRow ? (
       <Text
         style={[

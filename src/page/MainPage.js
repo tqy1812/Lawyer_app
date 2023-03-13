@@ -732,6 +732,7 @@ class MainPage extends Component {
       }
       else {
         DeviceEventEmitter.emit('refreshDailyProcess');
+        this.finishRef && this.finishRef.close('finish');
         this.planRef && this.planRef.open('plan');
       }
     }));
@@ -739,9 +740,17 @@ class MainPage extends Component {
 
   sendProcessConfirm = () => {
     const that = this;
+    const isLast = moment(that.state.item.end_time).diff(moment(new Date())) < 0;
     that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
     DeviceEventEmitter.emit('refreshDailyProcess');
-    this.planRef && this.planRef.open('plan');
+    if(isLast) {
+      this.planRef && this.planRef.close('plan');
+      this.finishRef && this.finishRef.open('finish');
+    }
+    else {
+      this.finishRef && this.finishRef.close('finish');
+      this.planRef && this.planRef.open('plan');
+    }
   }
 
   closeLoading = () => {
@@ -753,16 +762,16 @@ class MainPage extends Component {
 
   showConfirm = (item) => {
     logger(item)
-    item=  {
-        id: 313,
-        name:'cessd',
-        case: {
-          id: 3,
-          name: 'dedddd',
-        },
-        start_time: '2022-01-02 11:00:00',
-        end_time: '2022-01-02 12:00:00'
-      }
+    // item=  {
+    //     id: 313,
+    //     name:'cessd',
+    //     case: {
+    //       id: 3,
+    //       name: 'dedddd',
+    //     },
+    //     start_time: '2022-01-02 11:00:00',
+    //     end_time: '2022-01-02 12:00:00'
+    //   }
     
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={this.sendProcessConfirm} item={item} close={this.closeTalkSuccess}/>);
@@ -873,7 +882,7 @@ class MainPage extends Component {
               {/* <View style={styles.sliderView}>
               <View style={styles.sliderBtn}></View>
             </View> */}
-              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.showConfirm('Daily')}>
+              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
