@@ -12,12 +12,13 @@ import {
   ActivityIndicator,
   FlatList,
   Platform,
-  TextInput
+  TextInput,
+  ScrollView 
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { logger } from '../utils/utils';
 import GlobalData from '../utils/GlobalData';
-
+import platform from '../utils/platform';
 const TOUCHABLE_ELEMENTS = [
   'TouchableHighlight',
   'TouchableOpacity',
@@ -286,34 +287,41 @@ export default class ModalDropdown extends Component {
     if (showDropdown && this._buttonFrame) {
       const frameStyle = this._calcPosition();
       const animationType = animated ? 'fade' : 'none';
-
+      if(platform.isAndroid()) {
       return (
-        // <Modal
-        //   animationType={animationType}
-        //   visible
-        //   transparent
-        //   onRequestClose={this._onRequestClose}
-        //   supportedOrientations={[
-        //     'portrait',
-        //     'portrait-upside-down',
-        //     'landscape',
-        //     'landscape-left',
-        //     'landscape-right',
-        //   ]}
-        // >
-        //   <TouchableWithoutFeedback
-        //     accessible={accessible}
-        //     disabled={!showDropdown}
-        //     onPress={this._onModalPress}
-        //   >
-            // <View style={styles.modal}>
-              <View style={[styles.dropdown, dropdownStyle, frameStyle]}>
-                {loading ? this._renderLoading() : this._renderDropdown()}
+       
+          <Modal
+          animationType={animationType}
+          visible
+          transparent
+          onRequestClose={this._onRequestClose}
+          supportedOrientations={[
+            'portrait',
+            'portrait-upside-down',
+            'landscape',
+            'landscape-left',
+            'landscape-right',
+          ]}
+        >
+          <TouchableWithoutFeedback
+            accessible={accessible}
+            disabled={!showDropdown}
+            onPress={this._onModalPress}
+          >
+            <View style={styles.modal}>
+            <View  style={[styles.dropdown, dropdownStyle, frameStyle]}>
+                 {loading ? this._renderLoading() : this._renderDropdown()}
               </View>
-            // </View>
-        //   </TouchableWithoutFeedback>
-        // </Modal>
-      );
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>);
+        }
+        else {
+          return (<View  style={[styles.dropdown, dropdownStyle, frameStyle]}>
+            <ScrollView alwaysBounceHorizontal={false}>{loading ? this._renderLoading() : this._renderDropdown()}</ScrollView>
+          </View>);
+        }
+      
     }
   }
 
@@ -334,12 +342,12 @@ export default class ModalDropdown extends Component {
     const positionStyle = {
       height: dropdownHeight,
       top: showInBottom
-        ? this._buttonFrame.h   //this._buttonFrame.y + this._buttonFrame.h
+        ? platform.isAndroid() ? this._buttonFrame.y : this._buttonFrame.h   //this._buttonFrame.y + this._buttonFrame.h
         : Math.max(0, this._buttonFrame.y - dropdownHeight),
     };
 
     if (showInLeft) {
-      positionStyle.left =  0; //this._buttonFrame.x - 5;
+      positionStyle.left = platform.isAndroid() ?  this._buttonFrame.x - 5 : 0; //this._buttonFrame.x - 5;
       if (isFullWidth) {
         positionStyle.right = rightSpace - this._buttonFrame.w;
       }
@@ -557,14 +565,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     zIndex: 5,
-    overflow: "hidden",
   },
   loading: {
     alignSelf: 'center',
   },
   list: {
     // flexGrow: 1,
-    overflow: "hidden",
   },
   rowText: {
     paddingHorizontal: 6,

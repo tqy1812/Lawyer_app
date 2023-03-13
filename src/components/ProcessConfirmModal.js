@@ -238,7 +238,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E9E9EB',
     paddingBottom: 5,
-    overflow: "hidden",
   },
   dropdownText: {
     fontSize: 15,
