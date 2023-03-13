@@ -738,9 +738,10 @@ class MainPage extends Component {
     }));
   }
 
-  sendProcessConfirm = () => {
+  sendProcessConfirm = (item) => {
     const that = this;
-    const isLast = moment(that.state.item.end_time).diff(moment(new Date())) < 0;
+    const isLast = moment(item.end_time).diff(moment(new Date())) < 0;
+    logger(that.state.item.end_time ,isLast)
     that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
     DeviceEventEmitter.emit('refreshDailyProcess');
     if(isLast) {
@@ -774,7 +775,7 @@ class MainPage extends Component {
     //   }
     
     if(item && item.id) {
-      showConfirmModal(<ProcessConfirmModal {...this.props} submint={this.sendProcessConfirm} item={item} close={this.closeTalkSuccess}/>);
+      showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess}/>);
     }
   }
   render() {

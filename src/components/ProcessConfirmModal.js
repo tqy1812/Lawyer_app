@@ -64,7 +64,7 @@ export default class ProcessConfirmModal extends Component {
       }
       else {
         destroyConfirmSibling();
-        this.props.submint && this.props.submint();
+        this.props.submint && this.props.submint(item);
       }
     }));
   }

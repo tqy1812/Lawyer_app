@@ -173,7 +173,7 @@ export function getProcess(id, callback = null) {
             if(res) {
                 let retData = res.data.process;
                 if (callback) {
-                    callback(retData);
+                    callback(retData, error);
                 }
             }
             else {
