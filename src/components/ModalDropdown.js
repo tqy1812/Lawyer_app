@@ -288,31 +288,31 @@ export default class ModalDropdown extends Component {
       const animationType = animated ? 'fade' : 'none';
 
       return (
-        <Modal
-          animationType={animationType}
-          visible
-          transparent
-          onRequestClose={this._onRequestClose}
-          supportedOrientations={[
-            'portrait',
-            'portrait-upside-down',
-            'landscape',
-            'landscape-left',
-            'landscape-right',
-          ]}
-        >
-          <TouchableWithoutFeedback
-            accessible={accessible}
-            disabled={!showDropdown}
-            onPress={this._onModalPress}
-          >
-            <View style={styles.modal}>
+        // <Modal
+        //   animationType={animationType}
+        //   visible
+        //   transparent
+        //   onRequestClose={this._onRequestClose}
+        //   supportedOrientations={[
+        //     'portrait',
+        //     'portrait-upside-down',
+        //     'landscape',
+        //     'landscape-left',
+        //     'landscape-right',
+        //   ]}
+        // >
+        //   <TouchableWithoutFeedback
+        //     accessible={accessible}
+        //     disabled={!showDropdown}
+        //     onPress={this._onModalPress}
+        //   >
+            // <View style={styles.modal}>
               <View style={[styles.dropdown, dropdownStyle, frameStyle]}>
                 {loading ? this._renderLoading() : this._renderDropdown()}
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+            // </View>
+        //   </TouchableWithoutFeedback>
+        // </Modal>
       );
     }
   }
@@ -334,12 +334,12 @@ export default class ModalDropdown extends Component {
     const positionStyle = {
       height: dropdownHeight,
       top: showInBottom
-        ? this._buttonFrame.y   //+ this._buttonFrame.h
+        ? this._buttonFrame.h   //this._buttonFrame.y + this._buttonFrame.h
         : Math.max(0, this._buttonFrame.y - dropdownHeight),
     };
 
     if (showInLeft) {
-      positionStyle.left = this._buttonFrame.x - 5;
+      positionStyle.left =  0; //this._buttonFrame.x - 5;
       if (isFullWidth) {
         positionStyle.right = rightSpace - this._buttonFrame.w;
       }
@@ -447,6 +447,7 @@ export default class ModalDropdown extends Component {
         showsVerticalScrollIndicator={showsVerticalScrollIndicator}
         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         ListHeaderComponent={this._renderSearchInput}
+        initialNumToRender={50}
         onScrollToIndexFailed={info => {
           const wait = new Promise(resolve => setTimeout(resolve, 500));
           wait.then(() => {
@@ -555,12 +556,15 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: 'white',
     justifyContent: 'center',
+    zIndex: 5,
+    overflow: "hidden",
   },
   loading: {
     alignSelf: 'center',
   },
   list: {
     // flexGrow: 1,
+    overflow: "hidden",
   },
   rowText: {
     paddingHorizontal: 6,
@@ -574,7 +578,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
+    // height: StyleSheet.hairlineWidth,
+    height: 0,
     backgroundColor: 'lightgray',
   },
   searchInput: {

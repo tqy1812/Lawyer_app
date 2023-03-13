@@ -123,6 +123,7 @@ render() {
                 onChangeText={this.handleTalkNameChanged.bind(this)}
                 value={itemName}
               />
+              <View style={styles.dropView}>
               <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
@@ -151,6 +152,7 @@ render() {
                 onDropdownWillHide={() => this.setIsIcon(false)}
                 renderRowProps={{activeOpacity: 1, underlayColor: '#ffffff00'}}
               />
+              </View>
               {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text> */}
             {/* </View> */}
             {/* <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View> */}
@@ -208,6 +210,11 @@ render() {
 }
 }
 const styles = StyleSheet.create({
+  dropView: {
+    width: Common.window.width - 70,
+    height: 40,
+    position: 'relative'
+  },
   drop: {
     justifyContent: 'center',
     borderRadius: 5,
@@ -215,9 +222,11 @@ const styles = StyleSheet.create({
     height: 40,
     paddingLeft: 5,
     backgroundColor: '#E9E9EB',
+    position:'relative'
   },
   dropText: {
     fontSize: 15,
+    lineHeight: 40,
     color: '#606266',
     width: Common.window.width - 95,
     height: 40,
@@ -229,6 +238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E9E9EB',
     paddingBottom: 5,
+    overflow: "hidden",
   },
   dropdownText: {
     fontSize: 15,
@@ -503,6 +513,7 @@ caseItemName:{
     // elevation: 10,
     borderBottomLeftRadius: 9,
     borderBottomRightRadius: 9,
+    zIndex: -1,
   },
   bottomBtnsView: {
     width: Common.window.width / 2 - 50,
