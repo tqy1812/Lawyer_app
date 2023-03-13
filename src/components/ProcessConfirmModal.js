@@ -22,7 +22,9 @@ import { destroySibling, showLoading, destroyConfirmSibling, showToast } from ".
 import * as Storage from '../common/Storage';
 import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
-
+import ModalDropdown from "./ModalDropdown";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { he } from "date-fns/locale";
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
 
@@ -32,6 +34,9 @@ export default class ProcessConfirmModal extends Component {
     this.state = {
       itemNotice: props.item.is_wakeup || false,
       itemName: props.item.name,
+      caseId: props.item.case && props.item.case.id,
+      open: false,
+      isIcon: false
     };
   }
 
@@ -49,9 +54,9 @@ export default class ProcessConfirmModal extends Component {
   handleSubmit = () => {
     const that = this;
     const { dispatch, item } = this.props;
-    const { itemNotice, itemName } = this.state;
+    const { itemNotice, itemName, caseId } = this.state;
     showLoading();
-    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, (rs, error) => {
+    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, (rs, error) => {
       destroySibling();
       if (error) {
         logger(error.info)
@@ -63,24 +68,47 @@ export default class ProcessConfirmModal extends Component {
       }
     }));
   }
-
+  setIsIcon = (value) => {
+    this.setState({isIcon: value})
+  }
 
 render() {
-  const { item, caseList } = this.props;
-  const { itemNotice, itemName } = this.state;
-  logger(caseList)
+  const { item, caseList, caseListInfo} = this.props;
+  const { itemNotice, itemName, open, isIcon } = this.state;
+  const renderItem = (item) => {
+    
+    console.log(item)
+    return (
+    <View style={styles.caseItem}>
+      <View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View>
+      <Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text>
+    </View>
+  )};
   return (
     <View style={styles.modalContainer}>
 
       <View style={styles.container}>
-        {caseList && item && item.id && JSON.stringify(caseList) != '{}' && <View style={styles.processInfo}>
+        {caseList && item && item.id && JSON.stringify(caseList) != '{}' && caseListInfo && caseListInfo.length > 0 && <View style={styles.processInfo}>
           <View style={styles.listTitleView}>
-            <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(item.start_time)}</Text>}</View>
-          </View>
-          <View style={styles.listItemView}>
-            <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
-            <View style={[styles.listItemTimeSplit, { backgroundColor: caseList[item.case.id + ''][2], }]}></View>
-            <View style={styles.listItemRightView}>
+            <View style={styles.titleList1}>
+              <View style={styles.titleTime1}>
+                <Text style={styles.listItemTitleFont1}>{moment(item.start_time).format('YYYY年MM月DD日')}</Text>
+              </View>
+              <View style={styles.listItemTimeView1}>
+                <Text style={styles.listItemTimeStart1}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text>
+                <Text style={styles.listItemTimeStart1}> ~ </Text>
+                <Text style={styles.listItemTimeEnd1}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text>
+              </View>
+              <View style={styles.listItemNoticeView1}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
+            </View>
+            </View>
+            {/*<View style={styles.listTitleView}>*/}
+            {/*  <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(item.start_time)}</Text>}</View>*/}
+            {/*</View>*/}
+          <View style={styles.listItemView1}>
+            {/* <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
+            <View style={[styles.listItemTimeSplit, { backgroundColor: caseList[item.case.id + ''][2], }]}></View> */}
+            {/* <View style={styles.listItemRightView}> */}
               {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text> */}
               <TextInput
                 ref={(r) => this.item_name = r}
@@ -90,9 +118,38 @@ render() {
                 onChangeText={this.handleTalkNameChanged.bind(this)}
                 value={itemName}
               />
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text>
-            </View>
-            <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
+              <ModalDropdown
+                style={styles.drop}
+                textStyle={styles.dropText}
+                dropdownStyle={styles.dropdown}
+                // dropdownTextStyle={styles.dropdownText}
+                // dropdownTextHighlightStyle={styles.dropdownTextHighlight}
+                renderRow={(item, index, highlighted) => renderItem(item)}
+                renderButtonText={(item) => item.name}
+                renderRowText={(item) => item.name}
+                renderSeparator={() => <Text style={{height: 0}}></Text>}
+                renderRightComponent={() => (
+                  <View style={styles.iconStyle}>
+                  <MaterialCommunityIcons
+                    name={isIcon ? 'chevron-down' : 'chevron-up'}
+                    color="#606266"
+                    size={30}
+                  />
+                  </View>
+                )}
+                options={caseListInfo}
+                // defaultValue={defValue}
+                // onSelect={onChoosed}
+                onDropdownWillShow={() => {
+                  this.setIsIcon(true);
+                  // dataInit && dataInit();
+                }}
+                onDropdownWillHide={() => this.setIsIcon(false)}
+                renderRowProps={{activeOpacity: 1, underlayColor: '#ffffff00'}}
+              />
+              {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text> */}
+            {/* </View> */}
+            {/* <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View> */}
           </View>
         </View>
         }
@@ -147,6 +204,75 @@ render() {
 }
 }
 const styles = StyleSheet.create({
+  drop: {
+    justifyContent: 'center',
+    borderRadius: 5,
+    width: Common.window.width - 70,
+    height: 40,
+    paddingLeft: 5,
+    backgroundColor: '#E9E9EB',
+  },
+  dropText: {
+    fontSize: 15,
+    color: '#606266',
+    width: Common.window.width - 70,
+    height: 40,
+    textAlignVertical: 'center',
+  },
+  dropdown: {
+    width: Common.window.width - 70,
+    minHeight: 100,
+    alignItems: 'center',
+    backgroundColor: '#E9E9EB',
+    paddingBottom: 5,
+  },
+  dropdownText: {
+    fontSize: 15,
+    width: Common.window.width - 80,
+    textAlign: 'center',
+    color: '#606266',
+    borderRadius: 5,
+    marginTop: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    backgroundColor: '#fff',
+    textAlign: 'left'
+  },
+  
+caseItem: {
+  width: Common.window.width - 80,
+  padding: 5,
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  alignContent: 'center',
+  borderRadius: 5,
+  marginTop: 5,
+  marginLeft: 5,
+  marginRight: 5,
+  backgroundColor: '#fff',
+},
+caseItemBadge: {
+  width: 25,
+  height: 25,
+  borderRadius: 5,
+  alignSelf: 'center'
+},
+caseItemName:{
+  color: '#606266',
+  fontSize: 16,
+  lineHeight: 25,
+  marginLeft: 5,
+},
+  dropdownTextHighlight: {
+    flex: 1,
+    backgroundColor: '#E9E9EB',
+    color: '#606266',
+  },
+  iconStyle: {
+    position: 'absolute',
+    right: 0,
+  },
   modalContainer: {
     position: 'absolute',
     width: Common.window.width,
@@ -188,10 +314,30 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
+  titleList1: {
+    marginTop: 10,
+    paddingBottom: 5,
+    marginLeft: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C7C7C7',
+    display: 'flex',
+    marginRight: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: 45
+  },
   titleTime: {
     display: 'flex',
     flexDirection: 'row',
     flex: 1,
+  },
+  titleTime1: {
+    display: 'flex',
+    flexDirection: 'row',
+    // position: 'absolute',
+    // zIndex: 1,
+    // left: 0
   },
   listItemTitleFont: {
     fontSize: 18,
@@ -201,6 +347,12 @@ const styles = StyleSheet.create({
     // width: 78,
     fontWeight: 'bold',
     textAlign: 'right'
+  },
+  
+  listItemTitleFont1: {
+    fontSize: 14,
+    color: '#909399',
+    // width: 78,
   },
   listItemTitleWeekFont: {
     fontSize: 18,
@@ -228,19 +380,46 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     alignItems: 'center',
   },
+  listItemView1: {
+    display: 'flex',
+    flexDirection: "column",
+    borderBottomWidth: 1,
+    borderBottomColor: '#C7C7C7',
+    marginLeft: 15,
+    marginRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignItems: 'center',
+    height: 90,
+  },
   listItemTimeView: {
     display: 'flex',
     flexDirection: 'column',
     height: 45,
     justifyContent: 'space-between'
   },
+  listItemTimeView1: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   listItemTimeStart: {
     fontSize: 17,
     color: '#606266',
     fontWeight: 'bold',
   },
+  listItemTimeStart1: {
+    fontSize: 20,
+    color: '#606266',
+    fontWeight: 'bold',
+  },
   listItemTimeEnd: {
     fontSize: 17,
+    color: '#909399',
+    fontWeight: 'bold',
+  },
+  listItemTimeEnd1: {
+    fontSize: 20,
     color: '#909399',
     fontWeight: 'bold',
   },
@@ -254,7 +433,6 @@ const styles = StyleSheet.create({
   listItemRightView: {
     display: 'flex',
     flexDirection: 'column',
-    height: 45,
     flex: 1,
     justifyContent: 'space-between'
   },
@@ -264,19 +442,29 @@ const styles = StyleSheet.create({
     height: 45,
     justifyContent: 'space-between',
   },
+  
+  listItemNoticeView1: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: 45,
+    // position: 'absolute',
+    // right: 0
+  },
   talkNameInput: {
     height: 30,
-    flex: 1,
+    width: '100%',
     borderColor: '#DDD',
     borderWidth: 1,
     borderRadius: 5,
     backgroundColor: '#eee',
     fontSize: 19,
-    padding: 0,
+    paddingLeft: 5,
+
     lineHeight: 24,
     color: '#606266',
     fontWeight: 'bold',
     marginRight: 3,
+    marginBottom: 5
   },
   listItemContent: {
     fontSize: 15,
