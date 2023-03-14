@@ -105,7 +105,10 @@ class MainPage extends Component {
       loading: true,
       menuVisible: true,
       updateItem: {},
-      caseId: undefined
+      caseId: undefined,
+      caseList: props.caseList,
+      caseListInfo: props.caseListInfo,
+
     }
     // DeviceEventEmitter.removeAllListeners();
     this.INJECTEDJAVASCRIPT = `
@@ -255,7 +258,7 @@ class MainPage extends Component {
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
     }
     showPlanModal(<DrawerModal
-      component={<MyPlanSlider {...this.props} />}
+      component={<MyPlanSlider {...this.props} caseList={this.state.caseList}/>}
       ref={e => this.planRef = e}
       height={Common.window.height - 100}
       showType={'bottom'}
@@ -263,7 +266,7 @@ class MainPage extends Component {
     />);
 
     showFinishModal(<DrawerModal
-      component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} />}
+      component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={this.state.caseList}/>}
       ref={e => this.finishRef = e}
       height={Common.window.height - 100}
       showType={'top'}
@@ -790,7 +793,8 @@ class MainPage extends Component {
     //   }
     
     if(item && item.id) {
-      showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess}/>);
+      showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseList={this.state.caseList} 
+      caseListInfo={this.state.caseListInfo}/>);
     }
   }
   render() {

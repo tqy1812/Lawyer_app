@@ -81,6 +81,7 @@ export default class ProcessConfirmModal extends Component {
 render() {
   const { item, caseList, caseListInfo} = this.props;
   const { itemNotice, itemName, open, isIcon } = this.state;
+  logger(caseList)
   const renderItem = (item) => {
     // logger(item)
     return (
