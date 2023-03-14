@@ -91,9 +91,8 @@ render() {
   )};
   return (
     <View style={styles.modalContainer}>
-
       <View style={styles.container}>
-        {caseList && item && item.id && JSON.stringify(caseList) != '{}' && caseListInfo && caseListInfo.length > 0 && <View style={styles.processInfo}>
+        {caseList && item && item.id && JSON.stringify(caseList) != '{}' && <View style={styles.processInfo}>
           <View style={styles.listTitleView}>
             <View style={styles.titleList1}>
               <View style={styles.titleTime1}>
@@ -106,7 +105,7 @@ render() {
               </View>
               <View style={styles.listItemNoticeView1}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
             </View>
-            </View>
+          </View>
             {/*<View style={styles.listTitleView}>*/}
             {/*  <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(item.start_time)}</Text>}</View>*/}
             {/*</View>*/}
@@ -123,7 +122,6 @@ render() {
                 onChangeText={this.handleTalkNameChanged.bind(this)}
                 value={itemName}
               />
-              <View style={styles.dropView}>
               <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
@@ -142,7 +140,7 @@ render() {
                   />
                   </View>
                 )}
-                options={caseListInfo}
+                options={caseListInfo ? caseListInfo : []}
                 defaultValue={item.case && item.case.name}
                 onSelect={(id, item)=> this.handleSelect(id, item)}
                 onDropdownWillShow={() => {
@@ -152,7 +150,6 @@ render() {
                 onDropdownWillHide={() => this.setIsIcon(false)}
                 renderRowProps={{activeOpacity: 1, underlayColor: '#ffffff00'}}
               />
-              </View>
               {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text> */}
             {/* </View> */}
             {/* <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View> */}
@@ -169,13 +166,13 @@ render() {
             <View
               style={[
                 styles.bottomBtnsView,
-                { borderWidth: 0.5, borderColor: "#999" }
+                { borderWidth: 0, backgroundColor: "#BFBFBF" }
               ]}
             >
               <Text
                 style={[
                   styles.bottomBtnsText,
-                  { color: "#333", fontFamily: "PingFangSC-Light" }
+                  { color: "#fff", fontFamily: "PingFangSC-Light" }
                 ]}
               >
                 取消
@@ -187,9 +184,9 @@ render() {
               style={[
                 styles.bottomBtnsView,
                 {
-                  backgroundColor: "#417EFF",
-                  borderWidth: 0.5,
-                  borderColor: "#417EFF"
+                  backgroundColor: "#007AFE",
+                  borderWidth: 0,
+                  borderColor: "#007AFE"
                 }
               ]}
             >
@@ -222,7 +219,8 @@ const styles = StyleSheet.create({
     height: 40,
     paddingLeft: 5,
     backgroundColor: '#E9E9EB',
-    position:'relative'
+    position:'relative',
+    // backgroundColor: '#ff0000'
   },
   dropText: {
     fontSize: 15,
@@ -238,6 +236,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E9E9EB',
     paddingBottom: 5,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderWidth: 0
   },
   dropdownText: {
     fontSize: 15,
@@ -316,6 +317,11 @@ caseItemName:{
   listTitleView: {
     display: 'flex',
     flexDirection: 'column',
+    marginLeft: 15,
+    marginRight: 15,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C7C7C7',
   },
   titleList: {
     marginTop: 5,
@@ -330,14 +336,9 @@ caseItemName:{
   },
   titleList1: {
     marginTop: 10,
-    paddingBottom: 5,
-    marginLeft: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#C7C7C7',
     display: 'flex',
-    marginRight: 10,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     height: 45
   },
@@ -404,7 +405,7 @@ caseItemName:{
     paddingTop: 10,
     paddingBottom: 10,
     alignItems: 'center',
-    height: 90,
+    height: 95,
   },
   listItemTimeView: {
     display: 'flex',
@@ -466,9 +467,9 @@ caseItemName:{
   },
   talkNameInput: {
     height: 30,
-    width: '100%',
+    width: Common.window.width - 70,
     borderColor: '#DDD',
-    borderWidth: 1,
+    borderWidth: 0,
     borderRadius: 5,
     backgroundColor: '#eee',
     fontSize: 19,

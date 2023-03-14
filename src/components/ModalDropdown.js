@@ -273,11 +273,20 @@ export default class ModalDropdown extends Component {
   }
 
   _onButtonPress = () => {
-    const { onDropdownWillShow } = this.props;
-
-    if (!onDropdownWillShow || onDropdownWillShow() !== false) {
-      this.show();
+    const { onDropdownWillShow, onDropdownWillHide } = this.props;
+    const { showDropdown } = this.state;
+  
+    if (!showDropdown){
+      if (!onDropdownWillShow || onDropdownWillShow() !== false) {
+        this.show();
+      }
     }
+    else{
+      if (!onDropdownWillHide || onDropdownWillHide() !== false) {
+        this.hide();
+      }
+    }
+    
   };
 
   _renderModal() {

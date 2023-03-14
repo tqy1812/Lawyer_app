@@ -71,14 +71,14 @@ export default class actionCase {
                 Storage.setCaseList(user.phone,JSON.stringify(newData));   
                 Storage.setCaseListUserColor(user.phone,JSON.stringify(newUserColor));   
                 dispatch({type: actionCase.TYPE_CASE_LIST, data: newData});
-                if(callback) callback()
+                if(callback) callback(newData)
               }); 
             }
             else{
               Storage.setCaseList(user.phone,JSON.stringify(caseList));   
               Storage.setCaseListUserColor(user.phone,JSON.stringify(caseListUserColor));   
               dispatch({type: actionCase.TYPE_CASE_LIST, data: caseList});
-              if(callback) callback()
+              if(callback) callback(caseList)
             }     
           });
       }));

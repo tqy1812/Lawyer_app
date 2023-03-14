@@ -176,7 +176,9 @@ class MainPage extends Component {
     if (!this.props.isLogin) {
       this.props.navigation.navigate('Login');
     }
-    this.props.dispatch(actionCase.reqCaseList());
+    this.props.dispatch(actionCase.reqCaseList((list)=>{
+      logger(list)
+    }));
     this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
     // logger(this.wc);
