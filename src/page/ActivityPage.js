@@ -67,6 +67,12 @@ class ActivityPage extends Component {
             }));
             this.eventNoticeReceive = DeviceEventEmitter.addListener('refreshDailyProcess',
                 () => { this.handleList(moment(new Date()).format('YYYY-MM-DD')); });
+                const hour = new Date().getHours();
+                if(hour>=7) {
+                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
+                } else if(hour>=17) {
+                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
+                }
         });
     }
 
@@ -115,6 +121,8 @@ class ActivityPage extends Component {
             if (callback) callback()
         }));
     }
+
+
     render() {
         const time = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'];
         const { list, today, isToday } = this.state;
@@ -154,7 +162,7 @@ class ActivityPage extends Component {
                 // locale={locale}
                 />
                 <View style={styles.content}>
-                    <ScrollView>
+                    <ScrollView ref={ (ref) => { this.myTimeListRef = ref } }>
                         <View style={styles.agendaContainer}>
                             <View style={styles.timeView}>
                                 {

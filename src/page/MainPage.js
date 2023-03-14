@@ -176,8 +176,14 @@ class MainPage extends Component {
     if (!this.props.isLogin) {
       this.props.navigation.navigate('Login');
     }
-    this.props.dispatch(actionCase.reqCaseList((list)=>{
+    this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
       logger(list)
+      if(list) {
+        this.setState({caseList: list})
+      }
+      if(infoList) {
+        this.setState({caseListInfo: infoList})
+      }
     }));
     this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
@@ -447,7 +453,14 @@ class MainPage extends Component {
       if (platform.isAndroid()) {
         NativeModules.WebSocketWorkManager.stopBackgroundWork();
       }
-      this.props.dispatch(actionCase.reqCaseList());
+      this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
+        if(list) {
+          this.setState({caseList: list})
+        }
+        if(infoList) {
+          this.setState({caseListInfo: infoList})
+        }
+      }));
       this.props.dispatch(actionAuth.reqUserInfo());
       // logger('****************show', this.wc.getKeepSocket());
       // this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
@@ -781,7 +794,7 @@ class MainPage extends Component {
     }
   }
   render() {
-    const { menuVisible } = this.state;
+    const { menuVisible, caseList } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     // logger('statusBarHeight11......', StatusBar.currentHeight)
     // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
@@ -819,13 +832,13 @@ class MainPage extends Component {
             />
         </MyModal>*/}
         <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={false}>
-          {this.props.caseList && this.state.item && this.state.item.id && JSON.stringify(this.props.caseList) != '{}' && <View style={styles.processInfo}>
+          {caseList && this.state.item && this.state.item.id && JSON.stringify(caseList) != '{}' && <View style={styles.processInfo}>
             <View style={styles.listTitleView}>
               <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(this.state.item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(this.state.item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(this.state.item.start_time)}</Text>}</View>
             </View>
             <View style={styles.listItemView}>
               <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{this.state.item.start_time ? moment(this.state.item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{this.state.item.end_time ? moment(this.state.item.end_time).format('HH:mm') : '-- : --'}</Text></View>
-              <View style={[styles.listItemTimeSplit, { backgroundColor: this.props.caseList[this.state.item.case.id + ''][2], }]}></View>
+              <View style={[styles.listItemTimeSplit, { backgroundColor: caseList[this.state.item.case.id + ''][2], }]}></View>
               <View style={styles.listItemRightView}>
                 {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{this.state.item.name}</Text> */}
                 <TextInput

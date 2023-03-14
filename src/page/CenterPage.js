@@ -49,7 +49,9 @@ class CenterPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            imgAvatar: props.userInfo.avatar
+            imgAvatar: props.userInfo.avatar,
+            caseList: props.caseList,
+            caseListInfo: props.caseListInfo,
         };
         this.globalDate = GlobalData.getInstance();
     }
@@ -61,6 +63,15 @@ class CenterPage extends Component {
       // logger('....................' , this.props.navigation.getState());
       // this.setState({ routes: this.props.navigation.getState().routes});
       this.props.dispatch(actionAuth.reqUserInfo()); 
+      this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
+        // logger(list)
+        if(list) {
+          this.setState({caseList: list})
+        }
+        if(infoList) {
+          this.setState({caseListInfo: infoList})
+        }
+      }));
     }
 
   
@@ -150,8 +161,8 @@ class CenterPage extends Component {
         });
     }
     render() {
-      const {caseList, caseListInfo, userInfo} = this.props;
-      const { imgAvatar} = this.state;
+      const { userInfo} = this.props;
+      const { imgAvatar, caseList, caseListInfo} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
       // logger('..onBackButtonPressAndroid', this.props.navigation)
       // logger(caseList)

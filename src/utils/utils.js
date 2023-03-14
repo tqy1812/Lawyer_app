@@ -150,6 +150,9 @@ export function getWeek (date) { // 参数时间戳
           if(end<= start) {
             endArray = [parseInt(startArray[0])+1, parseInt(startArray[0])== 23 ? 0 : parseInt(startArray[1])];
             end = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
+          } else if (end - start < 1) {
+            endArray = [parseInt(startArray[0])+1, parseInt(startArray[0])== 23 ? 0 : parseInt(startArray[1])];
+            end = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
           }
           // logger(start, end, pos)
           if(pos.length > 0) {
@@ -161,10 +164,10 @@ export function getWeek (date) { // 参数时间戳
               let poxy = getStartEnd(temp, longPos);
               let s = poxy[0];
               let e = poxy[1];
-              // logger(s, e, data[i].id, JSON.stringify(pos1), !flag )
+              logger(temp )
               if(!flag && (start>=s && start < e)) {
                 for(let k=0; k < temp.length; k++) {
-                  // logger('不在范围内',start, end,temp[k], end <= temp[k]['start'] || start>=temp[k]['end'])
+                  // logger('不在范围内', temp[k])
                   if (end <= temp[k]['start'] || start>=temp[k]['end']) {  //不在范围内
                     logger('1******', data[i].id, j, pos.length-1, k, temp.length-1)
                     tp= [];
@@ -431,6 +434,10 @@ export function getHoliday(time) {
 
 export function logger(str, str1) {
   if(Common.env != 'dev') {
-    console.log(str, str1)
+    if(str1) {
+      console.log(str, str1)
+    } else {
+      console.log(str)
+    }
   }
 }
