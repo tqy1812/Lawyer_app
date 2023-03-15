@@ -292,7 +292,7 @@ class MainPage extends Component {
     if (platform.isAndroid()) {
       NativeModules.WebSocketWorkManager.stopBackgroundWork();
     }
-    DeviceEventEmitter.removeAllListeners();
+    // DeviceEventEmitter.removeAllListeners();
   }
   onRegistered = (deviceToken) => {
     const { dispatch } = this.props;
