@@ -79,6 +79,7 @@ class CenterPage extends Component {
       const {dispatch} = this.props;
       const {routes} = this.state;
       dispatch({type: TYPE_AUTH_USER, data: {}});
+      Storage.setAutoLogin('0');
       // logger('.....#################',routes)
       // const route = routes.find(r=> r.name == 'Center');
       // logger('.....',route)

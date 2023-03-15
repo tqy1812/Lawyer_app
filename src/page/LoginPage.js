@@ -128,13 +128,13 @@ class LoginPage extends Component {
         }
         let autoLogin = await Storage.getAutoLogin();
         // logger("autoLogin" + autoLogin)
-        // if (autoLogin === '1') {
-        this.setState({autoLogin: true});
-        if (savedUser.phone && savedUser.password) {
-            const that = this;
-            requestAnimationFrame(() => that.handleLogin());
+        if (autoLogin === '1') {
+            this.setState({autoLogin: true});
+            if (savedUser.phone && savedUser.password) {
+                const that = this;
+                requestAnimationFrame(() => that.handleLogin());
+            }
         }
-        // }
     }
 
     // 用户名改变
