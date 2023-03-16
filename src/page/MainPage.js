@@ -381,9 +381,9 @@ class MainPage extends Component {
     logger('##########isClicked=' + isClicked);
     if (isClicked) {
       this.openNotfication();
-      PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
-        PushNotificationIOS.setApplicationIconBadgeNumber(num - 1);
-      });
+      // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
+      //   PushNotificationIOS.setApplicationIconBadgeNumber(num - 1);
+      // });
     }
     // Alert.alert(
     //   'Local Notification Received',

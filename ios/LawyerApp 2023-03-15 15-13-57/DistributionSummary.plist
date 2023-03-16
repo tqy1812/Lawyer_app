@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LawyerApp.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>buildNumber</key>
+			<string>1</string>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>4F64A62316A80705C19EB2D261CB0D9D02A4B034</string>
+				<key>dateExpires</key>
+				<string>2024/3/4</string>
+				<key>type</key>
+				<string>iOS Distribution</string>
+			</dict>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>T7N25URN4F.org.reactjs.native.ky.LawyerApp</string>
+				<key>aps-environment</key>
+				<string>production</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>T7N25URN4F</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>LawyerApp.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>3d10b219-6aa3-4efa-a20a-8e143af653e0</string>
+				<key>dateExpires</key>
+				<string>2024/3/4</string>
+				<key>name</key>
+				<string>test03145</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>T7N25URN4F</string>
+				<key>name</key>
+				<string>Shenzhen Kuaiyu Technology Co., Ltd.</string>
+			</dict>
+			<key>versionNumber</key>
+			<string>1.0</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -30,6 +30,7 @@ import {
   WebView
 } from 'react-native-webview';
 const Toast = Overlay.Toast;
+const { width: windowWidth, height: windowHeight } = Common.window;
 
 class ReportPage extends Component {
 

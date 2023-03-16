@@ -21,6 +21,14 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getInputAudio) {
   return @0;
 }
 
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(openSetting) {
+  NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+  if ([[UIApplication sharedApplication] canOpenURL:url]) {
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+  }
+  return @0;
+}
+
 + (instancetype)shareInstance {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{

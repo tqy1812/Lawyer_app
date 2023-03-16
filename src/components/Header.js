@@ -79,7 +79,7 @@ class Header extends React.Component {
           style={styles.rightIcon}
           onPress={this.handleRightAction.bind(this)}
         >   
-          <AntDesign size={25} name='close' color='rgba(0,0,0,0.5)'/>
+          <AntDesign size={30} name='close' color='rgba(0,0,0,0.5)'/>
         </MyButton>
       );
     } 
@@ -128,12 +128,18 @@ const styles = StyleSheet.create({
   leftIcon: {
     left: 10,
     color: '#000',
-    width: 40,
+    width: 100,
+    height: 45,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   rightIcon: {
-    right: 10,
+    right: 20,
     color: '#000',
-    width: 40,
+    width: 100,
+    height: 45,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
 });
 

@@ -15,7 +15,7 @@
 		47D4B2F46B6CC4FFD21BDD67 /* libPods-LawyerApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8C8223842DB9E47F92DD428 /* libPods-LawyerApp.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8335DC4C15DC4443506CEE27 /* libPods-LawyerApp-LawyerAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9454474547F30FEC9B0F987 /* libPods-LawyerApp-LawyerAppTests.a */; };
-		A832AE1529C16A5E0066EBF9 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A832AE1429C16A5E0066EBF9 /* main.jsbundle */; };
+		A832AE1929C1A7100066EBF9 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A832AE1829C1A7100066EBF9 /* main.jsbundle */; };
 		A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A893F63B299A40E50013C5CC /* icomoon.ttf */; };
 		A8B079DB2994815900717228 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079DA2994815900717228 /* AVFoundation.framework */; };
 		A8B079DD2994818400717228 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079DC2994818400717228 /* SystemConfiguration.framework */; };
@@ -78,7 +78,7 @@
 		48CEC7A8F9B9FA75A3687183 /* Pods-LawyerApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LawyerApp.debug.xcconfig"; path = "Target Support Files/Pods-LawyerApp/Pods-LawyerApp.debug.xcconfig"; sourceTree = "<group>"; };
 		61E7D0CD8C6304CB143327B1 /* Pods-LawyerApp-LawyerAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LawyerApp-LawyerAppTests.release.xcconfig"; path = "Target Support Files/Pods-LawyerApp-LawyerAppTests/Pods-LawyerApp-LawyerAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = LawyerApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		A832AE1429C16A5E0066EBF9 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
+		A832AE1829C1A7100066EBF9 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
 		A893F63B299A40E50013C5CC /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = "../../Desktop/未命名文件夹/Fonts/icomoon.ttf"; sourceTree = "<group>"; };
 		A8A9DC6A29AD910C006949DE /* LawyerApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LawyerApp.entitlements; path = LawyerApp/LawyerApp.entitlements; sourceTree = "<group>"; };
 		A8B079DA2994815900717228 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -210,7 +210,7 @@
 		13B07FAE1A68108700A75B9A /* LawyerApp */ = {
 			isa = PBXGroup;
 			children = (
-				A832AE1429C16A5E0066EBF9 /* main.jsbundle */,
+				A832AE1829C1A7100066EBF9 /* main.jsbundle */,
 				A8E732FE29C07A2E004DB89F /* IQKeyboardManager */,
 				A8B3CF9329B6E6D60086D052 /* SpeechConstantModule.h */,
 				A8B3CF9229B6E6D60086D052 /* SpeechConstantModule.m */,
@@ -469,7 +469,7 @@
 				A8E9657029A73EBD00F87AEF /* assets in Resources */,
 				A8E7332A29C07A2E004DB89F /* IQKeyboardManager.bundle in Resources */,
 				A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */,
-				A832AE1529C16A5E0066EBF9 /* main.jsbundle in Resources */,
+				A832AE1929C1A7100066EBF9 /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

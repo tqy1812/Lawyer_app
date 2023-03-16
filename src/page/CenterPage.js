@@ -161,6 +161,15 @@ class CenterPage extends Component {
           alert(e);
         });
     }
+
+    openSetting () {
+      if(platform.isAndroid()){
+        NativeModules.NotifyOpen && NativeModules.NotifyOpen.open();
+      }
+      else {
+        NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
+      }
+    }
     render() {
       const { userInfo} = this.props;
       const { imgAvatar, caseList, caseListInfo} = this.state;
@@ -208,11 +217,16 @@ class CenterPage extends Component {
                 </MyButton>
               </View> 
               <View style={styles.menuView}> 
-                <MyButton style={styles.menuButton} onPress={() => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.open();}}>
+                <MyButton style={styles.menuButton} onPress={() => {this.openSetting()}}>
                   <Text style={styles.menuText}>通知提醒</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
-                
+              </View>  
+
+              <View style={styles.menuView1}> 
+                <MyButton style={styles.menuButton} onPress={() => {}}>
+                  <Text style={styles.menuText}>使用帮助</Text>
+                </MyButton>
               </View>  
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
@@ -293,9 +307,18 @@ infoPhone:{
 menuView: {
   width: Common.window.width - 40,
   backgroundColor: '#ffffff',
-  padding: 10,
   borderRadius: 8,
   marginTop: 5,
+  marginLeft: 20,
+  marginRight: 20,
+  justifyContent: 'center',
+  alignItems: 'center'
+},
+menuView1: {
+  width: Common.window.width - 40,
+  backgroundColor: '#ffffff',
+  borderRadius: 8,
+  marginTop: 50,
   marginLeft: 20,
   marginRight: 20
 },
@@ -303,13 +326,13 @@ splitLine: {
   height: 1,
   width: Common.window.width - 60,
   backgroundColor: '#D9D9D9',
-  marginTop: 10,
 },
 menuButton: {
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'flex-start',
   alignItems: 'center',
+  padding: 10,
 },
 menuText: {
   flex: 1,
@@ -318,7 +341,7 @@ menuText: {
   marginLeft: 5,
 },
 caseView: {
-  width: Common.window.width - 70,
+  width: Common.window.width - 60,
   paddingTop: 5,
   paddingLeft: 5,
   paddingRight: 5,
@@ -328,7 +351,7 @@ caseView: {
   alignContent: 'center',
 },
 caseItem: {
-  width: Common.window.width - 80,
+  width: Common.window.width - 70,
   padding: 5,
   display: 'flex',
   flexDirection: 'row',
@@ -353,17 +376,18 @@ bottom: {
   alignItems: 'center',
   justifyContent: 'center',
   alignSelf: 'flex-end',
+  marginTop: 100,
 },
 logoutBtn: {
   width: Common.window.width - 40,
   backgroundColor: '#ffffff',
-  padding: 10,
+  padding: 15,
   alignItems: 'center',
   borderRadius: 30,
   margin: 20,
 },
 logoutText: {
-  color: '#D9D9D9',
+  color: '#BFBFBF',
   fontSize: 16,
 },
 

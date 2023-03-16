@@ -13,7 +13,7 @@ class MyButton extends React.Component {
 
   onPress () {
     const clickTime = Date.now();
-    if (!this.lastClickTime || Math.abs(this.lastClickTime - clickTime) > 1000) {  //350的时间可以延长，根据需要改变
+    if (!this.lastClickTime || Math.abs(this.lastClickTime - clickTime) > 350) {  //350的时间可以延长，根据需要改变
       this.lastClickTime = clickTime;
       if(this.props.onPress){
         HandlerOnceTap(()=>this.props.onPress(), 300);
