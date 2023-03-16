@@ -15,6 +15,7 @@ import MainPage from '../page/MainPage';
 import PrivacyPage from '../page/PrivacyPage';
 import ServicePage from '../page/ServicePage';
 import CenterPage from '../page/CenterPage';
+import ReportPage from '../page/ReportPage';
 
 
 const Toast = Overlay.Toast;
@@ -151,6 +152,11 @@ export default function StackRouter() {
                     options={{headerShown: false,
                       ...TransitionPresets.SlideFromRightIOS,
                       gestureDirection: 'horizontal-inverted',}}
+                />
+                <Stack.Screen
+                    name="Report"
+                    component={ReportPage}
+                    options={{headerShown: false}}
                 />
                 {/* <Stack.Screen
                     name="UpdatePassword"

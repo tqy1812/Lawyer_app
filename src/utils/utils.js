@@ -441,3 +441,11 @@ export function logger(str, str1) {
     }
   }
 }
+
+export function caseSetting(caseList) {
+  let arr = {}
+  for(let key in caseList) {
+    arr[key] = caseList[key][2]
+  }
+  return arr;
+}

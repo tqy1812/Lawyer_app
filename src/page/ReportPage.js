@@ -22,6 +22,7 @@ import MyButton from '../components/MyButton';
 // import Feather from 'react-native-vector-icons/Feather';
 import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
+import { caseSetting } from '../utils/utils';
 import {
   WebView as WebViewX5
 } from 'react-native-webview-tencentx5';
@@ -36,6 +37,7 @@ class ReportPage extends Component {
         let props = {};
         props.user = state.Auth.user;
         props.isLogin = authHelper.logined(state.Auth.user);
+        props.caseList = state.Case.caseList;
         return props;
     }
 
@@ -43,7 +45,8 @@ class ReportPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          loading: true
+          loading: true,
+          caseSet: caseSetting(props.caseList)
         };
         
         this.INJECTEDJAVASCRIPT = `
@@ -58,6 +61,12 @@ class ReportPage extends Component {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
+      Storage.getUserRecord().then((user) => {
+        if (user) {
+          let obj = Object.assign({}, JSON.parse(user));
+          this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("' + obj.token + '", "' + this.state.caseSet + '");true;');
+        }
+      });
     }
 
     //
@@ -80,7 +89,7 @@ class ReportPage extends Component {
                     {
                         platform.isAndroid() ? <WebViewX5
                         ref={this.wv}
-                        source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+                        source={{ uri:  Common.webUrl + 'report.html' }}
                         // source={{ uri: 'https://human.kykyai.cn' }}
                         scalesPageToFit={false}
                         bounces={false}
@@ -94,7 +103,7 @@ class ReportPage extends Component {
                         onLoadEnd={this.closeLoading.bind(this)}
                       /> : <WebView
                       ref={this.wv}
-                      source={{ uri: 'https://www.kykyai.com/cartoon/applive2d/demo/index.html' }}
+                      source={{ uri: Common.webUrl + 'report.html' }}
                       // source={{ uri: 'https://human.kykyai.cn' }}
                       scalesPageToFit={false}
                       bounces={false}
