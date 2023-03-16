@@ -297,11 +297,13 @@ class MainPage extends Component {
   onRegistered = (deviceToken) => {
     const { dispatch } = this.props;
     logger('.......deviceToken='+deviceToken);
-    dispatch(actionAuth.reqUserUpdate(undefined, deviceToken, (result, error)=>{
-      if(error){
-        Toast.show(error.info)
-      }
-    }));
+    if(deviceToken) {
+      dispatch(actionAuth.reqUserUpdate(undefined, deviceToken, (result, error)=>{
+        if(error){
+          Toast.show(error.info)
+        }
+      }));
+    }
     // Alert.alert('远程消息推送已经注册', `注册令牌: ${deviceToken}`, [
     //   {
     //     text: '关闭',

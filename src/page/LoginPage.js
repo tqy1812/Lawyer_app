@@ -127,7 +127,7 @@ class LoginPage extends Component {
             }
         }
         let autoLogin = await Storage.getAutoLogin();
-        // logger("autoLogin" + autoLogin)
+        logger("autoLogin" + autoLogin)
         if (autoLogin === '1') {
             this.setState({autoLogin: true});
             if (savedUser.phone && savedUser.password) {

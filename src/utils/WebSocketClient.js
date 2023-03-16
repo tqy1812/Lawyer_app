@@ -32,7 +32,7 @@ export default class WebSocketClient {
         },
         reconnectDelay: 200,
         onConnect: function (frame) {
-          logger('############connected'+WebSocketClient.ws.connected, WebSocketClient.ws.webSocket, WebSocketClient.ws.active)
+          logger('############connected'+WebSocketClient.ws.connected, WebSocketClient.ws.active)
             // if(!WebSocketClient.subscription) {
           DeviceEventEmitter.emit('wsBind', WebSocketClient.userId);
             // }

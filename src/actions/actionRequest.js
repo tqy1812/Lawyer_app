@@ -397,7 +397,7 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
             headers['token'] = obj.token;
             request.post(url, method, data, headers,
                 (rs, error) => {
-                    logger(':::: request_impl: ' + JSON.stringify(rs));
+                    // logger(':::: request_impl: ' + JSON.stringify(rs));
                     if(callback) callback(rs, error);
                 },
                 (reqKey) => {
