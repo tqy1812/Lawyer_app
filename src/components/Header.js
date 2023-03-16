@@ -66,7 +66,7 @@ class Header extends React.Component {
     if (this.props.title) {
       NavigationBar.push(
         <View key={'title'} style={styles.titleWrap}>
-          <Text style={[styles.title, {marginRight: this.state.hasLeftButton? 40:0, marginLeft: this.state.hasRightButton? 40:0}]}>{this.props.title}</Text>
+          <Text style={[styles.title, {}]}>{this.props.title}</Text>
         </View>
       );
     }
@@ -94,16 +94,6 @@ class Header extends React.Component {
   }
 }
 
-const headerPlatformHeight = {
-  'ios': 45,
-  'android': 70,
-};
-
-const headerPlatformPadding = {
-  'ios': 0,
-  'android': 22,
-};
-
 const styles = StyleSheet.create({
   navigationBarContainer: {
     height: 45,
@@ -126,6 +116,8 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   leftIcon: {
+    position: 'absolute',
+    zIndex: 1,
     left: 10,
     color: '#000',
     width: 100,
@@ -134,6 +126,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rightIcon: {
+    position: 'absolute',
+    zIndex: 1,
     right: 20,
     color: '#000',
     width: 100,

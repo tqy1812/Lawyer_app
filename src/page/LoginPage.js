@@ -193,11 +193,11 @@ class LoginPage extends Component {
     }
 
     goService() {
-        // this.props.navigation.navigate('Service');
+        this.props.navigation.navigate('Service');
     }
 
     goPrivacy() {
-        // this.props.navigation.navigate('Privacy');
+        this.props.navigation.navigate('Privacy');
     }
 
     test = () => {
