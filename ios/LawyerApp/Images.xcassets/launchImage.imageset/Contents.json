@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "bg.jpg",
+      "filename" : "进入页.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "bg 1.jpg",
+      "filename" : "进入页 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "bg 2.jpg",
+      "filename" : "进入页 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

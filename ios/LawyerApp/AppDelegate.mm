@@ -32,6 +32,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(closeSplashImage) name:@"Notification_CLOSE_SPLASH_SCREEN" object:nil];
   RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
@@ -105,8 +106,29 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 //      OpenNoticeEmitter *open = [OpenNoticeEmitter shareInstance];
 //      [open doOpenNotice];
 //    }
+  [self autoSplashScreen];
   return YES;
 }
+-(void)autoSplashScreen {
+  if (!self.splashImage) {
+    self.splashImage = [[UIImageView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+  }
+  [self.splashImage setImage:[UIImage imageNamed:@"launchImage"]];
+  [self.splashImage setContentScaleFactor:[[UIScreen mainScreen] scale]];
+  self.splashImage.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+  self.splashImage.contentMode = UIViewContentModeScaleAspectFit;
+  [self.window addSubview:self.splashImage];
+ }
+ -(void)closeSplashImage {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+     [UIView animateWithDuration:0.5 animations:^{
+       self.splashImage.alpha = 0;
+     } completion:^(BOOL finished){
+      [self.splashImage removeFromSuperview];
+     }];
+    });
+ }
+
 -(void)showAlertMessage:(NSString *)message{
   UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
 //  UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];

@@ -5,4 +5,5 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, UNUserNotificationCenterDelegate>
 @property (nonatomic, strong) UIWindow *window;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) UIImageView *splashImage;
 @end

@@ -64,6 +64,9 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
+        if (platform.isIOS()) {
+            NativeModules.SplashScreen && NativeModules.SplashScreen.close();
+        }
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin, navigation, insets } = this.props;
             // logger("isLogin" + isLogin, insets.top)
