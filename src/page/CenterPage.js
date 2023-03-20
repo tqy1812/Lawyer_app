@@ -17,7 +17,7 @@ import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import {logger} from '../utils/utils';
+import {logger, getPhone} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -180,7 +180,7 @@ class CenterPage extends Component {
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
             <Header title='个人中心' close={true}  {...this.props}/>  
-            <ScrollView style={styles.scrollView}>  
+            <ScrollView style={styles.scrollView}  nestedScrollEnabled={true}>  
             <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
               <View style={styles.infoContent}> 
                 <TouchableOpacity onPress={this.handlePromiseSelectPhoto} >
@@ -194,21 +194,24 @@ class CenterPage extends Component {
                 <View style={styles.infoView}> 
                   <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.name}</Text>
                   <Text style={styles.infoCompany} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.org_name}</Text>
-                  <Text style={styles.infoPhone} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.phone}</Text>
+                  <Text style={styles.infoPhone} numberOfLines={1} ellipsizeMode={'tail'}>{getPhone(userInfo.phone, '*')}</Text>
                 </View>
               </View>
+              <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>项目</Text></View>
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
-                  <Text style={styles.menuText}>项目类别</Text>
+                  <Text style={styles.menuText}>当前项目</Text>
                 </MyButton>
                 <View style={styles.splitLine}></View>
-                <View style={styles.caseView}>
+                <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
+                  <View style={styles.caseView}>
                   {
                     JSON.stringify(caseList)!='{}' && caseListInfo && caseListInfo.length > 0 && caseListInfo.map((item)=>{
                         return <View style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
                     })
                   }
-                </View>
+                  </View>
+                </ScrollView>
               </View> 
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => { this.props.navigation.navigate('Report')}}>
@@ -216,21 +219,32 @@ class CenterPage extends Component {
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View> 
+              <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>个性化</Text></View>
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {this.openSetting()}}>
                   <Text style={styles.menuText}>通知提醒</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>  
-
-              <View style={styles.menuView1}> 
+              <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>隐私安全</Text></View>
+              <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
-                  <Text style={styles.menuText}>使用帮助</Text>
+                  <Text style={styles.menuText}>系统权限管理</Text>
                 </MyButton>
               </View>  
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
-                  <Text style={styles.menuText}>隐私条款</Text>
+                  <Text style={styles.menuText}>第三方信息共享清单</Text>
+                </MyButton>
+              </View>  
+              <View style={styles.menuView}> 
+                <MyButton style={styles.menuButton} onPress={() => {}}>
+                  <Text style={styles.menuText}>个人信息查看与导出</Text>
+                </MyButton>
+              </View>  
+              <View style={styles.menuView1}> 
+                <MyButton style={styles.menuButton} onPress={() => {}}>
+                  <Text style={styles.menuText}>关于律时与帮助</Text>
                 </MyButton>
               </View>  
             </View>          
@@ -273,7 +287,7 @@ infoContent: {
   marginTop: 20,
   marginLeft: 20,
   marginRight: 20,
-  marginBottom: 40,
+  marginBottom: 20,
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'center',
@@ -314,6 +328,16 @@ menuView: {
   justifyContent: 'center',
   alignItems: 'center'
 },
+menuTitleView: {
+  width: Common.window.width - 40,
+  marginTop: 20,
+  marginLeft: 20,
+  marginRight: 20,
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  paddingLeft: 10,
+},
 menuView1: {
   width: Common.window.width - 40,
   backgroundColor: '#ffffff',
@@ -330,7 +354,7 @@ splitLine: {
 menuButton: {
   display: 'flex',
   flexDirection: 'row',
-  justifyContent: 'flex-start',
+  justifyContent: 'space-between',
   alignItems: 'center',
   padding: 10,
 },
@@ -339,6 +363,10 @@ menuText: {
   color: '#606266',
   fontSize: 17,
   marginLeft: 5,
+},
+caseViewScroll: {
+  width: Common.window.width - 60,
+  maxHeight: 200,
 },
 caseView: {
   width: Common.window.width - 60,
@@ -367,6 +395,11 @@ caseItemBadge: {
 caseItemName:{
   color: '#979797',
   fontSize: 14,
+  marginLeft: 5,
+},
+itemTitle:{
+  color: '#979797',
+  fontSize: 12,
   marginLeft: 5,
 },
 bottom: {

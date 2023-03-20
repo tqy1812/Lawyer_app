@@ -32,6 +32,7 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.lawyerapp.splash.SplashScreen;
 import com.lawyerapp.task.WebSocketTask;
 import com.lawyerapp.task.WebSocketTaskService;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
@@ -39,7 +40,7 @@ import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MainActivity extends ReactActivity {
-  private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
+  private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
   private static int REQUEST_PERMISSION_CODE = 1;
   private static final String TAG_HUNG_UP = "HUNG_UP";
   private static final String ACTION_FROM_NOTIFICATION = BuildConfig.APPLICATION_ID + ".ACTION_FROM_NOTIFICATION";
@@ -90,7 +91,13 @@ public class MainActivity extends ReactActivity {
   }
 
   @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    if (outState != null) { outState.clear(); }
+  }
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
+    SplashScreen.show(this,true);//显示Dialog
     super.onCreate(savedInstanceState);
     intent = getIntent();
 
@@ -103,9 +110,9 @@ public class MainActivity extends ReactActivity {
       if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
       }
-      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
-      }
+//      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//        ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
+//      }
     }
     NotificationManagerCompat notification = NotificationManagerCompat.from(this);
     boolean isEnabled = notification.areNotificationsEnabled();

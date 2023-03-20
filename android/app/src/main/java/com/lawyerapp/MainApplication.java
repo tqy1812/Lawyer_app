@@ -19,6 +19,7 @@ import com.facebook.soloader.SoLoader;
 import com.lawyerapp.newarchitecture.MainApplicationReactNativeHost;
 import com.lawyerapp.notify.NotifyOpenPackage;
 import com.lawyerapp.screen.ScreenAdaptationPackage;
+import com.lawyerapp.splash.SplashScreenReactPackage;
 import com.lawyerapp.work.BackgroundPackage;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
             packages.add(new BackgroundPackage());
             packages.add(new NotifyOpenPackage());
             packages.add(new ScreenAdaptationPackage());
+            packages.add(new SplashScreenReactPackage());
           return packages;
         }
 

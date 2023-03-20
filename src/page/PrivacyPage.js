@@ -7,6 +7,7 @@ import {
     Image,
     Overlay,
     StatusBar,
+    Platform,
     ImageBackground, ActivityIndicator
 } from 'react-native';
 import Header from '../components/Header';

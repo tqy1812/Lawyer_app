@@ -7,6 +7,7 @@ import {
     Image,
     Overlay,
     StatusBar,
+    Platform,
     ImageBackground, InteractionManager, ActivityIndicator
 } from 'react-native';
 import Header from '../components/Header';
@@ -22,7 +23,7 @@ import MyButton from '../components/MyButton';
 // import Feather from 'react-native-vector-icons/Feather';
 import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
-import { caseSetting } from '../utils/utils';
+import { caseSetting, logger } from '../utils/utils';
 import {
   WebView as WebViewX5
 } from 'react-native-webview-tencentx5';
@@ -62,12 +63,6 @@ class ReportPage extends Component {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
-      Storage.getUserRecord().then((user) => {
-        if (user) {
-          let obj = Object.assign({}, JSON.parse(user));
-          this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("' + obj.token + '", "' + this.state.caseSet + '");true;');
-        }
-      });
     }
 
     //
@@ -77,6 +72,15 @@ class ReportPage extends Component {
     }
     closeLoading = () => {
       this.setState({loading: false});
+      Storage.getUserRecord().then((user) => {
+        if (user) {
+          let obj = Object.assign({}, JSON.parse(user));
+          let reg = new RegExp('"',"g");  
+          // logger(obj.token, JSON.stringify(this.state.caseSet).replace(reg, ""))
+          this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' + JSON.stringify(this.state.caseSet).replace(reg, "'") + '");true;');
+        }
+      });
+
     }
     render() {
             return (
@@ -90,7 +94,7 @@ class ReportPage extends Component {
                     {
                         platform.isAndroid() ? <WebViewX5
                         ref={this.wv}
-                        source={{ uri:  Common.webUrl + 'report.html' }}
+                        source={{ uri:  Common.webUrl + 'report/report.html' }}
                         // source={{ uri: 'https://human.kykyai.cn' }}
                         scalesPageToFit={false}
                         bounces={false}
@@ -104,7 +108,7 @@ class ReportPage extends Component {
                         onLoadEnd={this.closeLoading.bind(this)}
                       /> : <WebView
                       ref={this.wv}
-                      source={{ uri: Common.webUrl + 'report.html' }}
+                      source={{ uri: Common.webUrl + 'report/report.html' }}
                       // source={{ uri: 'https://human.kykyai.cn' }}
                       scalesPageToFit={false}
                       bounces={false}

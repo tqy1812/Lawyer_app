@@ -6,7 +6,7 @@ const {width,height} = Dimensions.get('window')
 const wh = height/width
 const env = 'pro';
 const apiUrl = env=='dev' ? 'http://192.168.30.93:5000/' : 'https://lawyer-api.kykyai.cn/';
-const webUrl = env === 'dev' ? 'https://www.kykyai.com/cartoon/applive2dTest/demo/' : 'https://www.kykyai.com/cartoon/applive2d/demo/';
+const webUrl = env === 'dev' ? 'https://www.kykyai.com/cartoon/applive2dTest/' : 'https://www.kykyai.com/cartoon/applive2d/';
 let statusBarHeight =  platform.isIOS() ? (platform.isiPhoneX() ? 60 : 50) : StatusBarManager.HEIGHT;
 
 let window = {

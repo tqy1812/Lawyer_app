@@ -1,5 +1,6 @@
 
 import moment from 'moment';
+import { func } from 'prop-types';
 import Common from "../common/constants";
 export const locale = {
   name: 'zhCn',
@@ -448,4 +449,8 @@ export function caseSetting(caseList) {
     arr[key] = caseList[key][2]
   }
   return arr;
+}
+
+export function getPhone(value, char) {
+  return value.replace(/(\d{3})\d*(\d{4})/, `$1${new Array(5).join(char)}$2`);
 }
