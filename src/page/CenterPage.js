@@ -228,8 +228,9 @@ class CenterPage extends Component {
               </View>  
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>隐私安全</Text></View>
               <View style={styles.menuView}> 
-                <MyButton style={styles.menuButton} onPress={() => {}}>
+                <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('Permission')}}>
                   <Text style={styles.menuText}>系统权限管理</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>  
               <View style={styles.menuView}> 
@@ -238,13 +239,15 @@ class CenterPage extends Component {
                 </MyButton>
               </View>  
               <View style={styles.menuView}> 
-                <MyButton style={styles.menuButton} onPress={() => {}}>
+                <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('MyInfo')}}>
                   <Text style={styles.menuText}>个人信息查看与导出</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>  
               <View style={styles.menuView1}> 
-                <MyButton style={styles.menuButton} onPress={() => {}}>
+                <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('About')}}>
                   <Text style={styles.menuText}>关于律时与帮助</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>  
             </View>          
@@ -414,14 +417,17 @@ bottom: {
 logoutBtn: {
   width: Common.window.width - 40,
   backgroundColor: '#ffffff',
-  padding: 15,
+  paddingTop: 10,
+  paddingBottom: 10,
+  paddingLeft: 30,
+  paddingRight: 30,
   alignItems: 'center',
   borderRadius: 30,
   margin: 20,
 },
 logoutText: {
   color: '#BFBFBF',
-  fontSize: 16,
+  fontSize: 17,
 },
 
 });

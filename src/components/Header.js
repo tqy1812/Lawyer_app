@@ -41,10 +41,15 @@ class Header extends React.Component {
     Keyboard.dismiss();
     if (this.props.bacnFunc) {
       this.props.bacnFunc();
+    } 
+    else if (this.props.sendFunc) {
+      this.props.sendFunc();
     } else {
       this.props.navigation.goBack();
     }
   }
+
+
   render() {
     let NavigationBar = [];
     // 返回
@@ -84,6 +89,20 @@ class Header extends React.Component {
       );
     } 
 
+    if (this.props.send) {
+      NavigationBar.push(
+        <MyButton
+          key={'closeIcon'}
+          activeOpacity={0.75}
+          style={styles.rightIcon}
+          onPress={this.handleRightAction.bind(this)}
+        >   
+          <Text style={styles.bthText}>发送</Text>
+        </MyButton>
+      );
+    } 
+
+
     return (
       <View style={styles.navigationBarContainer}>
         <View style={styles.navigationBar}>
@@ -99,6 +118,7 @@ const styles = StyleSheet.create({
     height: 45,
     alignItems: 'center',
     color: '#000',
+    width: '100%',
   },
   navigationBar: {
     flexDirection: 'row',
@@ -134,6 +154,10 @@ const styles = StyleSheet.create({
     height: 45,
     alignItems: 'flex-end',
     justifyContent: 'center',
+  },
+  bthText: {
+    color: '#007AFE',
+    fontSize: 12
   },
 });
 

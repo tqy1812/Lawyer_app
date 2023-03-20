@@ -1,15 +1,20 @@
 package com.lawyerapp.screen;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.uimanager.IllegalViewOperationException;
 import com.lawyerapp.MainActivity;
 
 import androidx.annotation.NonNull;
@@ -64,7 +69,39 @@ public class ScreenAdaptation extends ReactContextBaseJavaModule{
     }
 
 
+    /**
+     * 获取版本号
+     * @param successCallback
+     * @return
+     */
+    @ReactMethod
+    public void getAppVersion(Callback successCallback) {
+        try {
+            PackageInfo info = getPackageInfo();
+            if(info != null){
+                successCallback.invoke(info.versionName);
+            }else {
+                successCallback.invoke("");
+            }
+        } catch (IllegalViewOperationException e){
 
+        }
+    }
+
+    //    获取 APP 信息
+    private PackageInfo getPackageInfo(){
+        PackageManager manager = getReactApplicationContext().getPackageManager();
+        PackageInfo info = null;
+        try{
+            info = manager.getPackageInfo(getReactApplicationContext().getPackageName(),0);
+            return info;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+
+            return info;
+        }
+    }
     /**
      * 判断是否是小米手机 并且是否开启全面屏
      *

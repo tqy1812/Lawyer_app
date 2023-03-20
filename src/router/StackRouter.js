@@ -16,8 +16,11 @@ import PrivacyPage from '../page/PrivacyPage';
 import ServicePage from '../page/ServicePage';
 import CenterPage from '../page/CenterPage';
 import ReportPage from '../page/ReportPage';
-
-
+import MyInfoPage from '../page/MyInfoPage';
+import ExportInfoPage from '../page/ExportInfoPage';
+import AboutPage from '../page/AboutPage';
+import FeedBackPage from '../page/FeedBackPage';
+import PermissionPage from '../page/PermissionPage';
 const Toast = Overlay.Toast;
 const Stack = createStackNavigator();
 
@@ -156,6 +159,31 @@ export default function StackRouter() {
                 <Stack.Screen
                     name="Report"
                     component={ReportPage}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="MyInfo"
+                    component={MyInfoPage}
+                    options={{headerShown: false}}
+                />  
+                <Stack.Screen
+                    name="Export"
+                    component={ExportInfoPage}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="About"
+                    component={AboutPage}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="FeedBack"
+                    component={FeedBackPage}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="Permission"
+                    component={PermissionPage}
                     options={{headerShown: false}}
                 />
                 {/* <Stack.Screen
