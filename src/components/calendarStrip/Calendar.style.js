@@ -50,7 +50,8 @@ export default StyleSheet.create({
   dateContainer: {
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: "center"
+    alignSelf: "center",
+    width: 32, 
   },
   dateName: {
     textAlign: "center"

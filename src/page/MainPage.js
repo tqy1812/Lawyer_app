@@ -123,7 +123,7 @@ class MainPage extends Component {
     }
     else{
       this.RecognizerIos = NativeModules.SpeechRecognizerModule;
-      this.RecognizerIos.init("ed00abad");
+      this.RecognizerIos && this.RecognizerIos.init("ed00abad");
     }
     const that = this;
     this.timeStampMove = 0;
@@ -837,7 +837,7 @@ class MainPage extends Component {
             textAlignVertical='top'
             />
         </MyModal>*/}
-        <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={false}>
+        {/* <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={false}>
           {caseList && this.state.item && this.state.item.id && JSON.stringify(caseList) != '{}' && <View style={styles.processInfo}>
             <View style={styles.listTitleView}>
               <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(this.state.item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(this.state.item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(this.state.item.start_time)}</Text>}</View>
@@ -846,7 +846,6 @@ class MainPage extends Component {
               <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{this.state.item.start_time ? moment(this.state.item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{this.state.item.end_time ? moment(this.state.item.end_time).format('HH:mm') : '-- : --'}</Text></View>
               <View style={[styles.listItemTimeSplit, { backgroundColor: caseList[this.state.item.case.id + ''][2], }]}></View>
               <View style={styles.listItemRightView}>
-                {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{this.state.item.name}</Text> */}
                 <TextInput
                   ref={(r) => this.item_name = r}
                   placeholder='内容'
@@ -861,7 +860,7 @@ class MainPage extends Component {
             </View>
           </View>
           }
-        </MyModal>
+        </MyModal> */}
         {
           platform.isAndroid() ? <WebViewX5
             ref={this.wv}

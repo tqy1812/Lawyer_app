@@ -159,7 +159,7 @@ class CalendarDay extends Component {
 
   calcSizes = props => {
     return {
-      containerWidth: Math.round(props.width),
+      containerWidth: 32,
       containerHeight: Math.round(props.height),
       containerBorderRadius: Math.round(props.width / 2),
       dateNameFontSize: Math.round(props.width / 5),

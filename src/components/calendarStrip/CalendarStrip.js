@@ -336,13 +336,13 @@ class CalendarStrip extends Component {
 
   // Set the selected date.  To clear the currently selected date, pass in 0.
   setSelectedDate = date => {
-    logger('*************setSelectedDate')
     let mDate = moment(date);
     this.onDateSelected(mDate);
     if (this.props.scrollToOnSetSelectedDate) {
       // Scroll to selected date, centered in the week
-      const scrolledDate = moment(mDate);
-      scrolledDate.subtract(Math.floor(this.props.numDaysInWeek / 2), "days");
+      const scrolledDate = moment(mDate).startOf("isoweek");
+      // logger('*************setSelectedDate', scrolledDate.format('YYYYMMDD'))
+      scrolledDate.add(Math.floor(this.props.numDaysInWeek / 2), "days");
       this.scroller.scrollToDate(scrolledDate);
     }
   }
@@ -392,7 +392,7 @@ class CalendarStrip extends Component {
       dayComponentHeight,
     } = this.props;
     let csWidth = PixelRatio.roundToNearestPixel(layout.width);
-    let dayComponentWidth = csWidth / numDaysInWeek + responsiveSizingOffset;
+    let dayComponentWidth = csWidth / numDaysInWeek + responsiveSizingOffset-0.5;
     dayComponentWidth = Math.min(dayComponentWidth, maxDayComponentSize);
     dayComponentWidth = Math.max(dayComponentWidth, minDayComponentSize);
     let numVisibleDays = numDaysInWeek;

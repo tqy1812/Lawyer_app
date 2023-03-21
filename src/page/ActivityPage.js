@@ -148,7 +148,7 @@ class ActivityPage extends Component {
                     calendarHeaderStyle={{ fontSize: 18, marginTop: 20, marginBottom: 20 }}
                     dateNameStyle={{ fontSize: 12 }}
                     highlightDateNameStyle={{ fontSize: 11 }}
-                    dateNumberStyle={{ fontSize: 16.5, paddingTop: 3, paddingBottom: 3, color: '#000' }}
+                    dateNumberStyle={{ fontSize: 16.5, color: '#000' }}
                     highlightDateNumberStyle={isToday ? { color: '#fff', fontSize: 16, lineHeight: 20 } : { color: '#000', fontSize: 16, lineHeight: 20 }}
                     highlightDateNumberContainerStyle={isToday ? styles.highlightDateNumberContainerStyleDefault : styles.highlightDateNumberContainerStyle}
                     // highlightDateContainerStyle={{backgroundColor: '#007afe', }}

@@ -47,7 +47,7 @@ class AboutPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          version: '',
+          version: ''
         };
         this.globalDate = GlobalData.getInstance();
         if(platform.isAndroid()) {
@@ -56,6 +56,11 @@ class AboutPage extends Component {
                 version:event
             })
           });
+        }
+        else {
+          const version = NativeModules.SplashScreen && NativeModules.SplashScreen.getAppVersion();
+          logger('version222==='+version)
+          this.state.version = version;
         }
     }
 
@@ -70,7 +75,7 @@ class AboutPage extends Component {
       const { version} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
       // logger('..onBackButtonPressAndroid', this.props.navigation)
-      // logger(caseList)
+      logger('version11==='+version)
       return (
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />

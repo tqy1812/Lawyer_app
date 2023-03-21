@@ -97,7 +97,7 @@ class Header extends React.Component {
           style={styles.rightIcon}
           onPress={this.handleRightAction.bind(this)}
         >   
-          <Text style={styles.bthText}>发送</Text>
+          <Text style={styles.bthText}>提交</Text>
         </MyButton>
       );
     } 

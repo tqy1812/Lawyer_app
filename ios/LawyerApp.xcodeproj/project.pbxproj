@@ -33,10 +33,10 @@
 		A8B3CF9129B6E6CB0086D052 /* SpeechSynthesizerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B3CF9029B6E6CB0086D052 /* SpeechSynthesizerModule.m */; };
 		A8B3CF9429B6E6D70086D052 /* SpeechConstantModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B3CF9229B6E6D60086D052 /* SpeechConstantModule.m */; };
 		A8BA1AD729AC94F2004CFB20 /* OpenNoticeEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = A8BA1AD629AC94F2004CFB20 /* OpenNoticeEmitter.m */; };
-		A8C1CDD729C4132200B542B4 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A8C1CDD629C4132200B542B4 /* main.jsbundle */; };
+		A8C1CDD929C9562A00B542B4 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = A8C1CDD829C9562A00B542B4 /* assets */; };
+		A8C1CDE129C9919500B542B4 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A8C1CDE029C9919500B542B4 /* main.jsbundle */; };
 		A8C5E73729B5CE7D0078D0A5 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A8C5E73629B5CE7D0078D0A5 /* libicucore.tbd */; };
 		A8C5E73D29B5EBA60078D0A5 /* iflyMSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8C5E73C29B5EBA60078D0A5 /* iflyMSC.framework */; };
-		A8E9657029A73EBD00F87AEF /* assets in Resources */ = {isa = PBXBuildFile; fileRef = A8E9656E29A73EBD00F87AEF /* assets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,10 +89,10 @@
 		A8B3CF9329B6E6D60086D052 /* SpeechConstantModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeechConstantModule.h; sourceTree = "<group>"; };
 		A8BA1AD629AC94F2004CFB20 /* OpenNoticeEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenNoticeEmitter.m; sourceTree = "<group>"; };
 		A8BA1AD829AC951B004CFB20 /* OpenNoticeEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNoticeEmitter.h; sourceTree = "<group>"; };
-		A8C1CDD629C4132200B542B4 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
+		A8C1CDD829C9562A00B542B4 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../release_ios/assets; sourceTree = "<group>"; };
+		A8C1CDE029C9919500B542B4 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
 		A8C5E73629B5CE7D0078D0A5 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		A8C5E73C29B5EBA60078D0A5 /* iflyMSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iflyMSC.framework; path = "../../Desktop/未命名文件夹/iflyMSC.framework"; sourceTree = "<group>"; };
-		A8E9656E29A73EBD00F87AEF /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../release_ios/assets; sourceTree = "<group>"; };
 		B8C8223842DB9E47F92DD428 /* libPods-LawyerApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9454474547F30FEC9B0F987 /* libPods-LawyerApp-LawyerAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp-LawyerAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -165,7 +165,8 @@
 		13B07FAE1A68108700A75B9A /* LawyerApp */ = {
 			isa = PBXGroup;
 			children = (
-				A8C1CDD629C4132200B542B4 /* main.jsbundle */,
+				A8C1CDE029C9919500B542B4 /* main.jsbundle */,
+				A8C1CDD829C9562A00B542B4 /* assets */,
 				A8B3CF9329B6E6D60086D052 /* SpeechConstantModule.h */,
 				A8B3CF9229B6E6D60086D052 /* SpeechConstantModule.m */,
 				A8B3CF8F29B6E6CB0086D052 /* SpeechSynthesizerModule.h */,
@@ -173,7 +174,6 @@
 				A8B3CF8D29B6E5BD0086D052 /* SpeechRecognizerModule.h */,
 				A8B3CF8C29B6E5BD0086D052 /* SpeechRecognizerModule.m */,
 				A8A9DC6A29AD910C006949DE /* LawyerApp.entitlements */,
-				A8E9656E29A73EBD00F87AEF /* assets */,
 				A893F63B299A40E50013C5CC /* icomoon.ttf */,
 				25454CF829769DDD00EAEAB2 /* Images.xcassets */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -341,10 +341,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8C1CDD929C9562A00B542B4 /* assets in Resources */,
 				25454CFB29769DDD00EAEAB2 /* Images.xcassets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				A8E9657029A73EBD00F87AEF /* assets in Resources */,
-				A8C1CDD729C4132200B542B4 /* main.jsbundle in Resources */,
+				A8C1CDE129C9919500B542B4 /* main.jsbundle in Resources */,
 				A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
