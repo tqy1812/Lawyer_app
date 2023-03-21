@@ -9,7 +9,8 @@ import {
     ScrollView,
     StatusBar,
     ImageBackground, InteractionManager, TouchableOpacity,
-    NativeModules
+    NativeModules,
+    Alert
 } from 'react-native';
 import Header from '../components/Header';
 import { CommonActions, StackActions } from '@react-navigation/native';
@@ -62,8 +63,36 @@ class FeedBackPage extends Component {
     }
 
     handleSend() {
-      
-    this.props.navigation.goBack();
+      const { title, email, desc } = this.state;
+      const { dispatch } = this.props;
+      if (title == null || title == '' ) {
+        Toast.show('主题不能为空!');
+        return;
+      }
+      if (email == null || title == '' ) {
+        Toast.show('邮箱不能为空!');
+        return;
+      }
+      const reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+      if(!reg.test(email)){
+        Toast.show('邮箱格式不正确!');
+        return;
+      }
+
+      dispatch(actionAuth.reqAddFeedback(title, desc, email, (res, error) => {
+        logger(res)
+        if (error) {
+            logger(error)
+            Toast.show(error.info);
+        } else {
+          Alert.alert('发送成功', `您好，客服会在14天内根据您提供的邮件地址答复您，感谢您的反馈。`, [
+          {
+            text: '好的',
+            onPress: () => {this.props.navigation.goBack();},
+          },
+          ]);
+        }
+      }));
     }
 
     

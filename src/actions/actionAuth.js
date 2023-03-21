@@ -50,4 +50,12 @@ export default class actionAuth {
       dispatch(request.userUpdate(url, iosToken, callback));
     };
   }
+
+  
+  static reqAddFeedback(title, content, contact, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.addFeedback(title, content, contact, callback));
+    };
+  }
 }

@@ -381,6 +381,32 @@ export function addTalk(content, callback = null) {
     };
 }
 
+export function addFeedback(title, content, contact, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/feedback/add'
+        let data = {
+            title: title,
+            content: content,
+            contact: contact
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 function request_impl(url, method, data, callback, dispatch = null, header) {
     let headers = {};
      // 消息头
