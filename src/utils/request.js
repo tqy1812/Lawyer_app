@@ -1,7 +1,7 @@
 import axios from "axios";
 import Error from "./Error";
 import {Overlay} from 'react-native';
-import { showToast } from "../components/ShowModal";
+import { destroySibling, showToast } from "../components/ShowModal";
 import { logger } from "./utils";
 const Toast = Overlay.Toast;
 
@@ -37,6 +37,7 @@ let request = {
             }
         }).catch((error) => {
             logger(error);
+            destroySibling();
             Toast.show("网络错误");
             failCallback(error);
         });
@@ -75,6 +76,7 @@ let request = {
             }
         }).catch((error) => {
             logger(error);
+            destroySibling();
             Toast.show("网络错误");
         });
     },
