@@ -23,6 +23,7 @@ import {
 import {
   WebView
 } from 'react-native-webview';
+import { logger } from '../utils/utils';
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 
@@ -38,6 +39,7 @@ class PrivacyPage extends Component {
         super(props);
         this.state = {
           loading: true,
+          backButtonEnabled: false
         };
         this.INJECTEDJAVASCRIPT = `
         const meta = document.createElement('meta'); 
@@ -54,11 +56,29 @@ class PrivacyPage extends Component {
     closeLoading = () => {
       this.setState({loading: false});
     }
+    handleBack = () => {
+      if (this.state.backButtonEnabled) {
+        this.wv && this.wv.current && this.wv.current.goBack();
+      } else {//否则返回到上一个页面
+        this.props.navigation.goBack();
+      }
+    }
+    onNavigationStateChange = (navState) => {
+      console.log(navState)
+      this.setState({
+        backButtonEnabled: navState.canGoBack
+      });
+    }
+
+    handleNativeMessage = (content) => {
+      logger('handleNativeMessage====' + content);
+      this.props.navigation.navigate(content);
+    }
     render() {
             return (
                 <SafeAreaView style={styles.container}>   
                   <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />  
-                    <Header title='律时隐私政策' back={true} {...this.props}/>                                                     
+                    <Header title='律时隐私政策' back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>                                                     
                     { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />
                     </View>}                                                   
@@ -66,32 +86,32 @@ class PrivacyPage extends Component {
                     {
                         platform.isAndroid() ? <WebViewX5
                         ref={this.wv}
-                        source={{ uri:  Common.webUrl + 'report.html' }}
-                        // source={{ uri: 'https://human.kykyai.cn' }}
+                        source={{ uri:  Common.webUrl + 'privacy/privacy.html' }}
                         scalesPageToFit={false}
                         bounces={false}
                         style={{width:windowWidth,height:'100%'}}
                         javaScriptEnabled={true}
                         injectedJavaScript={this.INJECTEDJAVASCRIPT }
-                        // onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
+                        onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
                         mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
                         userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         incognito={true}
                         onLoadEnd={this.closeLoading.bind(this)}
+                        onNavigationStateChange={this.onNavigationStateChange.bind(this)}
                       /> : <WebView
                       ref={this.wv}
-                      source={{ uri: Common.webUrl + 'report.html' }}
-                      // source={{ uri: 'https://human.kykyai.cn' }}
+                      source={{ uri: Common.webUrl + 'privacy/privacy.html' }}
                       scalesPageToFit={false}
                       bounces={false}
                       style={{width:windowWidth,height:'100%'}}
                       javaScriptEnabled={true}
                       injectedJavaScript={this.INJECTEDJAVASCRIPT }
-                      // onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
+                      onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
                       mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
                       userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                       incognito={true}
                       onLoadEnd={this.closeLoading.bind(this)}
+                      onNavigationStateChange={this.onNavigationStateChange.bind(this)}
                     />
                     }
 

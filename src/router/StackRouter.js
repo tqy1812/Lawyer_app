@@ -21,6 +21,7 @@ import ExportInfoPage from '../page/ExportInfoPage';
 import AboutPage from '../page/AboutPage';
 import FeedBackPage from '../page/FeedBackPage';
 import PermissionPage from '../page/PermissionPage';
+import ThirdApiListPage from '../page/ThirdApiListPage';
 const Toast = Overlay.Toast;
 const Stack = createStackNavigator();
 
@@ -184,6 +185,11 @@ export default function StackRouter() {
                 <Stack.Screen
                     name="Permission"
                     component={PermissionPage}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="ThirdApiList"
+                    component={ThirdApiListPage}
                     options={{headerShown: false}}
                 />
                 {/* <Stack.Screen

@@ -50,17 +50,12 @@ class PermissionPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            imgAvatar: props.userInfo.avatar,
-            caseList: props.caseList,
-            caseListInfo: props.caseListInfo,
         };
         this.globalDate = GlobalData.getInstance();
     }
 
     componentDidMount() {
-      if(!this.props.isLogin) {
-        this.props.navigation.navigate('Login');
-      }
+
     }
 
     handleSetting() {

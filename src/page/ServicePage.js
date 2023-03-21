@@ -37,6 +37,7 @@ class ServicePage extends Component {
         super(props);
         this.state = {
           loading: true,
+          backButtonEnabled: false
         };
         this.INJECTEDJAVASCRIPT = `
         const meta = document.createElement('meta'); 
@@ -52,12 +53,23 @@ class ServicePage extends Component {
     closeLoading = () => {
       this.setState({loading: false});
     }
-    
+    handleBack = () => {
+      if (this.state.backButtonEnabled) {
+        this.wv && this.wv.current && this.wv.current.goBack();
+      } else {//否则返回到上一个页面
+        this.props.navigation.goBack();
+      }
+    }
+    onNavigationStateChange = (navState) => {
+      this.setState({
+        backButtonEnabled: navState.canGoBack
+      });
+    }
     render() {
       return (
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-            <Header title='律时服务协议' back={true}  {...this.props}/>                              
+            <Header title='律时服务协议' back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>                              
             { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />
                     </View>}                                                   
@@ -65,8 +77,7 @@ class ServicePage extends Component {
                     {
                         platform.isAndroid() ? <WebViewX5
                         ref={this.wv}
-                        source={{ uri:  Common.webUrl + 'report.html' }}
-                        // source={{ uri: 'https://human.kykyai.cn' }}
+                        source={{ uri:  Common.webUrl + 'userServe/serve.html' }}
                         scalesPageToFit={false}
                         bounces={false}
                         style={{width:windowWidth,height:'100%'}}
@@ -77,10 +88,10 @@ class ServicePage extends Component {
                         userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         incognito={true}
                         onLoadEnd={this.closeLoading.bind(this)}
+                        onNavigationStateChange={this.onNavigationStateChange.bind(this)}
                       /> : <WebView
                       ref={this.wv}
-                      source={{ uri: Common.webUrl + 'report.html' }}
-                      // source={{ uri: 'https://human.kykyai.cn' }}
+                      source={{ uri: Common.webUrl + 'userServe/serve.html' }}
                       scalesPageToFit={false}
                       bounces={false}
                       style={{width:windowWidth,height:'100%'}}
@@ -91,6 +102,7 @@ class ServicePage extends Component {
                       userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                       incognito={true}
                       onLoadEnd={this.closeLoading.bind(this)}
+                      onNavigationStateChange={this.onNavigationStateChange.bind(this)}
                     />
                     }
 

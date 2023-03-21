@@ -234,8 +234,9 @@ class CenterPage extends Component {
                 </MyButton>
               </View>  
               <View style={styles.menuView}> 
-                <MyButton style={styles.menuButton} onPress={() => {}}>
+                <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('ThirdApiList')}}>
                   <Text style={styles.menuText}>第三方信息共享清单</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>  
               <View style={styles.menuView}> 
