@@ -79,21 +79,21 @@ export default class ProcessConfirmModal extends Component {
     }
   }
 render() {
-  const { item, caseList, caseListInfo} = this.props;
+  const { item, caseLists, caseListInfo} = this.props;
   const { itemNotice, itemName, open, isIcon } = this.state;
-  logger(caseList)
+  logger(caseLists)
   const renderItem = (item) => {
     // logger(item)
     return (
     <View style={styles.caseItem}>
-      <View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View>
+      <View style={[styles.caseItemBadge, {backgroundColor: caseLists[item.id+''] ? caseLists[item.id+''][2]: '#ff0000'}]}></View>
       <Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text>
     </View>
   )};
   return (
     <View style={styles.modalContainer}>
       <View style={styles.container}>
-        {caseList && item && item.id && JSON.stringify(caseList) != '{}' && <View style={styles.processInfo}>
+        {caseLists && JSON.stringify(caseLists) != '{}' && <View style={styles.processInfo}>
           <View style={styles.listTitleView}>
             <View style={styles.titleList1}>
               <View style={styles.titleTime1}>
@@ -112,7 +112,7 @@ render() {
             {/*</View>*/}
           <View style={styles.listItemView1}>
             {/* <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
-            <View style={[styles.listItemTimeSplit, { backgroundColor: caseList[item.case.id + ''][2], }]}></View> */}
+            <View style={[styles.listItemTimeSplit, { backgroundColor: caseLists[item.case.id + ''][2], }]}></View> */}
             {/* <View style={styles.listItemRightView}> */}
               {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text> */}
               <TextInput
