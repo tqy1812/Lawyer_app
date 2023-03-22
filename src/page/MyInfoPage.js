@@ -91,7 +91,7 @@ class MyInfoPage extends Component {
                   <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode={'tail'}>{getPhone(userInfo.phone, '*')}</Text>
               </View>
               <View style={styles.infoContent}> 
-                <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>所属机构</Text>
+                <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>工作单位</Text>
                   <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.org_name}</Text>
               </View>
             </View>          
