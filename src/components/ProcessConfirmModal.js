@@ -32,7 +32,7 @@ export default class ProcessConfirmModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemNotice: props.item.is_wakeup || false,
+      itemNotice: props.item.is_wakeup || true,
       itemName: props.item.name,
       caseId: props.item.case && props.item.case.id,
       open: false,

@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: 45,
+    width: 50,
     justifyContent: 'space-between'
   },
   listItemTimeStart: {
