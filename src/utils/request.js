@@ -1,7 +1,7 @@
 import axios from "axios";
 import Error from "./Error";
 import {Overlay} from 'react-native';
-import { destroySibling, showToast } from "../components/ShowModal";
+import { destroySibling } from "../components/ShowModal";
 import { logger } from "./utils";
 const Toast = Overlay.Toast;
 

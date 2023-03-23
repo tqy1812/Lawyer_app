@@ -22,15 +22,12 @@ import Common from '../common/constants';
 import MyButton from '../components/MyButton';
 import { CheckBox } from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-// import Feather from 'react-native-vector-icons/Feather';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
 import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
 import IcomoonIcon from "../components/IcomoonIcon";
 import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
-import { showConfirmModal, showToast } from '../components/ShowModal';
 import { logger } from '../utils/utils';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
@@ -69,22 +66,20 @@ class LoginPage extends Component {
         else{
             // logger('ddddd',NativeModules.SplashScreen)
             NativeModules.SplashScreen && NativeModules.SplashScreen.hide();
+            NativeModules.ScreenAdaptation.getHeight().then((height) => {
+                logger('height:'+ height/PixelRatio.get()+ '    h:'+Common.window.height);
+                if(height){
+                    this.globalData.setScreenHeight(height/PixelRatio.get())
+                }
+            })
+            .catch((err) => {
+                logger('err:', err);
+            });
         }
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin, navigation, insets } = this.props;
             // logger("isLogin" + isLogin, insets.top)
             this.globalData.setTop(insets.top);
-            if(platform.isAndroid()) {
-                NativeModules.ScreenAdaptation.getHeight().then((height) => {
-                    logger('height:'+ height/PixelRatio.get()+ '    h:'+Common.window.height);
-                    if(height){
-                        this.globalData.setScreenHeight(height/PixelRatio.get())
-                    }
-                })
-                .catch((err) => {
-                    logger('err:', err);
-                });
-            }
             // logger("isLogin" + isLogin, this.globalData.getTop())
             if (isLogin) {
                 this.props.navigation.navigate('Main');

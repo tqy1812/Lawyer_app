@@ -116,7 +116,9 @@ public class ScreenAdaptation extends ReactContextBaseJavaModule{
 
     @Override
     public void initialize() {
-        MainActivity.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        if(MainActivity.getActivity()!=null) {
+            MainActivity.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        }
     }
 
     @Override

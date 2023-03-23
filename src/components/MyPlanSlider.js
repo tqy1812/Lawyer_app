@@ -281,10 +281,10 @@ export default class MyPlanSlider extends Component {
       </Swipeable>
     );
     
-
+    const screenHeight = globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height
     return ( 
         <View style={styles.bottomModalContainer}>
-            {refreshing && <View style={styles.bottomMask}>
+            {refreshing && <View style={[styles.bottomMask, {height: screenHeight - 100,}]}>
               <ActivityIndicator size="large" color="black" />
             </View>}
             <View style={styles.bottomContent}>  
@@ -318,7 +318,6 @@ export default class MyPlanSlider extends Component {
   }
 }
 
-const screenHeight = globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height
 const styles = StyleSheet.create({
   bottomModalContainer: {
     flex: 1,
@@ -328,7 +327,6 @@ const styles = StyleSheet.create({
   },
   bottomMask: {
     flex: 1,
-    height: screenHeight - 100,
     bottom: 0,
     width: Common.window.width,
     backgroundColor: "#fff",

@@ -91,7 +91,7 @@ render() {
     </View>
   )};
   return (
-    <View style={styles.modalContainer}>
+    <View style={[styles.modalContainer,{height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}>
       <View style={styles.container}>
         {caseLists && JSON.stringify(caseLists) != '{}' && <View style={styles.processInfo}>
           <View style={styles.listTitleView}>
@@ -293,7 +293,6 @@ caseItemName:{
     position: 'absolute',
     width: Common.window.width,
     backgroundColor: 'rgba(0,0,0,0.3)',
-    height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,
     top: 0,
     zIndex: 4,
     display: 'flex',

@@ -178,7 +178,7 @@ class MainPage extends Component {
     this.unsubscribe = NetInfo.addEventListener(state => {
       logger("Listener Is connected?", state.isConnected);
       if(!state.isConnected){
-        this.wc && this.wc.onDisconnectWS();
+        // this.wc && this.wc.onDisconnectWS();
       }
       else {
         this.wc && this.wc.initWebSocket(this.props.user.employee_id);

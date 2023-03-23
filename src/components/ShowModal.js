@@ -5,6 +5,7 @@ import Wave from './Wave';
 import GlobalData from "../utils/GlobalData";
 import platform from "../utils/platform";
 import RootSiblings from 'react-native-root-siblings';  //全局弹框组件
+import { logger } from '../utils/utils';
 let sibling = null;
 let planSibling = null;
 let finishSibling = null;
@@ -48,7 +49,7 @@ export const destroyConfirmSibling = () =>  {
 export const update = (index, component) => sibling && sibling.update(<View>{component}</View>)
 export const showLoading = () => {
     sibling && sibling.destroy()
-    sibling = new RootSiblings(<View style={styles.maskStyle}>
+    sibling = new RootSiblings(<View style={[styles.maskStyle, {height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}>
         <View style={styles.backViewStyle}>
           <ActivityIndicator size="large" color="white" />
         </View>
@@ -56,12 +57,12 @@ export const showLoading = () => {
       elements.push(sibling);
 };
 export const showRecoding = () => {
-    sibling = new RootSiblings(<View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View>);
+    sibling = new RootSiblings(<View style={[styles.isRecoding, { height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}><Wave height={50} lineColor={'#fff'}></Wave></View>);
       elements.push(sibling);
 };
 
 export const showToast = (value) => {
-    sibling = new RootSiblings(<View style={styles.toastStyle}><View style={styles.toastViewStyle}>
+    sibling = new RootSiblings(<View style={[styles.toastStyle,{height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}><View style={styles.toastViewStyle}>
         <Text style={styles.toastFontStyle}>{value}</Text>
       </View></View>);
       elements.push(sibling);
@@ -69,13 +70,11 @@ export const showToast = (value) => {
 };
 
 const headHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-const screenHeight = globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height
 const styles = StyleSheet.create({
     maskStyle: {
         position: 'absolute',
         width: Common.window.width,
         backgroundColor: 'rgba(0,0,0,0.3)',
-        height: screenHeight,
         top: 0,
         zIndex: 99,
         display: 'flex',
@@ -94,7 +93,6 @@ const styles = StyleSheet.create({
     },
     isRecoding: {
       position: 'absolute',
-      height: screenHeight,
       width: Common.window.width,
       zIndex: 5,
       backgroundColor: "#000",
@@ -104,8 +102,7 @@ const styles = StyleSheet.create({
     toastStyle: {
         position: 'absolute',
         width: Common.window.width,
-        opacity: 1,
-        height: screenHeight,
+        opacity: 1,      
         top: 0,
         zIndex: 99,
         display: 'flex',

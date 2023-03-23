@@ -37,7 +37,7 @@ export default class WebSocketClient {
             });
           }
         },
-        reconnectDelay: 200,
+        reconnectDelay: 5000,
         onConnect: function (frame) {
           logger('############connected'+WebSocketClient.ws.connected, WebSocketClient.ws.active)
             // if(!WebSocketClient.subscription) {
@@ -96,17 +96,22 @@ export default class WebSocketClient {
     NetInfo.fetch().then(state => {
       logger("Is connected?", state.isConnected);
       if(state.isConnected) {
-        if (!WebSocketClient.ws || !WebSocketClient.ws.webSocket) {
-          WebSocketClient.ws = new Client(this.stompConfig);  
-        }
-        logger('############'+WebSocketClient.ws.connected + "" + WebSocketClient.ws.active + '.....id' + id)
-        if(!WebSocketClient.ws.connected) {
-          WebSocketClient.ws.activate();
-        } else if (WebSocketClient.ws.webSocket && WebSocketClient.ws.webSocket.readyState!==1){
-          logger('############'+WebSocketClient.ws.webSocket.readyState)
+        if(!WebSocketClient.ws) {
+          logger('############', WebSocketClient.ws)
           WebSocketClient.ws = new Client(this.stompConfig);  
           WebSocketClient.ws.activate();
         }
+        // if (!WebSocketClient.ws || !WebSocketClient.ws.webSocket) {
+        //   WebSocketClient.ws = new Client(this.stompConfig);  
+        // }
+        // logger('############'+WebSocketClient.ws.connected + "" + WebSocketClient.ws.active + '.....id' + id)
+        // if(!WebSocketClient.ws.connected) {
+        //   WebSocketClient.ws.activate();
+        // } else if (WebSocketClient.ws.webSocket && WebSocketClient.ws.webSocket.readyState!==1){
+        //   logger('############'+WebSocketClient.ws.webSocket.readyState)
+        //   WebSocketClient.ws = new Client(this.stompConfig);  
+        //   WebSocketClient.ws.activate();
+        // }
       }
     });
     WebSocketClient.userId = id;
@@ -114,7 +119,8 @@ export default class WebSocketClient {
 
   onDisconnectWS() {
     logger('############onDisconnectWS')
-    WebSocketClient.ws && WebSocketClient.ws.deactivate();
+    if(WebSocketClient.subscription) WebSocketClient.subscription.unsubscribe();
+    // WebSocketClient.ws && WebSocketClient.ws.deactivate();
   }
 
   onSubscription(id) {
@@ -145,14 +151,21 @@ export default class WebSocketClient {
   }
 
   keepAlive () {
-    logger('.....state', WebSocketClient.ws.webSocket.readyState)
-    if (this.isBackground && WebSocketClient.ws.webSocket.readyState === 1) {
-      WebSocketClient.ws.webSocket.send('\x0A');
-      logger('>>> PING');
-    }
-    else {
-      WebSocketClient.ws = new Client(this.stompConfig);  
-      WebSocketClient.ws.activate();
-    }
+    logger('.....keepAlive')
+    NetInfo.fetch().then(state => {
+      logger("keepAlive Is connected?", state.isConnected);
+      // logger('.....state', WebSocketClient.ws.webSocket.readyState)
+      // logger( WebSocketClient.ws);
+      if(state.isConnected) {
+        if (this.isBackground && WebSocketClient.ws && WebSocketClient.ws.webSocket && WebSocketClient.ws.webSocket.readyState === 1) {
+          WebSocketClient.ws.webSocket.send('\x0A');
+          logger('>>> PING');
+        } 
+        // else {
+        //   WebSocketClient.ws = new Client(this.stompConfig);  
+        //   WebSocketClient.ws.activate();
+        // }
+      }
+  });
   }
 }
