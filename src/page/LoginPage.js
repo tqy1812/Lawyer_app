@@ -27,7 +27,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
 import IcomoonIcon from "../components/IcomoonIcon";
-import WebSocketClient from "../utils/WebSocketClient";
 import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
@@ -120,7 +119,6 @@ class LoginPage extends Component {
             this.viewDidAppear && this.viewDidAppear.remove();
         this.nameListener && this.nameListener.remove();
         // this.backHandler && this.backHandler.remove();
-        // WebSocketClient.getInstance().onDisconnectWS();
     }
 
     async autoLoginAction() {

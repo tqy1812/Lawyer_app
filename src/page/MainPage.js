@@ -55,6 +55,7 @@ import actionAuth from '../actions/actionAuth';
 import BackgroundTimer from 'react-native-background-timer';
 import ImageArr from '../common/ImageArr';
 import ProcessConfirmModal from '../components/ProcessConfirmModal';
+import NetInfo from '@react-native-community/netinfo';
 const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
@@ -174,6 +175,15 @@ class MainPage extends Component {
     });
     this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);
     this.wc = WebSocketClient.getInstance();
+    this.unsubscribe = NetInfo.addEventListener(state => {
+      logger("Listener Is connected?", state.isConnected);
+      if(!state.isConnected){
+        this.wc && this.wc.onDisconnectWS();
+      }
+      else {
+        this.wc && this.wc.initWebSocket(this.props.user.employee_id);
+      }
+    });
   }
   componentDidMount() {
     if (!this.props.isLogin) {
@@ -191,7 +201,7 @@ class MainPage extends Component {
     this.props.dispatch(actionAuth.reqUserInfo());
     // NativeModules.WebSocketWorkManager.startBackgroundWork();
     // logger(this.wc);
-    this.wc.initWebSocket(this.props.user.employee_id);
+    // this.wc.initWebSocket(this.props.user.employee_id);
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
     //监听内存报警事件
@@ -292,6 +302,8 @@ class MainPage extends Component {
     if (platform.isAndroid()) {
       NativeModules.WebSocketWorkManager.stopBackgroundWork();
     }
+    this.unsubscribe();
+    this.wc && this.wc.onDisconnectWS();
     // DeviceEventEmitter.removeAllListeners();
   }
   onRegistered = (deviceToken) => {

@@ -1,7 +1,9 @@
 import { DeviceEventEmitter } from 'react-native';
 import { Client, Message } from '@stomp/stompjs';
 import BackgroundTimer from 'react-native-background-timer';
+import NetInfo from '@react-native-community/netinfo';
 import { logger } from './utils';
+import * as Storage from '../common/Storage';
 // const url = 'ws://192.168.30.96:15674/ws';
 // const url = 'ws://59.52.103.97:15674/ws';
 const url = 'wss://ws.kykyai.cn/ws';
@@ -27,8 +29,13 @@ export default class WebSocketClient {
         debug: function (str) {
             logger('debug STOMP: ' + str);
             if(str=='Issuing close on the websocket') {
-              WebSocketClient.myInstance.initWebSocket(WebSocketClient.userId);
-            }
+            Storage.getAutoLogin().then((login) => {
+              logger("debug STOMP login: ", login);
+              if (login=='1') {
+                  WebSocketClient.myInstance.initWebSocket(WebSocketClient.userId);
+              }
+            });
+          }
         },
         reconnectDelay: 200,
         onConnect: function (frame) {
@@ -46,7 +53,11 @@ export default class WebSocketClient {
         },
         onWebSocketClose:  (evn) => {
           logger('STOMP onWebSocketClose details: ', this.isBackground);
-          WebSocketClient.myInstance.initWebSocket(WebSocketClient.userId);
+          Storage.getAutoLogin().then((login) => {
+            logger("debug STOMP login: ", login);
+            if (login=='1') {
+            WebSocketClient.myInstance.initWebSocket(WebSocketClient.userId); }
+          });
           // if(this.isBackground)  {
           //   this.keepSocket = BackgroundTimer.setInterval(() => {
           //     logger('.....state', WebSocketClient.ws.webSocket.readyState)
@@ -82,22 +93,28 @@ export default class WebSocketClient {
   }
 
   initWebSocket(id) {
-    if (!WebSocketClient.ws || !WebSocketClient.ws.webSocket) {
-      WebSocketClient.ws = new Client(this.stompConfig);  
-    }
-    logger('############'+WebSocketClient.ws.connected + "" + WebSocketClient.ws.active + '.....id' + id)
-    if(!WebSocketClient.ws.connected) {
-      WebSocketClient.ws.activate();
-    } else if (WebSocketClient.ws.webSocket && WebSocketClient.ws.webSocket.readyState!==1){
-      logger('############'+WebSocketClient.ws.webSocket.readyState)
-      WebSocketClient.ws = new Client(this.stompConfig);  
-      WebSocketClient.ws.activate();
-    }
+    NetInfo.fetch().then(state => {
+      logger("Is connected?", state.isConnected);
+      if(state.isConnected) {
+        if (!WebSocketClient.ws || !WebSocketClient.ws.webSocket) {
+          WebSocketClient.ws = new Client(this.stompConfig);  
+        }
+        logger('############'+WebSocketClient.ws.connected + "" + WebSocketClient.ws.active + '.....id' + id)
+        if(!WebSocketClient.ws.connected) {
+          WebSocketClient.ws.activate();
+        } else if (WebSocketClient.ws.webSocket && WebSocketClient.ws.webSocket.readyState!==1){
+          logger('############'+WebSocketClient.ws.webSocket.readyState)
+          WebSocketClient.ws = new Client(this.stompConfig);  
+          WebSocketClient.ws.activate();
+        }
+      }
+    });
     WebSocketClient.userId = id;
   }
 
   onDisconnectWS() {
-    WebSocketClient.ws && WebSocketClient.ws.forceDisconnect();
+    logger('############onDisconnectWS')
+    WebSocketClient.ws && WebSocketClient.ws.deactivate();
   }
 
   onSubscription(id) {

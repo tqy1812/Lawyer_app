@@ -1,9 +1,13 @@
 import authHelper from "../helpers/authHelper";
 import request from "../utils/request";
 import * as Storage from '../common/Storage';
+import {Overlay} from 'react-native';
 import Common from "../common/constants";
 import { logger } from "../utils/utils";
+import NetInfo from '@react-native-community/netinfo';
+import { destroySibling } from "../components/ShowModal";
 const api = Common.apiUrl;
+const Toast = Overlay.Toast;
 
 export const TYPE_AUTH_USER = "TYPE_AUTH_USER"; // 账号
 export function reqSaveUser(user, save = true, from = null, callback = null) {
@@ -409,6 +413,8 @@ export function addFeedback(title, content, contact, callback = null) {
 
 function request_impl(url, method, data, callback, dispatch = null, header) {
     let headers = {};
+    NetInfo.fetch().then(state => {
+        if(state.isConnected) {
      // 消息头
      if(header) {
         headers = header;
@@ -451,28 +457,42 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
             ); 
         }
       });
-     
+    }
+    else{
+         destroySibling();
+         Toast.show("网络已经离线");
+    }
+ });
 }
 
 function request_impl_get(url, method, callback, dispatch = null) {
     let headers = {};
-    Storage.getUserRecord().then((user) => {
-        logger("request_impl_get",  user)
-        if (user) {
-            let obj = Object.assign({}, JSON.parse(user));
-            headers['token'] = obj.token;
-            request.get(url, method, headers,
-                (rs, error) => {
-                    logger(':::: rs: ' + JSON.stringify(rs));
-                    if(callback) callback(rs, error);
-                },
-                (reqKey) => {
-                    logger('xyz:::: logout callback ' + reqKey);
-                    // requestLoginout(dispatch, reqKey);
-                }
-            );
-        }    
+    NetInfo.fetch().then(state => {
+      if(state.isConnected) {
+        Storage.getUserRecord().then((user) => {
+            logger("request_impl_get",  user)
+            if (user) {
+                let obj = Object.assign({}, JSON.parse(user));
+                headers['token'] = obj.token;
+                request.get(url, method, headers,
+                    (rs, error) => {
+                        logger(':::: rs: ' + JSON.stringify(rs));
+                        if(callback) callback(rs, error);
+                    },
+                    (reqKey) => {
+                        logger('xyz:::: logout callback ' + reqKey);
+                        // requestLoginout(dispatch, reqKey);
+                    }
+                );
+            }    
+        });
+       }
+       else{
+            destroySibling();
+            Toast.show("网络已经离线");
+       }
     });
+    
 }
 
 
