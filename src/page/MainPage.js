@@ -114,7 +114,7 @@ class MainPage extends Component {
     // DeviceEventEmitter.removeAllListeners();
     this.INJECTEDJAVASCRIPT = `
     const meta = document.createElement('meta'); 
-    meta.setAttribute('content', 'initial-scale=1, maximum-scale=1, user-scalable=0'); 
+    meta.setAttribute('content', 'initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); 
     meta.setAttribute('name', 'viewport'); 
     document.getElementsByTagName('head')[0].appendChild(meta);`
     this.wv = React.createRef();
