@@ -33,6 +33,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(closeSplashImage) name:@"Notification_CLOSE_SPLASH_SCREEN" object:nil];
+  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(openRecordPression) name:@"Notification_OPEN_RECORD" object:nil];
   RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
@@ -128,7 +129,15 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
      }];
     });
  }
-
+-(void)openRecordPression {
+      [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+        if (!granted) {
+          dispatch_async(dispatch_get_main_queue(), ^{ //手动禁止了授权
+            [self showAlertMessage:@"您已禁用了麦克风，请到设置中开启后重试~"];
+          });
+        }
+      }];
+}
 -(void)showAlertMessage:(NSString *)message{
   UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
 //  UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];

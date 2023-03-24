@@ -117,6 +117,7 @@ class MainPage extends Component {
     else{
       this.RecognizerIos = NativeModules.SpeechRecognizerModule;
       this.RecognizerIos && this.RecognizerIos.init("ed00abad");
+      logger('============RecognizerIos', this.RecognizerIos);
     }
     const that = this;
     this.timeStampMove = 0;
@@ -270,7 +271,7 @@ class MainPage extends Component {
     />);
 
     showFinishModal(<DrawerModal
-      component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={this.state.caseList}/>}
+      component={<MyFinishPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={this.state.caseList}/>}
       ref={e => this.finishRef = e}
       height={Common.window.height - 100}
       showType={'top'}
@@ -515,63 +516,50 @@ class MainPage extends Component {
       }
     });
   }
-  handleSetting() {
-    if(platform.isAndroid()){
-      NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();
+  async startRecordAndroid() {
+    let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
+    if(isHasMic== 0){
+      return;
     }
-    else {
-      NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
-    }
-  }
-  async startRecord(){
-    logger('startRecoding..........')
-    const that = this;
-    if(platform.isIOS()){
-      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
-      logger('...........isHasMic', isHasMic);
-      if(!isHasMic){
-        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
-          text: '取消',
-          onPress: null,
-          },
-          {
-            text: '去设置',
-            onPress: () => {this.handleSetting();},
-          },
-          ]);
-          return;
-        }
-    }
-    else {
-      let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
-      logger('...........isHasMic', isHasMic);
-      if(isHasMic== 0){
-        return;
-      }
-      else if(isHasMic== 1){
-        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
-          text: '取消',
-          onPress: null,
-          },
-          {
-            text: '去设置',
-            onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
-          },
-          ]);
-        return;
-      }
+    else if(isHasMic== 1){
+      Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+        text: '取消',
+        onPress: null,
+        },
+        {
+          text: '去设置',
+          onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
+        },
+        ]);
+      return;
     }
     showRecoding();
     // this.setState({isRecoding: true});
     // this.sendRecording('recording')
-    if(platform.isAndroid()){
-      Recognizer.start();
-    }
-    else{
-      this.RecognizerIos.start();
-    }
+    Recognizer.start();
   }
-
+  startRecordIOS = () => {
+    const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
+    logger('...........isHasMic', isHasMic);
+    if(isHasMic== 0){
+      return;
+    }
+    else if(isHasMic== 1){
+      Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+        text: '取消',
+        onPress: null,
+        },
+        {
+          text: '去设置',
+          onPress: () => {NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();},
+        },
+        ]);
+        return;
+      }
+      showRecoding();
+      logger('...........RecognizerIos', this.RecognizerIos);
+      this.RecognizerIos && this.RecognizerIos.start();
+  }
   stopRecord = () => {
     const that = this;
     if(platform.isAndroid()){
@@ -707,48 +695,48 @@ class MainPage extends Component {
   closeFinishPlan = () => {
     this.setState({ myFinishPlanState: false });
   }
-  async handleFinishTime(item) {
-    if(platform.isIOS()){
-      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
-      logger('...........isHasMic', isHasMic);
-      if(!isHasMic){
-        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
-          text: '取消',
-          onPress: null,
-          },
-          {
-            text: '去设置',
-            onPress: () => {this.handleSetting();},
-          },
-          ]);
-          return;
-        }
+  handleFinishTimeIOS(item) {
+    const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
+    logger('...........isHasMic', isHasMic);
+    if(isHasMic== 0){
+      return;
     }
-    else {
-      let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
-      logger('...........isHasMic', isHasMic);
-      if(isHasMic== 0){
+    else if(isHasMic== 1){
+      Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+        text: '取消',
+        onPress: null,
+        },
+        {
+          text: '去设置',
+          onPress: () => {NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();},
+        },
+        ]);
         return;
-      }
-      else if(isHasMic== 1){
-        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
-          text: '取消',
-          onPress: null,
-          },
-          {
-            text: '去设置',
-            onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
-          },
-          ]);
-        return;
-      }
     }
-    if(platform.isAndroid()){
-      Recognizer.start();
+    this.RecognizerIos.start();
+    this.updateProcessCallback = null;
+    // logger('.....handleFinishTime' + JSON.stringify(item))
+    this.setState({ updateItem: item });
+  }
+  async handleFinishTimeAndroid(item) {
+    let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
+    logger('...........isHasMic', isHasMic);
+    if(isHasMic== 0){
+      return;
     }
-    else {
-      this.RecognizerIos.start();
+    else if(isHasMic== 1){
+      Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+        text: '取消',
+        onPress: null,
+        },
+        {
+          text: '去设置',
+          onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
+        },
+        ]);
+      return;
     }
+    Recognizer.start();
     this.updateProcessCallback = null;
     // logger('.....handleFinishTime' + JSON.stringify(item))
     this.setState({ updateItem: item });
@@ -962,7 +950,7 @@ class MainPage extends Component {
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
         <View style={[styles.contentView, { top: 0, height: windowHeight}]} {...this._panResponderMyPlan.panHandlers}>
-          <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={this.startRecord} onPressOut={this.stopRecord}>
+          <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={platform.isIOS() ? this.startRecordIOS : this.startRecordAndroid} onPressOut={this.stopRecord}>
             <View style={[styles.topMenu, {height: 50 + menuHeight}]}>
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
