@@ -104,11 +104,11 @@ class MainPage extends Component {
 
     }
     // DeviceEventEmitter.removeAllListeners();
-    this.INJECTEDJAVASCRIPT = `
-    const meta = document.createElement('meta'); 
-    meta.setAttribute('content', 'initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); 
-    meta.setAttribute('name', 'viewport'); 
-    document.getElementsByTagName('head')[0].appendChild(meta);`
+    // this.INJECTEDJAVASCRIPT = `
+    // const meta = document.createElement('meta'); 
+    // meta.setAttribute('content', 'initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); 
+    // meta.setAttribute('name', 'viewport'); 
+    // document.getElementsByTagName('head')[0].appendChild(meta);`
     this.wv = React.createRef();
     // logger('###########', Recognizer);
     if(platform.isAndroid()) {
@@ -523,8 +523,9 @@ class MainPage extends Component {
       NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
     }
   }
-  startRecord = () => {
+  async startRecord(){
     logger('startRecoding..........')
+    const that = this;
     if(platform.isIOS()){
       const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
       logger('...........isHasMic', isHasMic);
@@ -541,7 +542,25 @@ class MainPage extends Component {
           return;
         }
     }
-    // Toast.show('请开始添加');
+    else {
+      let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
+      logger('...........isHasMic', isHasMic);
+      if(isHasMic== 0){
+        return;
+      }
+      else if(isHasMic== 1){
+        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+          text: '取消',
+          onPress: null,
+          },
+          {
+            text: '去设置',
+            onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
+          },
+          ]);
+        return;
+      }
+    }
     showRecoding();
     // this.setState({isRecoding: true});
     // this.sendRecording('recording')
@@ -600,7 +619,7 @@ class MainPage extends Component {
 
 
   onRecognizerError = (result) => {
-    logger("error............." + JSON.stringify(e.result));
+    logger("error............." + JSON.stringify(result));
     if (result.errorCode !== 0) {
       // alert(JSON.stringify(result));
 
@@ -688,14 +707,41 @@ class MainPage extends Component {
   closeFinishPlan = () => {
     this.setState({ myFinishPlanState: false });
   }
-  handleFinishTime = (item) => {
+  async handleFinishTime(item) {
     if(platform.isIOS()){
-      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
+      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
       logger('...........isHasMic', isHasMic);
-      // if(isHasMic){
-      //   Toast.show('未检测到麦克风');
-      //   return;
-      // }
+      if(!isHasMic){
+        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+          text: '取消',
+          onPress: null,
+          },
+          {
+            text: '去设置',
+            onPress: () => {this.handleSetting();},
+          },
+          ]);
+          return;
+        }
+    }
+    else {
+      let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
+      logger('...........isHasMic', isHasMic);
+      if(isHasMic== 0){
+        return;
+      }
+      else if(isHasMic== 1){
+        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+          text: '取消',
+          onPress: null,
+          },
+          {
+            text: '去设置',
+            onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
+          },
+          ]);
+        return;
+      }
     }
     if(platform.isAndroid()){
       Recognizer.start();
