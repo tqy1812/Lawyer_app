@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   leftIcon: {
     position: 'absolute',
     zIndex: 1,
-    left: 10,
+    left: 20,
     color: '#000',
     width: 100,
     height: 45,

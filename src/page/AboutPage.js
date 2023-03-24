@@ -71,6 +71,14 @@ class AboutPage extends Component {
     
     }
 
+
+    goService() {
+      this.props.navigation.navigate('Service');
+    }
+
+    goPrivacy() {
+      this.props.navigation.navigate('Privacy');
+    }
     render() {
       const { version} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
@@ -80,7 +88,7 @@ class AboutPage extends Component {
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
             <Header title='关于律时与帮助' back={true}  {...this.props}/>  
-            <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
+            <View style={[styles.content]}> 
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
                   <Text style={styles.menuText}>版本与更新</Text>
@@ -93,7 +101,10 @@ class AboutPage extends Component {
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>  
-            </View>         
+            </View> 
+            <View style={styles.bottom}>         
+              <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私政策》</Text><Text style={styles.lawText1}> | </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《软件许可及服务协议》</Text></View>
+            </View>        
           </SafeAreaView>
       )
     }
@@ -138,5 +149,25 @@ menuText: {
   color: '#606266',
   fontSize: 17,
   marginLeft: 5,
+},
+bottom: {
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  alignSelf: 'flex-end',
+  marginBottom: 100,
+},
+lawText1: {
+    fontSize: 13,
+    color: '#007afe',
+    marginTop: 5,
+},
+lawStr: {
+    flexDirection: 'row',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
 },
 });
