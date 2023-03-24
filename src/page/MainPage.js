@@ -91,14 +91,6 @@ class MainPage extends Component {
       talkSuccessModalVisible: false,
       talkContent: '',
       item: {
-        // id: 313,
-        // name:'cessd',
-        // case: {
-        //   id: 3,
-        //   name: 'dedddd',
-        // },
-        // start_time: '2022-01-02 11:00:00',
-        // end_time: '2022-01-02 12:00:00'
       },
       itemNotice: false,
       itemName: '',
@@ -467,7 +459,7 @@ class MainPage extends Component {
   handleAppStateChange = (nextAppState) => {
     // logger('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      // this.wv && this.wv.current && this.wv.current.reload();
+      this.wv && this.wv.current && this.wv.current.reload();
       if (this.wc) this.wc.setIsBackground(false);
       if (platform.isAndroid()) {
         NativeModules.WebSocketWorkManager.stopBackgroundWork();
@@ -523,16 +515,31 @@ class MainPage extends Component {
       }
     });
   }
-
+  handleSetting() {
+    if(platform.isAndroid()){
+      NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();
+    }
+    else {
+      NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
+    }
+  }
   startRecord = () => {
     logger('startRecoding..........')
     if(platform.isIOS()){
-      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getInputAudio() : 1;
+      const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
       logger('...........isHasMic', isHasMic);
-      // if(isHasMic){
-      //   Toast.show('未检测到麦克风');
-      //   return;
-      // }
+      if(!isHasMic){
+        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+          text: '取消',
+          onPress: null,
+          },
+          {
+            text: '去设置',
+            onPress: () => {this.handleSetting();},
+          },
+          ]);
+          return;
+        }
     }
     // Toast.show('请开始添加');
     showRecoding();

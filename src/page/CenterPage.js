@@ -9,7 +9,8 @@ import {
     ScrollView,
     StatusBar,
     ImageBackground, InteractionManager, TouchableOpacity,
-    NativeModules
+    NativeModules,
+    Alert
 } from 'react-native';
 import Header from '../components/Header';
 import { CommonActions, StackActions } from '@react-navigation/native';
@@ -150,8 +151,30 @@ class CenterPage extends Component {
             }));
           }
         }));
+      }).catch(e => {
+        if(e && e.toString().indexOf('User did not grant library permission') > -1){
+          Alert.alert('未授权', `图片访问权限没有开启，请前往设置去开启。`, [{
+            text: '取消',
+            onPress: null,
+            },
+            {
+              text: '去设置',
+              onPress: () => {this.handleSetting();},
+            },
+            ]);
+          }
       });
     };
+
+    handleSetting() {
+      if(platform.isAndroid()){
+        NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();
+      }
+      else {
+        NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
+      }
+    }
+
     cleanupImages() {
       ImagePicker.clean()
         .then(() => {

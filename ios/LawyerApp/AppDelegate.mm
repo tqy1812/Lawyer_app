@@ -60,22 +60,22 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   // Define UNUserNotificationCenter
-  AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-  if (authStatus == AVAuthorizationStatusNotDetermined) {
-    //没有询问是否开启麦克风
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-      if (!granted) {
-        dispatch_async(dispatch_get_main_queue(), ^{ //手动禁止了授权
-          [self showAlertMessage:@"您已禁用了麦克风，请到设置中开启后重试~"];
-        });
-      }
-    }];
-  }
-  else if (authStatus == AVAuthorizationStatusAuthorized) { //麦克风已开启
-  }
-  else{ //未授权
-    [self showAlertMessage:@"您未开启麦克风权限，请到设置/隐私/麦克风中开启后重试~"];
-  }
+//  AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+//  if (authStatus == AVAuthorizationStatusNotDetermined) {
+//    //没有询问是否开启麦克风
+//    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+//      if (!granted) {
+//        dispatch_async(dispatch_get_main_queue(), ^{ //手动禁止了授权
+//          [self showAlertMessage:@"您已禁用了麦克风，请到设置中开启后重试~"];
+//        });
+//      }
+//    }];
+//  }
+//  else if (authStatus == AVAuthorizationStatusAuthorized) { //麦克风已开启
+//  }
+//  else{ //未授权
+//    [self showAlertMessage:@"您未开启麦克风权限，请到设置/隐私/麦克风中开启后重试~"];
+//  }
 //  if([self hasMicphone]){
 //    [self showAlertMessage:@"您没有麦克风，请插入麦克风设备。"];
 //  }

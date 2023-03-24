@@ -29,6 +29,31 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(openSetting) {
   return @0;
 }
 
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getRecordPermission) {
+  AVAudioSession* sharedSession = [AVAudioSession sharedInstance];
+  if ([sharedSession respondsToSelector:@selector(recordPermission)]) {
+    AVAudioSessionRecordPermission permission = [sharedSession recordPermission];
+    switch (permission) {
+      case AVAudioSessionRecordPermissionUndetermined:
+        NSLog(@"Undetermined");
+        return @0;
+        break;
+      case AVAudioSessionRecordPermissionDenied:
+        NSLog(@"Denied");
+        return @0;
+        break;
+      case AVAudioSessionRecordPermissionGranted:
+        NSLog(@"Granted");
+        return @1;
+        break;
+      default:
+        return @0;
+        break;
+    }
+  }
+  return @0;
+}
+
 + (instancetype)shareInstance {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
