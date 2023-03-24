@@ -174,7 +174,9 @@ class MainPage extends Component {
       }
     });
     this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);
-    this.wc = WebSocketClient.getInstance();
+    if(platform.isAndroid()) {
+      this.wc = WebSocketClient.getInstance();
+    }
     this.unsubscribe = NetInfo.addEventListener(state => {
       logger("Listener Is connected?", state.isConnected);
       if(!state.isConnected){
@@ -262,9 +264,9 @@ class MainPage extends Component {
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg',
       (msg) => { this.scheduleNotfication(msg); });
     this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen', () => { this.openNotfication(); });
-    this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
-    this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
     if (platform.isAndroid()) {
+      this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
+      this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
     }
     showPlanModal(<DrawerModal

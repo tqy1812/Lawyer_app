@@ -1,5 +1,5 @@
 
-import WebSocketClient from "../utils/WebSocketClient";
+// import WebSocketClient from "../utils/WebSocketClient";
 import * as Storage from '../common/Storage';
 module.exports = async (taskData) => {
     console.log('.....registerHeadlessTask socket')
