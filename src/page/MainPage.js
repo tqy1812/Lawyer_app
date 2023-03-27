@@ -112,7 +112,7 @@ class MainPage extends Component {
     this.wv = React.createRef();
     // logger('###########', Recognizer);
     if(platform.isAndroid()) {
-      Recognizer.init("ed00abad");
+      Recognizer.init("5f5835be");
     }
     else{
       this.RecognizerIos = NativeModules.SpeechRecognizerModule;
