@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: '#C7C7C7',
-    marginLeft: 15,
+    marginLeft: 25,
     marginRight: 15,
     paddingTop: 10,
     paddingBottom: 10,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: 45,
-    width: 53,
+    width: 48,
     justifyContent: 'space-between'
   },
   listItemTimeStart: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   listItemTimeEnd: {
     fontSize: 17,
     color: '#909399',
-    fontWeight: 'bold',
+    fontWeight: '500'
   },
   listItemTimeSplit: {
     width: 6,
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: 45,
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginLeft: 3,
   },
   listItemNoticeView: {
     display: 'flex',

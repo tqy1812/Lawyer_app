@@ -103,7 +103,7 @@ class AboutPage extends Component {
               </View>  
             </View> 
             <View style={styles.bottom}>         
-              <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私政策》</Text><Text style={styles.lawText1}> | </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《软件许可及服务协议》</Text></View>
+              <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私保护指引》</Text><Text style={styles.lawText1}> | </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《律时用户服务协议》</Text></View>
             </View>        
           </SafeAreaView>
       )

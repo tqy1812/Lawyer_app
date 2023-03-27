@@ -145,11 +145,11 @@ class ActivityPage extends Component {
                     iconRightShow={false}
                     calendarAnimation={{ type: 'sequence', duration: 30 }}
                     style={{ height: 150, paddingLeft: 10, paddingRight: 10, borderBottomWidth: 1, borderBottomColor: '#C7C7C7' }}
-                    calendarHeaderStyle={{ fontSize: 18, marginTop: 20, marginBottom: 20 }}
-                    dateNameStyle={{ fontSize: 12 }}
-                    highlightDateNameStyle={{ fontSize: 11 }}
-                    dateNumberStyle={{ fontSize: 16.5, color: '#000' }}
-                    highlightDateNumberStyle={isToday ? { color: '#fff', fontSize: 16, lineHeight: 20 } : { color: '#000', fontSize: 16, lineHeight: 20 }}
+                    calendarHeaderStyle={{ fontSize: 18, marginTop: 20, marginBottom: 15 }}
+                    // dateNameStyle={{ fontSize: 12 }}
+                    // highlightDateNameStyle={{ fontSize: 11 }}
+                    dateNumberStyle={{ fontSize: 18, color: '#000' }}
+                    highlightDateNumberStyle={isToday ? { color: '#fff', fontSize: 18, lineHeight: 22 } : { color: '#000', fontSize: 18, lineHeight: 22 }}
                     highlightDateNumberContainerStyle={isToday ? styles.highlightDateNumberContainerStyleDefault : styles.highlightDateNumberContainerStyle}
                     // highlightDateContainerStyle={{backgroundColor: '#007afe', }}
                     selectedDate={today}
@@ -352,8 +352,8 @@ const styles = StyleSheet.create({
     },
     highlightDateNumberContainerStyle: {
         backgroundColor: '#fff',
-        width: 32,
-        height: 32,
+        width: 38,
+        height: 38,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -364,8 +364,8 @@ const styles = StyleSheet.create({
     highlightDateNumberContainerStyleDefault: {
         color: "#fff",
         backgroundColor: '#007afe',
-        width: 32,
-        height: 32,
+        width: 38,
+        height: 38,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

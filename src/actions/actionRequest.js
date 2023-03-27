@@ -476,7 +476,7 @@ function request_impl_get(url, method, callback, dispatch = null) {
                 headers['token'] = obj.token;
                 request.get(url, method, headers,
                     (rs, error) => {
-                        logger(':::: rs: ' + JSON.stringify(rs));
+                        // logger(':::: rs: ' + JSON.stringify(rs));
                         if(callback) callback(rs, error);
                     },
                     (reqKey) => {

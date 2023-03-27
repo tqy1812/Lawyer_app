@@ -955,14 +955,14 @@ class MainPage extends Component {
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
-              {/* <View style={styles.sliderView}>
-              <View style={styles.sliderBtn}></View>
-            </View> */}
+              {/* <View style={styles.sliderView}> */}
+              <View style={[styles.sliderTopBtn, {top: 35 + menuHeight}]}></View>
+            {/* </View> */}
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
-            <View style={[styles.sliderTopBtn, {top: 50 + menuHeight}]}></View>
+            {/* <View style={[styles.sliderTopBtn, {top: 50 + menuHeight}]}></View> */}
             <Text style={styles.content} >
             </Text>
             <View style={styles.sliderBottomBtn}></View>
@@ -992,7 +992,7 @@ const styles = StyleSheet.create({
     width: windowWidth,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'space-between',
     // paddingLeft: 20,
     // paddingRight: 20,
@@ -1020,19 +1020,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(0, 122, 254)',
   },
   sliderTopBtn: {
-    width: 50,
-    height: 5,
+    width: Common.window.width /10,
+    height: Common.window.width /50,
     borderRadius: 5,
-    backgroundColor: 'rgb(0, 122, 254)',
+    backgroundColor: 'rgba(0, 122, 254, 0.75)',
     position: 'absolute',
     zIndex: 2,
-    left: windowWidth / 2 - 25,
+    left: windowWidth / 2 - Common.window.width /20,
   },
   sliderBottomBtn: {
-    width: 50,
-    height: 5,
+    width: Common.window.width /10,
+    height: Common.window.width /50,
     borderRadius: 5,
-    backgroundColor: 'rgb(0, 122, 254)',
+    backgroundColor: 'rgba(0, 122, 254, 0.75)',
     position: 'absolute',
     zIndex: 2,
     bottom: 50,

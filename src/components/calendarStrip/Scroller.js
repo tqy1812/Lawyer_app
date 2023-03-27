@@ -357,7 +357,7 @@ export default class CalendarScroller extends Component {
     } : {};
     return (
       <View
-        style={{ height: this.state.itemHeight, flex: 1 }}
+        style={{ height: this.state.itemHeight, flex: 1, marginBottom: 10}}
         onLayout={this.onLayout}
       >
         <RecyclerListView
@@ -373,7 +373,7 @@ export default class CalendarScroller extends Component {
           externalScrollView={this.props.externalScrollView}
           scrollViewProps={{
             showsHorizontalScrollIndicator: false,
-            contentContainerStyle: { paddingRight: this.state.itemWidth / 2 },
+            // contentContainerStyle: { paddingRight: this.state.itemWidth / 2 },
             onMomentumScrollBegin: this.onScrollStart,
             onMomentumScrollEnd: this.onScrollEnd,
             onScrollBeginDrag: this.onScrollBeginDrag.bind(this),

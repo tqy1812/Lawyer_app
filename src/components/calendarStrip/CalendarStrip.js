@@ -392,7 +392,7 @@ class CalendarStrip extends Component {
       dayComponentHeight,
     } = this.props;
     let csWidth = PixelRatio.roundToNearestPixel(layout.width);
-    let dayComponentWidth = csWidth / numDaysInWeek + responsiveSizingOffset-0.5;
+    let dayComponentWidth = csWidth / numDaysInWeek + responsiveSizingOffset;
     dayComponentWidth = Math.min(dayComponentWidth, maxDayComponentSize);
     dayComponentWidth = Math.max(dayComponentWidth, minDayComponentSize);
     let numVisibleDays = numDaysInWeek;
@@ -400,8 +400,8 @@ class CalendarStrip extends Component {
     if (scrollable) {
       numVisibleDays = Math.floor(csWidth / dayComponentWidth);
       // Scroller requires spacing between days
-      marginHorizontal = Math.round(dayComponentWidth * 0.05);
-      dayComponentWidth = Math.round(dayComponentWidth * 0.9);
+      marginHorizontal = 0;
+      dayComponentWidth = Math.round(dayComponentWidth * 1);
     }
     let monthFontSize = Math.round(dayComponentWidth / 3.2);
     let selectorSize = Math.round(dayComponentWidth / 2.5);

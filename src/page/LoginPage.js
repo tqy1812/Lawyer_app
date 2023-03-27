@@ -327,7 +327,7 @@ class LoginPage extends Component {
                             />
                             <Text style={styles.lawText}>我已经阅读并同意 </Text>
                         </TouchableOpacity>
-                        <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私政策》</Text><Text style={styles.lawText2}> 和 </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《软件许可及服务协议》</Text></View>
+                        <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私保护指引》</Text><Text style={styles.lawText2}> 和 </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《律时用户服务协议》</Text></View>
                     </View>
                     <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
                         <Text style={styles.loginText}>登录</Text>

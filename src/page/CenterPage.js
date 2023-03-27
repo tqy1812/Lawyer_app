@@ -73,6 +73,7 @@ class CenterPage extends Component {
           this.setState({caseListInfo: infoList})
         }
       }));
+      this.cleanupImages();
     }
 
   
@@ -224,13 +225,14 @@ class CenterPage extends Component {
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {}}>
                   <Text style={styles.menuText}>当前项目</Text>
-                </MyButton>
+                  <View style={styles.menuProject}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>
+                </MyButton>  
                 <View style={styles.splitLine}></View>
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
                   <View style={styles.caseView}>
                   {
                     JSON.stringify(caseList)!='{}' && caseListInfo && caseListInfo.length > 0 && caseListInfo.map((item)=>{
-                        return <View style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
+                        return <View key={item.id} style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
                     })
                   }
                   </View>
@@ -277,7 +279,7 @@ class CenterPage extends Component {
             </View>          
             <View style={styles.bottom}>                    
                 <MyButton style={styles.logoutBtn} onPress={this.handSubmit.bind(this)}>
-                    <Text style={styles.loginText}>退出账号</Text>
+                    <Text style={styles.logoutText}>退出账号</Text>
                 </MyButton>
             </View>
             </ScrollView>
@@ -385,11 +387,27 @@ menuButton: {
   alignItems: 'center',
   padding: 10,
 },
+menuProject: {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
 menuText: {
   flex: 1,
   color: '#606266',
   fontSize: 17,
   marginLeft: 5,
+},
+menuText1: {
+  color: '#606266',
+  fontSize: 13,
+  marginTop: 3,
+},
+menuText2: {
+  color: '#606266',
+  fontSize: 21,
+  marginLeft: 1,
 },
 caseViewScroll: {
   width: Common.window.width - 60,
@@ -441,8 +459,8 @@ bottom: {
 logoutBtn: {
   width: Common.window.width - 40,
   backgroundColor: '#ffffff',
-  paddingTop: 10,
-  paddingBottom: 10,
+  paddingTop: 15,
+  paddingBottom: 15,
   paddingLeft: 30,
   paddingRight: 30,
   alignItems: 'center',
@@ -450,8 +468,8 @@ logoutBtn: {
   margin: 20,
 },
 logoutText: {
-  color: '#BFBFBF',
-  fontSize: 17,
+  color: '#909399',
+  fontSize: 19,
 },
 
 });

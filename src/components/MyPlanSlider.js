@@ -386,11 +386,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleTodayFont: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#007afe',
     paddingTop: 5,
     paddingBottom: 5,
-    width: 78,
+    width: 70,
     fontWeight: 'bold',
     textAlign: 'right'
   },
@@ -402,16 +402,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   listItemTitleFont: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#909399',
     paddingTop: 5,
     paddingBottom: 5,
-    width: 100,
+    width: 70,
     fontWeight: 'bold',
-    textAlign: 'right'
+    textAlign: 'right',
   },
   titleTodayWeekFont: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#007afe',
     paddingTop: 5,
     paddingBottom: 5,
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   listItemTitleWeekFont: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#909399',
     paddingTop: 5,
     paddingBottom: 5,

@@ -78,7 +78,7 @@ class PrivacyPage extends Component {
             return (
                 <SafeAreaView style={styles.container}>   
                   <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />  
-                    <Header title='律时隐私政策' back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>                                                     
+                    <Header title='律时隐私保护指引' back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>                                                     
                     { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />
                     </View>}                                                   
