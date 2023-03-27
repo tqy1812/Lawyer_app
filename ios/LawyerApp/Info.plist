@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>ITSEncryptionExportComplianceCode</key>
+	<string>NO</string>
 	<key>CFBundleDisplayName</key>
 	<string>律时</string>
 	<key>CFBundleExecutable</key>

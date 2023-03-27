@@ -116,7 +116,7 @@ class MainPage extends Component {
     }
     else{
       this.RecognizerIos = NativeModules.SpeechRecognizerModule;
-      this.RecognizerIos && this.RecognizerIos.init("ed00abad");
+      this.RecognizerIos && this.RecognizerIos.init("5f5835be");
       logger('============RecognizerIos', this.RecognizerIos);
     }
     const that = this;
