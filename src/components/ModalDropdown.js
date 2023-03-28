@@ -143,14 +143,14 @@ export default class ModalDropdown extends Component {
       selectedIndex: props.defaultIndex,
       options: props.options,
       searchValue: '',
+      page: 1
     };
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    let { selectedIndex, loading } = state;
+    let { selectedIndex, loading, options: list } = state;
     const { defaultIndex, defaultValue, options } = nextProps;
     let newState = null;
-
     if (selectedIndex < 0) {
       selectedIndex = defaultIndex;
       newState = {
@@ -167,6 +167,8 @@ export default class ModalDropdown extends Component {
       }
       newState.loading = !options;
     }
+
+    // newState.options = list
     // this compare only checks an array with no data, doesnt deep check, this comparison use for get api
     // if (options !== state.options) {
     //   newState.options = options
@@ -235,6 +237,29 @@ export default class ModalDropdown extends Component {
     });
   }
 
+  getMoreData = () => {
+    console.log('start getMoreData')
+    const {page} = this.state;
+    let size = page + 1;
+    this.setState({options: this.props.options.slice(0, 10 * size), page: size});
+  }
+  handleScrollEnd = event => {
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
+    const scrollOffset = event.nativeEvent.contentOffset.y;
+
+    // 是否滑动到底部
+    const isEndReached = scrollOffset + scrollViewHeight >= contentHeight;
+    // 内容高度是否大于列表高度
+    const isContentFillPage = contentHeight >= scrollViewHeight;
+
+    const { reqSsqData, reqJpqData, reqWbqData, reqInData } = this.state;
+
+    if (isContentFillPage && isEndReached) {
+      // 已滑动scrollview底部，触发加载分页请求
+      // this.getMoreData()
+    }
+  };
   _renderButton() {
     const {
       disabled,
@@ -327,7 +352,11 @@ export default class ModalDropdown extends Component {
         }
         else {
           return (<View  style={[styles.dropdown, dropdownStyle, frameStyle]}>
-            <ScrollView alwaysBounceHorizontal={false}>{loading ? this._renderLoading() : this._renderDropdown()}</ScrollView>
+            <ScrollView 
+              alwaysBounceHorizontal={false} 
+              scrollEventThrottle={1}
+              onMomentumScrollEnd={this.handleScrollEnd}>
+                {loading ? this._renderLoading() : this._renderDropdown()}</ScrollView>
           </View>);
         }
       
@@ -447,7 +476,7 @@ export default class ModalDropdown extends Component {
     const { selectedIndex } = this.state;
     const { options } = this.state;
 
-    // console.log(options)
+    // console.log('232323', options)
     return (
       <FlatList
         {...dropdownListProps}
@@ -464,7 +493,9 @@ export default class ModalDropdown extends Component {
         showsVerticalScrollIndicator={showsVerticalScrollIndicator}
         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         ListHeaderComponent={this._renderSearchInput}
-        initialNumToRender={50}
+        initialNumToRender={options.length+1}
+        // onEndReachedThreshold={0.2}
+        // onEndReached={this.getMoreData.bind(this)}
         onScrollToIndexFailed={info => {
           const wait = new Promise(resolve => setTimeout(resolve, 500));
           wait.then(() => {

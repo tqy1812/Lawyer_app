@@ -191,7 +191,7 @@ class ActivityPage extends Component {
                                 let endTime = item.end_time ? moment(item.end_time).format('HH:mm') : '';
                                 let top = getContentView(startTime, endTime);
                                 // logger(startTime, endTime, top)
-                                let color = this.props.caseList[item.case.id + ''];
+                                let color = this.props.caseList[item.case.id + ''] || ['rgba(255, 0, 0, 0.3)', 'rgb(255, 0, 0)', '#FF0000'];
                                 // logger(color)
                                 return (
                                     <View style={[styles.activityView, { backgroundColor: color[0], width: (Common.window.width - 51) / item.wSplit, height: top[1] < 1 ? 50 : top[1] * 50, top: 8 + top[0] * 50, left: 50 + item.lIndex * (Common.window.width - 50) / item.wSplit, borderRadius: 8, }]}>
