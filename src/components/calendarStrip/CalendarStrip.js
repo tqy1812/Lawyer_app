@@ -573,7 +573,7 @@ class CalendarStrip extends Component {
 
   renderDayName(item) {
     return (
-      <CalendarDayName {...this.props} dateName={item}/>
+      <CalendarDayName {...this.props}  width={this.state.dayComponentWidth} dateName={item}/>
     );
   }
   renderWeekView(days) {

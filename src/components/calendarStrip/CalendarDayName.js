@@ -123,10 +123,10 @@ class CalendarDayName extends Component {
     let day = (
           <View
             style={[
-              styles.dateContainer, {height: 12}
+              styles.dateContainer, {width: this.props.width, height: 12}
             ]}
           >
-           <Text style={[{ fontSize: 13, color: '#000'}]}>
+           <Text style={[{ fontSize: 13, color: '#000', marginLeft: 3}]}>
                 {this.props.dateName}
             </Text>
           </View>
