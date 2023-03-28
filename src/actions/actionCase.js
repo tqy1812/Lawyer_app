@@ -12,8 +12,8 @@ export default class actionCase {
     return (dispatch, getState) => {
       let state = getState();
       let user = state.Auth && state.Auth.user;
-      logger('reqCaseList....user........'+ JSON.stringify(user))
       dispatch(request.getCase((rs)=>{
+        logger('reqCaseList....user........'+ JSON.stringify(rs))
           let infoList = rs.data && rs.data.cases ? rs.data.cases : [];
           let caseList = new Map();
           let caseListUserColor = [];
@@ -21,8 +21,7 @@ export default class actionCase {
             caseList[infoList[i]['id']] = Common.color[i+1];
             caseListUserColor.push(i+1);
             // logger(caseList)
-          }
-          // logger(caseList)
+          } 
           dispatch({type: actionCase.TYPE_CASE_LIST_INFO, data: infoList});
           let newData = {};
           Storage.getCaseList(user.phone).then((list) => {
@@ -33,10 +32,10 @@ export default class actionCase {
               let i = 1;
               let newUserColor = [];
               Storage.getCaseListUserColor(user.phone).then((userColor)=>{
+                logger(userColor)
                 if(userColor){
                   newUserColor = userColor.split(',');
                   for (let key in caseList) {
-                    // logger(!newData[key])
                     if(!newData[key]) {
                       if(newUserColor.indexOf(len+i)<0) {
                         newData[key] = Common.color[len+i];
@@ -68,15 +67,16 @@ export default class actionCase {
                   }
                   // logger(newData)
                 }
+               
                 Storage.setCaseList(user.phone,JSON.stringify(newData));   
-                Storage.setCaseListUserColor(user.phone,JSON.stringify(newUserColor));   
+                Storage.setCaseListUserColor(user.phone,newUserColor && newUserColor.length>0 ? newUserColor.toString() : '');   
                 dispatch({type: actionCase.TYPE_CASE_LIST, data: newData});
                 if(callback) callback(newData, infoList)
               }); 
             }
             else{
               Storage.setCaseList(user.phone,JSON.stringify(caseList));   
-              Storage.setCaseListUserColor(user.phone,JSON.stringify(caseListUserColor));   
+              Storage.setCaseListUserColor(user.phone, caseListUserColor && caseListUserColor.length>0 ? caseListUserColor.toString(): '');   
               dispatch({type: actionCase.TYPE_CASE_LIST, data: caseList});
               if(callback) callback(caseList, infoList)
             }     

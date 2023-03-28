@@ -61,8 +61,6 @@ class CenterPage extends Component {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
-      // logger('....................' , this.props.navigation.getState());
-      // this.setState({ routes: this.props.navigation.getState().routes});
       this.props.dispatch(actionAuth.reqUserInfo()); 
       this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
         // logger(list)

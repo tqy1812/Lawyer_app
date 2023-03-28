@@ -58,8 +58,12 @@ class FinishPlanItem extends React.Component {
           <View style={styles.listItemContentView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text></View>
           <View style={styles.listItemTimeView}>
             <Text style={styles.listItemTime}>{item.start_time ? moment(item.start_time).format('HH:mm') : '--:--'} ~ {item.end_time ? moment(item.end_time).format('HH:mm') : ''}</Text>
-            { item.end_time && <Text style={styles.listItemToatlTime}>{item.fee_time > 0 ? getFeeTimeFormat(item.fee_time) : '00:00'}</Text>}
+            { item.end_time && <Text style={styles.listItemToatlTime}>{getFeeTimeFormat(item.fee_time)}</Text>}
             { !item.end_time && <TouchableOpacity style={styles.setTimeView} onLongPress={() => this.setFinishTime(item)} onPressOut={()=>this.setFinishTimeEnd(item)}><IcomoonIcon name='clock-edit' size={20} color='#fff' /></TouchableOpacity>}
+          </View>
+          <View style={styles.listItemTimeView1}>
+            <Text style={styles.listItemTime}></Text>
+            { item.end_time && <Text style={styles.listItemToatlTime1}>{'’'}</Text>}
           </View>
           { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
         </TouchableOpacity >
@@ -89,25 +93,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     display: 'flex',
     flexDirection: 'column'
-  },
-  head: {
-    width: Common.window.width,
-    height: 45,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  headFont: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#303133'
-  },
-  footer: {
-    width: Common.window.width,
-    height: 75,
-    display: 'flex',
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: 'column',
   },
   totalTimeFont: {
     fontSize: 30,
@@ -219,16 +204,32 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: 45,
-    width: 100,
-    justifyContent: 'space-between'
+    width: 90,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  listItemTimeView1: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: 45,
+    width: 15,
+    justifyContent: 'flex-start',
   },
   listItemTime: {
     fontSize: 11,
     color: '#9E9E9E',
     fontWeight: 'bold',
+    
   },
   listItemToatlTime: {
     fontSize: 25,
+    color: '#6B6B6B',
+    fontWeight: 'bold',
+    marginRight: -2,
+  },
+  listItemToatlTime1: {
+    fontSize: 25,
+    marginTop: 2,
     color: '#6B6B6B',
     fontWeight: 'bold',
   },

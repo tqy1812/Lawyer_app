@@ -363,9 +363,9 @@ export function getWeek (date) { // 参数时间戳
     let m = min % 60;
     let mStr = m <  10 ? '0'+m : m;
     // logger(hourStr + ':' + mStr)
-    return  hourStr + ':' + mStr+ '’';
+    return  hourStr + ':' + mStr+ '';
   }
-  return '00:00’';
+  return '00:00';
  }
 
  export function produce(list, plan) {
@@ -452,5 +452,8 @@ export function caseSetting(caseList) {
 }
 
 export function getPhone(value, char) {
-  return value.replace(/(\d{3})\d*(\d{4})/, `$1${new Array(5).join(char)}$2`);
+  if(value) {
+    return value.replace(/(\d{3})\d*(\d{4})/, `$1${new Array(5).join(char)}$2`);
+  }
+  return value
 }

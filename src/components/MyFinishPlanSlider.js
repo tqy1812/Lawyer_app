@@ -332,7 +332,7 @@ export default class MyFinishPlanSlider extends Component {
                     <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text>
                     <Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text>
                     </View>
-                    <Text style={styles.titleTimeFont}>共 {total > 0 ? getFeeTimeFormat(total) : '00:00'}</Text>
+                    <Text style={styles.titleTimeFont}>共 {total > 0 ? getFeeTimeFormat(total) : '00:00'}{'’'}</Text>
                     </View>
                     </View>)}
                   stickySectionHeadersEnabled={true}
@@ -343,7 +343,7 @@ export default class MyFinishPlanSlider extends Component {
                   }
                   
                 <View style={styles.footer}>
-                  <Text style={styles.totalTimeFont} onLongPress={this.scollToTop}>{getFeeTimeFormat(totalTime)}</Text>
+                  <Text style={styles.totalTimeFont} onLongPress={this.scollToTop}>{getFeeTimeFormat(totalTime)}{'’'}</Text>
                   <Text style={styles.totalTimeDesFont}>本月  |   {moment(moment().month(moment().month()).startOf('month').valueOf()).format('YYYY.MM.DD')}~{moment(moment().month(moment().month() + 1).startOf('month').valueOf()).format('YYYY.MM.DD')}  计时总计</Text>
                 </View>
               </View >  
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   titleList: {
-    marginTop: 15,
+    // marginTop: 15,
     marginLeft: 10,
     display: 'flex',
     paddingRight: 15,
