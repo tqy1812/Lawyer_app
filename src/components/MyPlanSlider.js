@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     color: '#007afe',
     paddingTop: 5,
     paddingBottom: 5,
-    width: 70,
+    width: 80,
     fontWeight: 'bold',
     textAlign: 'right'
   },
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     color: '#909399',
     paddingTop: 5,
     paddingBottom: 5,
-    width: 70,
+    width: 80,
     fontWeight: 'bold',
     textAlign: 'right',
   },

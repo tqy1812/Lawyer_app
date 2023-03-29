@@ -13,7 +13,7 @@ export default class actionCase {
       let state = getState();
       let user = state.Auth && state.Auth.user;
       dispatch(request.getCase((rs)=>{
-        logger('reqCaseList....user........'+ JSON.stringify(rs))
+        // logger('reqCaseList....user........'+ JSON.stringify(rs))
           let infoList = rs.data && rs.data.cases ? rs.data.cases : [];
           let caseList = new Map();
           // let caseListUserColor = [];
@@ -25,9 +25,9 @@ export default class actionCase {
           dispatch({type: actionCase.TYPE_CASE_LIST_INFO, data: infoList});
           let newData = {};
           Storage.getCaseList(user.phone).then((list) => {
-            // logger(list)
             if (list) {
               newData = Object.assign({}, JSON.parse(list));
+              // logger(' newData===',newData)
               // let len =  Object.keys(newData).length;
               // let i = 1;
               // let newUserColor = [];
@@ -36,9 +36,10 @@ export default class actionCase {
                 // if(userColor){
                   // newUserColor = userColor.split(',');
                   for (let key in caseList) {
-                    if(!newData[key]) {
+                    if(!newData[key+'']) {
+                      logger(key,!newData[key+''])
                       // if(newUserColor.indexOf(len+i)<0) {
-                        newData[key] = Common.color[i%103+1] ? Common.color[i%103+1] : Common.color[103];
+                        newData[key] = caseList[key] ? caseList[key] : Common.color[103];
                         // newUserColor.push(Common.color[len+i] ? len+i : 103);
                         // i = i + 1;
                       // }
@@ -75,6 +76,7 @@ export default class actionCase {
               // }); 
             }
             else{
+              logger(' newData=====')
               Storage.setCaseList(user.phone,JSON.stringify(caseList));   
               // Storage.setCaseListUserColor(user.phone, caseListUserColor && caseListUserColor.length>0 ? caseListUserColor.toString(): '');   
               dispatch({type: actionCase.TYPE_CASE_LIST, data: caseList});

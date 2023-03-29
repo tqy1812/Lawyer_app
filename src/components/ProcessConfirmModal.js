@@ -36,15 +36,34 @@ export default class ProcessConfirmModal extends Component {
       itemName: props.item.name,
       caseId: props.item.case && props.item.case.id,
       open: false,
-      isIcon: false
+      isIcon: false,
+      caseListInfo: props.caseListInfo,
+      // page: 1,
+      // totalSize:  props.caseListInfo ? props.caseListInfo.length : 0
     };
+    // this.loadMoreDataThrottled = _.throttle(this.getMoreData, 1000, {trailing: false});
   }
 
   componentDidMount() {
     logger('.......ProcessConfirmModal componentDidMount')
 
   }
-
+  componentWillUnmount() {
+    // this.loadMoreDataThrottled.cancel();
+  }
+  // getMoreData = () => {
+  //   const {page, totalSize} = this.state;
+  //   let totalPage = Math.ceil(totalSize /10);
+  //   logger('start caselist getMoreData', page)
+  //   if(totalPage > 1 && page + 1 <= totalPage) {
+  //     let size = page + 1;
+  //     logger('start caselist getMoreData', 10 * size)
+  //     this.setState({caseListInfo: this.props.caseListInfo.slice(0, 10 * size), page: size});
+  //   }
+  //   else{
+  //     logger('load finish')
+  //   }
+  // }
 
   handleTalkNameChanged(text) {
     let content = text.trim();
@@ -79,11 +98,11 @@ export default class ProcessConfirmModal extends Component {
     }
   }
 render() {
-  const { item, caseLists, caseListInfo} = this.props;
-  const { itemNotice, itemName, open, isIcon } = this.state;
-  logger(caseLists)
+  const { item, caseLists} = this.props;
+  const { itemNotice, itemName, open, isIcon, caseListInfo } = this.state;
+  // logger('caseListInfo......', caseListInfo)
   const renderItem = (item) => {
-    // logger(item)
+    // logger('....renderItem',item)
     return (
     <View style={styles.caseItem}>
       <View style={[styles.caseItemBadge, {backgroundColor: caseLists[item.id+''] ? caseLists[item.id+''][2]: '#ff0000'}]}></View>
@@ -131,6 +150,7 @@ render() {
                 // dropdownTextHighlightStyle={styles.dropdownTextHighlight}
                 renderRow={(item, index, highlighted) => renderItem(item)}
                 renderButtonText={(item) => item.name}
+                caseLists={caseLists}
                 renderRowText={(item) => item.name}
                 renderRightComponent={() => (
                   <View style={styles.iconStyle}>
@@ -150,6 +170,10 @@ render() {
                 }}
                 onDropdownWillHide={() => this.setIsIcon(false)}
                 renderRowProps={{activeOpacity: 1, underlayColor: '#ffffff00'}}
+                // dropdownListProps = {{
+                //   onEndReachedThreshold: 0.2,
+                //   onEndReached: this.loadMoreDataThrottled
+                // }}
               />
               {/* <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text> */}
             {/* </View> */}

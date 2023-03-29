@@ -64,7 +64,7 @@ class PrivacyPage extends Component {
       }
     }
     onNavigationStateChange = (navState) => {
-      console.log(navState)
+      logger(navState)
       this.setState({
         backButtonEnabled: navState.canGoBack
       });

@@ -141,9 +141,10 @@ export default class ModalDropdown extends Component {
       showDropdown: false,
       buttonText: props.defaultValue,
       selectedIndex: props.defaultIndex,
-      options: props.options,
+      options: props.options.slice(0, 10),
       searchValue: '',
-      page: 1
+      page: 1,
+      totalSize:  props.options ? props.options.length : 0
     };
   }
 
@@ -168,6 +169,8 @@ export default class ModalDropdown extends Component {
       newState.loading = !options;
     }
 
+    logger('start getMoreData list', list.length)
+    logger('start getMoreData options', options.length)
     // newState.options = list
     // this compare only checks an array with no data, doesnt deep check, this comparison use for get api
     // if (options !== state.options) {
@@ -210,6 +213,8 @@ export default class ModalDropdown extends Component {
   hide() {
     this.setState({
       showDropdown: false,
+      options: this.props.options ? this.props.options.slice(0, 10) : [],
+      page: 1,
     });
   }
 
@@ -238,10 +243,21 @@ export default class ModalDropdown extends Component {
   }
 
   getMoreData = () => {
-    console.log('start getMoreData')
-    const {page} = this.state;
-    let size = page + 1;
-    this.setState({options: this.props.options.slice(0, 10 * size), page: size});
+    logger('start getMoreData')
+    const {page, totalSize} = this.state;
+    const that = this;
+    let totalPage = Math.ceil(totalSize /10);
+    logger('start caselist getMoreData', page)
+    if(totalPage > 1 && page + 1 <= totalPage) {
+      let size = page + 1;
+      logger('start caselist getMoreData', 10 * size)
+      setTimeout(()=>{
+        that.setState({options: this.props.options.slice(0, 10 * size), page: size});
+      },300);
+    }
+    else{
+      logger('load finish')
+    }
   }
   handleScrollEnd = event => {
     const contentHeight = event.nativeEvent.contentSize.height;
@@ -257,7 +273,7 @@ export default class ModalDropdown extends Component {
 
     if (isContentFillPage && isEndReached) {
       // 已滑动scrollview底部，触发加载分页请求
-      // this.getMoreData()
+      this.getMoreData()
     }
   };
   _renderButton() {
@@ -316,8 +332,9 @@ export default class ModalDropdown extends Component {
 
   _renderModal() {
     const { animated, accessible, dropdownStyle } = this.props;
-    const { showDropdown, loading } = this.state;
+    const { showDropdown, loading, options } = this.state;
 
+    logger('start getMoreData _renderModal', options.length)
     if (showDropdown && this._buttonFrame) {
       const frameStyle = this._calcPosition();
       const animationType = animated ? 'fade' : 'none';
@@ -356,7 +373,10 @@ export default class ModalDropdown extends Component {
               alwaysBounceHorizontal={false} 
               scrollEventThrottle={1}
               onMomentumScrollEnd={this.handleScrollEnd}>
-                {loading ? this._renderLoading() : this._renderDropdown()}</ScrollView>
+                {loading ? this._renderLoading() : options && options.map((item, index)=>{
+                       return this._renderItem({item, index})
+                    })
+                    }</ScrollView>
           </View>);
         }
       
@@ -476,8 +496,9 @@ export default class ModalDropdown extends Component {
     const { selectedIndex } = this.state;
     const { options } = this.state;
 
-    // console.log('232323', options)
+    console.log('232323', options.length)
     return (
+
       <FlatList
         {...dropdownListProps}
         getItemLayout={(data, index) => { return {length: 33 + StyleSheet.hairlineWidth, index, offset: (33 + StyleSheet.hairlineWidth) * index} }}
@@ -493,7 +514,7 @@ export default class ModalDropdown extends Component {
         showsVerticalScrollIndicator={showsVerticalScrollIndicator}
         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         ListHeaderComponent={this._renderSearchInput}
-        initialNumToRender={options.length+1}
+        // initialNumToRender={options.length+1}
         // onEndReachedThreshold={0.2}
         // onEndReached={this.getMoreData.bind(this)}
         onScrollToIndexFailed={info => {
@@ -502,11 +523,13 @@ export default class ModalDropdown extends Component {
             this.flatList.scrollToIndex({ index: info.index, animated: true });
           });
         }}
+        extraData={this.state}
       />
     );
   }
 
   _renderItem = ({ item, index, separators }) => {
+    logger('....renderItem',item)
     const {
       renderRow,
       renderRowComponent,
@@ -522,7 +545,7 @@ export default class ModalDropdown extends Component {
     const key = `row_${index}`;
     const highlighted = index === selectedIndex;
     const value =
-      (renderRowText && renderRowText(item)) || item.toString();
+      renderRowText ? renderRowText(item) : item.toString();
       // logger(index)
     const row = !renderRow ? (
       <Text
