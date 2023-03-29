@@ -19,6 +19,7 @@ import PropTypes from 'prop-types';
 import { logger } from '../utils/utils';
 import GlobalData from '../utils/GlobalData';
 import platform from '../utils/platform';
+import Common from '../common/constants';
 const TOUCHABLE_ELEMENTS = [
   'TouchableHighlight',
   'TouchableOpacity',
@@ -169,8 +170,7 @@ export default class ModalDropdown extends Component {
       newState.loading = !options;
     }
 
-    logger('start getMoreData list', list.length)
-    logger('start getMoreData options', options.length)
+    // logger('start getMoreData list', list.length)
     // newState.options = list
     // this compare only checks an array with no data, doesnt deep check, this comparison use for get api
     // if (options !== state.options) {
@@ -243,14 +243,13 @@ export default class ModalDropdown extends Component {
   }
 
   getMoreData = () => {
-    logger('start getMoreData')
     const {page, totalSize} = this.state;
     const that = this;
     let totalPage = Math.ceil(totalSize /10);
-    logger('start caselist getMoreData', page)
+    logger('start page', page)
     if(totalPage > 1 && page + 1 <= totalPage) {
       let size = page + 1;
-      logger('start caselist getMoreData', 10 * size)
+      // logger('start getMoreData', 10 * size)
       setTimeout(()=>{
         that.setState({options: this.props.options.slice(0, 10 * size), page: size});
       },300);
@@ -262,17 +261,16 @@ export default class ModalDropdown extends Component {
   handleScrollEnd = event => {
     const contentHeight = event.nativeEvent.contentSize.height;
     const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
-    const scrollOffset = event.nativeEvent.contentOffset.y;
+    const scrollOffset = event.nativeEvent.contentOffset.y + 1;
 
+    // logger('start contentHeight='+contentHeight+ ' scrollViewHeight='+scrollViewHeight+' scrollOffset='+scrollOffset)
     // 是否滑动到底部
     const isEndReached = scrollOffset + scrollViewHeight >= contentHeight;
     // 内容高度是否大于列表高度
     const isContentFillPage = contentHeight >= scrollViewHeight;
-
-    const { reqSsqData, reqJpqData, reqWbqData, reqInData } = this.state;
-
+    // logger('start isContentFillPage='+isContentFillPage+ ' isEndReached='+isEndReached)
     if (isContentFillPage && isEndReached) {
-      // 已滑动scrollview底部，触发加载分页请求
+      logger('start getMoreData')
       this.getMoreData()
     }
   };
@@ -334,14 +332,14 @@ export default class ModalDropdown extends Component {
     const { animated, accessible, dropdownStyle } = this.props;
     const { showDropdown, loading, options } = this.state;
 
-    logger('start getMoreData _renderModal', options.length)
+    // logger('start getMoreData _renderModal', options.length)
     if (showDropdown && this._buttonFrame) {
       const frameStyle = this._calcPosition();
       const animationType = animated ? 'fade' : 'none';
       if(platform.isAndroid()) {
       return (
-       
           <Modal
+          statusBarTranslucent={true}
           animationType={animationType}
           visible
           transparent
@@ -361,7 +359,15 @@ export default class ModalDropdown extends Component {
           >
             <View style={styles.modal}>
             <View  style={[styles.dropdown, dropdownStyle, frameStyle]}>
-                 {loading ? this._renderLoading() : this._renderDropdown()}
+                 {/* {loading ? this._renderLoading() : this._renderDropdown()} */}
+                 <ScrollView 
+              alwaysBounceHorizontal={false} 
+              scrollEventThrottle={1}
+              onMomentumScrollEnd={this.handleScrollEnd}>
+                {loading ? this._renderLoading() : options && options.map((item, index)=>{
+                       return this._renderItem({item, index})
+                    })
+                    }</ScrollView>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -400,7 +406,7 @@ export default class ModalDropdown extends Component {
     const positionStyle = {
       height: dropdownHeight,
       top: showInBottom
-        ? platform.isAndroid() ? this._buttonFrame.y : this._buttonFrame.h   //this._buttonFrame.y + this._buttonFrame.h
+        ? platform.isAndroid() ? this._buttonFrame.y + this._buttonFrame.h : this._buttonFrame.h   //this._buttonFrame.y + this._buttonFrame.h
         : Math.max(0, this._buttonFrame.y - dropdownHeight),
     };
 
@@ -495,10 +501,7 @@ export default class ModalDropdown extends Component {
     } = this.props;
     const { selectedIndex } = this.state;
     const { options } = this.state;
-
-    console.log('232323', options.length)
     return (
-
       <FlatList
         {...dropdownListProps}
         getItemLayout={(data, index) => { return {length: 33 + StyleSheet.hairlineWidth, index, offset: (33 + StyleSheet.hairlineWidth) * index} }}
@@ -514,7 +517,7 @@ export default class ModalDropdown extends Component {
         showsVerticalScrollIndicator={showsVerticalScrollIndicator}
         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         ListHeaderComponent={this._renderSearchInput}
-        // initialNumToRender={options.length+1}
+        initialNumToRender={options.length+1}
         // onEndReachedThreshold={0.2}
         // onEndReached={this.getMoreData.bind(this)}
         onScrollToIndexFailed={info => {
@@ -529,7 +532,7 @@ export default class ModalDropdown extends Component {
   }
 
   _renderItem = ({ item, index, separators }) => {
-    logger('....renderItem',item)
+    // logger('....renderItem',item)
     const {
       renderRow,
       renderRowComponent,
@@ -618,6 +621,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     flexGrow: 1,
+    height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height
   },
   dropdown: {
     position: 'absolute',

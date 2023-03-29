@@ -544,8 +544,8 @@ class CalendarStrip extends Component {
     }
     // else Scroller sets weekStart/EndDate and fires onWeekChanged.
 
-    logger(JSON.stringify(newState))
-    logger(initialScrollerIndex)
+    // logger(JSON.stringify(newState))
+    // logger(initialScrollerIndex)
     return newState;
   }
 

@@ -170,7 +170,7 @@ class CalendarDay extends Component {
   //Function to check if provided date is the same as selected one, hence date is selected
   //using isSame moment query with "day" param so that it check years, months and day
   isDateSelected = (date, selectedDate) => {
-    logger(moment(selectedDate).format('DD'))
+    // logger(moment(selectedDate).format('DD'))
     this.setState({ selectedDay: moment(selectedDate).format('DD') })
     if (!date || !selectedDate) {
       return date === selectedDate;
