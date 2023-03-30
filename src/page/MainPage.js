@@ -659,7 +659,7 @@ class MainPage extends Component {
   }
 
   handleNativeMessage = (content) => {
-    logger('handleNativeMessage====' + content);
+    // logger('handleNativeMessage====' + content);
     const { dispatch } = this.props;
     const that = this;
     if (content.indexOf('talk:') === 0) {
@@ -667,13 +667,14 @@ class MainPage extends Component {
       const code = codeArr[0].replace('talk:', '')
       if (code === '0') {
         const id = codeArr[1].replace('id:', '')
+        const caselist = codeArr.length > 2 ? codeArr[2].replace('caselist:', '') ? JSON.parse(codeArr[2].replace('caselist:', '')) : [] : []
         if (id) {
           dispatch(actionProcess.reqGetProcess(id, (rs, error) => {
             if(error) {
               Toast.show(error.info)
             }
             else {
-              that.showConfirm(rs);
+              that.showConfirm(rs, caselist);
               that.setState({ loading: false});
             }
             // that.setState({ loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name });
@@ -836,8 +837,8 @@ class MainPage extends Component {
     this.setState({ menuVisible: true });
   }
 
-  showConfirm = (item) => {
-    // logger(item)
+  showConfirm = (item, caseListInfo) => {
+    // logger('.....caseListInfo',caseListInfo)
     // item=  {
     //     id: 313,
     //     name:'cessd',
@@ -851,7 +852,7 @@ class MainPage extends Component {
     
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.state.caseList} 
-      caseListInfo={this.state.caseListInfo}/>);
+      caseListInfo={caseListInfo}/>);
     }
   }
   render() {
