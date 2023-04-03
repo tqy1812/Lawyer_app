@@ -140,7 +140,7 @@ class CenterPage extends Component {
             Toast.show(error.info)
           }
           else {
-            dispatch(actionAuth.reqUserUpdate(rs.url, undefined, (result, error)=>{
+            dispatch(actionAuth.reqUserUpdate(rs.url, undefined, undefined, (result, error)=>{
               if(error){
                 Toast.show(error.info)
               }

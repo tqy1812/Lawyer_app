@@ -44,13 +44,12 @@ export default class actionAuth {
       dispatch(request.upload(file, callback));
     };
   }
-  static reqUserUpdate(url, iosToken, callback) {
+  static reqUserUpdate(url, iosToken, voiceType, callback) {
     return (dispatch, getState) => {
       let state = getState();
-      dispatch(request.userUpdate(url, iosToken, callback));
+      dispatch(request.userUpdate(url, iosToken, voiceType, callback));
     };
   }
-
   
   static reqAddFeedback(title, content, contact, callback) {
     return (dispatch, getState) => {

@@ -305,7 +305,7 @@ class MainPage extends Component {
     const { dispatch } = this.props;
     logger('.......deviceToken='+deviceToken);
     if(deviceToken) {
-      dispatch(actionAuth.reqUserUpdate(undefined, deviceToken, (result, error)=>{
+      dispatch(actionAuth.reqUserUpdate(undefined, deviceToken, undefined, (result, error)=>{
         if(error){
           Toast.show(error.info)
         }

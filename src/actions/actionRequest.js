@@ -101,11 +101,11 @@ export function upload(file, callback = null) {
     };
 }
 
-export function userUpdate(url, iosToken, callback = null) {
+export function userUpdate(url, iosToken, voiceType, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/employee/update'
-        let data = {avatar: url, ios_token: iosToken};
+        let data = {avatar: url, ios_token: iosToken, voice_type: voiceType};
 
         request_impl(api, method, data, (res, error) => {
             if(res) {
