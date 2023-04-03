@@ -106,7 +106,6 @@ export function getWeek (date) { // 参数时间戳
   }
 
   export function getContentView (start, end) { 
-    logger(end)
     let startArray = [0, 0];
     let endArray = [0, 0];
     if(start){
