@@ -165,12 +165,13 @@ export function getWeek (date) { // 参数时间戳
               let poxy = getStartEnd(temp, longPos);
               let s = poxy[0];
               let e = poxy[1];
-              logger(temp )
+              // logger(s, e )
+              // logger(temp )
               if(!flag && (start>=s && start < e)) {
                 for(let k=0; k < temp.length; k++) {
                   // logger('不在范围内', temp[k])
                   if (end <= temp[k]['start'] || start>=temp[k]['end']) {  //不在范围内
-                    logger('1******', data[i].id, j, pos.length-1, k, temp.length-1)
+                    // logger('1****** id='+data[i].id )
                     tp= [];
                     // tp1= [];
                     for(let p=0; p < k; p++) {
@@ -214,10 +215,12 @@ export function getWeek (date) { // 参数时间戳
                 }
               }
             }
+
+              // logger('********flag' + flag + ' tp.length' + tp.length)
             if(flag && tp.length>0){
               let t = [];
               let t1 = [];
-              for(let m=0; m< tp.length-1; m++) {
+              for(let m=0; m< tp.length; m++) {
                 if((start>=tp[m].start && start < tp[m].end))
                 {
                   longPos.push(tp[m]);
@@ -229,6 +232,7 @@ export function getWeek (date) { // 参数时间戳
               t1.push(data[i].id);
               pos.push(t);
               pos1.push(t1);
+              // logger('********flag', pos)
             }
             if(!flag) {
               // rs.push({...data[i], lIndex: 0, wSplit: 1});

@@ -38,7 +38,7 @@ let request = {
         }).catch((error) => {
             logger(error);
             destroySibling();
-            Toast.show("网络错误");
+            Toast.show("抱歉!服务器无法连接,请稍后再试!");
             failCallback(error);
         });
     },
@@ -77,7 +77,7 @@ let request = {
         }).catch((error) => {
             logger(error);
             destroySibling();
-            Toast.show("网络错误");
+            Toast.show("抱歉!服务器无法连接,请稍后再试!");
         });
     },
 };

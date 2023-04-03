@@ -173,12 +173,16 @@ class LoginPage extends Component {
                 logger(res)
                 if (error) {
                     logger(error)
-                    //   Toast.show(this.validateToastXSS(error.toString()));
                     if (error.code === 17004) {
                         this.setState({ code: 2 });
                     }
                     else if (error.code === 17003) {
                         this.setState({ code: 1 });
+                    }
+                    else {
+                        if(error.info){
+                            Toast.show(error.info);
+                        }
                     }
                 } else if (res && res.token) {
                     // if (autoLogin) {
