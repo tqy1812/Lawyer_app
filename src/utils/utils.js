@@ -106,6 +106,7 @@ export function getWeek (date) { // 参数时间戳
   }
 
   export function getContentView (start, end) { 
+    logger(end)
     let startArray = [0, 0];
     let endArray = [0, 0];
     if(start){
@@ -135,7 +136,8 @@ export function getWeek (date) { // 参数时间戳
       let longPos = [];
       for (let i=0; i<data.length; i++){
         let startArray = data[i].start_time ? moment(data[i].start_time).format('HH:mm').split(':') : moment(data[i].wakeup_time).format('HH:mm').split(':');
-        let endArray = data[i].end_time ? moment(data[i].end_time).format('HH:mm').split(':') : [];
+        let endArray = data[i].end_time ? moment(moment(data[i].end_time).format('YYYY-MM-DD 00:00:00')).diff(moment(moment(data[i].start_time).format('YYYY-MM-DD 00:00:00')), "days")==1 ?  ['24', '0'] : 
+        moment(data[i].end_time).format('HH:mm').split(':') : [];
         if(startArray.length<=1 && endArray.length<=1 ) {
           rs.push({...data[i], lIndex: 0, wSplit: 0});
         }
@@ -155,6 +157,7 @@ export function getWeek (date) { // 参数时间戳
             endArray = [parseInt(startArray[0])+1, parseInt(startArray[0])== 23 ? 0 : parseInt(startArray[1])];
             end = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
           }
+          // logger(endArray, end)
           // logger(start, end, pos)
           if(pos.length > 0) {
             let flag = 0;
@@ -362,7 +365,7 @@ export function getWeek (date) { // 参数时间戳
 
  export function getFeeTimeFormat (min) {
   if(min) {
-    let hour = parseInt(min / 60);
+    let hour = Math.abs(parseInt(min / 60));
     let hourStr = hour < 10 ? '0'+hour : hour;
     let m = min % 60;
     let mStr = m <  10 ? '0'+m : m;

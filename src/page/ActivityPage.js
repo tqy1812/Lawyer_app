@@ -188,7 +188,8 @@ class ActivityPage extends Component {
                         {
                             list && JSON.stringify(this.props.caseList) != '{}' && list.map((item, index) => {
                                 let startTime = item.start_time ? moment(item.start_time).format('HH:mm') : moment(item.wakeup_time).format('HH:mm');
-                                let endTime = item.end_time ? moment(item.end_time).format('HH:mm') : '';
+                                let endTime = item.end_time ? moment(moment(item.end_time).format('YYYY-MM-DD 00:00:00')).diff(moment(moment(item.start_time).format('YYYY-MM-DD 00:00:00')), "days")==1 ? '24:00' : 
+                                moment(item.end_time).format('HH:mm') : '';
                                 let top = getContentView(startTime, endTime);
                                 // logger(startTime, endTime, top)
                                 let color = this.props.caseList[item.case.id + ''] || ['rgba(255, 0, 0, 0.3)', 'rgb(255, 0, 0)', '#FF0000'];
