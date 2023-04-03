@@ -460,7 +460,7 @@ class MainPage extends Component {
   handleAppStateChange = (nextAppState) => {
     // logger('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      this.wv && this.wv.current && this.wv.current.reload();
+      // this.wv && this.wv.current && this.wv.current.reload();
       if (this.wc) this.wc.setIsBackground(false);
       if (platform.isAndroid()) {
         NativeModules.WebSocketWorkManager.stopBackgroundWork();
@@ -621,8 +621,8 @@ class MainPage extends Component {
       if (platform.isAndroid()) {
         PushNotification.localNotification({
           channelId: 'NEW_MESSAGE_NOTIFICATION',
-          title: "任务提醒-" + item.case_name,
-          message: item.process_name + ',时间:' + item.start_time,
+          title: "任务提醒-" + item.process_name,
+          message: '时间:' + item.start_time,
           id: this.state.lastId,
           date: new Date(Date.now()),
           when: new Date().getTime()
@@ -630,7 +630,7 @@ class MainPage extends Component {
         this.setState({ lastId: (this.state.lastId + 1) });
       }
       else {
-        this.sendLocalNotification({ Title: "任务提醒-" + item.case_name, Message: item.process_name + ',时间:' + item.start_time });
+        this.sendLocalNotification({ Title: "任务提醒-" + item.process_name, Message:'时间:' + item.start_time });
       }
     }
   }
