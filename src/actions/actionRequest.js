@@ -105,8 +105,16 @@ export function userUpdate(url, iosToken, voiceType, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/employee/update'
-        let data = {avatar: url, ios_token: iosToken, voice_type: voiceType};
-
+        let data = {};
+        if(url){
+            data.avatar = url;
+        }
+        if(iosToken){
+            data.ios_token = iosToken;
+        }
+        if(voiceType){
+            data.voice_type = voiceType;
+        }
         request_impl(api, method, data, (res, error) => {
             if(res) {
                 let retData = res.data;
