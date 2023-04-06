@@ -16,7 +16,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, produce, removeItem, getHoliday, logger} from '../utils/utils';
+import {getWeek, getWeekXi, produce, removeItem, getHoliday, logger, updateFinish} from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
@@ -269,6 +269,54 @@ export default class MyPlanSlider extends Component {
     );
     
   }
+
+  setFinishTime = (item) => {
+    if(this.props.finishTime) {
+      this.props.finishTime(item);
+    }
+  }
+  
+  setFinishTimeEnd = (value, callback) => {
+    if(this.props.finishTimeEnd) {
+      this.props.finishTimeEnd(value, (id, content) => {
+        // logger('.......updateProcess'+ id+ '....' + content)
+        this.updateProcess(id, content, (item)=>{
+          logger('.......updateProcess'+ JSON.stringify(item))
+          if(moment(item.start_time).format('YYYY-MM-DD') === moment(value.start_time).format('YYYY-MM-DD')) {
+            let temp = updateFinish(this.state.DATA, item);
+            this.setState({DATA: temp}, ()=>{
+              setTimeout(()=>{
+                destroySibling();
+              },800);
+            });
+          }
+          else {
+            this.loadDataThrottled();
+          }
+          // if(callback) callback(item);
+        })
+      });
+    }
+  }
+
+  updateProcess = (id, content, callback) => {
+    const { dispatch } = this.props;
+    const that = this;
+    // that.setState({refreshing: true});
+    showLoading();
+    dispatch(actionProcess.reqChangeTimesProcess(id, content, (rs, error)=>{
+      // destroySibling();
+      // logger(rs)
+      if(error) {
+        destroySibling();
+        Toast.show(error.info);
+      } else if( rs && rs.id) {
+         if(callback) callback(rs)
+      }
+      // that.setState({refreshing: false});
+    })); 
+  }
+
   render() {
     const {DATA, caseList, loadFinish, refreshing} = this.state;
     logger(loadFinish)
@@ -277,7 +325,7 @@ export default class MyPlanSlider extends Component {
         friction={1}
         rightThreshold={40}
         renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
-          <MyPlanItem item={item} changeEnable={(item) => this.changeEnable(item)}  caseList={caseList} />
+          <MyPlanItem item={item} changeEnable={(item) => this.changeEnable(item)}  caseList={caseList} finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} />
       </Swipeable>
     );
     

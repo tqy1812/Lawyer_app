@@ -31,24 +31,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string></string>
-	<key>NSContactsUsageDescription</key>
-	<string></string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string></string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string></string>
-	<key>NSLocationUsageDescription</key>
-	<string></string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>数据请求</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<string>App需要您的同意,才能访问麦克风用于发送语音信息</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string></string>
+	<string>App需要您的同意,用于保存用户头像到手机</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>App需要您的同意,才能访问相册用于上传或更改用户头像</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>icomoon.ttf</string>

@@ -263,7 +263,7 @@ class MainPage extends Component {
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
     }
     showPlanModal(<DrawerModal
-      component={<MyPlanSlider {...this.props} caseList={this.state.caseList}/>}
+      component={<MyPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={this.state.caseList}/>}
       ref={e => this.planRef = e}
       height={Common.window.height - 100}
       showType={'bottom'}
@@ -866,57 +866,6 @@ class MainPage extends Component {
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
         </View>}
-        {/* <MyPlan isVisible={this.state.myPlanState} close={this.closePlan}  {...this.props}>
-        </MyPlan> */}
-        {/* <MyFinishPlan isVisible={this.state.myFinishPlanState} close={this.closeFinishPlan} finishTime={this.handleFinishTime} finishTimeEnd={this.handleFinishTimeEnd} caseList={this.props.caseList}>
-        </MyFinishPlan> */}
-        {/* <DrawerModal
-          component={<MyPlanSlider {...this.props}/>}
-          ref={e => this.planRef = e}
-          height={Common.window.height - 100}
-          showType={'bottom'}
-        /> */}
-        {/* <DrawerModal
-            component={<MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={this.handleFinishTimeEnd.bind(this)} {...this.props}/>}
-            ref={e => this.finishRef = e}
-            height={Common.window.height - 100}
-            showType={'top'}
-          /> */}
-        {/* <MyModal customTitleViewShow={true} title={'内容确认'} cancelShow={true} confirmText={'添加'} isVisible={this.state.talkModalVisible} close={this.closeTalk} send={this.handleSending} isTouchMaskToClose={false}>
-          <TextInput
-            placeholder='发送内容'
-            placeholderTextColor='#999'
-            style={styles.talkInput}
-            onChangeText={this.handleTalkContentChanged.bind(this)}
-            value={this.state.talkContent}
-            multiline
-            textAlignVertical='top'
-            />
-        </MyModal>*/}
-        {/* <MyModal customTitleViewShow={false} cancelShow={true} confirmText={'确认'} isVisible={this.state.talkSuccessModalVisible} close={this.closeTalkSuccess} send={this.sendTalkSuccess} isTouchMaskToClose={false}>
-          {caseList && this.state.item && this.state.item.id && JSON.stringify(caseList) != '{}' && <View style={styles.processInfo}>
-            <View style={styles.listTitleView}>
-              <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(this.state.item.start_time).format('MM月DD日')}</Text><Text style={styles.listItemTitleWeekFont}>{getWeekXi(this.state.item.start_time)}</Text></View>{<Text style={styles.titleTodayFont1}>{getHoliday(this.state.item.start_time)}</Text>}</View>
-            </View>
-            <View style={styles.listItemView}>
-              <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{this.state.item.start_time ? moment(this.state.item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{this.state.item.end_time ? moment(this.state.item.end_time).format('HH:mm') : '-- : --'}</Text></View>
-              <View style={[styles.listItemTimeSplit, { backgroundColor: caseList[this.state.item.case.id + ''][2], }]}></View>
-              <View style={styles.listItemRightView}>
-                <TextInput
-                  ref={(r) => this.item_name = r}
-                  placeholder='内容'
-                  placeholderTextColor='#999'
-                  style={styles.talkNameInput}
-                  onChangeText={this.handleTalkNameChanged.bind(this)}
-                  value={this.state.itemName}
-                />
-                <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{this.state.item.case.name}</Text>
-              </View>
-              <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={this.state.itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
-            </View>
-          </View>
-          }
-        </MyModal> */}
         {
           platform.isAndroid() ? <WebViewX5
             ref={this.wv}
