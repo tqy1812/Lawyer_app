@@ -193,12 +193,12 @@ const styles = StyleSheet.create({
   listItemTitle: {
     fontSize: 19,
     color: '#545454',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   listItemContent: {
     fontSize: 15,
     color: '#9C9C9C',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   listItemTimeView: {
     display: 'flex',
@@ -218,20 +218,20 @@ const styles = StyleSheet.create({
   listItemTime: {
     fontSize: 11,
     color: '#9E9E9E',
-    fontWeight: 'bold',
+    fontWeight: '600',
     
   },
   listItemToatlTime: {
     fontSize: 25,
     color: '#6B6B6B',
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginRight: -2,
   },
   listItemToatlTime1: {
     fontSize: 25,
     marginTop: 2,
     color: '#6B6B6B',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   setTimeView: {
     position: 'absolute',
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   rightAction: {
     height: 65,
