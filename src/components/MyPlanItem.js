@@ -60,13 +60,13 @@ export default class MyPlanItem extends Component {
     const {recoding, item} = this.state;
     //logger(this.props.caseList, this.props.caseList[item.case.id+''][2])
     return (
-      <TouchableOpacity style={styles.listItemView} activeOpacity={1} onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)}>
-        <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
+      <View style={styles.listItemView} activeOpacity={1} >
+        <TouchableOpacity onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)} style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></TouchableOpacity>
         <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''] ? this.props.caseList[item.case.id+''][2] : '#ff0000',}]}></View>
         <View style={styles.listItemRightView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text></View>
         <View style={styles.listItemNoticeView}><MyButton style={styles.setNoticeView} onPress={() => {this.changeEnable(item)}}><IcomoonIcon name='alert_0' size={30} color={item.is_wakeup ? '#007afe' : '#fff'} /></MyButton></View>
         { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
-    </TouchableOpacity>
+      </View>
     );
   }
 }
