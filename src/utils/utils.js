@@ -440,7 +440,7 @@ export function getHoliday(time) {
 }
 
 export function logger(str, str1) {
-  if(Common.env != 'dev') {
+  if(Common.env == 'dev') {
     if(str1) {
       console.log(str, str1)
     } else {

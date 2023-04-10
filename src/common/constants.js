@@ -4,8 +4,8 @@ const { StatusBarManager } = NativeModules;
 
 const {width,height} = Dimensions.get('window')
 const wh = height/width
-const env = 'pro';
-const apiUrl = env=='dev' ? 'http://lawyer-api-test.kykyai.cn/' : 'https://lawyer-api.kykyai.cn/';
+const env = 'dev';
+const apiUrl = env=='dev' ? 'https://lawyer-api-test.kykyai.cn/' : 'https://lawyer-api.kykyai.cn/';
 const socketUrl = env=='dev' ? 'wss://ws-test.kykyai.cn/ws' : 'wss://ws.kykyai.cn/ws';
 const webUrl = env === 'dev' ? 'https://www.kykyai.com/cartoon/applive2dTest/' : 'https://www.kykyai.com/cartoon/applive2d/';
 let statusBarHeight =  platform.isIOS() ? (platform.isiPhoneX() ? 60 : 50) : StatusBarManager.HEIGHT;
