@@ -13,9 +13,10 @@ import moment from 'moment';
 import Common from '../common/constants';
 import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, logger} from '../utils/utils';
 import IcomoonIcon from "./IcomoonIcon";
+import BaseComponent from './BaseComponent';
 import Wave from "./Wave";
 
-class FinishPlanItem extends React.Component {
+class FinishPlanItem extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,7 +52,7 @@ class FinishPlanItem extends React.Component {
 
   render() {
     const {recoding, item} = this.state;
-    // logger(item)
+    logger('....immutable', item.id)
     return (
       <TouchableOpacity activeOpacity={!item.end_time ? 0.2 : 1} style={styles.listItemView} onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)}>
           <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''] ? this.props.caseList[item.case.id+''][2] : '#ff0000'}]}></View>

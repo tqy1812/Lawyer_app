@@ -20,6 +20,7 @@ import { logger } from '../utils/utils';
 import GlobalData from '../utils/GlobalData';
 import platform from '../utils/platform';
 import Common from '../common/constants';
+import BaseComponent from './BaseComponent';
 const TOUCHABLE_ELEMENTS = [
   'TouchableHighlight',
   'TouchableOpacity',
@@ -28,7 +29,7 @@ const TOUCHABLE_ELEMENTS = [
 ];
 
 const globalData = GlobalData.getInstance();
-export default class ModalDropdown extends Component {
+export default class ModalDropdown extends BaseComponent {
   static propTypes = {
     disabled: PropTypes.bool,
     multipleSelect: PropTypes.bool,

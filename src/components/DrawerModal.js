@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 import PropTypes from 'prop-types';
+import BaseComponent from './BaseComponent';
 import {destroySibling, showModal, showPlanModal, showFinishModal} from './ShowModal';
 import Common from '../common/constants';
 import platform from '../utils/platform';
@@ -41,7 +42,7 @@ export const closeDrawerModal = () => {
   ref = null;
 };
 
-export class DrawerModal extends React.Component {
+export class DrawerModal extends BaseComponent {
   animated = new Animated.Value(0);
 
   static propTypes = {

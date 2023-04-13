@@ -1,6 +1,6 @@
 {
   "name": "LawyerApp",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -20,6 +20,7 @@
     "axios": "^1.2.1",
     "chinese-lunar": "^0.1.4",
     "date-fns": "^2.29.3",
+    "immutable": "^4.3.0",
     "moment": "^2.29.4",
     "prop-types": "^15.8.1",
     "react": "18.0.0",

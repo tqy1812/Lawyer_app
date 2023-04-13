@@ -33,6 +33,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { connect } from 'react-redux';
 import authHelper from '../helpers/authHelper';
 import MyModal from '../components/MyModal';
+import BaseComponent from '../components/BaseComponent';
 import Common from "../common/constants";
 import platform from "../utils/platform";
 import { showDrawerModal, DrawerModal, } from '../components/DrawerModal';
@@ -61,7 +62,7 @@ const Toast = Overlay.Toast;
 const distance = 50;
 
 const globalData = GlobalData.getInstance();
-class MainPage extends Component {
+class MainPage extends BaseComponent {
 
   static mapStateToProps(state) {
     let props = {};

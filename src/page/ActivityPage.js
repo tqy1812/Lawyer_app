@@ -24,10 +24,11 @@ import platform from '../utils/platform';
 import { is } from 'date-fns/locale';
 import { isToday } from 'date-fns';
 import GlobalData from '../utils/GlobalData';
-import {logger} from '../utils/utils'
+import {logger} from '../utils/utils';
+import BaseComponent from '../components/BaseComponent';
 const Toast = Overlay.Toast;
 
-class ActivityPage extends Component {
+class ActivityPage extends BaseComponent {
     static mapStateToProps(state) {
         let props = {};
         props.user = state.Auth.user;

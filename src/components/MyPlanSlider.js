@@ -25,9 +25,10 @@ import MyButton from "./MyButton";
 import { destroySibling, showLoading, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
 import GlobalData from "../utils/GlobalData";
+import BaseComponent from "./BaseComponent";
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
-export default class MyPlanSlider extends Component {
+export default class MyPlanSlider extends BaseComponent {
   renderRightAction = (text, color, x, progress, item) => {
     const trans = progress.interpolate({
       inputRange: [0, 1],

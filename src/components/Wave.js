@@ -8,9 +8,9 @@ import {
   Text,
   InteractionManager,
 } from 'react-native';
+import BaseComponent from "./BaseComponent";
 
-
-export default class Wave extends Component {
+export default class Wave extends BaseComponent {
   
   constructor(props) {
     super(props);

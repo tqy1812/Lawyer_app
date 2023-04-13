@@ -32,9 +32,10 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import ImagePicker from 'react-native-image-crop-picker';
 import GlobalData from '../utils/GlobalData';
 import { showToast } from '../components/ShowModal';
+import BaseComponent from '../components/BaseComponent';
 const Toast = Overlay.Toast;
 
-class CenterPage extends Component {
+class CenterPage extends BaseComponent {
 
     static mapStateToProps(state) {
         let props = {};

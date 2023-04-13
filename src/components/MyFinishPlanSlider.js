@@ -28,10 +28,11 @@ import * as Storage from '../common/Storage';
 import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
 import {logger} from "../utils/utils";
+import BaseComponent from "./BaseComponent";
 
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
-export default class MyFinishPlanSlider extends Component {
+export default class MyFinishPlanSlider extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {

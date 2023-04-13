@@ -16,8 +16,9 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import { showLoading } from "./ShowModal";
 import Wave from "./Wave";
+import BaseComponent from "./BaseComponent";
 const Toast = Overlay.Toast;
-export default class MyPlanItem extends Component {
+export default class MyPlanItem extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {

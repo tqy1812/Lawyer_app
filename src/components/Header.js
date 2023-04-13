@@ -10,9 +10,9 @@ import authHelper from '../helpers/authHelper';
 import MyButton from './MyButton';
 import IcomoonIcon from "../components/IcomoonIcon";
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import BaseComponent from './BaseComponent';
 
-
-class Header extends React.Component {
+class Header extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {
