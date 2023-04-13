@@ -29,6 +29,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
 import { logger } from '../utils/utils';
+import { SendIdentify } from '../components/SendIdentify';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
 
@@ -48,7 +49,8 @@ class LoginPage extends Component {
             eyed: false,
             autoLogin: false,
             lastId: 1,
-            code: 0
+            code: 0,
+            indetify: ''
         };
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
@@ -148,6 +150,10 @@ class LoginPage extends Component {
         this.setState({ password: text });
     }
 
+    // 验证码
+    handleIndetifyChanged(text) {
+        this.setState({ indetify: text });
+    }
     // 登录
     handleLogin() {
         InteractionManager.runAfterInteractions(() => {
@@ -218,7 +224,8 @@ class LoginPage extends Component {
     //     return false;
     //   };
 
-
+    send = () => {
+    }
     render() {
         let logo = '/logo.png';
         const { insets } = this.props;
@@ -296,11 +303,22 @@ class LoginPage extends Component {
                             placeholderTextColor='#999'
                             onChangeText={this.handlePasswordChanged.bind(this)}
                             value={this.state.password} />
-                        <MyButton style={styles.eyeButton} onPress={() => {
-                            this.setState({ eyed: !this.state.eyed });
-                        }}>
-                            {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
-                        </MyButton>
+                            <MyButton style={styles.eyeButton} onPress={() => {
+                                this.setState({ eyed: !this.state.eyed });
+                            }}>
+                                {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
+                            </MyButton>
+                    </View>
+                    <View style={styles.formInput}>
+                        {/* <Text style={styles.loginLabel}>密&nbsp;&nbsp;&nbsp;&nbsp;码</Text> */}
+                        <TextInput
+                            ref={(ref) => this.login_identify = ref}
+                            style={styles.loginInput}
+                            placeholder='轻触此处输入验证码'
+                            placeholderTextColor='#999'
+                            onChangeText={this.handleIndetifyChanged.bind(this)}
+                            value={this.state.indetify} />
+                            <SendIdentify time={90} action={this.send.bind(this)}/>
                     </View>
                 </View>
                 <View style={styles.operate}>
