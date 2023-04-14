@@ -58,17 +58,20 @@ export class DrawerModal extends BaseComponent {
   };
   constructor (props){
     super(props);
-    
     this.globalData = GlobalData.getInstance();
     this.STATUS_BAR_HEIGHT =  platform.isIOS() ? this.globalData.getTop() : Common.statusBarHeight 
     this.screenHeight = this.globalData.getScreenHeight() > 0 ? this.globalData.getScreenHeight() : Common.window.height
+    this.canStopPropagation = false;
+    this.canStopPropagationFinishLimit = this.screenHeight - 100 - 70;
+    this.canStopPropagationLimit = 170;
     this.state = {
       panPlan: new Animated.ValueXY({x:0, y: this.screenHeight}),
       panFinish: new Animated.ValueXY({x:0, y:-this.screenHeight}),
     }
     this._panResponderPlan = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
-        logger('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
+        if (e.nativeEvent.pageY < this.canStopPropagationLimit) this.canStopPropagation = true;
+        logger('onStartShouldSetPanResponder...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+this.canStopPropagation)
         if(gestureState.dx==0 && gestureState.dy==0) {
           return false
         }
@@ -76,7 +79,7 @@ export class DrawerModal extends BaseComponent {
       },
       onMoveShouldSetPanResponder: (e, gestureState) => {
         logger('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
-        if(Math.abs(gestureState.dy) > 25) {
+        if(Math.abs(gestureState.dy) > 25 && this.canStopPropagation) {
           return true;
         }
         else {
@@ -88,7 +91,7 @@ export class DrawerModal extends BaseComponent {
         return false
       },
       onStartShouldSetPanResponderCapture: (e, gestureState) => {
-        // logger('onStartShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        if (e.nativeEvent.pageY < this.canStopPropagationLimit) this.canStopPropagation = true;
         return false
       },
       onPanResponderTerminationRequest:  (e, gestureState) => {
@@ -118,15 +121,16 @@ export class DrawerModal extends BaseComponent {
 
     this._panResponderFinish = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => {
-        logger('onStartShouldSetPanResponder..........'+gestureState.dx+'.............'+gestureState.dy)
+        if (e.nativeEvent.pageY > this.canStopPropagationFinishLimit) this.canStopPropagation = true;
+        logger('onStartShouldSetPanResponder...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+this.canStopPropagation)
         if(gestureState.dx==0 && gestureState.dy==0) {
           return false
         }
         return true
       },
       onMoveShouldSetPanResponder:  (e, gestureState) => {
-        logger('onMoveShouldSetPanResponder.......................'+gestureState.dy, gestureState.dx)
-        if(gestureState.dy<0 && Math.abs(gestureState.dy) > 25) {
+        logger('onMoveShouldSetPanResponder...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+this.canStopPropagation)
+        if(gestureState.dy<0 && Math.abs(gestureState.dy) > 25 && this.canStopPropagation) {
           return true;
         }
         else {
@@ -134,32 +138,36 @@ export class DrawerModal extends BaseComponent {
         }
       },
       onMoveShouldSetPanResponderCapture: (e, gestureState) => {
-        // logger('onMoveShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        logger('onMoveShouldSetPanResponderCapture...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+e.nativeEvent.locationY)
         return false
       },
       onStartShouldSetPanResponderCapture: (e, gestureState) => {
-        logger('onStartShouldSetPanResponderCapture..........'+gestureState.dx+'.............'+gestureState.dy)
+        if (e.nativeEvent.pageY > this.canStopPropagationFinishLimit) this.canStopPropagation = true;
+        logger('onStartShouldSetPanResponder...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+this.canStopPropagation)
         return false
       },
       onPanResponderTerminationRequest:  (e, gestureState) => {
-        // logger('onPanResponderTerminationRequest..........'+gestureState.dx+'.............'+gestureState.dy)
-        return false
+        logger('onPanResponderTerminationRequest...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+e.nativeEvent.locationY)
+        return true
       },
-      onPanResponderGrant: (evt, gs) => {},
+      onPanResponderGrant: (e, gestureState) => {
+        logger('onPanResponderGrant...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+e.nativeEvent.locationY)
+      },
       onPanResponderMove:  (e, gestureState) => {
+        logger('onPanResponderMove...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+e.nativeEvent.locationY)
         if (gestureState.dy < 0) {
-          // logger(gestureState.dy)
           Animated.event([null, { dy: this.state.panFinish.y }], {
             useNativeDriver: false,
           })(e, gestureState);
         }
       },
-      onPanResponderRelease: (evt, gestureState) => {
+      onPanResponderRelease: (e, gestureState) => {
+        logger('onPanResponderRelease...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+e.nativeEvent.locationY)
         const gestureDistance = gestureState.dy;
         if (gestureDistance < -50) {
           this.close('finish', this.props.close)
         } else {
-          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: 0}, useNativeDriver: false, }).start();
+          Animated.spring(this.state.panPlan, { toValue: { x: 0, y: 0 }, useNativeDriver: false, }).start();
         }
       },
     });
@@ -177,6 +185,7 @@ export class DrawerModal extends BaseComponent {
   }
 
   open = (type) => {
+    this.canStopPropagation = false;
     if(type==='finish') {
       Animated.timing(this.state.panFinish, {
         toValue: {x:0, y: 0},
@@ -240,76 +249,28 @@ export class DrawerModal extends BaseComponent {
   };
 
   render() {
-    // logger(this.props.showType)
     const { panFinish, panPlan} = this.state;
     const panStyle = {
       transform: panFinish.getTranslateTransform(),
     };
-    // panPlan.setValueY({x:0, y: panPlan.getV})
     const panPlanStyle = {
       transform: panPlan.getTranslateTransform(),
     };
-    // const height = this.animated.interpolate({
+    // const maskTransformY = this.animated.interpolate({
     //   inputRange: [0, 1],
-    //   outputRange: [0, this.props.height]
+    //   outputRange: [0, 120]
     // });
-    // const transformY = this.animated.interpolate({
+    // const maskTransformY1 = this.animated.interpolate({
     //   inputRange: [0, 1],
-    //   outputRange: [0, -this.props.height]
+    //   outputRange: [0, -120]
     // });
-    const maskTransformY = this.animated.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 120]
-    });
-    const maskTransformY1 = this.animated.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, -120]
-    });
-    const opct = this.animated.interpolate({
-      inputRange: [0,0.2,0.3,0.5,0.9, 1],
-      outputRange: [0,0,0,0,0,0.4]
-    });
-    // logger(".............this._panY="+this._panY)
+    // const opct = this.animated.interpolate({
+    //   inputRange: [0,0.2,0.3,0.5,0.9, 1],
+    //   outputRange: [0,0,0,0,0,0.4]
+    // });
+    logger(".............this._panY="+this.screenHeight)
     return (
       <>
-        {/* <Animated.View
-          style={{
-          //   this.props.showType === 'bottom' ? {
-          //   height: 120,
-          //   position: 'absolute',
-          //   top: -120,
-          //   zIndex: 6,
-          //   opacity: opct,
-          //   transform: [{
-          //     translateY: maskTransformY
-          //   }]
-          // } : {
-            height: Common.window.height,
-            position: 'absolute',
-            // bottom: -120,
-            top: 0,
-            left: 0,
-            zIndex: 6,
-            // opacity: opct,
-            // transform: [{
-            //   translateY: maskTransformY1
-            // }]
-          }
-          }
-        >
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => {
-              // if (!this.props.bgHid) return;
-              this.close(this.props.close);
-            }}
-            style={{
-              width: Common.window.width,
-              backgroundColor: '#000',
-              height: Common.window.height
-            }}
-          />
-        </Animated.View> */}
         <Animated.View
            {...(this.props.showType === 'bottom' && this._panResponderPlan.panHandlers)}
            {...(this.props.showType === 'top' && this._panResponderFinish.panHandlers)}
@@ -322,12 +283,8 @@ export class DrawerModal extends BaseComponent {
             flex: 1,
             justifyContent: "flex-end",
             position: 'absolute',
-            // bottom: -this.props.height,
             zIndex: 7,
             flexDirection: 'column',
-            // transform: [{
-            //   translateY:  transformY
-            // }]
           } ]: [panStyle,
             {
               width: Common.window.width,
@@ -337,11 +294,7 @@ export class DrawerModal extends BaseComponent {
             justifyContent: "flex-start",
             flexDirection: 'column-reverse',
             position: 'absolute',
-            // top:  - this.props.height - STATUS_BAR_HEIGHT,
             zIndex: 7,
-            // transform: [{
-            //   translateY: height
-            // }]
           }]}>
           <TouchableOpacity
             onPress={() => {
@@ -356,62 +309,6 @@ export class DrawerModal extends BaseComponent {
           {this.props.component}
         </Animated.View>
       </>
-      // <>
-      //   <Animated.View
-      //     style={this.props.showType === 'bottom' ? {
-      //       height: Common.window.height,
-      //       position: 'absolute',
-      //       bottom: -Common.window.height,
-      //       zIndex: 6,
-      //       transform: [{
-      //         translateY:  transformY
-      //       }]
-      //     } : {
-      //       height: Common.window.height,
-      //       position: 'absolute',
-      //       top: -Common.window.height - Common.statusBarHeight,
-      //       zIndex: 6,
-      //       transform: [{
-      //         translateY: height
-      //       }]
-      //     }}>
-      //        <Animated.View
-      //         style={{
-      //           position: 'absolute',
-      //           opacity: opct,
-      //           flex: 1,
-      //           top: 0,
-      //           zIndex: 7
-      //         }}
-      //       >
-      //       <TouchableOpacity
-      //         activeOpacity={0.4}
-      //         onPress={() => {
-      //           // if (!this.props.bgHid) return;
-      //           this.close();
-      //         }}
-      //         style={{
-      //           width: Common.window.width,
-      //           backgroundColor: '#000',
-      //           height: Common.window.height,
-      //         }}
-      //       />
-      //       </Animated.View>
-      //       <Animated.View style={this.props.showType === 'bottom' ? {
-      //         height: Common.window.height - 100,
-      //         position: 'absolute',
-      //         bottom: 0,
-      //         zIndex: 8
-      //       } : {
-      //         height: Common.window.height - 100,
-      //         position: 'absolute',
-      //         top: 0,
-      //         zIndex: 8,
-      //       }}>
-      //         {this.props.component}
-      //       </Animated.View>
-      //   </Animated.View>
-      // </>
     );
   }
 }
