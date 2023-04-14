@@ -167,7 +167,7 @@ export class DrawerModal extends BaseComponent {
         if (gestureDistance < -50) {
           this.close('finish', this.props.close)
         } else {
-          Animated.spring(this.state.panPlan, { toValue: { x: 0, y: 0 }, useNativeDriver: false, }).start();
+          Animated.spring(this.state.panFinish, { toValue: { x: 0, y: 0 }, useNativeDriver: false, }).start();
         }
       },
     });
