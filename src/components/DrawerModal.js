@@ -109,7 +109,7 @@ export class DrawerModal extends BaseComponent {
       },
       onPanResponderRelease: (evt, gestureState) => {
         const gestureDistance = gestureState.dy;
-        
+        this.canStopPropagation = false;
         logger('gestureDistance.......................'+gestureState.dy)
         if (gestureDistance > 50) {
           this.close('plan', this.props.close)
@@ -163,6 +163,7 @@ export class DrawerModal extends BaseComponent {
       },
       onPanResponderRelease: (e, gestureState) => {
         logger('onPanResponderRelease...'+gestureState.dy+'...'+e.nativeEvent.pageY+'...'+e.nativeEvent.locationY)
+        this.canStopPropagation = false;
         const gestureDistance = gestureState.dy;
         if (gestureDistance < -50) {
           this.close('finish', this.props.close)

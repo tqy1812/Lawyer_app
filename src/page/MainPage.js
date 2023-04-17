@@ -878,9 +878,10 @@ class MainPage extends BaseComponent {
             javaScriptEnabled={true}
             injectedJavaScript={this.INJECTEDJAVASCRIPT}
             onMessage={(event) => { this.handleNativeMessage(event.nativeEvent.data) }}
-            mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
+            mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined} 
+            startInLoadingState={true}
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-            incognito={true}
+            incognito={false}
             onLoadEnd={this.closeLoading.bind(this)}
           /> : <WebView
             ref={this.wv}
@@ -893,8 +894,9 @@ class MainPage extends BaseComponent {
             injectedJavaScript={this.INJECTEDJAVASCRIPT}
             onMessage={(event) => { this.handleNativeMessage(event.nativeEvent.data) }}
             mediaPlaybackRequiresUserAction={false}
+            startInLoadingState={true}
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-            incognito={true}
+            incognito={false}
             onLoadEnd={this.closeLoading.bind(this)}
           />
         }

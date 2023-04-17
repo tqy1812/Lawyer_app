@@ -256,27 +256,9 @@ class LoginPage extends Component {
                                     <Text style={styles.topPartNoticeText}>{'并由管理员处获得账号与密码'}</Text>
                                 </View>)
                     }
-                    {/* <View style={styles.topPartNotice}> */}
-                    {/* <Ionicons name='alert-circle' size={22} color='#FE9500' style={{marginBottom: 10}}/>
-                        <Text
-                            style={styles.topPartNoticeText}>{'请确认输入了正确的密码'}</Text>
-                        <Text
-                            style={styles.topPartNoticeText}>{'您可以通过联系管理员确认'}</Text> */}
-                    {/* <Ionicons name='close-circle' size={22} color='#FE3D2F' style={{marginBottom: 10}}/>
-                        <Text
-                            style={styles.topPartNoticeText}>{'请确认输入了正确的账号'}</Text> */}
-
-                    {/* <Text name='info' size={22}  style={{width: 20, height: 20, marginBottom: 10}}>{'\ue909'}</Text> */}
-                    {/* <IcomoonIcon name='info' size={22} color={'#ff0000'} />
-                           <Text style={styles.topPartNoticeText}>{'登陆前请确认已使用权限'}</Text>
-                        <Text
-                            style={styles.topPartNoticeText}>{'并由管理员处获得账号与密码'}</Text>
-                        </View> */}
-
                 </View>
                 <View style={styles.content}>
                     <View style={[styles.formInput]}>
-                        {/* <Text style={styles.loginLabel}>用户名</Text> */}
                         <TextInput
                             ref={(ref) => this.login_name = ref}
                             placeholder='轻触此处输入账号'
@@ -294,7 +276,6 @@ class LoginPage extends Component {
                         }
                     </View>
                     <View style={styles.formInput}>
-                        {/* <Text style={styles.loginLabel}>密&nbsp;&nbsp;&nbsp;&nbsp;码</Text> */}
                         <TextInput
                             ref="login_psw"
                             style={styles.loginInput}
@@ -347,20 +328,13 @@ class LoginPage extends Component {
                                 containerStyle={styles.lawCheck}
                                 onPress={() => this.setState({ autoLogin: !this.state.autoLogin })}
                             />
-                            <Text style={styles.lawText}>我已经阅读并同意 </Text>
+                            <Text style={styles.lawText}>已经阅读并同意 </Text>
                         </TouchableOpacity>
-                        <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私保护指引》</Text><Text style={styles.lawText2}> 和 </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《律时用户服务协议》</Text></View>
+                        <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>律时隐私保护指引</Text><Text style={styles.lawText2}>和</Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>律时用户服务协议</Text></View>
                     </View>
                     <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
                         <Text style={styles.loginText}>登录</Text>
                     </MyButton>
-                    {/* <View style={styles.updatePsdWrap}>
-                          <View style={{alignItems: 'flex-end', flexDirection: 'row'}}>
-                          <MyButton onPress={() => this.props.navigation.navigate('UpdatePassword')}>
-                              <Text style={styles.updatePsd}>修改密码</Text>
-                          </MyButton>
-                          </View>
-                        </View> */}
                 </View>
 
             </SafeAreaView>
@@ -456,10 +430,12 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     law: {
+        width: Common.window.width-30,
         flexDirection: 'row',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flexWrap: 'wrap'
         // backgroundColor: '#fff000'
     },
     lawStr: {
@@ -467,7 +443,9 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: -5,
+        flexWrap: 'wrap',
+        textAlign: 'center',
+        paddingTop: 4,
         // marginTop: 5,
     },
     argreeView: {
@@ -475,7 +453,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 50
+        height: 50,
     },
     lawText: {
         fontSize: 10,
@@ -486,12 +464,11 @@ const styles = StyleSheet.create({
     lawText1: {
         fontSize: 10,
         color: '#007afe',
-        marginTop: 5,
+        textAlign: 'center',
     },
     lawText2: {
         fontSize: 10,
         color: '#C0C4CC',
-        marginTop: 5,
     },
     operate: {
         marginTop: 20,

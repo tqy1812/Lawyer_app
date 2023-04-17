@@ -6,6 +6,12 @@ import StackRouter from './src/router/StackRouter';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import * as encoding from 'text-encoding';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Text, TextInput } from 'react-native'
+if(Text.defaultProps== null) Text.defaultProps={}
+if(TextInput.defaultProps== null) TextInput.defaultProps={}
+Text.defaultProps.allowFontScaling = false
+TextInput.defaultProps.allowFontScaling = false
+
 const App: () => Node = () => {
   // useEffect(() => {
   //     return () => {
