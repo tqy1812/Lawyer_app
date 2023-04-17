@@ -503,14 +503,11 @@ class MainPage extends BaseComponent {
   sendRecording = (value) => {
     const { dispatch } = this.props;
     const that = this;
-    that.setState({ talkContent: '', talkModalVisible: false, loading: true });
+    that.setState({ talkContent: '', talkModalVisible: false });
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
-        setTimeout(() => {
-          that.setState({ loading: false });
-        }, 15000)
       }
       else {
         that.setState({ loading: false });
@@ -659,10 +656,11 @@ class MainPage extends BaseComponent {
     }
   }
 
-  handleNativeMessage = (content) => {
+  handleNativeMessage = (event) => {
     // logger('handleNativeMessage====' + content);
     const { dispatch } = this.props;
     const that = this;
+    const content = event.nativeEvent.data;
     if (content.indexOf('talk:') === 0) {
       const codeArr = content.split('&');
       const code = codeArr[0].replace('talk:', '')
@@ -673,21 +671,25 @@ class MainPage extends BaseComponent {
           dispatch(actionProcess.reqGetProcess(id, (rs, error) => {
             if(error) {
               Toast.show(error.info)
+              that.setState({ loading: false});
             }
             else {
               that.showConfirm(rs, caselist);
-              that.setState({ loading: false});
+              // that.setState({ loading: false});
             }
             // that.setState({ loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name });
           }));
         }
         else {
-          that.setState({ loading: false });
+          // that.setState({ loading: false });
         }
       }
       else {
-        that.setState({ loading: false });
+        // that.setState({ loading: false });
       }
+    }
+    else{
+      // that.setState({ loading: false });
     }
   }
 
@@ -877,7 +879,7 @@ class MainPage extends BaseComponent {
             style={{ width: windowWidth, height: '100%' }}
             javaScriptEnabled={true}
             injectedJavaScript={this.INJECTEDJAVASCRIPT}
-            onMessage={(event) => { this.handleNativeMessage(event.nativeEvent.data) }}
+            onMessage={this.handleNativeMessage.bind(this)}
             mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined} 
             startInLoadingState={true}
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
