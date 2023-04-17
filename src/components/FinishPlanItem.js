@@ -145,8 +145,10 @@ const styles = StyleSheet.create({
   listItemContentView: {
     display: 'flex',
     flexDirection: 'column',
+    height: 42,
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignContent: 'center',
   },
   listItemTitle: {
     fontSize: 19,
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: 45,
     width: 90,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
   listItemTimeView1: {
