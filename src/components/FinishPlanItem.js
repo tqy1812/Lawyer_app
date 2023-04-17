@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     fontSize: 19,
+    lineHeight: 22,
     color: '#545454',
     fontWeight: '500',
   },
