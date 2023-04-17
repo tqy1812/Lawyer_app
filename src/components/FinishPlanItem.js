@@ -63,7 +63,7 @@ class FinishPlanItem extends BaseComponent {
             { !item.end_time && <TouchableOpacity style={styles.setTimeView} onLongPress={() => this.setFinishTime(item)} onPressOut={()=>this.setFinishTimeEnd(item)}><IcomoonIcon name='clock-edit' size={20} color='#fff' /></TouchableOpacity>}
           </View>
           <View style={styles.listItemTimeView1}>
-            <Text style={styles.listItemTime}></Text>
+            <Text style={styles.listItemTime1}></Text>
             { item.end_time && <Text style={styles.listItemToatlTime1}>{'’'}</Text>}
           </View>
           { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   waveView: {
-    height: 63,
+    height: 65,
     width: Common.window.width - 20,
     backgroundColor: '#007afe',
     borderRadius: 50,
@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
   listItemContent: {
     fontSize: 15,
     color: '#9C9C9C',
-    marginTop: 5,
     fontWeight: '500',
   },
   listItemTimeView: {
@@ -172,9 +171,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: 45,
     width: 15,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   listItemTime: {
+    fontSize: 11,
+    color: '#9E9E9E',
+    fontWeight: '500',
+  },
+  
+  listItemTime1: {
     fontSize: 11,
     color: '#9E9E9E',
     fontWeight: '500',
@@ -184,12 +190,13 @@ const styles = StyleSheet.create({
     color: '#6B6B6B',
     fontWeight: '500',
     marginRight: -2,
+    lineHeight: 33,
   },
   listItemToatlTime1: {
-    fontSize: 25,
-    marginTop: 2,
+    fontSize: 33,
     color: '#6B6B6B',
     fontWeight: '500',
+    lineHeight: 42,
   },
   setTimeView: {
     position: 'absolute',

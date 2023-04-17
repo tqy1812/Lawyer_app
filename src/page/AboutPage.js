@@ -157,7 +157,7 @@ bottom: {
   alignItems: 'center',
   justifyContent: 'center',
   alignSelf: 'flex-end',
-  marginBottom: 100,
+  marginBottom: 50,
 },
 lawText1: {
     fontSize: 13,
