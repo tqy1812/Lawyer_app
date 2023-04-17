@@ -101,7 +101,6 @@ export class DrawerModal extends BaseComponent {
       onPanResponderGrant: (evt, gs) => {},
       onPanResponderMove:(e, gestureState) => {
         if (gestureState.dy > 0) {
-          logger(gestureState.dy)
           Animated.event([null, { dy: this.state.panPlan.y }], {
             useNativeDriver: false,
           })(e, gestureState);

@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   },
   titleFont: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: '#303133'
   },
   subTitle: {
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     width: 78,
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'right'
   },
   listTitleYearFont: {
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     marginTop: 15,
     marginLeft: 12,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTitleFont: {
     fontSize: 18,
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     width: 78,
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'right'
   },
   titleTodayWeekFont: {
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     color: '#007afe',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginLeft: 10,
   },
   listItemTitleWeekFont: {
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     color: '#909399',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginLeft: 10,
   },
   titleTodayFont1: {
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     color: '#007afe',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   empty: {
     height: 80,
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listTitleView: {
     display: 'flex',
@@ -341,12 +341,12 @@ const styles = StyleSheet.create({
   listItemTimeStart: {
     fontSize: 17,
     color: '#606266',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeEnd: {
     fontSize: 17,
     color: '#909399',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeSplit: {
     width: 6,
@@ -358,12 +358,12 @@ const styles = StyleSheet.create({
   listItemTitle: {
     fontSize: 19,
     color: '#606266',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemContent: {
     fontSize: 15,
     color: '#909399',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemRightView: {
     display: 'flex',

@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   listItemTimeStart: {
     fontSize: 17,
     color: '#606266',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeEnd: {
     fontSize: 17,
@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
   listItemTitle: {
     fontSize: 19,
     color: '#606266',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemContent: {
     fontSize: 15,
     color: '#909399',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemRightView: {
     display: 'flex',

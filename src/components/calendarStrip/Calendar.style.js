@@ -31,7 +31,7 @@ export default StyleSheet.create({
   },
   calendarHeader: {
     textAlign: "center",
-    fontWeight: "bold",
+    fontWeight: "500",
     alignSelf: "center"
   },
   iconContainer: {
@@ -61,7 +61,6 @@ export default StyleSheet.create({
     textAlign: "center"
   },
   dateNumber: {
-    // fontWeight: "bold",
     textAlign: "center"
   },
   weekendDateNumber: {

@@ -131,7 +131,7 @@ infoContent: {
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'space-between',
-  alignContent: 'center',
+  alignItems: 'center',
   borderBottomColor: '#E9E9EB',
   borderBottomWidth: 1,
 },
@@ -168,7 +168,7 @@ loadBtn: {
 },
 loadText: {
   color: '#007AFE',
-  fontSize: 17,
+  fontSize: 12,
 },
 
 });

@@ -218,7 +218,7 @@ render() {
               <Text
                 style={[
                   styles.bottomBtnsText,
-                  { color: "#fff", fontWeight: "bold" }
+                  { color: "#fff", fontWeight: "500" }
                 ]}
               >
                 确认
@@ -384,7 +384,7 @@ caseItemName:{
     paddingTop: 5,
     paddingBottom: 5,
     // width: 78,
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'right'
   },
   
@@ -398,7 +398,7 @@ caseItemName:{
     color: '#909399',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginLeft: 10,
   },
   titleTodayFont1: {
@@ -406,7 +406,7 @@ caseItemName:{
     color: '#007afe',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemView: {
     display: 'flex',
@@ -445,22 +445,22 @@ caseItemName:{
   listItemTimeStart: {
     fontSize: 17,
     color: '#606266',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeStart1: {
     fontSize: 20,
     color: '#606266',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeEnd: {
     fontSize: 17,
     color: '#909399',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeEnd1: {
     fontSize: 20,
     color: '#909399',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeSplit: {
     width: 6,
@@ -504,14 +504,14 @@ caseItemName:{
     paddingLeft: 5,
     lineHeight: 24,
     color: '#606266',
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginRight: 3,
     marginBottom: 5
   },
   listItemContent: {
     fontSize: 15,
     color: '#909399',
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginTop: 2,
   },
   setNoticeView: {

@@ -75,7 +75,7 @@ class PermissionPage extends Component {
       return (
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-            <Header title='个人信息' back={true} {...this.props}/>  
+            <Header title='系统权限管理' back={true} {...this.props}/>  
             <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
               <View style={styles.infoContent}> 
                 <Image style={styles.avatar} source={ImageArr['pic']}></Image>
@@ -128,19 +128,19 @@ content: {
   justifyContent: 'center',
 },
 avatar: {
-  width: 20,
-  height: 20,
-  marginRight: 10,
+  width: 22,
+  height: 22,
+  marginRight: 12,
 },
 voiceAvatar: {
-  width: 20,
-  height: 25,
-  marginRight: 10,
+  width: 22,
+  height: 27,
+  marginRight: 12,
 },
 wifiAvatar: {
-  width: 20,
-  height: 23,
-  marginRight: 10,
+  width: 22,
+  height: 25,
+  marginRight: 12,
 },
 infoContent: {
   width: Common.window.width - 60,
@@ -161,16 +161,15 @@ infoContent1: {
   paddingBottom: 10,
 },
 infoName:{
-  color: '#606266',
-  fontSize: 17,
-},
-infoCompany:{
-  color: '#606266',
-  fontSize: 15,
+  color: '#666666',
+  fontSize: 18,
+  lineHeight: 24,
+  marginBottom: 4
 },
 infoValue:{
-  color: '#909399',
+  color: '#BBBBBB',
   fontSize: 14,
+  
 },
 bottom: {
   width: '100%',
@@ -188,7 +187,7 @@ loadBtn: {
 },
 loadText: {
   color: '#007AFE',
-  fontSize: 17,
+  fontSize: 15,
 },
 
 });

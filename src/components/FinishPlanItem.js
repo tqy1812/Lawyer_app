@@ -95,28 +95,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column'
   },
-  totalTimeFont: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#606266',
-  },
-  totalTimeDesFont: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginTop: 5,
-    color: '#909399'
-  },
   listTitleView: {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#ffffff'
-  },
-  listTitleYearFont: {
-    fontSize: 18,
-    color: '#C0C4CC',
-    marginTop: 15,
-    marginLeft: 12,
-    fontWeight: 'bold',
   },
   titleList: {
     marginTop: 15,
@@ -131,30 +113,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     flex: 1,
-  },
-  listItemTitleFont: {
-    fontSize: 18,
-    color: '#C0C4CC',
-    paddingTop: 5,
-    paddingBottom: 5,
-    width: 78,
-    fontWeight: 'bold',
-    textAlign: 'right'
-  },
-  listItemTitleWeekFont: {
-    fontSize: 18,
-    color: '#C0C4CC',
-    paddingTop: 5,
-    paddingBottom: 5,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  titleTimeFont: {
-    fontSize: 18,
-    color: '#C0C4CC',
-    paddingTop: 5,
-    paddingBottom: 5,
-    fontWeight: 'bold',
   },
   listItemView: {
     width: Common.window.width - 20,
@@ -180,26 +138,26 @@ const styles = StyleSheet.create({
   },
   listItemTimeSplit: {
     width: 8,
-    height: 25,
+    height: 28,
     borderRadius: 6,
     marginRight: 10,
   },
   listItemContentView: {
     display: 'flex',
     flexDirection: 'column',
-    height: 45,
     flex: 1,
     justifyContent: 'space-between'
   },
   listItemTitle: {
     fontSize: 19,
     color: '#545454',
-    fontWeight: '600',
+    fontWeight: '500',
   },
   listItemContent: {
     fontSize: 15,
     color: '#9C9C9C',
-    fontWeight: '600',
+    marginTop: 5,
+    fontWeight: '500',
   },
   listItemTimeView: {
     display: 'flex',
@@ -219,20 +177,19 @@ const styles = StyleSheet.create({
   listItemTime: {
     fontSize: 11,
     color: '#9E9E9E',
-    fontWeight: '600',
-    
+    fontWeight: '500',
   },
   listItemToatlTime: {
-    fontSize: 25,
+    fontSize: 31,
     color: '#6B6B6B',
-    fontWeight: '600',
+    fontWeight: '500',
     marginRight: -2,
   },
   listItemToatlTime1: {
     fontSize: 25,
     marginTop: 2,
     color: '#6B6B6B',
-    fontWeight: '600',
+    fontWeight: '500',
   },
   setTimeView: {
     position: 'absolute',
@@ -257,7 +214,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   rightAction: {
     height: 65,

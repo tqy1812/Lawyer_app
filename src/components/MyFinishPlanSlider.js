@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   },
   headFont: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: '#303133',
   },
   footer: {
@@ -415,12 +415,12 @@ const styles = StyleSheet.create({
   },
   totalTimeFont: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: '#606266',
   },
   totalTimeDesFont: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginTop: 5,
     color: '#909399'
   },
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     marginTop: 15,
     marginLeft: 12,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   titleList: {
     // marginTop: 15,
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'right'
   },
   listItemTitleWeekFont: {
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginLeft: 10,
   },
   titleTimeFont: {
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemView: {
     display: 'flex',
@@ -509,12 +509,12 @@ const styles = StyleSheet.create({
   listItemTitle: {
     fontSize: 19,
     color: '#545454',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemContent: {
     fontSize: 15,
     color: '#9C9C9C',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemTimeView: {
     display: 'flex',
@@ -526,12 +526,12 @@ const styles = StyleSheet.create({
   listItemTime: {
     fontSize: 11,
     color: '#9E9E9E',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   listItemToatlTime: {
     fontSize: 25,
     color: '#6B6B6B',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   setTimeView: {
     position: 'absolute',
@@ -554,9 +554,8 @@ const styles = StyleSheet.create({
   emptyFont: {
     fontSize: 15,
     color: '#C0C4CC',
-    paddingTop: 5,
-    // paddingBottom: 5,
-    fontWeight: 'bold',
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   rightAction: {
     height: 65,

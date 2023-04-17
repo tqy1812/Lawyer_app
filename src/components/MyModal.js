@@ -129,7 +129,7 @@ export default class MyModal extends Component {
                     <Text
                       style={[
                         styles.bottomBtnsText,
-                        { color: "#fff", fontWeight: "bold" }
+                        { color: "#fff", fontWeight: "500" }
                       ]}
                     >
                       {this.confirmText}
@@ -202,7 +202,7 @@ export default class MyModal extends Component {
                       <Text
                         style={[
                           styles.bottomBtnsText,
-                          { color: "#fff", fontWeight: "bold" }
+                          { color: "#fff", fontWeight: "500" }
                         ]}
                       >
                         {this.confirmText}

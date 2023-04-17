@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     },
     footerFont: {
         color: '#616161',
-        fontWeight: 'bold',
+        fontWeight: '600',
         fontSize: 17,
     },
     currentTimeView: {

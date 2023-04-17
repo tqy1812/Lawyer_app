@@ -336,15 +336,20 @@ infoView: {
 },
 infoName:{
   color: '#606266',
-  fontSize: 19,
+  fontSize: 24,
+  lineHeight: 30
 },
 infoCompany:{
   color: '#606266',
-  fontSize: 15,
+  fontSize: 13,
+  lineHeight: 14,
+  marginTop: 4,
+  marginBottom: 4,
 },
 infoPhone:{
   color: '#909399',
-  fontSize: 16,
+  fontSize: 14,
+  lineHeight: 16
 },
 menuView: {
   width: Common.window.width - 40,
@@ -395,18 +400,19 @@ menuProject: {
 menuText: {
   flex: 1,
   color: '#606266',
-  fontSize: 17,
+  fontSize: 20,
   marginLeft: 5,
 },
 menuText1: {
-  color: '#606266',
+  color: '#909399',
   fontSize: 13,
   marginTop: 3,
 },
 menuText2: {
-  color: '#606266',
+  color: '#909399',
   fontSize: 21,
   marginLeft: 1,
+  fontWeight: '600'
 },
 caseViewScroll: {
   width: Common.window.width - 60,
@@ -438,8 +444,9 @@ caseItemBadge: {
 },
 caseItemName:{
   color: '#979797',
-  fontSize: 14,
-  marginLeft: 5,
+  fontSize: 15,
+  lineHeight: 20,
+  marginLeft: 10,
 },
 itemTitle:{
   color: '#979797',
