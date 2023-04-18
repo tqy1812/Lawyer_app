@@ -118,8 +118,14 @@ class MainPage extends BaseComponent {
     else{
       this.RecognizerIos = NativeModules.SpeechRecognizerModule;
       this.RecognizerIos && this.RecognizerIos.init("5f5835be");
-      logger('============RecognizerIos', this.RecognizerIos);
+      // this.RecognizerIos.setParameter('vad_bos', '10000');
+      // this.RecognizerIos.setParameter('vad_eos', '10000');
     }
+    Recognizer.setParameter('vad_bos', '10000');
+    Recognizer.setParameter('vad_eos', '10000');
+    Recognizer.getParameter('vad_eos').then(value=>{
+      logger('RecognizerIos###########', value);
+    })
     const that = this;
     this.timeStampMove = 0;
     this._panResponderMyPlan = PanResponder.create({
@@ -590,6 +596,7 @@ class MainPage extends BaseComponent {
     if (e.result== '' || JSON.stringify(e.result)=="" )  {
       Toast.show('不好意思，没听清楚');
       this.setState({ updateItem: {} });
+      destroySibling();
       // this.sendRecording('stop_recording');
       return;
     }
@@ -598,9 +605,12 @@ class MainPage extends BaseComponent {
       logger(e.result);
       if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem.id, e.result);
       this.setState({ updateItem: {} });
+      destroySibling();
     }
-    else
+    else{
       this.sendRecording(e.result);
+      destroySibling();
+    }
   }
 
 
