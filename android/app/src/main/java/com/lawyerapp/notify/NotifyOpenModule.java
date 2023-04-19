@@ -24,7 +24,9 @@ public class NotifyOpenModule extends ReactContextBaseJavaModule {
 
     private Context mContext;
 
-    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
+    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.RECORD_AUDIO};
+    private static String[] PERMISSIONS_MEDIA = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static String[] PERMISSIONS_MEDIA1 = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_MEDIA_IMAGES};
     private static int REQUEST_PERMISSION_CODE = 1;
     NotifyOpenModule(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
@@ -82,6 +84,43 @@ public class NotifyOpenModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void getMediaPermission(final Promise promise) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU ) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Log.i("getRecordPermission", "shouldShowRequestPermissionRationale="+ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    promise.resolve(1);
+                } else {
+                    promise.resolve(0);
+                    if (MainActivity.getActivity() != null) {
+                        ActivityCompat.requestPermissions(MainActivity.getActivity(), PERMISSIONS_MEDIA, REQUEST_PERMISSION_CODE);
+                    }
+                }
+            }
+            else{
+                Log.i("getMediaPermission", "111");
+                promise.resolve(2);
+            }
+        }
+        else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                Log.i("getRecordPermission", "shouldShowRequestPermissionRationale="+ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.getActivity(), android.Manifest.permission.READ_MEDIA_IMAGES));
+                if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.getActivity(), android.Manifest.permission.READ_MEDIA_IMAGES)) {
+                    promise.resolve(1);
+                } else {
+                    promise.resolve(0);
+                    if (MainActivity.getActivity() != null) {
+                        ActivityCompat.requestPermissions(MainActivity.getActivity(), PERMISSIONS_MEDIA1, REQUEST_PERMISSION_CODE);
+                    }
+                }
+            }
+            else{
+                Log.i("getMediaPermission", "111");
+                promise.resolve(2);
+            }
+        }
+    }
 
     @Nonnull
     @Override
