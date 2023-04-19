@@ -62,8 +62,7 @@ export class SendIdentify extends BaseComponent{
         setTimeout(this.countDown.bind(this),1000); 
       }
     }
-    timeout(){ƒ
-        console.log('....timeout')
+    timeout(){
       try {
         if(typeof this.props.action === "function") { //是函数    其中 FunName 为函数名称
             this.props.action();
