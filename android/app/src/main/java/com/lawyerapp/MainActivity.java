@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -116,13 +117,17 @@ public class MainActivity extends ReactActivity {
     }
     NotificationManagerCompat notification = NotificationManagerCompat.from(this);
     boolean isEnabled = notification.areNotificationsEnabled();
-    if (!isEnabled) {
+    SharedPreferences shared = getSharedPreferences("notifyData", MODE_PRIVATE);
+    boolean isFirstOpen = shared.getBoolean("isFirst", true);
+    if (!isEnabled && isFirstOpen) {
       Log.i("MainActivity", "通知权限为没有打开");
       openNotify(getApplicationContext());
+      shared = getSharedPreferences("notifyData", MODE_PRIVATE);
+      SharedPreferences.Editor editor = shared.edit();
+      editor.putBoolean("isFirst", false);
+      editor.commit();
     } else {
-
       Log.i("MainActivity", "通知权限已经开启");
-//      startNotice(this, "通知提醒", "这是个测试通知");
     }
     registerReceiver();
 //    HeadlessJsTaskService.acquireWakeLockNow(getApplicationContext());

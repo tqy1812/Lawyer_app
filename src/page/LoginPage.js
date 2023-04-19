@@ -290,8 +290,7 @@ class LoginPage extends Component {
                                 {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                             </MyButton>
                     </View>
-                    <View style={styles.formInput}>
-                        {/* <Text style={styles.loginLabel}>密&nbsp;&nbsp;&nbsp;&nbsp;码</Text> */}
+                    {/* <View style={styles.formInput}>
                         <TextInput
                             ref={(ref) => this.login_identify = ref}
                             style={styles.loginInput}
@@ -300,7 +299,7 @@ class LoginPage extends Component {
                             onChangeText={this.handleIndetifyChanged.bind(this)}
                             value={this.state.indetify} />
                             <SendIdentify time={90} action={this.send.bind(this)}/>
-                    </View>
+                    </View> */}
                 </View>
                 <View style={styles.operate}>
                     {/* <View style={styles.auto}>
