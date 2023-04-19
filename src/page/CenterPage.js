@@ -121,9 +121,28 @@ class CenterPage extends BaseComponent {
         .catch((e) => alert(e));
     }
 
-    handlePromiseSelectPhoto = () => {
+    async handlePromiseSelectPhoto()  {
       const that = this;
       const {dispatch} = this.props;
+      if(platform.isAndroid()) {
+        let isGrant = await NativeModules.NotifyOpen.getMediaPermission();
+        if(isGrant== 0){
+          return;
+        }
+        else if(isGrant== 1){
+          Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+            text: '取消',
+            onPress: null,
+            },
+            {
+              text: '去设置',
+              onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
+            },
+            ]);
+          return;
+        }
+      }
+      
       ImagePicker.openPicker({
         width: 300,
         height: 300,
@@ -206,7 +225,7 @@ class CenterPage extends BaseComponent {
             <ScrollView style={styles.scrollView}  nestedScrollEnabled={true}>  
             <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
               <View style={styles.infoContent}> 
-                <TouchableOpacity onPress={this.handlePromiseSelectPhoto} >
+                <TouchableOpacity onPress={this.handlePromiseSelectPhoto.bind(this)} >
                   {
                     imgAvatar ?
                     <Image style={styles.avatar} source={{uri: imgAvatar}}
