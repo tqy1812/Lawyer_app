@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   listItemContentView: {
     display: 'flex',
     flexDirection: 'column',
-    height: 42,
+    height: 45,
     flex: 1,
     justifyContent: 'space-between',
     alignContent: 'center',
@@ -189,17 +189,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   listItemToatlTime: {
-    fontSize: 31,
+    fontSize: 29,
     color: '#6B6B6B',
     fontWeight: '500',
     marginRight: -2,
     lineHeight: 33,
   },
   listItemToatlTime1: {
-    fontSize: 33,
+    fontSize: 30,
     color: '#6B6B6B',
     fontWeight: '500',
-    lineHeight: 42,
+    lineHeight: 39,
   },
   setTimeView: {
     position: 'absolute',
