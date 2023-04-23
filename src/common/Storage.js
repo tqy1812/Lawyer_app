@@ -4,6 +4,7 @@ const userRecord = 'userRecord';
 const autoLogin = 'autoLogin';
 const caseList = 'caseList_';
 const caseListUseColor = 'caseListUseColor_';
+const version = 'version';
 export const getUserRecord = async () => {
     return await AsyncStorage.getItem(userRecord)
           .then((user) => {
@@ -78,4 +79,24 @@ export const getUserRecord = async () => {
 
   export const setCaseListUserColor = async (phone,list) => {
     await AsyncStorage.setItem(caseListUseColor+phone, list.toString(),null);
+  };
+
+
+  export const getVersion= async () => {
+    return await AsyncStorage.getItem(version)
+          .then((v) => {
+              if (v) {
+                  return v;
+              } else {
+                  return '';
+              }
+          })
+          .catch(error => {
+              // logger("::::getAutoLogin"+ error);
+              return '';
+          });
+  };
+
+  export const setVersion = async (v) => {
+    await AsyncStorage.setItem(version, v, null);
   };

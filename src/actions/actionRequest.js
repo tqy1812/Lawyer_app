@@ -58,6 +58,38 @@ export function login(phone, password, callback = null) {
     };
 }
 
+export function getAppVersion(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let headers = {};
+        headers['Content-Type'] = 'application/json';
+        let data = {};
+        request.post('https://itunes.apple.com/cn/lookup?id=6446157793', '', data, headers,
+            (res, error) => {
+                if(res) {
+                    if(res.resultCount > 0) {
+                        let retData = res.results && res.results[0] && res.results[0].version;
+                        logger('app store version===' + retData)
+                        if (callback) {
+                            callback(retData, error);
+                        }
+                    }
+                    else {
+                        if (callback) {
+                            callback('', error);
+                        }
+                    }
+                }
+            },
+            (reqKey) => {
+            },
+            () => {
+
+            }
+        ); 
+    };
+}
+
 export function getInfo(callback = null) {
     return (dispatch, getState) => {
         let state = getState();

@@ -440,7 +440,7 @@ export function getHoliday(time) {
 }
 
 export function logger(str, str1) {
-  if(Common.env == 'dev') {
+  if(Common.env !== 'dev') {
     if(str1) {
       console.log(str, str1)
     } else {
@@ -462,4 +462,25 @@ export function getPhone(value, char) {
     return value.replace(/(\d{3})\d*(\d{4})/, `$1${new Array(5).join(char)}$2`);
   }
   return value
+}
+
+export function compareVersion(per, last) {
+  let sources = per.split('.');
+  let dests = last.split('.');
+  let maxLength = Math.max(sources.length, dests.length);
+  let result = 0;
+  for(let i=0; i< maxLength; i++) {
+    let preValue = sources.length>i ? sources[i]:0;
+    let preNum = isNaN(Number(preValue)) ? preValue.charCodeAt() : Number(preValue); 
+    let lastValue = dests.length>i ? dests[i]:0;
+    let lastNum = isNaN(Number(lastValue)) ? lastValue.charCodeAt() : Number(lastValue); 
+    if (preNum < lastNum) { 
+      result = -1;
+      break;
+    } else if (preNum > lastNum) { 
+      result = 1;
+      break;
+    }
+  }
+  return result
 }

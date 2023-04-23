@@ -57,4 +57,11 @@ export default class actionAuth {
       dispatch(request.addFeedback(title, content, contact, callback));
     };
   }
+
+  static reqVersion(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.getAppVersion(callback));
+    };
+  }
 }

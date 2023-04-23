@@ -12,6 +12,8 @@ import {
     TouchableOpacity,
     NativeModules,
     PixelRatio,
+    Linking,
+    Alert
 } from 'react-native';
 import { SafeAreaInsetsContext, withSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
@@ -28,7 +30,7 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
-import { logger } from '../utils/utils';
+import { logger, compareVersion } from '../utils/utils';
 import { SendIdentify } from '../components/SendIdentify';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
@@ -50,10 +52,20 @@ class LoginPage extends Component {
             autoLogin: false,
             lastId: 1,
             code: 0,
-            indetify: ''
+            indetify: '',
         };
+        this.version = '';
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
+        if(platform.isAndroid()) {
+            NativeModules.ScreenAdaptation.getAppVersion((event) =>{
+                this.version = event;
+            });
+          }
+          else {
+            const version = NativeModules.SplashScreen && NativeModules.SplashScreen.getAppVersion();
+            this.version = version;
+          }
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
 
@@ -62,6 +74,7 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
+        this.updateApp();
         if (platform.isIOS()) {
             NativeModules.SplashScreen && NativeModules.SplashScreen.close();
         }
@@ -210,20 +223,53 @@ class LoginPage extends Component {
         this.props.navigation.navigate('Privacy');
     }
 
-    test = () => {
-        PushNotification.localNotification({
-            channelId: 'NEW_MESSAGE_NOTIFICATION',
-            title: "任务提醒-",
-            message: "test",
-            id: this.state.lastId,
-        });
-        this.setState({ lastId: (this.state.lastId + 1) });
-    }
-
     //   backAction = () => {
     //     return false;
     //   };
-
+    updateApp = () => {
+        const { dispatch } = this.props;
+        let downloadUrl = '';
+        if(platform.isIOS()){
+            downloadUrl = 'https://apps.apple.com/cn/app/%E5%BE%8B%E6%97%B6/id6446157793';
+            dispatch(actionAuth.reqVersion((ver, error) => {
+                if(ver){
+                    let num = compareVersion(this.version, ver);
+                    Storage.getVersion().then((localVersion)=>{ 
+                        let oldCompare = -1;
+                        if(localVersion) {
+                            oldCompare = compareVersion(localVersion, ver);
+                        }
+                        if(num < 0 && oldCompare < 0) {
+                            Alert.alert('App升级', `发现最新新版本[${ver}]，是否前往升级！。`, [{
+                                text: '稍后升级',
+                                onPress: () => {Storage.setVersion(ver)},
+                                },
+                                {
+                                  text: '去升级',
+                                  onPress: () => {
+                                    Storage.setVersion(ver);
+                                    Linking.openURL(downloadUrl).catch(err => {
+                                        logger('.....error', error)
+                                    });
+                                },
+                                },
+                            ]);
+                        }
+                    })
+                    
+                }
+            }))
+        }
+        else {
+            // const downloadUrl = '';
+            // // 打开下载地址
+            // if(downloadUrl){
+            //     Linking.openURL(downloadUrl).catch(err => {
+            //         logger('.....error', error)
+            //     });
+            // }
+        }
+    }
     send = () => {
     }
     render() {
