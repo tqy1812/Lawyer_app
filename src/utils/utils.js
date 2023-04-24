@@ -423,6 +423,25 @@ export function updateFinish(list, finish) {
   return newList;
 }
 
+export function updatePlan(list, plan) {
+  let newList = JSON.parse(JSON.stringify(list));
+  newList.map(item=>{
+    item.data.map(it=>{
+      // logger(it.id === plan.id)
+      if(it.id === plan.id){
+        it.wakeup_time = plan.wakeup_time;
+        it.start_time = plan.start_time;
+        it.end_time = plan.end_time;
+        it.fee_time = plan.fee_time;
+        return it
+      } else {
+        return it
+      }
+    })
+  });
+  return newList;
+}
+
 export function getHoliday(time) {
    let week = moment(time).day();
    let dates = moment(time).format('YYYY-MM-DD');

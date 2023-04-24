@@ -16,7 +16,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, produce, removeItem, getHoliday, logger, updateFinish} from '../utils/utils';
+import {getWeek, getWeekXi, produce, removeItem, getHoliday, logger, updatePlan} from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
@@ -296,7 +296,7 @@ export default class MyPlanSlider extends Component {
         this.updateProcess(id, content, (item)=>{
           logger('.......updateProcess'+ JSON.stringify(item))
           if(moment(item.start_time).format('YYYY-MM-DD') === moment(value.start_time).format('YYYY-MM-DD')) {
-            let temp = updateFinish(this.state.DATA, item);
+            let temp = updatePlan(this.state.DATA, item);
             this.setState({DATA: temp}, ()=>{
               setTimeout(()=>{
                 destroySibling();
