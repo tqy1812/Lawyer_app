@@ -16,9 +16,10 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import { showLoading } from "./ShowModal";
 import Wave from "./Wave";
-import BaseComponent from "./BaseComponent";
+import Immutable from 'immutable';
+
 const Toast = Overlay.Toast;
-export default class MyPlanItem extends BaseComponent {
+export default class MyPlanItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +31,16 @@ export default class MyPlanItem extends BaseComponent {
   componentDidMount () {
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let mapState = Immutable.fromJS(this.state);
+    let mapNextState = Immutable.fromJS(nextState);
+    let mapProps = Immutable.fromJS(this.props.item);
+    let mapNextProps = Immutable.fromJS(nextProps.item);
+    if (!Immutable.is(mapProps, mapNextProps) || !Immutable.is(mapState, mapNextState)) {
+      return true;
+    }
+    return false;
+  }
   changeEnable = (item) => {
     const that = this;
     showLoading();
@@ -51,6 +62,13 @@ export default class MyPlanItem extends BaseComponent {
       if(this.props.finishTimeEnd) {
         this.props.finishTimeEnd(value, (rs)=>{
             logger('....................setFinishTimeEnd change=' + JSON.stringify(rs))
+            let item = JSON.parse(JSON.stringify(this.state.item));
+            item.wakeup_time = rs.wakeup_time;
+            item.start_time = rs.start_time;
+            item.end_time = rs.end_time;
+            item.fee_time = rs.fee_time;
+            this.setState({item: item})
+            // this.setState({item: rs})
         });
       }
       this.setState({recoding: false});

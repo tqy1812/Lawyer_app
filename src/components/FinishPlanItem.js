@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,10 +13,10 @@ import moment from 'moment';
 import Common from '../common/constants';
 import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, logger} from '../utils/utils';
 import IcomoonIcon from "./IcomoonIcon";
-import BaseComponent from './BaseComponent';
 import Wave from "./Wave";
+import Immutable from 'immutable';
 
-class FinishPlanItem extends BaseComponent {
+class FinishPlanItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,13 +34,29 @@ class FinishPlanItem extends BaseComponent {
       }
     // }
   }
-
+  shouldComponentUpdate(nextProps, nextState) {
+    let mapState = Immutable.fromJS(this.state);
+    let mapNextState = Immutable.fromJS(nextState);
+    let mapProps = Immutable.fromJS(this.props.item);
+    let mapNextProps = Immutable.fromJS(nextProps.item);
+    logger(!Immutable.is(mapProps, mapNextProps), !Immutable.is(mapState, mapNextState))
+    if (!Immutable.is(mapProps, mapNextProps) || !Immutable.is(mapState, mapNextState)) {
+      return true;
+    }
+    return false;
+  }
   setFinishTimeEnd = (value, callback) => {
     // logger('.....setFinishTimeEnd===='+value.id)
     // if(!item.end_time) {
       if(this.props.finishTimeEnd) {
         this.props.finishTimeEnd(value, (rs)=>{
             logger('....................setFinishTimeEnd change=' + JSON.stringify(rs))
+            let item = JSON.parse(JSON.stringify(this.state.item));
+            item.wakeup_time = rs.wakeup_time;
+            item.start_time = rs.start_time;
+            item.end_time = rs.end_time;
+            item.fee_time = rs.fee_time;
+            this.setState({item: item})
             // if(rs && rs.id){
             //   this.setState({item: {...rs, case: this.state.item.case} })
             // }

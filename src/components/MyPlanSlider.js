@@ -25,10 +25,11 @@ import MyButton from "./MyButton";
 import { destroySibling, showLoading, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
 import GlobalData from "../utils/GlobalData";
-import BaseComponent from "./BaseComponent";
+import Immutable from 'immutable';
+
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
-export default class MyPlanSlider extends BaseComponent {
+export default class MyPlanSlider extends Component {
   renderRightAction = (text, color, x, progress, item) => {
     const trans = progress.interpolate({
       inputRange: [0, 1],
@@ -62,12 +63,12 @@ export default class MyPlanSlider extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {
-      page: 1,
       refreshing: false,
       loadFinish: false,
       DATA: props.planList ?  props.planList : [],
       caseList: props.caseList
     };
+    this.page = 1;
     this.loadMoreDataThrottled = _.throttle(this.loadModeData, 1000, {trailing: false});
     this.loadDataThrottled = _.throttle(this.initList, 1000, {trailing: false});
   }
@@ -105,7 +106,16 @@ export default class MyPlanSlider extends BaseComponent {
    		        () => { this.loadDataThrottled(); });
     });
   }
-
+  shouldComponentUpdate(nextProps, nextState) {
+    let mapState = Immutable.fromJS(this.state);
+    let mapNextState = Immutable.fromJS(nextState);
+    let mapProps = Immutable.fromJS(this.props.caseList);
+    let mapNextProps = Immutable.fromJS(nextProps.caseList);
+    if (!Immutable.is(mapState, mapNextState) || !Immutable.is(mapProps, mapNextProps)) {
+      return true;
+    }
+    return false;
+  }
   initList = () => {
     logger('.........MyPlanSlider .initList')
     const {dispatch, } = this.props;
@@ -117,7 +127,8 @@ export default class MyPlanSlider extends BaseComponent {
     dispatch(actionProcess.reqProcessPlanList(1,  undefined,(data, isFinish)=>{
       const rs = data.rs;
       if(rs.length > 0) {
-        that.setState({page: 2,  DATA: rs, refreshing: false, loadFinish: isFinish}, ()=>{
+        this.page = 2;
+        that.setState({DATA: rs, refreshing: false, loadFinish: isFinish}, ()=>{
           setTimeout(() => {   
             destroySibling();
           }, 800);
@@ -171,15 +182,15 @@ export default class MyPlanSlider extends BaseComponent {
   }
 
   loadModeData = () => {
-    const { DATA, page, loadFinish } = this.state;
+    const { DATA, loadFinish } = this.state;
     const {dispatch} = this.props;
     const that = this;
-    if(loadFinish || page ===1) {
+    if(loadFinish || this.page ===1) {
       return;
     }
     // that.setState({refreshing: true})
     showLoading();
-    dispatch(actionProcess.reqProcessPlanList(page, DATA[DATA.length - 1], (rs, isFinish)=>{
+    dispatch(actionProcess.reqProcessPlanList(this.page, DATA[DATA.length - 1], (rs, isFinish)=>{
       let flag = false;
       let newDate = DATA;
       if(rs.last){
@@ -191,7 +202,8 @@ export default class MyPlanSlider extends BaseComponent {
         flag = true;
       } 
       if (flag) {
-        that.setState({page: page + 1, DATA: newDate, refreshing: false, loadFinish: isFinish}, ()=>{
+        this.page = this.page + 1;
+        that.setState({DATA: newDate, refreshing: false, loadFinish: isFinish}, ()=>{
           setTimeout(() => {   
             destroySibling();
           }, 800);
@@ -290,11 +302,11 @@ export default class MyPlanSlider extends BaseComponent {
                 destroySibling();
               },800);
             });
+            if(callback) callback(item);
           }
           else {
             this.loadDataThrottled();
           }
-          // if(callback) callback(item);
         })
       });
     }
@@ -304,7 +316,7 @@ export default class MyPlanSlider extends BaseComponent {
     const { dispatch } = this.props;
     const that = this;
     // that.setState({refreshing: true});
-    showLoading();
+    // showLoading();
     dispatch(actionProcess.reqChangeTimesProcess(id, content, (rs, error)=>{
       // destroySibling();
       // logger(rs)
@@ -317,18 +329,27 @@ export default class MyPlanSlider extends BaseComponent {
       // that.setState({refreshing: false});
     })); 
   }
-
-  render() {
-    const {DATA, caseList, loadFinish, refreshing} = this.state;
-    logger(loadFinish)
-    const Item = ({ item }) => (
+  renderItem = ({ item }) => {
+    return (
       <Swipeable
         friction={1}
         rightThreshold={40}
         renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
-          <MyPlanItem item={item} changeEnable={(item) => this.changeEnable(item)}  caseList={caseList} finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} />
+          <MyPlanItem item={item} changeEnable={(item) => this.changeEnable(item)}  caseList={this.state.caseList} finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} />
       </Swipeable>
     );
+  }
+  render() {
+    const {DATA, caseList, loadFinish, refreshing} = this.state;
+    // logger(loadFinish)
+    // const Item = ({ item }) => (
+    //   <Swipeable
+    //     friction={1}
+    //     rightThreshold={40}
+    //     renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
+    //       <MyPlanItem item={item} changeEnable={(item) => this.changeEnable(item)}  caseList={caseList} finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} />
+    //   </Swipeable>
+    // );
     
     const screenHeight = globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height
     return ( 
@@ -345,7 +366,7 @@ export default class MyPlanSlider extends BaseComponent {
                   ListFooterComponent={loadFinish && <View style={styles.empty}><Text style={styles.emptyFont}>未来的日子只有假期~</Text></View>}
                   sections={DATA}
                   keyExtractor={(item, index) => item + index}
-                  renderItem={({ item }) => <Item item={item} />}
+                  renderItem={this.renderItem}
                   renderSectionHeader={({ section: { date,  isFestival, isShowYear} }) => moment(date).isSame(moment(), "day") ? 
                   (<View style={styles.titleToday}><View style={styles.titleTime}><Text style={styles.titleTodayFont}>今天</Text><Text style={styles.titleTodayWeekFont}>{getWeekXi(new Date())}</Text></View><Text style={styles.titleTodayFont1}>{getHoliday(date)}</Text></View>)
                   :
@@ -356,7 +377,7 @@ export default class MyPlanSlider extends BaseComponent {
                     </View>)}
                   stickySectionHeadersEnabled={true}
                   onEndReachedThreshold={0.2}
-                  onEndReached={this.loadMoreDataThrottled}
+                  onEndReached={()=>this.loadMoreDataThrottled()}
                   // refreshing={true}
                 /></GestureHandlerRootView>
                 }

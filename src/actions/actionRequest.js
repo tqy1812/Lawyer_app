@@ -85,7 +85,8 @@ export function getAppVersion(callback = null) {
             },
             () => {
 
-            }
+            },
+            true
         ); 
     };
 }

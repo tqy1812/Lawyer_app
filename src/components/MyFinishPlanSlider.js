@@ -28,21 +28,22 @@ import * as Storage from '../common/Storage';
 import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
 import {logger} from "../utils/utils";
-import BaseComponent from "./BaseComponent";
+import Immutable from 'immutable';
 
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
-export default class MyFinishPlanSlider extends BaseComponent {
+export default class MyFinishPlanSlider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 1,
       totalTime: '00:00’',
       refreshing: false,
       loadFinish: false,
       DATA: props.finishList ?  props.finishList : [],
       caseList: props.caseList
     };
+    this.page = 1;
+    this.loading = false;
     this.loadMoreDataThrottled = _.throttle(this.loadModeData, 1000, {trailing: false});
     this.loadDataThrottled = _.throttle(this.initList, 1000, {trailing: false});
   }
@@ -76,7 +77,16 @@ export default class MyFinishPlanSlider extends BaseComponent {
    		        () => { this.loadDataThrottled(); });
     });
   }
-
+  shouldComponentUpdate(nextProps, nextState) {
+    let mapState = Immutable.fromJS(this.state);
+    let mapNextState = Immutable.fromJS(nextState);
+    let mapProps = Immutable.fromJS(this.props.caseList);
+    let mapNextProps = Immutable.fromJS(nextProps.caseList);
+    if (!Immutable.is(mapState, mapNextState) || !Immutable.is(mapProps, mapNextProps)) {
+      return true;
+    }
+    return false;
+  }
   initList = () => {
     const {dispatch} = this.props;
     const that = this;
@@ -86,7 +96,8 @@ export default class MyFinishPlanSlider extends BaseComponent {
     dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
       const rs = data.rs;
       if(rs.length > 0) {
-        that.setState({page: 2, DATA: rs, totalTime: t, loadFinish: isFinish },()=>{
+        this.page = 2;
+        that.setState({DATA: rs, totalTime: t, loadFinish: isFinish },()=>{
           setTimeout(()=>{
             destroySibling();
             that.setState({refreshing: false})
@@ -161,11 +172,11 @@ export default class MyFinishPlanSlider extends BaseComponent {
                 destroySibling();
               },800);
             });
+            if(callback) callback(item);
           }
           else {
             this.loadDataThrottled();
           }
-          // if(callback) callback(item);
         })
       });
     }
@@ -175,7 +186,7 @@ export default class MyFinishPlanSlider extends BaseComponent {
     const { dispatch } = this.props;
     const that = this;
     // that.setState({refreshing: true});
-    showLoading();
+    // showLoading();
     dispatch(actionProcess.reqChangeTimesProcess(id, content, (rs, error)=>{
       // destroySibling();
       // logger(rs)
@@ -190,16 +201,16 @@ export default class MyFinishPlanSlider extends BaseComponent {
   }
 
   loadModeData = () => {
-    const { DATA, page, loadFinish } = this.state;
+    const { DATA, loadFinish, refreshing } = this.state;
     const {dispatch} = this.props;
     const that = this;
     logger('.......loadModeData')
-    if (loadFinish || page === 1) {
+    if (loadFinish || this.page === 1 || refreshing) {
       return;
     }
-    // that.setState({refreshing: true});
-    showLoading();
-    dispatch(actionProcess.reqProcessFinishList(page, DATA[DATA.length-1], (rs, t, isFinish)=>{
+    that.setState({refreshing: true});
+    // showLoading();
+    dispatch(actionProcess.reqProcessFinishList(this.page, DATA[DATA.length-1], (rs, t, isFinish)=>{
       let flag = false;
       let newDate = DATA;
       if(!loadFinish) {
@@ -213,18 +224,19 @@ export default class MyFinishPlanSlider extends BaseComponent {
         } 
       }
       if (flag) {
-        that.setState({page: page + 1, DATA: newDate, totalTime: t, loadFinish: isFinish}, ()=>{
+        this.page = this.page + 1;
+        that.setState({DATA: newDate, totalTime: t, refreshing: false, loadFinish: isFinish}, ()=>{
           setTimeout(()=>{
-            destroySibling();
-            that.setState({refreshing: false});
+            // destroySibling();
+            // that.setState({refreshing: false});
           }, 800) 
         });
       }
       else {
         that.setState({totalTime: t, refreshing: false, loadFinish: isFinish }, ()=>{
           setTimeout(()=>{
-            destroySibling();
-            that.setState({refreshing: false})
+            // destroySibling();
+            // that.setState({refreshing: false})
           }, 800) 
         });
       }
@@ -298,23 +310,47 @@ export default class MyFinishPlanSlider extends BaseComponent {
     );
     
   }
-  render() {
-    const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
-    logger('................data==='+DATA.length)
-    const Item = ({ item }) => (
+
+  renderItem = ({ item }) => {
+    return (
       <Swipeable
         friction={1}
         rightThreshold={40}
         renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
-          <FinishPlanItem item={item}  finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} caseList={caseList} />
+          <FinishPlanItem item={item}  finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} caseList={this.state.caseList} />
       </Swipeable>
     );
+  }
+
+  renderSectionFooter = ({ section: { date,  total, isShowYear} }) => {
+    return (
+      <View style={styles.listTitleView}>
+        {isShowYear && <Text style={styles.listTitleYearFont}>{moment(date).format('YYYY年')}</Text>}
+      <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text>
+      <Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text>
+      </View>
+      <Text style={styles.titleTimeFont}>共 {total > 0 ? getFeeTimeFormat(total) : '00:00'}{'’'}</Text>
+      </View>
+      </View>
+    );
+  }
+  render() {
+    const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
+    logger('................data==='+DATA.length)
+    // const Item = ({ item }) => (
+    //   <Swipeable
+    //     friction={1}
+    //     rightThreshold={40}
+    //     renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
+    //       <FinishPlanItem item={item}  finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} caseList={caseList} />
+    //   </Swipeable>
+    // );
     const headHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     return (
           <View style={styles.container}>
-            {refreshing && <View style={styles.mask}>
+            {/* {refreshing && <View style={styles.mask}>
               <ActivityIndicator size="large" color="black" />
-            </View>}
+            </View>} */}
              <View style={styles.content}>
               <View style={[styles.head, {height: 45, marginTop: headHeight}]}><Text style={styles.headFont}>计时</Text></View>
                { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
@@ -322,11 +358,11 @@ export default class MyFinishPlanSlider extends BaseComponent {
                {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}><SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
-                  ListFooterComponent={loadFinish  && <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View>}
+                  ListFooterComponent={loadFinish ? <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> : refreshing ? <View style={styles.loading}><ActivityIndicator size="small" color="black" /></View> : null}
                   sections={DATA}
                   inverted={true}
                   keyExtractor={(item, index) => item + index}
-                  renderItem={({ item }) => <Item item={item} />}
+                  renderItem={this.renderItem}
                   renderSectionFooter={({ section: { date,  total, isShowYear} }) => (
                     <View style={styles.listTitleView}>
                       {isShowYear && <Text style={styles.listTitleYearFont}>{moment(date).format('YYYY年')}</Text>}
@@ -338,7 +374,8 @@ export default class MyFinishPlanSlider extends BaseComponent {
                     </View>)}
                   stickySectionHeadersEnabled={true}
                   onEndReachedThreshold={0.2}
-                  onEndReached={this.loadMoreDataThrottled}
+                  onEndReached={()=>this.loadMoreDataThrottled()}
+                  // getItemLayout={(data, index) => ( {length: 85, offset: 85 * index, index} )}
                   />
                   </GestureHandlerRootView>
                   }
@@ -546,6 +583,14 @@ const styles = StyleSheet.create({
   },
   empty: {
     flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loading: {
+    height: 30,
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

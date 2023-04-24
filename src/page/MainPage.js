@@ -602,10 +602,10 @@ class MainPage extends BaseComponent {
     }
     logger(e.result + "............." + JSON.stringify(this.state.updateItem));
     if (this.state.updateItem && this.state.updateItem.id) {
-      logger(e.result);
+      showLoading();
       if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem.id, e.result);
       this.setState({ updateItem: {} });
-      destroySibling();
+      // destroySibling();
     }
     else{
       this.sendRecording(e.result);

@@ -3,7 +3,11 @@ import Immutable from 'immutable';
 
 export default class BaseComponent extends Component {
     shouldComponentUpdate(nextProps, nextState) {
-      if (!Immutable.is(this.props, nextProps) || !Immutable.is(this.state, nextState)) {
+      let mapState = Immutable.fromJS(this.state);
+      let mapNextState = Immutable.fromJS(nextState);
+      let mapProps = Immutable.fromJS(this.props);
+      let mapNextProps = Immutable.fromJS(nextProps);
+      if (!Immutable.is(mapProps, mapNextProps) || !Immutable.is(mapState, mapNextState)) {
         return true;
       }
       return false;

@@ -228,7 +228,10 @@ class CenterPage extends BaseComponent {
                 <TouchableOpacity onPress={this.handlePromiseSelectPhoto.bind(this)} >
                   {
                     imgAvatar ?
-                    <Image style={styles.avatar} source={{uri: imgAvatar}}
+                    <Image style={styles.avatar} source={{uri: imgAvatar,method: 'GET',
+                    headers: {
+                      Pragma: 'no-cache',
+                    }}}
                   /> : <IcomoonIcon name='center' size={80} style={{color: 'rgb(0, 122, 254)'}}/>
                   }
                   

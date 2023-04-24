@@ -409,6 +409,7 @@ export function updateFinish(list, finish) {
     item.data.map(it=>{
       // logger(it.id === plan.id)
       if(it.id === finish.id){
+        item.total = item.total - it.fee_time + finish.fee_time;
         it.wakeup_time = finish.wakeup_time;
         it.start_time = finish.start_time;
         it.end_time = finish.end_time;

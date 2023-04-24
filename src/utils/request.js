@@ -52,7 +52,7 @@ let request = {
      * @param logoutCallback
      * @param updateCallback
      */
-    post: (url, method, data, headers, callback, logoutCallback, updateCallback) => {
+    post: (url, method, data, headers, callback, logoutCallback, updateCallback, isHiddenToast) => {
         logger(url + method)
         logger(data)
         axios({
@@ -77,7 +77,9 @@ let request = {
         }).catch((error) => {
             logger(error);
             destroySibling();
-            Toast.show("抱歉!服务器无法连接,请稍后再试!");
+            if(!isHiddenToast) {
+                Toast.show("抱歉!服务器无法连接,请稍后再试!");
+            }
         });
     },
 };
