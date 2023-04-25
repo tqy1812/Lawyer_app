@@ -25,6 +25,12 @@ export default class actionAuth {
     };
   }
 
+  static loadUser(user) {
+    return async (dispatch, getState) => {
+      updateUser(dispatch, user, "loadRecord", false);
+    };
+  }
+
   static reqUserInfo(callback) {
     return (dispatch, getState) => {
       let state = getState();

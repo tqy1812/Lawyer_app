@@ -5,11 +5,15 @@ import {
     Easing,
     BackHandler,
     Overlay,
+    NativeModules,
+    Alert,
+    Linking,
   } from 'react-native';
 import {createStackNavigator, CardStyleInterpolators, TransitionPresets } from '@react-navigation/stack';
 import store from '../store/store';
 import stateHelper from '../helpers/stateHelper';
 import LoginPage from '../page/LoginPage';
+import actionAuth from '../actions/actionAuth';
 import ActivityPage from '../page/ActivityPage';
 import MainPage from '../page/MainPage';
 import PrivacyPage from '../page/PrivacyPage';
@@ -22,14 +26,72 @@ import AboutPage from '../page/AboutPage';
 import FeedBackPage from '../page/FeedBackPage';
 import PermissionPage from '../page/PermissionPage';
 import ThirdApiListPage from '../page/ThirdApiListPage';
+import platform from '../utils/platform';
+import * as Storage from '../common/Storage';
+import { logger, compareVersion } from '../utils/utils';
 const Toast = Overlay.Toast;
 const Stack = createStackNavigator();
 
 stateHelper.store = store;
-
 let lastBackPressed = Date.now();
+let version = '';
+export default function StackRouter(props) {
 
-export default function StackRouter() {
+  props.user && props.user.token && store.dispatch(actionAuth.loadUser(props.user));
+
+  const updateIosApp = () => {
+    let downloadUrl = '';
+    if(platform.isIOS()){
+        downloadUrl = 'https://apps.apple.com/cn/app/%E5%BE%8B%E6%97%B6/id6446157793';
+        store.dispatch(actionAuth.reqVersion((ver, error) => {
+            if(ver){
+                let num = compareVersion(version, ver);
+                Storage.getVersion().then((localVersion)=>{ 
+                    let oldCompare = -1;
+                    if(localVersion) {
+                        oldCompare = compareVersion(localVersion, ver);
+                    }
+                    if(num < 0 && oldCompare < 0) {
+                        Alert.alert('App升级', `发现最新新版本[${ver}]，是否前往升级！。`, [{
+                            text: '稍后升级',
+                            onPress: () => {Storage.setVersion(ver)},
+                            },
+                            {
+                              text: '去升级',
+                              onPress: () => {
+                                Storage.setVersion(ver);
+                                Linking.openURL(downloadUrl).catch(err => {
+                                    logger('.....error', error)
+                                });
+                            },
+                            },
+                        ]);
+                    }
+                })
+                
+            }
+        }))
+    }
+    else {
+        // const downloadUrl = '';
+        // // 打开下载地址
+        // if(downloadUrl){
+        //     Linking.openURL(downloadUrl).catch(err => {
+        //         logger('.....error', error)
+        //     });
+        // }
+    }
+};
+
+  if(platform.isAndroid()) {
+    NativeModules.ScreenAdaptation.getAppVersion((event) =>{
+        version = event;
+    });
+  }
+  else {
+    version = NativeModules.SplashScreen && NativeModules.SplashScreen.getAppVersion();
+    updateIosApp();
+  }
   const forLeftSlide = ({ current, next, inverted, layouts: { screen } }) => {
     const progress = Animated.add(
       current.progress.interpolate({
@@ -104,10 +166,9 @@ export default function StackRouter() {
           },
         };
       };
-
     return (
         <Provider store={store}>
-            <Stack.Navigator initialRouteName="Login" screenOptions={props => {
+            <Stack.Navigator initialRouteName={props.user && props.user.token ? 'Main': 'Login'} screenOptions={props => {
               const { navigation, route } = props;
               // if (route.name === 'Main' && navigation.isFocused()) {
               //     BackHandler.addEventListener('hardwareBackPress',  () => {

@@ -16,7 +16,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A84484F829D1457B00740FAE /* iflyMSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A84484F729D1457B00740FAE /* iflyMSC.framework */; };
 		A851B78F29C4069400D513FD /* SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = A851B78E29C4069400D513FD /* SplashScreen.m */; };
-		A864E5C229F6613D00805F47 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A864E5C129F6613C00805F47 /* main.jsbundle */; };
+		A864E5C429F7662C00805F47 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A864E5C329F7662C00805F47 /* main.jsbundle */; };
 		A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A893F63B299A40E50013C5CC /* icomoon.ttf */; };
 		A8B079DB2994815900717228 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079DA2994815900717228 /* AVFoundation.framework */; };
 		A8B079DD2994818400717228 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079DC2994818400717228 /* SystemConfiguration.framework */; };
@@ -66,7 +66,7 @@
 		A84484F729D1457B00740FAE /* iflyMSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = iflyMSC.framework; sourceTree = "<group>"; };
 		A851B78D29C4062900D513FD /* SplashScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SplashScreen.h; sourceTree = "<group>"; };
 		A851B78E29C4069400D513FD /* SplashScreen.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SplashScreen.m; sourceTree = "<group>"; };
-		A864E5C129F6613C00805F47 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
+		A864E5C329F7662C00805F47 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
 		A893F63B299A40E50013C5CC /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = "../../Desktop/未命名文件夹/Fonts/icomoon.ttf"; sourceTree = "<group>"; };
 		A8A9DC6A29AD910C006949DE /* LawyerApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LawyerApp.entitlements; path = LawyerApp/LawyerApp.entitlements; sourceTree = "<group>"; };
 		A8B079DA2994815900717228 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -162,7 +162,7 @@
 		13B07FAE1A68108700A75B9A /* LawyerApp */ = {
 			isa = PBXGroup;
 			children = (
-				A864E5C129F6613C00805F47 /* main.jsbundle */,
+				A864E5C329F7662C00805F47 /* main.jsbundle */,
 				A8C1CDD829C9562A00B542B4 /* assets */,
 				A8B3CF9329B6E6D60086D052 /* SpeechConstantModule.h */,
 				A8B3CF9229B6E6D60086D052 /* SpeechConstantModule.m */,
@@ -340,7 +340,7 @@
 				A8C1CDD929C9562A00B542B4 /* assets in Resources */,
 				25454CFB29769DDD00EAEAB2 /* Images.xcassets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				A864E5C229F6613D00805F47 /* main.jsbundle in Resources */,
+				A864E5C429F7662C00805F47 /* main.jsbundle in Resources */,
 				A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
