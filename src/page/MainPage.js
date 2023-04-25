@@ -867,7 +867,7 @@ class MainPage extends BaseComponent {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.state.caseList} 
       caseListInfo={caseListInfo}/>);
     }
-  }
+  } 
   render() {
     const { menuVisible, caseList } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
@@ -875,7 +875,7 @@ class MainPage extends BaseComponent {
     // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
     return (
       <View style={styles.container}>
-        <StatusBar translucent={true}  backgroundColor='transparent' barStyle="light-content" />
+        <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
         </View>}

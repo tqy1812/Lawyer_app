@@ -37,7 +37,16 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-
+  int height = 0;
+  if(@available(iOS 13.0, *)){
+    NSSet *set = [UIApplication sharedApplication].connectedScenes;
+    UIWindowScene *windowScene = [set anyObject];
+    UIStatusBarManager *statusBarManager = windowScene.statusBarManager;
+    height = (int)statusBarManager.statusBarFrame.size.height;
+  }
+  else{
+    height = (int)[[UIApplication sharedApplication] statusBarFrame].size.height;
+  }
 #if RCT_NEW_ARCH_ENABLED
   _contextContainer = std::make_shared<facebook::react::ContextContainer const>();
   _reactNativeConfig = std::make_shared<facebook::react::EmptyReactNativeConfig const>();
@@ -45,9 +54,11 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   _bridgeAdapter = [[RCTSurfacePresenterBridgeAdapter alloc] initWithBridge:bridge contextContainer:_contextContainer];
   bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
 #endif
-
+  NSString *stringHeight = [NSString stringWithFormat:@"%d",height];
   NSDictionary *initProps = [self prepareInitialProps];
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"LawyerApp", initProps);
+  NSMutableDictionary *mProps = [NSMutableDictionary dictionaryWithDictionary:initProps];
+  [mProps addEntriesFromDictionary:@{@"statusHeigth" : stringHeight}];
+  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"LawyerApp", mProps);
 
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];

@@ -18,4 +18,22 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getAppVersion) {
   NSString *applocalversion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
   return applocalversion;
 }
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getStatusHeight) {
+  if(@available(iOS 13.0, *)){
+    NSSet *set = [UIApplication sharedApplication].connectedScenes;
+    UIWindowScene *windowScene = [set anyObject];
+    UIStatusBarManager *statusBarManager = windowScene.statusBarManager;
+    CGFloat height = statusBarManager.statusBarFrame.size.height;
+    int num = (int) height;
+    NSString *stringFloat = [NSString stringWithFormat:@"%d",num];
+    return stringFloat;
+  }
+  else{
+    CGFloat height = [UIApplication sharedApplication].statusBarFrame.size.height;
+    int num = (int) height;
+    NSString *stringFloat = [NSString stringWithFormat:@"%d",num];
+    return stringFloat;
+  }
+}
 @end

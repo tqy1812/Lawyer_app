@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Text, TextInput } from 'react-native';
 import platform from './src/utils/platform';
 import GlobalData from "./src/utils/GlobalData";
+import { logger } from './src/utils/utils';
 if(Text.defaultProps== null) Text.defaultProps={}
 if(TextInput.defaultProps== null) TextInput.defaultProps={}
 Text.defaultProps.allowFontScaling = false
@@ -18,7 +19,7 @@ TextInput.defaultProps.allowFontScaling = false
 const global = GlobalData.getInstance();
 const App: () => Node = () => {
 
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({});
   useEffect(() => {
     const userAsync = async() =>{
       let user = await Storage.getUserRecord();
@@ -44,6 +45,11 @@ const App: () => Node = () => {
       }
     else {
       NativeModules.SplashScreen && NativeModules.SplashScreen.close();
+      let height = NativeModules.SplashScreen ? NativeModules.SplashScreen.getStatusHeight() : 0; 
+      logger('.....height', height)
+      if(height){
+        global.setTop(parseInt(height))
+      }
       }
     },
    []);
