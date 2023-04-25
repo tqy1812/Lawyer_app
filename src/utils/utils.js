@@ -403,6 +403,27 @@ export function removeItem(list, plan) {
  return nList;
 }
 
+export function removeFinishItem(list, plan) {
+  let newList = JSON.parse(JSON.stringify(list));
+  let nList = [];
+  newList.map(item=>{
+    let data = item.data.filter(it=> 
+     {
+       if(plan.id !== it.id) {
+         return true
+       }
+       else{
+         item.total = item.total - it.fee_time;
+       }
+     })
+    if(data && data.length>0) {
+       item.data = data;
+       nList.push(item);
+    }
+  });
+  return nList;
+ }
+
 export function updateFinish(list, finish) {
   let newList = JSON.parse(JSON.stringify(list));
   newList.map(item=>{

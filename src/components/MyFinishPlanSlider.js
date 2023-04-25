@@ -16,7 +16,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, removeItem, updateFinish} from '../utils/utils';
+import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, removeFinishItem, updateFinish} from '../utils/utils';
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
@@ -294,8 +294,9 @@ export default class MyFinishPlanSlider extends Component {
                   that.setState({refreshing: false})
                 }
                 else {
-                  let temp = removeItem(DATA, item);
-                  that.setState({DATA: temp}, ()=>{
+                  let temp = removeFinishItem(DATA, item);
+                  let totalTime = this.state.totalTime - item.fee_time ;
+                  that.setState({DATA: temp, totalTime}, ()=>{
                     setTimeout(()=>{
                       destroySibling();
                       that.setState({refreshing: false})
@@ -314,6 +315,7 @@ export default class MyFinishPlanSlider extends Component {
   renderItem = ({ item }) => {
     return (
       <Swipeable
+        key={item.id}
         friction={1}
         rightThreshold={40}
         renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>

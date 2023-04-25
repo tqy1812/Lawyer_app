@@ -111,6 +111,7 @@ export default class MyPlanSlider extends Component {
     let mapNextState = Immutable.fromJS(nextState);
     let mapProps = Immutable.fromJS(this.props.caseList);
     let mapNextProps = Immutable.fromJS(nextProps.caseList);
+    logger('state='+!Immutable.is(mapState, mapNextState), 'props='+!Immutable.is(mapProps, mapNextProps))
     if (!Immutable.is(mapState, mapNextState) || !Immutable.is(mapProps, mapNextProps)) {
       return true;
     }
@@ -189,7 +190,7 @@ export default class MyPlanSlider extends Component {
       return;
     }
     // that.setState({refreshing: true})
-    showLoading();
+    // showLoading();
     dispatch(actionProcess.reqProcessPlanList(this.page, DATA[DATA.length - 1], (rs, isFinish)=>{
       let flag = false;
       let newDate = DATA;
@@ -204,21 +205,21 @@ export default class MyPlanSlider extends Component {
       if (flag) {
         this.page = this.page + 1;
         that.setState({DATA: newDate, refreshing: false, loadFinish: isFinish}, ()=>{
-          setTimeout(() => {   
-            destroySibling();
-          }, 800);
+          // setTimeout(() => {   
+          //   destroySibling();
+          // }, 800);
         });
       }
       else {
         that.setState({refreshing: false, loadFinish: isFinish}, ()=>{
-          setTimeout(() => {   
-            destroySibling();
-          }, 800);
+          // setTimeout(() => {   
+          //   destroySibling();
+          // }, 800);
         });
       }
     })); 
   }
-  changeEnable = (item) => {
+  changeEnable = (item, callback) => {
     const {dispatch} = this.props;
     const {DATA} = this.state;
     const that = this;
@@ -238,6 +239,7 @@ export default class MyPlanSlider extends Component {
           },800);
           // that.setState({ refreshing: false});
         });
+        if(callback) callback();
       }
     })); 
   }
@@ -265,14 +267,12 @@ export default class MyPlanSlider extends Component {
                 that.setState({refreshing: false})
               }
               else {
-                InteractionManager.runAfterInteractions(() => {
-                  let temp = removeItem(DATA, item);
-                  that.setState({DATA: temp}, ()=>{
-                    setTimeout(()=>{
-                      destroySibling();
-                      that.setState({refreshing: false})
-                    }, 800) 
-                  });
+                let temp = removeItem(DATA, item);
+                that.setState({DATA: temp}, ()=>{
+                  setTimeout(()=>{
+                    destroySibling();
+                    that.setState({refreshing: false})
+                  }, 800) 
                 });
               }
             }));  
@@ -332,10 +332,11 @@ export default class MyPlanSlider extends Component {
   renderItem = ({ item }) => {
     return (
       <Swipeable
+        key={item.id}
         friction={1}
         rightThreshold={40}
         renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, item)}>
-          <MyPlanItem item={item} changeEnable={(item) => this.changeEnable(item)}  caseList={this.state.caseList} finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} />
+          <MyPlanItem item={item} changeEnable={(item, callback) => this.changeEnable(item, callback)}  caseList={this.state.caseList} finishTime={(item) => this.setFinishTime(item)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} />
       </Swipeable>
     );
   }

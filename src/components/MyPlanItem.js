@@ -43,8 +43,12 @@ export default class MyPlanItem extends Component {
   }
   changeEnable = (item) => {
     const that = this;
-    showLoading();
-    this.props.changeEnable(item);
+    // showLoading();
+    this.props.changeEnable(item, ()=>{
+      let item = JSON.parse(JSON.stringify(this.state.item));
+      item.is_wakeup = !item.is_wakeup;
+      this.setState({item: item});
+    });
   }
 
   setFinishTime = (item) => {
@@ -77,7 +81,7 @@ export default class MyPlanItem extends Component {
 
   render() {
     const {recoding, item} = this.state;
-    //logger(this.props.caseList, this.props.caseList[item.case.id+''][2])
+    logger('.....render', item)
     return (
       <TouchableOpacity style={styles.listItemView} activeOpacity={1}  onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)}>
         <View style={styles.listItemTimeView}><Text style={styles.listItemTimeStart}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text><Text style={styles.listItemTimeEnd}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text></View>
