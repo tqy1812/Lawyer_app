@@ -1,11 +1,13 @@
 package com.lawyerapp.screen;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -18,6 +20,8 @@ import com.facebook.react.uimanager.IllegalViewOperationException;
 import com.lawyerapp.MainActivity;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationManagerCompat;
+
 import java.lang.reflect.Method;
 public class ScreenAdaptation extends ReactContextBaseJavaModule{
 
@@ -88,6 +92,20 @@ public class ScreenAdaptation extends ReactContextBaseJavaModule{
         }
     }
 
+    @ReactMethod
+    public void isOpenNotify(Callback callback) {
+        callback.invoke(MainActivity.isOpenNotifySetting());
+    }
+
+    @ReactMethod
+    public void saveSetting() {
+        MainActivity.saveSetting();
+    }
+
+    @ReactMethod
+    public void openNotify() {
+        MainActivity.open();
+    }
     //    获取 APP 信息
     private PackageInfo getPackageInfo(){
         PackageManager manager = getReactApplicationContext().getPackageManager();

@@ -115,20 +115,6 @@ public class MainActivity extends ReactActivity {
 //        ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
 //      }
     }
-    NotificationManagerCompat notification = NotificationManagerCompat.from(this);
-    boolean isEnabled = notification.areNotificationsEnabled();
-    SharedPreferences shared = getSharedPreferences("notifyData", MODE_PRIVATE);
-    boolean isFirstOpen = shared.getBoolean("isFirst", true);
-    if (!isEnabled && isFirstOpen) {
-      Log.i("MainActivity", "通知权限为没有打开");
-      openNotify(getApplicationContext());
-      shared = getSharedPreferences("notifyData", MODE_PRIVATE);
-      SharedPreferences.Editor editor = shared.edit();
-      editor.putBoolean("isFirst", false);
-      editor.commit();
-    } else {
-      Log.i("MainActivity", "通知权限已经开启");
-    }
     registerReceiver();
 //    HeadlessJsTaskService.acquireWakeLockNow(getApplicationContext());
 //    Intent service = new Intent(this, WebSocketTaskService.class);
@@ -138,7 +124,34 @@ public class MainActivity extends ReactActivity {
 //      startService(service);
 //    }
   }
+  public static boolean isOpenNotifySetting() {
+    NotificationManagerCompat notification = NotificationManagerCompat.from(context);
+    boolean isEnabled = notification.areNotificationsEnabled();
+    SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
+    boolean isFirstOpen = shared.getBoolean("isFirst", true);
+    return !isEnabled && isFirstOpen;
+  }
 
+  public static void saveSetting() {
+    SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
+    SharedPreferences.Editor editor = shared.edit();
+    editor.putBoolean("isFirst", false);
+    editor.commit();
+  }
+
+  public static void open() {
+    boolean isEnabled = isOpenNotifySetting();
+    if (isEnabled) {
+      Log.i("MainActivity", "通知权限为没有打开");
+      openNotify(context);
+      SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
+      SharedPreferences.Editor editor = shared.edit();
+      editor.putBoolean("isFirst", false);
+      editor.commit();
+    } else {
+      Log.i("MainActivity", "通知权限已经开启");
+    }
+  }
   @Override
   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
