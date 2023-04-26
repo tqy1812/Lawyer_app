@@ -271,6 +271,7 @@ export function getWeek (date) { // 参数时间戳
     return []
   }
 
+  //顺序排序
   export function sortList(value) {
     let list = JSON.parse(JSON.stringify(value))
     for(let i=0; i<list.length-1; i++){
@@ -280,6 +281,24 @@ export function getWeek (date) { // 参数时间戳
         let preNum = parseInt(preArray[0]) + parseInt(preArray[1]) / 60
         let nextNum = parseInt(nextArray[0]) + parseInt(nextArray[1]) / 60;
          if (preNum > nextNum) {
+               let temp = list[j]
+               list[j] = list[j+1]
+               list[j+1] = temp
+          } 
+      }
+    }
+    return list;
+  }
+  //倒叙排序
+  export function sortDescList(value) {
+    let list = JSON.parse(JSON.stringify(value))
+    for(let i=0; i<list.length-1; i++){
+      for(let j=0; j<list.length-i-1; j++) {
+        let preArray = moment(list[j].start_time).format('HH:mm').split(':');
+        let nextArray = moment(list[j+1].start_time).format('HH:mm').split(':');
+        let preNum = parseInt(preArray[0]) + parseInt(preArray[1]) / 60
+        let nextNum = parseInt(nextArray[0]) + parseInt(nextArray[1]) / 60;
+         if (preNum < nextNum) {
                let temp = list[j]
                list[j] = list[j+1]
                list[j+1] = temp
@@ -427,6 +446,7 @@ export function removeFinishItem(list, plan) {
 export function updateFinish(list, finish) {
   let newList = JSON.parse(JSON.stringify(list));
   newList.map(item=>{
+    let sort = false;
     item.data.map(it=>{
       // logger(it.id === plan.id)
       if(it.id === finish.id){
@@ -435,11 +455,15 @@ export function updateFinish(list, finish) {
         it.start_time = finish.start_time;
         it.end_time = finish.end_time;
         it.fee_time = finish.fee_time;
+        sort = true;
         return it
       } else {
         return it
       }
     })
+    if(sort) {
+      item.data=sortDescList(item.data);
+    }
   });
   return newList;
 }
@@ -447,6 +471,7 @@ export function updateFinish(list, finish) {
 export function updatePlan(list, plan) {
   let newList = JSON.parse(JSON.stringify(list));
   newList.map(item=>{
+    let sort = false;
     item.data.map(it=>{
       // logger(it.id === plan.id)
       if(it.id === plan.id){
@@ -454,11 +479,15 @@ export function updatePlan(list, plan) {
         it.start_time = plan.start_time;
         it.end_time = plan.end_time;
         it.fee_time = plan.fee_time;
+        sort = true;
         return it
       } else {
         return it
       }
     })
+    if(sort){
+      item.data=sortList(item.data);
+    }
   });
   return newList;
 }
