@@ -214,6 +214,21 @@ class MainPage extends BaseComponent {
     this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
     this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
     if (platform.isAndroid()) {
+      if(NativeModules.ScreenAdaptation){
+        NativeModules.ScreenAdaptation.isOpenNotify((open) =>{
+          if(open){
+            Alert.alert('通知消息', `通知消息权限没有开启，是否去开启。`, [{
+              text: '取消',
+              onPress: () => {NativeModules.ScreenAdaptation.saveSetting();},
+              },
+              {
+                text: '去设置',
+                onPress: () => {NativeModules.ScreenAdaptation && NativeModules.ScreenAdaptation.openNotify();},
+              },
+              ]);
+          }
+        });
+      }
       PushNotification.getChannels(function (channels) {
         logger('....channels:' + JSON.stringify(channels));
       });
