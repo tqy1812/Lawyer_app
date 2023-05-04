@@ -25,18 +25,18 @@ let request = {
             headers: headers,
         }).then((rs) => {
             let err = null;
+            logger(rs)
             if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
-                    
-                    if(rs.data.code === 0){  //token过期
-                        if (logoutCallback) logoutCallback()
-                        destroySibling();
-                        return;
-                    }
                     err = new Error(Error.ERR_REQ, rs.data.code, rs.data.msg, method);
                 }
             }
             if (err) {
+                if(err.code === 10007){  //token过期
+                    if (logoutCallback) logoutCallback()
+                    destroySibling();
+                    return;
+                }
                 if (callback) callback(null, err);
             } else {
                 if (callback) callback(rs.data, err);
@@ -69,18 +69,18 @@ let request = {
             // responseType: 'json'
         }).then((rs) => {
             let err = null;
-            // logger(rs)
+            logger(rs)
             if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
-                    if(rs.data.code === 10007){  //token过期
-                        if (logoutCallback) logoutCallback()
-                        destroySibling();
-                        return;
-                    }
-                    err = new Error(Error.ERR_REQ, rs.data.code, rs.data.data && rs.data.data.msg ?  rs.data.data.msg : rs.data.msg, method);
+                    err = new Error(Error.ERR_REQ, rs.data.code, rs.data.msg, method);
                 }
             }
             if (err) {
+                if(err.code === 10007){  //token过期
+                    if (logoutCallback) logoutCallback()
+                    destroySibling();
+                    return;
+                }
                 if (callback) callback(null, err);
             } else {
                 if (callback) callback(rs.data, err);
