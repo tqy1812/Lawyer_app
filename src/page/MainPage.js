@@ -30,6 +30,7 @@ import {
 import { Recognizer } from 'react-native-speech-iflytek';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification, { Importance } from 'react-native-push-notification';
+import {TYPE_AUTH_USER} from '../actions/actionRequest';
 import { connect } from 'react-redux';
 import authHelper from '../helpers/authHelper';
 import MyModal from '../components/MyModal';
@@ -57,6 +58,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import ImageArr from '../common/ImageArr';
 import ProcessConfirmModal from '../components/ProcessConfirmModal';
 import NetInfo from '@react-native-community/netinfo';
+import { CommonActions, StackActions } from '@react-navigation/native';
 const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
@@ -213,6 +215,7 @@ class MainPage extends BaseComponent {
     this.recognizerEventEmitter = new NativeEventEmitter(platform.isAndroid() ?  Recognizer : this.RecognizerIos);
     this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
     this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
+    this.eventLogoutReceive = DeviceEventEmitter.addListener('requestLoginout', () => { this.handLogout(); });
     if (platform.isAndroid()) {
       if(NativeModules.ScreenAdaptation){
         NativeModules.ScreenAdaptation.isOpenNotify((open) =>{
@@ -307,6 +310,7 @@ class MainPage extends BaseComponent {
     this.eventNoticeMsgReceive && this.eventNoticeMsgReceive.remove();
     this.eventNoticeOpen && this.eventNoticeOpen.remove();
     this.eventKeepAliveSocket && this.eventKeepAliveSocket.remove();
+    this.eventLogoutReceive && this.eventLogoutReceive.remove();
     this.processName && this.processName.remove();
     if (platform.isIOS()) {
       PushNotificationIOS.removeEventListener('register');
@@ -340,6 +344,21 @@ class MainPage extends BaseComponent {
     //   },
     // ]);
   };
+
+  handLogout() {
+    const {dispatch} = this.props;
+    dispatch({type: TYPE_AUTH_USER, data: {}});
+    Storage.setAutoLogin('0');
+    this.props.navigation.dispatch(state => {
+      logger('.......handLogout', state)
+      return CommonActions.reset({
+        ...state,
+        routes: [{name: 'Login'}],
+        index:0,
+      });
+    });
+  }
+
   onRegistrationError = (error) => {
     Alert.alert(
       '远程消息推送注册失败',

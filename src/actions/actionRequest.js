@@ -6,6 +6,7 @@ import Common from "../common/constants";
 import { logger } from "../utils/utils";
 import NetInfo from '@react-native-community/netinfo';
 import { destroySibling } from "../components/ShowModal";
+import { DeviceEventEmitter } from 'react-native';
 const api = Common.apiUrl;
 const Toast = Overlay.Toast;
 
@@ -473,9 +474,9 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
                     // logger(':::: request_impl: ' + JSON.stringify(rs));
                     if(callback) callback(rs, error);
                 },
-                (reqKey) => {
+                () => {
                     // logger('xyz:::: logout callback ' + reqKey);
-                    requestLoginout(dispatch, reqKey);
+                    requestLoginout(dispatch);
                 },
                 () => {
 
@@ -488,9 +489,9 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
                     logger(':::: error: ' + error);
                     if(callback) callback(rs, error);
                 },
-                (reqKey) => {
+                () => {
                     logger('xyz:::: logout callback ' + reqKey);
-                    requestLoginout(dispatch, reqKey);
+                    requestLoginout(dispatch);
                 },
                 () => {
 
@@ -520,9 +521,8 @@ function request_impl_get(url, method, callback, dispatch = null) {
                         // logger(':::: rs: ' + JSON.stringify(rs));
                         if(callback) callback(rs, error);
                     },
-                    (reqKey) => {
-                        logger('xyz:::: logout callback ' + reqKey);
-                        // requestLoginout(dispatch, reqKey);
+                    () => {
+                        requestLoginout(dispatch);
                     }
                 );
             }    
@@ -536,5 +536,7 @@ function request_impl_get(url, method, callback, dispatch = null) {
     
 }
 
-
+function requestLoginout(dispatch = null){
+    DeviceEventEmitter.emit('requestLoginout')
+}
 

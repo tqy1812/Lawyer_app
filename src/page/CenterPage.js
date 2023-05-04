@@ -62,7 +62,7 @@ class CenterPage extends BaseComponent {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
-      this.props.dispatch(actionAuth.reqUserInfo()); 
+      this.props.dispatch(actionAuth.reqUserInfo());
       this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
         // logger(list)
         if(list) {
@@ -75,7 +75,7 @@ class CenterPage extends BaseComponent {
       this.cleanupImages();
     }
 
-  
+
     handSubmit() {
       const {dispatch} = this.props;
       const {routes} = this.state;
@@ -87,7 +87,7 @@ class CenterPage extends BaseComponent {
       // if(route && route.params.key) {
       //   this.props.navigation.goBack(route.params.key);
       // }
-      
+
       this.props.navigation.dispatch(state => {
         logger('.......logOut', state)
         return CommonActions.reset({
@@ -142,7 +142,7 @@ class CenterPage extends BaseComponent {
           return;
         }
       }
-      
+
       ImagePicker.openPicker({
         width: 300,
         height: 300,
@@ -151,9 +151,9 @@ class CenterPage extends BaseComponent {
       }).then(image => {
         logger('....handlePromiseSelectPhoto'+ JSON.stringify(image));
         const file = {
-          uri: image.path,      
-          name: image.modificationDate +'.jpg',           
-          type: image.mime          
+          uri: image.path,
+          name: image.modificationDate +'.jpg',
+          type: image.mime
         }
         dispatch(actionAuth.reqUpload(file, (rs, error)=>{
           if(error){
@@ -215,16 +215,16 @@ class CenterPage extends BaseComponent {
     render() {
       const { userInfo} = this.props;
       const { imgAvatar, caseList, caseListInfo} = this.state;
-      const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
+      const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight
       // logger('..onBackButtonPressAndroid', this.props.navigation)
       // logger(caseList)
       return (
-          <SafeAreaView style={styles.container}>  
+          <SafeAreaView style={styles.container}>
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-            <Header title='个人中心' close={true}  {...this.props}/>  
-            <ScrollView style={styles.scrollView}  nestedScrollEnabled={true}>  
-            <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
-              <View style={styles.infoContent}> 
+            <Header title='个人中心' close={true}  {...this.props}/>
+            <ScrollView style={styles.scrollView}  nestedScrollEnabled={true}>
+            <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}>
+              <View style={styles.infoContent}>
                 <TouchableOpacity onPress={this.handlePromiseSelectPhoto.bind(this)} >
                   {
                     imgAvatar ?
@@ -234,20 +234,20 @@ class CenterPage extends BaseComponent {
                     }}}
                   /> : <IcomoonIcon name='center' size={80} style={{color: 'rgb(0, 122, 254)'}}/>
                   }
-                  
+
                 </TouchableOpacity>
-                <View style={styles.infoView}> 
+                <View style={styles.infoView}>
                   <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.name}</Text>
                   <Text style={styles.infoCompany} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.org_name}</Text>
                   <Text style={styles.infoPhone} numberOfLines={1} ellipsizeMode={'tail'}>{getPhone(userInfo.phone, '*')}</Text>
                 </View>
               </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>项目</Text></View>
-              <View style={styles.menuView}> 
+              <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {}}>
                   <Text style={styles.menuText}>当前项目</Text>
                   <View style={styles.menuProject}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>
-                </MyButton>  
+                </MyButton>
                 <View style={styles.splitLine}></View>
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
                   <View style={styles.caseView}>
@@ -258,47 +258,47 @@ class CenterPage extends BaseComponent {
                   }
                   </View>
                 </ScrollView>
-              </View> 
-              <View style={styles.menuView}> 
+              </View>
+              <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => { this.props.navigation.navigate('Report')}}>
                   <Text style={styles.menuText}>统计报告</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
-              </View> 
+              </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>个性化</Text></View>
-              <View style={styles.menuView}> 
+              <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openSetting()}}>
                   <Text style={styles.menuText}>通知提醒</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
-              </View>  
+              </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>隐私安全</Text></View>
-              <View style={styles.menuView}> 
+              <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('Permission')}}>
                   <Text style={styles.menuText}>系统权限管理</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
-              </View>  
-              <View style={styles.menuView}> 
+              </View>
+              <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('ThirdApiList')}}>
                   <Text style={styles.menuText}>第三方信息共享清单</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
-              </View>  
-              <View style={styles.menuView}> 
+              </View>
+              <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('MyInfo')}}>
                   <Text style={styles.menuText}>个人信息查看与导出</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
-              </View>  
-              <View style={styles.menuView1}> 
+              </View>
+              <View style={styles.menuView1}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('About')}}>
                   <Text style={styles.menuText}>关于律时与帮助</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
-              </View>  
-            </View>          
-            <View style={styles.bottom}>                    
+              </View>
+            </View>
+            <View style={styles.bottom}>
                 <MyButton style={styles.logoutBtn} onPress={this.handSubmit.bind(this)}>
                     <Text style={styles.logoutText}>退出账号</Text>
                 </MyButton>
@@ -359,13 +359,13 @@ infoView: {
 infoName:{
   color: '#606266',
   fontSize: 24,
-  lineHeight: 30
+  lineHeight: 28
 },
 infoCompany:{
   color: '#606266',
   fontSize: 13,
-  lineHeight: 14,
-  marginTop: 4,
+  lineHeight: 16,
+  marginTop: 3,
   marginBottom: 4,
 },
 infoPhone:{

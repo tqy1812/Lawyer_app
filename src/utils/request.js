@@ -14,9 +14,9 @@ let request = {
      * http get 请求简单封装
      * @param url 请求的URL
      * @param callback 请求成功回调
-     * @param failCallback 请求失败回调
+     * @param logoutCallback 
      */
-    get: (url, method, headers, callback, failCallback) => {
+    get: (url, method, headers, callback, logoutCallback) => {
         logger(url + method)
         logger(headers)
         axios({
@@ -27,7 +27,13 @@ let request = {
             let err = null;
             if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
-                    err = new Error(Error.ERR_REQ, rs.code, rs.msg, method);
+                    
+                    if(rs.data.code === 0){  //token过期
+                        if (logoutCallback) logoutCallback()
+                        destroySibling();
+                        return;
+                    }
+                    err = new Error(Error.ERR_REQ, rs.data.code, rs.data.msg, method);
                 }
             }
             if (err) {
@@ -39,7 +45,7 @@ let request = {
             logger(error);
             destroySibling();
             Toast.show("抱歉!服务器无法连接,请稍后再试!");
-            failCallback(error);
+            // failCallback(error);
         });
     },
 
@@ -66,6 +72,11 @@ let request = {
             // logger(rs)
             if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
+                    if(rs.data.code === 10007){  //token过期
+                        if (logoutCallback) logoutCallback()
+                        destroySibling();
+                        return;
+                    }
                     err = new Error(Error.ERR_REQ, rs.data.code, rs.data.data && rs.data.data.msg ?  rs.data.data.msg : rs.data.msg, method);
                 }
             }
