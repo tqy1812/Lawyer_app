@@ -17,7 +17,7 @@ import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import {logger, getPhone} from '../utils/utils';
+import {logger, getPhone, FontSize} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -142,15 +142,11 @@ avatar: {
 },
 infoName:{
   color: '#606266',
-  fontSize: 17,
-},
-infoCompany:{
-  color: '#606266',
-  fontSize: 15,
+  fontSize: FontSize(17),
 },
 infoValue:{
   color: '#909399',
-  fontSize: 17,
+  fontSize: FontSize(17),
 },
 bottom: {
   width: '100%',

@@ -27,6 +27,7 @@ import {
 } from 'date-fns';
 import ChineseLunar from 'chinese-lunar';
 import ChineseLocale from 'date-fns/locale/zh-CN';
+import {FontSize} from '../utils/utils'
 
 const width = Dimensions.get('window').width;
 const ITEM_LENGTH = width / 7;
@@ -351,7 +352,7 @@ const styles = StyleSheet.create({
   },
   headerDate: {
     color: '#000000',
-    fontSize: 17,
+    fontSize: FontSize(17),
   },
   headerDateWeek: {
     color: '#3D6DCF',

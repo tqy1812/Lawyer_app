@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import { logger, getPhone } from '../utils/utils';
+import { logger, getPhone,FontSize } from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -195,31 +195,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   topPartNoticeText: {
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '##909399',
     lineHeight: 20,
   },
   infoTitle1: {
     color: '#000000',
-    fontSize: 23,
+    fontSize: FontSize(23),
   },
   infoTitle: {
     color: '#000000',
-    fontSize: 17,
+    fontSize: FontSize(17),
   },
   infoName: {
     color: '#606266',
-    fontSize: 17,
+    fontSize: FontSize(17),
     textAlign: 'center',
   },
   emailName: {
     color: '#606266',
-    fontSize: 17,
+    fontSize: FontSize(17),
     textAlignVertical: 'center'
   },
   infoValue: {
     color: '#909399',
-    fontSize: 17,
+    fontSize: FontSize(17),
   },
   emailInput: {
     paddingLeft: 15,
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     flex: 1,
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '#333',
   },
   bottom: {

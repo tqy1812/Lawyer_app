@@ -18,7 +18,7 @@ import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import {logger, getPhone} from '../utils/utils';
+import {logger, getPhone, FontSize} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -182,7 +182,7 @@ singleInput: {
   paddingTop: 5,
   paddingBottom: 5,
   height: 40,
-  fontSize: 17,
+  fontSize: FontSize(17),
   color: '#333',
   backgroundColor: '#F4F4F5',
   borderRadius: 5
@@ -194,7 +194,7 @@ mutilInput: {
   paddingTop: 5,
   paddingBottom: 5,
   height: 250,
-  fontSize: 17,
+  fontSize: FontSize(17),
   color: '#333',
   backgroundColor: '#F4F4F5',
   borderRadius: 5,

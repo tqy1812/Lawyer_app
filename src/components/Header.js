@@ -11,6 +11,7 @@ import MyButton from './MyButton';
 import IcomoonIcon from "../components/IcomoonIcon";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BaseComponent from './BaseComponent';
+import {FontSize} from '../utils/utils'
 
 class Header extends BaseComponent {
   constructor(props) {
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#000',
   },
   leftIcon: {
