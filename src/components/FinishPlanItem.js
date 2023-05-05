@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, logger} from '../utils/utils';
+import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, logger, FontSize} from '../utils/utils';
 import IcomoonIcon from "./IcomoonIcon";
 import Wave from "./Wave";
 import Immutable from 'immutable';
@@ -167,13 +167,13 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   listItemTitle: {
-    fontSize: 19,
+    fontSize: FontSize(19),
     lineHeight: 22,
     color: '#545454',
     fontWeight: '500',
   },
   listItemContent: {
-    fontSize: 15,
+    fontSize: FontSize(15),
     color: '#9C9C9C',
     fontWeight: '500',
   },
@@ -205,14 +205,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   listItemToatlTime: {
-    fontSize: 29,
+    fontSize: FontSize(29),
     color: '#6B6B6B',
     fontWeight: '500',
     marginRight: -2,
     lineHeight: 33,
   },
   listItemToatlTime1: {
-    fontSize: 30,
+    fontSize: FontSize(30),
     color: '#6B6B6B',
     fontWeight: '500',
     lineHeight: 39,
@@ -234,13 +234,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  emptyFont: {
-    fontSize: 15,
-    color: '#C0C4CC',
-    paddingTop: 5,
-    paddingBottom: 5,
-    fontWeight: '500',
   },
   rightAction: {
     height: 65,

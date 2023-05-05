@@ -16,7 +16,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, produce, removeItem, getHoliday, logger, updatePlan} from '../utils/utils';
+import {getWeek, getWeekXi, produce, removeItem, getHoliday, logger, updatePlan, FontSize} from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   titleFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     fontWeight: '500',
     color: '#303133'
   },
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     textAlign: 'right'
   },
   listTitleYearFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#C0C4CC',
     marginTop: 15,
     marginLeft: 12,
@@ -555,12 +555,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   listItemTimeStart: {
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '#606266',
     fontWeight: '500',
   },
   listItemTimeEnd: {
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '#909399',
     fontWeight: '500',
   },
@@ -572,12 +572,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   listItemTitle: {
-    fontSize: 19,
+    fontSize: FontSize(19),
     color: '#606266',
     fontWeight: '500',
   },
   listItemContent: {
-    fontSize: 15,
+    fontSize: FontSize(15),
     color: '#909399',
     fontWeight: '500',
   },

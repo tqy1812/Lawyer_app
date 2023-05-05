@@ -1031,13 +1031,6 @@ const styles = StyleSheet.create({
     bottom: 50,
     left: windowWidth / 2 - 25,
   },
-  header: {
-    fontSize: 32,
-    backgroundColor: "#fff"
-  },
-  title: {
-    fontSize: 24
-  },
   contentView: {
     position: 'absolute',
     width: windowWidth,

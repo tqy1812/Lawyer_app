@@ -18,7 +18,7 @@ import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
-import { getWeekXi, getContentView, getContentViewWidth, sortList } from '../utils/utils'
+import { getWeekXi, getContentView, getContentViewWidth, sortList, FontSize } from '../utils/utils'
 import { showLoading, destroySibling } from "../components/ShowModal"
 import platform from '../utils/platform';
 import { is } from 'date-fns/locale';
@@ -68,12 +68,12 @@ class ActivityPage extends BaseComponent {
             }));
             this.eventNoticeReceive = DeviceEventEmitter.addListener('refreshDailyProcess',
                 () => { this.handleList(moment(new Date()).format('YYYY-MM-DD')); });
-                const hour = new Date().getHours();
-                if(hour>=7) {
-                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
-                } else if(hour>=17) {
-                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
-                }
+            const hour = new Date().getHours();
+            if(hour>=7) {
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
+            } else if(hour>=17) {
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
+            }
         });
     }
 
@@ -96,13 +96,31 @@ class ActivityPage extends BaseComponent {
         } else {
             this.setState({ isToday: true })
         }
-        this.handleList(currentTime);
+        this.handleList(currentTime, ()=>{
+            if(currentTime != today){
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 7 * 50, animated: true});
+            }
+            else{
+                const hour = new Date().getHours();
+                if(hour>=7) {
+                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
+                } else if(hour>=17) {
+                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
+                }
+            }
+        });
     }
     backToday = () => {
         //logger('backToday')
         const that = this;
         this.handleList(moment(new Date()).format('YYYY-MM-DD'), () => {
             that.myCalendar && that.myCalendar.setSelectedDate(moment(new Date()));
+            const hour = new Date().getHours();
+            if(hour>=7) {
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
+            } else if(hour>=17) {
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
+            }
         });
         // this.setState({today: moment(new Date()) })
     }
@@ -146,11 +164,11 @@ class ActivityPage extends BaseComponent {
                     iconRightShow={false}
                     calendarAnimation={{ type: 'sequence', duration: 30 }}
                     style={{ height: 150, paddingLeft: 10, paddingRight: 10, borderBottomWidth: 1, borderBottomColor: '#C7C7C7' }}
-                    calendarHeaderStyle={{ fontSize: 18, marginTop: 20, marginBottom: 15 }}
+                    calendarHeaderStyle={{ fontSize: FontSize(18), marginTop: 20, marginBottom: 15 }}
                     // dateNameStyle={{ fontSize: 12 }}
                     // highlightDateNameStyle={{ fontSize: 11 }}
-                    dateNumberStyle={{ fontSize: 18, color: '#000' }}
-                    highlightDateNumberStyle={isToday ? { color: '#fff', fontSize: 18, lineHeight: 22 } : { color: '#000', fontSize: 18, lineHeight: 22 }}
+                    dateNumberStyle={{ fontSize: FontSize(18), color: '#000' }}
+                    highlightDateNumberStyle={isToday ? { color: '#fff', fontSize: FontSize(18), lineHeight: 22 } : { color: '#000', fontSize: FontSize(18), lineHeight: 22 }}
                     highlightDateNumberContainerStyle={isToday ? styles.highlightDateNumberContainerStyleDefault : styles.highlightDateNumberContainerStyle}
                     // highlightDateContainerStyle={{backgroundColor: '#007afe', }}
                     selectedDate={today}
@@ -293,7 +311,7 @@ const styles = StyleSheet.create({
     footerFont: {
         color: '#616161',
         fontWeight: '600',
-        fontSize: 17,
+        fontSize: FontSize(17),
     },
     currentTimeView: {
         position: 'absolute',

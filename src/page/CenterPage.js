@@ -18,7 +18,7 @@ import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import {logger, getPhone} from '../utils/utils';
+import {logger, getPhone, FontSize} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -358,7 +358,7 @@ infoView: {
 },
 infoName:{
   color: '#606266',
-  fontSize: 24,
+  fontSize: FontSize(24),
   lineHeight: 28
 },
 infoCompany:{
@@ -422,7 +422,7 @@ menuProject: {
 menuText: {
   flex: 1,
   color: '#606266',
-  fontSize: 20,
+  fontSize: FontSize(20),
   marginLeft: 5,
 },
 menuText1: {
@@ -432,7 +432,7 @@ menuText1: {
 },
 menuText2: {
   color: '#909399',
-  fontSize: 21,
+  fontSize: FontSize(21),
   marginLeft: 1,
   fontWeight: '600'
 },
@@ -497,7 +497,7 @@ logoutBtn: {
 },
 logoutText: {
   color: '#909399',
-  fontSize: 19,
+  fontSize: FontSize(19),
 },
 
 });

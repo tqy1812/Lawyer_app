@@ -16,7 +16,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, removeFinishItem, updateFinish} from '../utils/utils';
+import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, removeFinishItem, updateFinish, FontSize} from '../utils/utils';
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     width: Common.window.width,
   },
   headFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     fontWeight: '500',
     color: '#303133',
   },
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     alignSelf:'flex-end'
   },
   totalTimeFont: {
-    fontSize: 30,
+    fontSize: FontSize(30),
     fontWeight: '500',
     color: '#606266',
   },
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff'
   },
   listTitleYearFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#C0C4CC',
     marginTop: 15,
     marginLeft: 12,
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listItemTitleFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     textAlign: 'right'
   },
   listItemTitleWeekFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   titleTimeFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#C0C4CC',
     paddingTop: 5,
     paddingBottom: 5,
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   listItemTitle: {
-    fontSize: 19,
+    fontSize: FontSize(19),
     color: '#545454',
     fontWeight: '500',
   },
@@ -568,7 +568,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   listItemToatlTime: {
-    fontSize: 25,
+    fontSize: FontSize(25),
     color: '#6B6B6B',
     fontWeight: '500',
   },

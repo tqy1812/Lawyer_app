@@ -11,7 +11,7 @@ import {
 import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeek, getWeekXi, produce, logger } from '../utils/utils';
+import {getWeek, getWeekXi, produce, logger, FontSize } from '../utils/utils';
 import IcomoonIcon from "../components/IcomoonIcon";
 import MyButton from "../components/MyButton";
 import { showLoading } from "./ShowModal";
@@ -114,12 +114,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   listItemTimeStart: {
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '#606266',
     fontWeight: '500',
   },
   listItemTimeEnd: {
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '#909399',
     fontWeight: '500'
   },
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   listItemTitle: {
-    fontSize: 19,
+    fontSize: FontSize(19),
     color: '#606266',
     fontWeight: '500',
   },

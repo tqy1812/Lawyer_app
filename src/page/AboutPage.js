@@ -17,7 +17,7 @@ import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import {logger, getPhone} from '../utils/utils';
+import {logger, getPhone, FontSize} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -147,7 +147,7 @@ menuButton: {
 menuText: {
   flex: 1,
   color: '#606266',
-  fontSize: 17,
+  fontSize: FontSize(17),
   marginLeft: 5,
 },
 bottom: {

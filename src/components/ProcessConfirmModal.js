@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
-import { getWeekXi, getHoliday, logger } from '../utils/utils';
+import { getWeekXi, getHoliday, logger, FontSize } from '../utils/utils';
 import actionProcess from "../actions/actionProcess";
 import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
@@ -299,7 +299,7 @@ caseItemBadge: {
 },
 caseItemName:{
   color: '#606266',
-  fontSize: 16,
+  fontSize: FontSize(16),
   lineHeight: 25,
   marginLeft: 5,
   marginRight: 15,
@@ -335,7 +335,7 @@ caseItemName:{
   },
   processInfo: {
     width: Common.window.width - 40,
-    fontSize: 16,
+    fontSize: FontSize(16),
     color: '#333',
   },
   listTitleView: {
@@ -379,7 +379,7 @@ caseItemName:{
     // left: 0
   },
   listItemTitleFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#909399',
     paddingTop: 5,
     paddingBottom: 5,
@@ -394,7 +394,7 @@ caseItemName:{
     // width: 78,
   },
   listItemTitleWeekFont: {
-    fontSize: 18,
+    fontSize: FontSize(18),
     color: '#909399',
     paddingTop: 5,
     paddingBottom: 5,
@@ -443,22 +443,22 @@ caseItemName:{
     justifyContent: 'center',
   },
   listItemTimeStart: {
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '#606266',
     fontWeight: '500',
   },
   listItemTimeStart1: {
-    fontSize: 20,
+    fontSize: FontSize(20),
     color: '#606266',
     fontWeight: '500',
   },
   listItemTimeEnd: {
-    fontSize: 17,
+    fontSize: FontSize(17),
     color: '#909399',
     fontWeight: '500',
   },
   listItemTimeEnd1: {
-    fontSize: 20,
+    fontSize: FontSize(20),
     color: '#909399',
     fontWeight: '500',
   },
@@ -496,7 +496,7 @@ caseItemName:{
     borderWidth: 0,
     borderRadius: 5,
     backgroundColor: '#eee',
-    fontSize: 19,
+    fontSize: FontSize(19),
     textAlign: 'center',
     paddingTop: 0,
     paddingBottom: 0,
@@ -550,6 +550,6 @@ caseItemName:{
     alignItems: "center",
   },
   bottomBtnsText: {
-    fontSize: 16
+    fontSize: FontSize(16)
   },
 });

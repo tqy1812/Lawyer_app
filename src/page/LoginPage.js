@@ -30,7 +30,7 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
-import { logger, compareVersion } from '../utils/utils';
+import { logger, compareVersion,FontSize } from '../utils/utils';
 import { SendIdentify } from '../components/SendIdentify';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
         lineHeight: 50,
         paddingLeft: 10,
         color: '#333',
-        fontSize: 16,
+        fontSize: FontSize(16),
         borderWidth: 1,
         borderRadius: 55,
         borderColor: '#dfdfdf',
@@ -445,14 +445,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#dfdfdf',
     },
     loginLabel: {
-        fontSize: 16,
+        fontSize: FontSize(16),
         color: '#333'
     },
     loginInput: {
         height: 40,
         paddingLeft: 15,
         flex: 1,
-        fontSize: 16,
+        fontSize: FontSize(16),
         color: '#333',
     },
     law: {
@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
     },
     loginText: {
         color: '#ffffff',
-        fontSize: 16,
+        fontSize: FontSize(16),
     },
     updatePsdWrap: {
         width: '100%',
