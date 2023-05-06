@@ -29,6 +29,8 @@ import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
 import {logger} from "../utils/utils";
 import Immutable from 'immutable';
+import ProcessTiemConfirmModal from '../components/ProcessTimeConfirmModal';
+import { showConfirmModal } from '../components/ShowModal';
 
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
@@ -157,26 +159,38 @@ export default class MyFinishPlanSlider extends Component {
         animated: false,
     });
   }
-
+  sendProcessTimeConfirm = (preItem, item, callback) => {
+    if(moment(item.end_time).diff(moment(new Date())) < 0 && moment(item.start_time).format('YYYY-MM-DD') === moment(preItem.start_time).format('YYYY-MM-DD')) {
+      let temp = updateFinish(this.state.DATA, item);
+      let totalTime = this.state.totalTime;
+      if(moment(item.start_time).diff(moment(moment().month(moment().month()).startOf('month').valueOf())) >= 0) {
+        totalTime = this.state.totalTime - preItem.fee_time + item.fee_time
+      }
+      this.setState({DATA: temp, totalTime}, ()=>{
+        setTimeout(()=>{
+          destroySibling();
+        },800);
+      });
+      if(callback) callback(item);
+    }
+    else {
+      this.loadDataThrottled();
+    }
+  }
   setFinishTimeEnd = (value, callback) => {
     if(this.props.finishTimeEnd) {
-      this.props.finishTimeEnd(value, (id, content) => {
+      this.props.finishTimeEnd(value, (preItem, content) => {
         // logger('.......updateProcess'+ id+ '....' + content)
-        this.updateProcess(id, content, (item)=>{
+        this.updateProcess(preItem.id, content, (item)=>{
           logger('.......updateProcess'+ JSON.stringify(item))
-          if(moment(item.end_time).diff(moment(new Date())) < 0 && moment(item.start_time).format('YYYY-MM-DD') === moment(value.start_time).format('YYYY-MM-DD')) {
-            let temp = updateFinish(this.state.DATA, item);
-            let totalTime = this.state.totalTime - value.fee_time + item.fee_time
-            this.setState({DATA: temp, totalTime}, ()=>{
-              setTimeout(()=>{
-                destroySibling();
-              },800);
-            });
-            if(callback) callback(item);
-          }
-          else {
-            this.loadDataThrottled();
-          }
+          destroySibling();
+          let nowItem = JSON.parse(JSON.stringify(preItem));
+          nowItem.start_time = item.start_time;
+          nowItem.end_time = item.end_time;
+          nowItem.wakeup_time = item.wakeup_time;
+          nowItem.fee_time = item.fee_time;
+          showConfirmModal(<ProcessTiemConfirmModal dispatch={this.props.dispatch}  submint={(preItem, item)=>this.sendProcessTimeConfirm(preItem, item, callback)} item={nowItem} preItem={preItem}/>);
+          
         })
       });
     }
@@ -193,7 +207,8 @@ export default class MyFinishPlanSlider extends Component {
       if(error) {
         destroySibling();
         Toast.show(error.info);
-      } else if( rs && rs.id) {
+      } else if(rs) {
+        destroySibling();
          if(callback) callback(rs)
       }
       // that.setState({refreshing: false});
@@ -295,7 +310,10 @@ export default class MyFinishPlanSlider extends Component {
                 }
                 else {
                   let temp = removeFinishItem(DATA, item);
-                  let totalTime = this.state.totalTime - item.fee_time ;
+                  let totalTime = this.state.totalTime;
+                  if(moment(item.start_time).diff(moment(moment().month(moment().month()).startOf('month').valueOf())) >= 0) {
+                    totalTime = this.state.totalTime - item.fee_time ;
+                  }
                   that.setState({DATA: temp, totalTime}, ()=>{
                     setTimeout(()=>{
                       destroySibling();

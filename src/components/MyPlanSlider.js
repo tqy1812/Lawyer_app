@@ -26,6 +26,8 @@ import { destroySibling, showLoading, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
 import GlobalData from "../utils/GlobalData";
 import Immutable from 'immutable';
+import ProcessTiemConfirmModal from '../components/ProcessTimeConfirmModal';
+import { showConfirmModal } from '../components/ShowModal';
 
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
@@ -288,25 +290,30 @@ export default class MyPlanSlider extends Component {
       this.props.finishTime(item);
     }
   }
-  
+  sendProcessTimeConfirm= (preItem, item, callback) => {
+    if(moment(item.start_time).format('YYYY-MM-DD') === moment(preItem.start_time).format('YYYY-MM-DD')) {
+      let temp = updatePlan(this.state.DATA, item);
+      this.setState({DATA: temp}, ()=>{
+        setTimeout(()=>{
+          destroySibling();
+        },800);
+      });
+      if(callback) callback(item);
+    }
+    else {
+      this.loadDataThrottled();
+    }
+  }
   setFinishTimeEnd = (value, callback) => {
     if(this.props.finishTimeEnd) {
-      this.props.finishTimeEnd(value, (id, content) => {
+      this.props.finishTimeEnd(value, (preItem, content) => {
         // logger('.......updateProcess'+ id+ '....' + content)
-        this.updateProcess(id, content, (item)=>{
+        this.updateProcess(preItem.id, content, (item)=>{
           logger('.......updateProcess'+ JSON.stringify(item))
-          if(moment(item.start_time).format('YYYY-MM-DD') === moment(value.start_time).format('YYYY-MM-DD')) {
-            let temp = updatePlan(this.state.DATA, item);
-            this.setState({DATA: temp}, ()=>{
-              setTimeout(()=>{
-                destroySibling();
-              },800);
-            });
-            if(callback) callback(item);
-          }
-          else {
-            this.loadDataThrottled();
-          }
+          let nowItem = JSON.parse(JSON.stringify(preItem));
+          nowItem.start_time = item.start_time;
+          nowItem.end_time = item.end_time;
+          showConfirmModal(<ProcessTiemConfirmModal dispatch={this.props.dispatch} submint={(preItem, item)=>this.sendProcessTimeConfirm(preItem, item, callback)} item={nowItem} preItem={preItem}/>);  
         })
       });
     }
@@ -323,7 +330,7 @@ export default class MyPlanSlider extends Component {
       if(error) {
         destroySibling();
         Toast.show(error.info);
-      } else if( rs && rs.id) {
+      } else if(rs) {
          if(callback) callback(rs)
       }
       // that.setState({refreshing: false});

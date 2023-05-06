@@ -108,6 +108,16 @@ export default class actionProcess {
     };
   }
 
+  static updateProcessTime(id, start_time, end_time, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      logger(start_time, end_time)
+      dispatch(request.updateProcessTime(id, start_time, end_time, (rs, error)=>{
+        if(callback) callback(rs, error);
+      }));
+    };
+  }
+  
   static reqDeleteProcess(id, callback) {
     return (dispatch, getState) => {
       let state = getState();

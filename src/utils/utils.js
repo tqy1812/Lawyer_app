@@ -2,6 +2,7 @@
 import moment from 'moment';
 import { func } from 'prop-types';
 import Common from "../common/constants";
+import {PixelRatio} from "react-native";
 export const locale = {
   name: 'zhCn',
   config: {
@@ -510,7 +511,7 @@ export function getHoliday(time) {
 }
 
 export function logger(str, str1) {
-  if(Common.env !== 'dev') {
+  if(Common.env === 'dev') {
     if(str1) {
       console.log(str, str1)
     } else {
@@ -553,4 +554,19 @@ export function compareVersion(per, last) {
     }
   }
   return result
+}
+
+export function FontSize(size) {
+  const width = Common.window.width;
+  const height = Common.window.height;
+  if (PixelRatio.get() === 3) {
+    if (height >= 667) {
+      return size * 0.9;
+    }
+  }
+  return size;
+}
+
+export function formatZeroTime(start_time, end_time){
+  return moment(moment(end_time).format('YYYY-MM-DD 00:00:00')).diff(moment(moment(start_time).format('YYYY-MM-DD 00:00:00')), "days")==1 ? '24:00' : moment(end_time).format('HH:mm');
 }

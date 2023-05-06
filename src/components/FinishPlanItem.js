@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
-import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, logger, FontSize} from '../utils/utils';
+import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, logger, FontSize, formatZeroTime} from '../utils/utils';
 import IcomoonIcon from "./IcomoonIcon";
 import Wave from "./Wave";
 import Immutable from 'immutable';
@@ -21,7 +21,6 @@ class FinishPlanItem extends Component {
     super(props);
     this.state = {
       recoding: false,
-      item: props.item,
     };
     this.lastClickTime=0;
   }
@@ -39,7 +38,7 @@ class FinishPlanItem extends Component {
     let mapNextState = Immutable.fromJS(nextState);
     let mapProps = Immutable.fromJS(this.props.item);
     let mapNextProps = Immutable.fromJS(nextProps.item);
-    logger(!Immutable.is(mapProps, mapNextProps), !Immutable.is(mapState, mapNextState))
+    logger('props='+!Immutable.is(mapProps, mapNextProps), 'state='+!Immutable.is(mapState, mapNextState))
     if (!Immutable.is(mapProps, mapNextProps) || !Immutable.is(mapState, mapNextState)) {
       return true;
     }
@@ -51,15 +50,12 @@ class FinishPlanItem extends Component {
       if(this.props.finishTimeEnd) {
         this.props.finishTimeEnd(value, (rs)=>{
             logger('....................setFinishTimeEnd change=' + JSON.stringify(rs))
-            let item = JSON.parse(JSON.stringify(this.state.item));
-            item.wakeup_time = rs.wakeup_time;
-            item.start_time = rs.start_time;
-            item.end_time = rs.end_time;
-            item.fee_time = rs.fee_time;
-            this.setState({item: item})
-            // if(rs && rs.id){
-            //   this.setState({item: {...rs, case: this.state.item.case} })
-            // }
+            // let item = JSON.parse(JSON.stringify(this.state.item));
+            // item.wakeup_time = rs.wakeup_time;
+            // item.start_time = rs.start_time;
+            // item.end_time = rs.end_time;
+            // item.fee_time = rs.fee_time;
+            // this.setState({item: item})
         });
       }
       this.setState({recoding: false});
@@ -67,14 +63,15 @@ class FinishPlanItem extends Component {
   }
 
   render() {
-    const {recoding, item} = this.state;
+    const {recoding} = this.state;
+    const {item} = this.props;
     logger('....immutable', item.id)
     return (
       <TouchableOpacity activeOpacity={!item.end_time ? 0.2 : 1} style={styles.listItemView} onLongPress={() => this.setFinishTime(item)}  onPressOut={()=>this.setFinishTimeEnd(item)}>
           <View style={[styles.listItemTimeSplit, {backgroundColor: this.props.caseList[item.case.id+''] ? this.props.caseList[item.case.id+''][2] : '#ff0000'}]}></View>
           <View style={styles.listItemContentView}><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemTitle}>{item.name}</Text><Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.listItemContent}>{item.case.name}</Text></View>
           <View style={styles.listItemTimeView}>
-            <Text style={styles.listItemTime}>{item.start_time ? moment(item.start_time).format('HH:mm') : '--:--'} ~ {item.end_time ? moment(item.end_time).format('HH:mm') : ''}</Text>
+            <Text style={styles.listItemTime}>{item.start_time ? moment(item.start_time).format('HH:mm') : '--:--'} ~ {item.end_time ? formatZeroTime(item.start_time, item.end_time) : '--:--'}</Text>
             { item.end_time && <Text style={styles.listItemToatlTime}>{getFeeTimeFormat(item.fee_time)}</Text>}
             { !item.end_time && <TouchableOpacity style={styles.setTimeView} onLongPress={() => this.setFinishTime(item)} onPressOut={()=>this.setFinishTimeEnd(item)}><IcomoonIcon name='clock-edit' size={20} color='#fff' /></TouchableOpacity>}
           </View>

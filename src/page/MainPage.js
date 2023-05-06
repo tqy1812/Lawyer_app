@@ -551,6 +551,8 @@ class MainPage extends BaseComponent {
       }
       else {
         that.setState({ loading: false });
+        this.processTimeOut && clearTimeout(this.processTimeOut);
+        destroySibling();
       }
     });
   }
@@ -623,7 +625,7 @@ class MainPage extends BaseComponent {
   }
 
   onRecognizerResult = (e) => {
-    logger("result............." + JSON.stringify(e.result), '.....' + e.isLast);
+    const that = this;
     if (!e.isLast) {
       return;
     }
@@ -637,13 +639,17 @@ class MainPage extends BaseComponent {
     logger(e.result + "............." + JSON.stringify(this.state.updateItem));
     if (this.state.updateItem && this.state.updateItem.id) {
       showLoading();
-      if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem.id, e.result);
+      if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem, e.result);
       this.setState({ updateItem: {} });
       // destroySibling();
     }
     else{
+      this.setState({loading: true});
       this.sendRecording(e.result);
-      destroySibling();
+      this.processTimeOut = setTimeout(() => {
+        that.setState({loading: false});
+      }, 5000);
+      // destroySibling();
     }
   }
 
@@ -714,26 +720,35 @@ class MainPage extends BaseComponent {
         if (id) {
           dispatch(actionProcess.reqGetProcess(id, (rs, error) => {
             if(error) {
-              Toast.show(error.info)
+              Toast.show(error.info);
+              destroySibling();
+              this.processTimeOut && clearTimeout(this.processTimeOut);
               that.setState({ loading: false});
             }
             else {
               that.showConfirm(rs, caselist);
-              // that.setState({ loading: false});
+              destroySibling();
+              this.processTimeOut && clearTimeout(this.processTimeOut);
+              that.setState({ loading: false});
             }
-            // that.setState({ loading: false, talkSuccessModalVisible: true, item: rs, itemName: rs.name });
           }));
         }
         else {
-          // that.setState({ loading: false });
+          destroySibling();
+          this.processTimeOut && clearTimeout(this.processTimeOut);
+          that.setState({ loading: false });
         }
       }
       else {
-        // that.setState({ loading: false });
+        destroySibling();
+        this.processTimeOut && clearTimeout(this.processTimeOut);
+        that.setState({ loading: false });
       }
     }
     else{
-      // that.setState({ loading: false });
+      destroySibling();
+      this.processTimeOut && clearTimeout(this.processTimeOut);
+      that.setState({ loading: false });
     }
   }
 
@@ -905,7 +920,7 @@ class MainPage extends BaseComponent {
   render() {
     const { menuVisible, caseList } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-    // logger('statusBarHeight11......', StatusBar.currentHeight)
+    logger('statusBarHeight11......', ''+ moment('2023-04-30 23:59:59').diff(moment(moment().month(moment().month()).startOf('month').valueOf())) >= 0)
     // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
     return (
       <View style={styles.container}>

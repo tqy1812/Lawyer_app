@@ -259,6 +259,32 @@ export function submitProcess(id, wakeup, name, isEnable, caseId, callback = nul
     };
 }
 
+export function updateProcessTime(id, start_time, end_time, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/process/update'
+        let data = {
+            id: id,
+            start_time: start_time,
+            end_time: end_time
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 export function enableProcess(id, wakeup, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
