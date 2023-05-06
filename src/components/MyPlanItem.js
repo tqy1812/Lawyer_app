@@ -44,9 +44,9 @@ export default class MyPlanItem extends Component {
     const that = this;
     // showLoading();
     this.props.changeEnable(item, ()=>{
-      let item = JSON.parse(JSON.stringify(this.state.item));
-      item.is_wakeup = !item.is_wakeup;
-      this.setState({item: item});
+      // let item = JSON.parse(JSON.stringify(this.state.item));
+      // item.is_wakeup = !item.is_wakeup;
+      // this.setState({item: item});
     });
   }
 
