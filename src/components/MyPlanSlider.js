@@ -310,9 +310,12 @@ export default class MyPlanSlider extends Component {
         // logger('.......updateProcess'+ id+ '....' + content)
         this.updateProcess(preItem.id, content, (item)=>{
           logger('.......updateProcess'+ JSON.stringify(item))
+          destroySibling();
           let nowItem = JSON.parse(JSON.stringify(preItem));
           nowItem.start_time = item.start_time;
           nowItem.end_time = item.end_time;
+          nowItem.wakeup_time = item.wakeup_time;
+          nowItem.fee_time = item.fee_time;
           showConfirmModal(<ProcessTiemConfirmModal dispatch={this.props.dispatch} submint={(preItem, item)=>this.sendProcessTimeConfirm(preItem, item, callback)} item={nowItem} preItem={preItem}/>);  
         })
       });

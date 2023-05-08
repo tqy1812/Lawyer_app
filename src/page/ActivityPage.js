@@ -98,7 +98,7 @@ class ActivityPage extends BaseComponent {
         }
         this.handleList(currentTime, ()=>{
             if(currentTime != today){
-                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 7 * 50, animated: true});
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 8 * 50, animated: true});
             }
             else{
                 const hour = new Date().getHours();

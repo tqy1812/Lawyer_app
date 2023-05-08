@@ -418,6 +418,9 @@ export function removeItem(list, plan) {
    if(data && data.length>0) {
       item.data = data;
       nList.push(item);
+   } else if(moment(data.date).isSame(moment(), "day")){
+      item.data = data;
+      nList.push(item);
    }
  });
  return nList;
