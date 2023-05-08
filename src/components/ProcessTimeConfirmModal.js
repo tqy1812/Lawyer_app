@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     width: Common.window.width,
     backgroundColor: 'rgba(0,0,0,0.3)',
     top: 0,
-    zIndex: 4,
+    zIndex: 8,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
@@ -336,7 +336,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     borderBottomLeftRadius: 9,
     borderBottomRightRadius: 9,
-    zIndex: -1,
   },
   bottomBtnsView: {
     width: Common.window.width / 2 - 50,
