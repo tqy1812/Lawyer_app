@@ -104,7 +104,7 @@ class MainPage extends BaseComponent {
       caseId: undefined,
       caseList: props.caseList,
       caseListInfo: props.caseListInfo,
-
+      editDateShow: false
     }
     // DeviceEventEmitter.removeAllListeners();
     // this.INJECTEDJAVASCRIPT = `
@@ -331,7 +331,7 @@ class MainPage extends BaseComponent {
     const { dispatch } = this.props;
     logger('.......deviceToken='+deviceToken);
     if(deviceToken) {
-      dispatch(actionAuth.reqUserUpdate(undefined, deviceToken, undefined, (result, error)=>{
+      dispatch(actionAuth.reqDeviceToken(Common.devicePushType['IOS'], deviceToken, (result, error)=>{
         if(error){
           Toast.show(error.info)
         }
@@ -499,7 +499,7 @@ class MainPage extends BaseComponent {
   };
 
   handleAppStateChange = (nextAppState) => {
-    // logger('****************nextAppState==' + nextAppState);
+    logger('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       // this.wv && this.wv.current && this.wv.current.reload();
       if (this.wc) this.wc.setIsBackground(false);

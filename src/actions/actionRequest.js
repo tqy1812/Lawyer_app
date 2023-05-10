@@ -33,13 +33,15 @@ export function reqSaveUser(user, save = true, from = null, callback = null) {
     };
 }
 
-export function login(phone, password, callback = null) {
+export function login(phone, password, device_id, device_type, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let data = {};
         // 要发送的数据
         data.phone = phone;
         data.password = password;
+        data.device_id = device_id;
+        data.device_type = device_type;
         request_impl(api, 'login', data, (res, error) => {
             if(res) {
                 let retData = res.data;
@@ -92,6 +94,31 @@ export function getAppVersion(callback = null) {
     };
 }
 
+export function getAndroidAppVersion(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/app_update_log/latest';
+        let headers = {};
+        request.get(api, method, headers,
+            (res, error) => {
+                if(res) {
+                    let retData = res.data;
+                    if (callback) {
+                        callback(retData, error);
+                    }
+                }
+                else {
+                    if (callback) {
+                        callback(res, error);
+                    }
+                }
+            },
+            () => {
+            },
+            true
+        );
+    };
+}
 export function getInfo(callback = null) {
     return (dispatch, getState) => {
         let state = getState();
@@ -149,6 +176,29 @@ export function userUpdate(url, iosToken, voiceType, callback = null) {
         if(voiceType){
             data.voice_type = voiceType;
         }
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function userDeviceToken(type, deviceToken, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/employee/update_device'
+        let data = {};
+        data.device_type = type;
+        data.device_id = deviceToken;
         request_impl(api, method, data, (res, error) => {
             if(res) {
                 let retData = res.data;

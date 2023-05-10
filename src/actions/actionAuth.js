@@ -10,10 +10,10 @@ export default class actionAuth {
 
   static USER_INFO = 'USER_INFO'; //用户信息
     // 登录
-  static reqLogin(user, password, callback) {
+  static reqLogin(user, password, device_id, device_type, callback) {
     return (dispatch, getState) => {
       let state = getState();
-      dispatch(request.login(user, password, callback));
+      dispatch(request.login(user, password, device_id, device_type, callback));
     };
   }
 
@@ -68,6 +68,20 @@ export default class actionAuth {
     return (dispatch, getState) => {
       let state = getState();
       dispatch(request.getAppVersion(callback));
+    };
+  }
+
+  static reqAndroidVersion(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.getAndroidAppVersion(callback));
+    };
+  }
+
+  static reqDeviceToken(type, deviceToken, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.userDeviceToken(type, deviceToken, callback));
     };
   }
 }

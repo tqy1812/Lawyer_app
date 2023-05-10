@@ -573,3 +573,26 @@ export function FontSize(size) {
 export function formatZeroTime(start_time, end_time){
   return moment(moment(end_time).format('YYYY-MM-DD 00:00:00')).diff(moment(moment(start_time).format('YYYY-MM-DD 00:00:00')), "days")==1 ? '24:00' : moment(end_time).format('HH:mm');
 }
+
+export function isSameColor(oldArr, item) {
+  let same = false;
+  for (let key in oldArr) {
+    let item = oldArr[key];
+    if(item[2] === item[2]){
+      same=true;
+      break;
+    }
+  }
+  return same;
+}
+
+export function filterSameColor(oldArr) {
+  let color;
+  for (let key in Common.color) {
+    let item = Common.color[key];
+    if(!isSameColor(oldArr, item)){
+      color = item;
+      break
+    }
+  }
+}

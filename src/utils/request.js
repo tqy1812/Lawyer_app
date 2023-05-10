@@ -16,7 +16,7 @@ let request = {
      * @param callback 请求成功回调
      * @param logoutCallback 
      */
-    get: (url, method, headers, callback, logoutCallback) => {
+    get: (url, method, headers, callback, logoutCallback, isHiddenToast) => {
         logger(url + method)
         logger(headers)
         axios({
@@ -44,7 +44,9 @@ let request = {
         }).catch((error) => {
             logger(error);
             destroySibling();
-            Toast.show("抱歉!服务器无法连接,请稍后再试!");
+            if(!isHiddenToast) {
+                Toast.show("抱歉!服务器无法连接,请稍后再试!");
+            }
             // failCallback(error);
         });
     },

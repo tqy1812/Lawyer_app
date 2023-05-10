@@ -32,6 +32,8 @@ import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
 import { logger, compareVersion,FontSize } from '../utils/utils';
 import { SendIdentify } from '../components/SendIdentify';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
 
@@ -53,6 +55,8 @@ class LoginPage extends Component {
             lastId: 1,
             code: 0,
             indetify: '',
+            deviceToken: '0',
+            deviceType: Common.devicePushType.WSS; 
         };
         this.version = '';
         this.globalData = GlobalData.getInstance();
@@ -84,17 +88,23 @@ class LoginPage extends Component {
                     this.autoLoginAction();
                 }
             )
-            PushNotification.createChannel(
-                {
-                    channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
-                    channelName: `任务通知`, // (required)
-                    channelDescription: "任务提醒通知", // (optional) default: undefined.
-                    soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
-                    importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-                    vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-                },
-                (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-            );
+            if(platform.isIOS()){
+                
+                PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
+            }
+            else {
+                PushNotification.createChannel(
+                    {
+                        channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
+                        channelName: `任务通知`, // (required)
+                        channelDescription: "任务提醒通知", // (optional) default: undefined.
+                        soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+                        importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+                        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+                    },
+                    (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+                );
+            }
         });
     }
 
@@ -103,8 +113,19 @@ class LoginPage extends Component {
         if (typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
             this.viewDidAppear && this.viewDidAppear.remove();
         this.nameListener && this.nameListener.remove();
+        if (platform.isIOS()) {
+            PushNotificationIOS.removeEventListener('register');
+        }
         // this.backHandler && this.backHandler.remove();
     }
+
+    onRegistered = (deviceToken) => {
+        cosnt that = this
+        logger('.......deviceToken='+deviceToken);
+        if(deviceToken) {
+            that.setState({deviceToken: deviceToken, deviceType: Common.devicePushType.IOS})
+        }
+      };
 
     async autoLoginAction() {
         const { dispatch } = this.props;
@@ -152,7 +173,7 @@ class LoginPage extends Component {
     handleLogin() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
-            const { phone, password, autoLogin } = this.state;
+            const { phone, password, autoLogin, deviceToken, deviceType } = this.state;
             if (phone == null || phone.length <= 0) {
                 Toast.show('手机号不能为空!');
                 return;
@@ -169,7 +190,7 @@ class LoginPage extends Component {
                 return;
             }
             Toast.show("登录中");
-            dispatch(actionAuth.reqLogin(phone, password, (res, error) => {
+            dispatch(actionAuth.reqLogin(phone, password, deviceToken, deviceType, (res, error) => {
                 logger(res)
                 if (error) {
                     logger(error)
@@ -361,6 +382,13 @@ class LoginPage extends Component {
                     <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
                         <Text style={styles.loginText}>登录</Text>
                     </MyButton>
+                  
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={new Date()}
+          mode={'time'}
+          is24Hour={true}
+        />
                 </View>
 
             </SafeAreaView>

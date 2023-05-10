@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import type {Node} from 'react';
-import { NativeModules } from 'react-native';
+import { NativeModules, PixelRatio } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import StackRouter from './src/router/StackRouter';

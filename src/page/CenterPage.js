@@ -212,6 +212,10 @@ class CenterPage extends BaseComponent {
         NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
       }
     }
+
+    openWebPage() {
+      this.props.navigation.navigate('WebPage', { url: 'userServe/serve.html', title: '时间管理方法访问' })
+    }
     render() {
       const { userInfo} = this.props;
       const { imgAvatar, caseList, caseListInfo} = this.state;
@@ -272,6 +276,12 @@ class CenterPage extends BaseComponent {
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>
+              <View style={styles.menuView}>
+                <MyButton style={styles.menuButton} onPress={() => {this.openWebPage()}}>
+                  <Text style={styles.menuText}>时间管理方法访问</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
+                </MyButton>
+              </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>隐私安全</Text></View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('Permission')}}>
@@ -287,13 +297,13 @@ class CenterPage extends BaseComponent {
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('MyInfo')}}>
-                  <Text style={styles.menuText}>个人信息查看与导出</Text>
+                  <Text style={styles.menuText}>个人信息查看</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>
               <View style={styles.menuView1}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('About')}}>
-                  <Text style={styles.menuText}>关于律时与帮助</Text>
+                  <Text style={styles.menuText}>关于律时与反馈</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>

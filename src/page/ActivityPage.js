@@ -67,10 +67,10 @@ class ActivityPage extends BaseComponent {
                 }
             }));
             this.eventNoticeReceive = DeviceEventEmitter.addListener('refreshDailyProcess',
-                () => { this.handleList(moment(new Date()).format('YYYY-MM-DD')); });
+                () => { this.backToday(); });
             const hour = new Date().getHours();
             if(hour>=7) {
-                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
             } else if(hour>=17) {
                 this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
             }
@@ -103,7 +103,7 @@ class ActivityPage extends BaseComponent {
             else{
                 const hour = new Date().getHours();
                 if(hour>=7) {
-                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
+                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
                 } else if(hour>=17) {
                     this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
                 }
@@ -117,7 +117,7 @@ class ActivityPage extends BaseComponent {
             that.myCalendar && that.myCalendar.setSelectedDate(moment(new Date()));
             const hour = new Date().getHours();
             if(hour>=7) {
-                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-6) * 50, animated: true});
+                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
             } else if(hour>=17) {
                 this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
             }
