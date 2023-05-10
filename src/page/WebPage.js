@@ -8,22 +8,14 @@ import {
     Overlay,
     StatusBar,
     Platform,
-    ImageBackground, InteractionManager, ActivityIndicator
+    ImageBackground, ActivityIndicator
 } from 'react-native';
 import Header from '../components/Header';
 import {connect} from 'react-redux';
-import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
-import platform from '../utils/platform';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
-import MyButton from '../components/MyButton';
-// import { CheckBox } from 'react-native-elements';
-// import AntDesign from 'react-native-vector-icons/AntDesign';
-// import Feather from 'react-native-vector-icons/Feather';
-import authHelper from '../helpers/authHelper';
-import actionCase from '../actions/actionCase';
-import { caseSetting, logger } from '../utils/utils';
+import platform from '../utils/platform';
 import {
   WebView as WebViewX5
 } from 'react-native-webview-tencentx5';
@@ -33,13 +25,10 @@ import {
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 
-class ReportPage extends Component {
+class ServicePage extends Component {
 
     static mapStateToProps(state) {
         let props = {};
-        props.user = state.Auth.user;
-        props.isLogin = authHelper.logined(state.Auth.user);
-        props.caseList = state.Case.caseList;
         return props;
     }
 
@@ -48,9 +37,10 @@ class ReportPage extends Component {
         super(props);
         this.state = {
           loading: true,
-          caseSet: caseSetting(props.caseList)
+          backButtonEnabled: false,
+          webviewUrl: props.route.params.url,
+          title: props.route.params.title,
         };
-        
         this.INJECTEDJAVASCRIPT = `
         const meta = document.createElement('meta'); 
         meta.setAttribute('content', 'initial-scale=1, maximum-scale=1, user-scalable=0'); 
@@ -60,42 +50,37 @@ class ReportPage extends Component {
     }
 
     componentDidMount() {
-      if(!this.props.isLogin) {
-        this.props.navigation.navigate('Login');
-      }
     }
 
-    //
-    handSubmit() {
-      const {dispatch} = this.props;
-      this.props.navigation.goBack();
-    }
     closeLoading = () => {
       this.setState({loading: false});
-      Storage.getUserRecord().then((user) => {
-        if (user) {
-          let obj = Object.assign({}, JSON.parse(user));
-          let reg = new RegExp('"',"g");  
-          // logger(obj.token, JSON.stringify(this.state.caseSet).replace(reg, "'"))
-          this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' + JSON.stringify(this.state.caseSet).replace(reg, "'") + '");true;');
-        }
+    }
+    handleBack = () => {
+      if (this.state.backButtonEnabled) {
+        this.wv && this.wv.current && this.wv.current.goBack();
+      } else {//否则返回到上一个页面
+        this.props.navigation.goBack();
+      }
+    }
+    onNavigationStateChange = (navState) => {
+      this.setState({
+        backButtonEnabled: navState.canGoBack
       });
-
     }
     render() {
-            return (
-                <SafeAreaView style={styles.container}>   
-                  <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />  
-                    <Header title='工时报告' back={true} {...this.props}/>  
-                    { this.state.loading && <View style={styles.mask}>
+      const {webviewUrl,  title} = this.state;
+      return (
+          <SafeAreaView style={styles.container}>  
+            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+            <Header title={title} back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>                              
+            { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />
                     </View>}                                                   
                     <View style={styles.container}>                    
                     {
                         platform.isAndroid() ? <WebViewX5
                         ref={this.wv}
-                        source={{ uri:  Common.webUrl + 'report/report.html' }}
-                        // source={{ uri: 'https://human.kykyai.cn' }}
+                        source={{ uri:  Common.webUrl + webviewUrl }}
                         scalesPageToFit={false}
                         bounces={false}
                         style={{width:windowWidth,height:'100%'}}
@@ -106,10 +91,10 @@ class ReportPage extends Component {
                         userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         incognito={true}
                         onLoadEnd={this.closeLoading.bind(this)}
+                        onNavigationStateChange={this.onNavigationStateChange.bind(this)}
                       /> : <WebView
                       ref={this.wv}
-                      source={{ uri: Common.webUrl + 'report/report.html' }}
-                      // source={{ uri: 'https://human.kykyai.cn' }}
+                      source={{ uri: Common.webUrl + webviewUrl }}
                       scalesPageToFit={false}
                       bounces={false}
                       style={{width:windowWidth,height:'100%'}}
@@ -120,15 +105,16 @@ class ReportPage extends Component {
                       userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                       incognito={true}
                       onLoadEnd={this.closeLoading.bind(this)}
+                      onNavigationStateChange={this.onNavigationStateChange.bind(this)}
                     />
                     }
 
                     </View>
-                </SafeAreaView>
-            )
+          </SafeAreaView>
+      )
     }
 }
-export default connect(ReportPage.mapStateToProps)(ReportPage);
+export default connect(ServicePage.mapStateToProps)(ServicePage);
 
 const styles = StyleSheet.create({
   container: {

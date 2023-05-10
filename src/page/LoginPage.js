@@ -32,7 +32,6 @@ import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
 import { logger, compareVersion,FontSize } from '../utils/utils';
 import { SendIdentify } from '../components/SendIdentify';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
@@ -56,7 +55,7 @@ class LoginPage extends Component {
             code: 0,
             indetify: '',
             deviceToken: '0',
-            deviceType: Common.devicePushType.WSS; 
+            deviceType: Common.devicePushType.WSS,
         };
         this.version = '';
         this.globalData = GlobalData.getInstance();
@@ -120,7 +119,7 @@ class LoginPage extends Component {
     }
 
     onRegistered = (deviceToken) => {
-        cosnt that = this
+        const that = this
         logger('.......deviceToken='+deviceToken);
         if(deviceToken) {
             that.setState({deviceToken: deviceToken, deviceType: Common.devicePushType.IOS})
@@ -382,13 +381,6 @@ class LoginPage extends Component {
                     <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
                         <Text style={styles.loginText}>登录</Text>
                     </MyButton>
-                  
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={new Date()}
-          mode={'time'}
-          is24Hour={true}
-        />
                 </View>
 
             </SafeAreaView>

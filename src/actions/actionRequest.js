@@ -97,7 +97,7 @@ export function getAppVersion(callback = null) {
 export function getAndroidAppVersion(callback = null) {
     return (dispatch, getState) => {
         let state = getState();
-        let method = 'api/app_update_log/latest';
+        let method = 'app_update_log/latest';
         let headers = {};
         request.get(api, method, headers,
             (res, error) => {
