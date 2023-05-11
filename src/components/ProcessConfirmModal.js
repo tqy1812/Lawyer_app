@@ -18,13 +18,14 @@ import actionCase from "../actions/actionCase";
 import IcomoonIcon from "../components/IcomoonIcon";
 import FinishPlanItem from "../components/FinishPlanItem";
 import MyButton from "./MyButton";
-import { destroySibling, showLoading, destroyConfirmSibling, showToast } from "./ShowModal";
+import { destroySibling, showModal, showLoading, destroyConfirmSibling, showToast } from "./ShowModal";
 import * as Storage from '../common/Storage';
 import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
 import ModalDropdown from "./ModalDropdown";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { he } from "date-fns/locale";
+import {DatePicker} from "react-native-common-date-picker";
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
 
@@ -38,6 +39,10 @@ export default class ProcessConfirmModal extends Component {
       open: false,
       isIcon: false,
       caseListInfo: props.caseListInfo,
+      itemDate: moment(props.item.start_time).format('YYYY-MM-DD'),
+      itemDateStr: moment(props.item.start_time).format('YYYY年MM月DD日'),
+      itemStartTime: props.item.start_time ? moment(props.item.start_time).format('HH:mm') : '-- : --',
+      itemEndTime: props.item.end_time ? moment(props.item.end_time).format('HH:mm') : '-- : --',
       // page: 1,
       // totalSize:  props.caseListInfo ? props.caseListInfo.length : 0
     };
@@ -97,9 +102,42 @@ export default class ProcessConfirmModal extends Component {
       this.setState({caseId: item.id})
     }
   }
+
+  showConfirm = () => {
+    const {itemDate} = this.state;
+    showModal(<View style={[styles.modalContainer,{height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}>
+    <View style={[styles.container,{paddingBottom: 9}]}>
+    <DatePicker
+      width={Common.window.width - 30}
+      titleText='更改日期'
+      confirmText='应用'
+      cancelText='取消'
+      titleStyle={{color:'#000', fontSize: 18}}
+      toolBarStyle={{borderTopRightRadius: 18, borderTopLeftRadius: 18}}
+      toolBarConfirmStyle={{color:'#007afe', fontSize: 16}}
+      toolBarCancelStyle={{fontSize: 16}}
+      yearSuffix='年'
+      monthSuffix='月'
+      daySuffix='日'
+      confirm={date => {
+          this.setState({itemDate: date, itemDateStr: moment(date).format('YYYY年MM月DD日')}, ()=>{
+            destroySibling();
+          });
+      }}
+      cancel={
+        ()=>{
+          destroySibling();
+        }
+      }
+      selectedTextFontSize={18}
+      maxDate={(moment().year()+3)+'-12-31'}
+      defaultDate={itemDate}
+      unselectedRowBackgroundColor='transparent'
+  /></View></View>);
+  }
 render() {
   const { item, caseLists} = this.props;
-  const { itemNotice, itemName, open, isIcon, caseListInfo } = this.state;
+  const { itemNotice, itemName, open, isIcon, caseListInfo, itemDateStr, itemStartTime, itemEndTime } = this.state;
   // logger('caseListInfo......', caseListInfo)
   const renderItem = (item) => {
     // logger('....renderItem',item)
@@ -115,13 +153,13 @@ render() {
         {caseLists && JSON.stringify(caseLists) != '{}' && <View style={styles.processInfo}>
           <View style={styles.listTitleView}>
             <View style={styles.titleList1}>
-              <View style={styles.titleTime1}>
-                <Text style={styles.listItemTitleFont1}>{moment(item.start_time).format('YYYY年MM月DD日')}</Text>
-              </View>
+              <MyButton style={styles.titleTime1} onPress={this.showConfirm.bind(this)}>
+                <Text style={styles.listItemTitleFont1} numberOfLines={2}>{itemDateStr}</Text>
+              </MyButton>
               <View style={styles.listItemTimeView1}>
-                <Text style={styles.listItemTimeStart1}>{item.start_time ? moment(item.start_time).format('HH:mm') : '-- : --'}</Text>
+                <Text style={styles.listItemTimeStart1}>{itemStartTime}</Text>
                 <Text style={styles.listItemTimeStart1}> ~ </Text>
-                <Text style={styles.listItemTimeEnd1}>{item.end_time ? moment(item.end_time).format('HH:mm') : '-- : --'}</Text>
+                <Text style={styles.listItemTimeEnd1}>{itemEndTime}</Text>
               </View>
               <View style={styles.listItemNoticeView1}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
             </View>
@@ -362,7 +400,7 @@ caseItemName:{
     marginTop: 10,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     height: 45
   },
@@ -374,9 +412,9 @@ caseItemName:{
   titleTime1: {
     display: 'flex',
     flexDirection: 'row',
-    // position: 'absolute',
-    // zIndex: 1,
-    // left: 0
+    position: 'absolute',
+    zIndex: 1,
+    left: 0
   },
   listItemTitleFont: {
     fontSize: FontSize(18),
@@ -391,7 +429,8 @@ caseItemName:{
   listItemTitleFont1: {
     fontSize: 14,
     color: '#909399',
-    // width: 78,
+    width: 60,
+    lineHeight: 19
   },
   listItemTitleWeekFont: {
     fontSize: FontSize(18),
@@ -486,8 +525,8 @@ caseItemName:{
     display: 'flex',
     flexDirection: 'column',
     height: 45,
-    // position: 'absolute',
-    // right: 0
+    position: 'absolute',
+    right: 0
   },
   talkNameInput: {
     height: 30,

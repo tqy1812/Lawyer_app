@@ -318,6 +318,7 @@ class LoginPage extends Component {
                                 </View>)
                     }
                 </View>
+                
                 <View style={styles.content}>
                     <View style={[styles.formInput]}>
                         <TextInput
