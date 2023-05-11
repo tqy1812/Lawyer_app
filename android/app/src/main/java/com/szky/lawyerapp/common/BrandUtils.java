@@ -4,9 +4,9 @@ public class BrandUtils {
     // 小米
     public static final String PHONE_XIAOMI = "xiaomi";
     // 华为
-    public static final String PHONE_HUAWEI1 = "Huawei";
+    public static final String PHONE_HUAWEI = "Huawei";
     // 华为
-    public static final String PHONE_HUAWEI3 = "HONOR";
+    public static final String PHONE_HONOR = "HONOR";
     // 魅族
     public static final String PHONE_MEIZU = "Meizu";
     // NOVA

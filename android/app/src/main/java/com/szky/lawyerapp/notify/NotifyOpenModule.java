@@ -1,9 +1,13 @@
 package com.szky.lawyerapp.notify;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -11,10 +15,12 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.uimanager.IllegalViewOperationException;
 import com.szky.lawyerapp.MainActivity;
 
 import javax.annotation.Nonnull;
@@ -122,6 +128,34 @@ public class NotifyOpenModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void getDeviceType(Callback successCallback) {
+        try {
+            String type = android.os.Build.BRAND;
+            if(type != null){
+                successCallback.invoke(type.toUpperCase());
+            }else {
+                successCallback.invoke("");
+            }
+        } catch (IllegalViewOperationException e){
+
+        }
+    }
+
+    @ReactMethod
+    public void getDeviceToken(Callback successCallback) {
+        try {
+            SharedPreferences shared = MainActivity.getActivity().getSharedPreferences("notifyData", MODE_PRIVATE);
+            String token = shared.getString("deviceToken", "");
+            if(token != null){
+                successCallback.invoke(token);
+            }else {
+                successCallback.invoke("");
+            }
+        } catch (IllegalViewOperationException e){
+
+        }
+    }
     @Nonnull
     @Override
     public String getName() {

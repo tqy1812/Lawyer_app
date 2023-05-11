@@ -29,8 +29,6 @@ public class SplashScreenModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void hide() {
-
-        Log.i("MainActivity", "22hide*************");
         SplashScreen.hide(getCurrentActivity());
     }
 

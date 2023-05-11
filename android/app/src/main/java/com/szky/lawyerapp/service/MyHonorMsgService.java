@@ -2,6 +2,7 @@ package com.szky.lawyerapp.service;
 
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.hihonor.push.sdk.HonorMessageService;
 import com.hihonor.push.sdk.HonorPushDataMsg;
@@ -12,6 +13,7 @@ public class MyHonorMsgService extends HonorMessageService {
     @Override
     public void onNewToken(String pushToken) {
         // TODO: 处理收到的新PushToken。
+        Log.i("MainActivity", "getHonorToken: "+pushToken);
         if (!TextUtils.isEmpty(pushToken)) {
             SharedPreferences shared = MainActivity.getActivity().getSharedPreferences("notifyData", MODE_PRIVATE);
             SharedPreferences.Editor editor = shared.edit();

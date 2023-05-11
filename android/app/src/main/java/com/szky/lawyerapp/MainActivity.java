@@ -17,6 +17,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -25,7 +26,13 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.hihonor.push.sdk.HonorPushCallback;
+import com.hihonor.push.sdk.HonorPushClient;
+import com.huawei.hms.aaid.HmsInstanceId;
+import com.huawei.hms.common.ApiException;
+import com.huawei.hms.utils.Util;
 import com.szky.lawyerapp.R;
+import com.szky.lawyerapp.common.BrandUtils;
 import com.szky.lawyerapp.splash.SplashScreen;
 
 public class MainActivity extends ReactActivity {
@@ -93,7 +100,7 @@ public class MainActivity extends ReactActivity {
     Log.i("MainActivity", "******************************onCreate===="+android.os.Build.BRAND);
     context = this;
     MainApplication.getInstance().createNotificationChannel();
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+//    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
 //      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //        ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
 //      }
@@ -103,7 +110,7 @@ public class MainActivity extends ReactActivity {
 //      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 //        ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
 //      }
-    }
+//    }
     registerReceiver();
 //    HeadlessJsTaskService.acquireWakeLockNow(getApplicationContext());
 //    Intent service = new Intent(this, WebSocketTaskService.class);
@@ -112,6 +119,71 @@ public class MainActivity extends ReactActivity {
 //    } else {
 //      startService(service);
 //    }
+    if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_HUAWEI)) {
+      getHuaweiToken();
+    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_HONOR)) {
+      getHonorToken();
+    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_XIAOMI)) {
+      getOtherToken();
+    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_MEIZU)) {
+      getOtherToken();
+    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_OPPO)) {
+      getOtherToken();
+    } else {
+      getOtherToken();
+    }
+  }
+
+  private void getHuaweiToken() {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          // read from agconnect-services.json
+          String appId = "108249733";
+          String token = HmsInstanceId.getInstance(MainActivity.this).getToken(appId, "HCM");
+          Log.i("MainActivity", "get token:" + token);
+          SharedPreferences shared = MainActivity.getActivity().getSharedPreferences("notifyData", MODE_PRIVATE);
+          SharedPreferences.Editor editor = shared.edit();
+          editor.putString("deviceToken", token);
+          editor.commit();
+        } catch (ApiException e) {
+          Log.i("MainActivity", "get token failed, "+e);
+        }
+      }
+    }.start();
+  }
+  private void getHonorToken() {
+    boolean isSupport = HonorPushClient.getInstance().checkSupportHonorPush(getApplicationContext());
+    Log.i("MainActivity", "getHonorToken isSupport: "+isSupport);
+    if (isSupport) {
+      HonorPushClient.getInstance().init(getApplicationContext(), true);
+      Log.i("MainActivity", "getHonorToken sdk init success: ");
+      // TODO: 使用荣耀推送服务能力
+      HonorPushClient.getInstance().getPushToken(new HonorPushCallback<String>() {
+        @Override
+        public void onSuccess(String pushToken) {
+          Log.i("MainActivity", "getHonorToken: "+pushToken);
+          // TODO: 新Token处理
+          SharedPreferences shared = MainActivity.getActivity().getSharedPreferences("notifyData", MODE_PRIVATE);
+          SharedPreferences.Editor editor = shared.edit();
+          editor.putString("deviceToken", pushToken);
+          editor.commit();
+        }
+
+        @Override
+        public void onFailure(int errorCode, String errorString) {
+          // TODO: 错误处理
+        }
+      });
+    }
+  }
+
+  private void getOtherToken() {
+    SharedPreferences shared = MainActivity.getActivity().getSharedPreferences("notifyData", MODE_PRIVATE);
+    SharedPreferences.Editor editor = shared.edit();
+    editor.putString("deviceToken", "0");
+    editor.commit();
   }
   public static boolean isOpenNotifySetting() {
     NotificationManagerCompat notification = NotificationManagerCompat.from(context);

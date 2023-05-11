@@ -67,30 +67,37 @@ export function getAppVersion(callback = null) {
         let headers = {};
         headers['Content-Type'] = 'application/json';
         let data = {};
-        request.post('https://itunes.apple.com/cn/lookup?id=6446157793', '', data, headers,
-            (res, error) => {
-                if(res) {
-                    if(res.resultCount > 0) {
-                        let retData = res.results && res.results[0] && res.results[0].version;
-                        logger('app store version===' + retData)
-                        if (callback) {
-                            callback(retData, error);
+        NetInfo.fetch().then(state => {
+            if(state.isConnected) {
+                request.post('https://itunes.apple.com/cn/lookup?id=6446157793', '', data, headers,
+                    (res, error) => {
+                        if(res) {
+                            if(res.resultCount > 0) {
+                                let retData = res.results && res.results[0] && res.results[0].version;
+                                logger('app store version===' + retData)
+                                if (callback) {
+                                    callback(retData, error);
+                                }
+                            }
+                            else {
+                                if (callback) {
+                                    callback('', error);
+                                }
+                            }
                         }
-                    }
-                    else {
-                        if (callback) {
-                            callback('', error);
-                        }
-                    }
-                }
-            },
-            (reqKey) => {
-            },
-            () => {
+                    },
+                    (reqKey) => {
+                    },
+                    () => {
 
-            },
-            true
-        ); 
+                    },
+                    true
+                ); 
+            }
+            else {
+                Toast.show("网络已经离线");
+            }
+        });
     };
 }
 
@@ -99,24 +106,31 @@ export function getAndroidAppVersion(callback = null) {
         let state = getState();
         let method = 'app_update_log/latest';
         let headers = {};
-        request.get(api, method, headers,
-            (res, error) => {
-                if(res) {
-                    let retData = res.data;
-                    if (callback) {
-                        callback(retData, error);
-                    }
-                }
-                else {
-                    if (callback) {
-                        callback(res, error);
-                    }
-                }
-            },
-            () => {
-            },
-            true
-        );
+        NetInfo.fetch().then(state => {
+            if(state.isConnected) {
+                request.get(api, method, headers,
+                    (res, error) => {
+                        if(res) {
+                            let retData = res.data;
+                            if (callback) {
+                                callback(retData, error);
+                            }
+                        }
+                        else {
+                            if (callback) {
+                                callback(res, error);
+                            }
+                        }
+                    },
+                    () => {
+                    },
+                    true
+                );
+            }
+            else{
+                Toast.show("网络已经离线");
+            }
+        })
     };
 }
 export function getInfo(callback = null) {

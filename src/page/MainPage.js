@@ -515,17 +515,7 @@ class MainPage extends BaseComponent {
         }
       }));
       this.props.dispatch(actionAuth.reqUserInfo());
-      // logger('****************show', this.wc.getKeepSocket());
-      // this.wc.getKeepSocket() && BackgroundTimer.clearInterval(this.wc.getKeepSocket());
-      // let te = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXBsb3llZV9pZCI6IjEiLCJwaG9uZSI6IjE3Nzc3Nzc3Nzc3IiwiaWF0IjoxNjczNDA1MTMxLjA5ODczMjIsImV4cCI6MTY3NDAwOTkzMS4wOTg3MzIyfQ.Zpc2Q0ugIKTLQj5gvO7-ya1ZTiPbPjjuB_6Bu2_VXm8"
-      // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("'+te+'");true;');
-      // Storage.getUserRecord().then((user) => {
-      //   if (user) {
-      //     let obj = Object.assign({}, JSON.parse(user));
-      //     logger(obj)
-      //     this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("1111", "'+obj.token+'");true;');
-      //   }
-      // });
+      DeviceEventEmitter.emit('refreshDailyProcess');
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
       // logger('***************hidden', this.wc);
@@ -533,9 +523,6 @@ class MainPage extends BaseComponent {
       if (platform.isAndroid()) {
         NativeModules.WebSocketWorkManager.startBackgroundWork();
       }
-      // if(this.wc) this.wc.backTimer();
-      // this.wv && this.wv.current && this.wv.current.injectJavaScript(`receiveMessage("stop");true;`);
-      // AppRegistry.startHeadlessTask(1, 'WebSocketConnectService', {});
     }
     this.setState({ appState: nextAppState });
   };

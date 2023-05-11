@@ -12,6 +12,7 @@ import { Text, TextInput } from 'react-native';
 import platform from './src/utils/platform';
 import GlobalData from "./src/utils/GlobalData";
 import { logger } from './src/utils/utils';
+import Common from './src/common/constants';
 if(Text.defaultProps== null) Text.defaultProps={}
 if(TextInput.defaultProps== null) TextInput.defaultProps={}
 Text.defaultProps.allowFontScaling = false

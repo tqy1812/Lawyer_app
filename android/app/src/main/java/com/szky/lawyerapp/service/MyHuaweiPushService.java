@@ -41,7 +41,7 @@ public class MyHuaweiPushService extends HmsMessageService {
      */
     @Override
     public void onNewToken(String token) {
-        Log.i(TAG, "received refresh token:" + token);
+        Log.i(TAG, "received Huawei token:" + token);
         // send the token to your app server.
         if (!TextUtils.isEmpty(token)) {
             // This method callback must be completed in 10 seconds. Otherwise, you need to start a new Job for callback processing.

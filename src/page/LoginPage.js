@@ -92,6 +92,20 @@ class LoginPage extends Component {
                 PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
             }
             else {
+                NativeModules.NotifyOpen.getDeviceToken((token) =>{
+                    logger('.....DeviceToken='+token);
+                    this.setState({
+                        deviceToken:token
+                    })
+                });
+                NativeModules.NotifyOpen.getDeviceType((type) =>{
+                    logger('.....DeviceType='+type);
+                    const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
+                    this.setState({
+                        deviceType:deviceType
+                    })
+                });
+
                 PushNotification.createChannel(
                     {
                         channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
