@@ -137,7 +137,8 @@ let devicePushType = {
     'IOS':2,
     'HUAWEI':3,
     'XIAOMI':4,
-    'HONOR':5 
+    'HONOR':5 ,
+    'OPPO':6 
 }
 export default {
     window: window,
