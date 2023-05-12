@@ -29,13 +29,13 @@
 		A8B079EF2994821C00717228 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079EE2994821C00717228 /* CoreGraphics.framework */; };
 		A8B079F1299485EA00717228 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079F0299485EA00717228 /* libc++.tbd */; };
 		A8B079F32994860100717228 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B079F22994860100717228 /* libz.tbd */; };
+		A8B1FCE02A0E1FE600C8D429 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A8B1FCDF2A0E1FE600C8D429 /* main.jsbundle */; };
 		A8B3CF8E29B6E5BD0086D052 /* SpeechRecognizerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B3CF8C29B6E5BD0086D052 /* SpeechRecognizerModule.m */; };
 		A8B3CF9129B6E6CB0086D052 /* SpeechSynthesizerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B3CF9029B6E6CB0086D052 /* SpeechSynthesizerModule.m */; };
 		A8B3CF9429B6E6D70086D052 /* SpeechConstantModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B3CF9229B6E6D60086D052 /* SpeechConstantModule.m */; };
 		A8BA1AD729AC94F2004CFB20 /* OpenNoticeEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = A8BA1AD629AC94F2004CFB20 /* OpenNoticeEmitter.m */; };
 		A8C1CDD929C9562A00B542B4 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = A8C1CDD829C9562A00B542B4 /* assets */; };
 		A8C5E73729B5CE7D0078D0A5 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A8C5E73629B5CE7D0078D0A5 /* libicucore.tbd */; };
-		A8E7E74C2A08DE5E00601888 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A8E7E74B2A08DE5E00601888 /* main.jsbundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +81,7 @@
 		A8B079EE2994821C00717228 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		A8B079F0299485EA00717228 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		A8B079F22994860100717228 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		A8B1FCDF2A0E1FE600C8D429 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
 		A8B3CF8C29B6E5BD0086D052 /* SpeechRecognizerModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpeechRecognizerModule.m; sourceTree = "<group>"; };
 		A8B3CF8D29B6E5BD0086D052 /* SpeechRecognizerModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeechRecognizerModule.h; sourceTree = "<group>"; };
 		A8B3CF8F29B6E6CB0086D052 /* SpeechSynthesizerModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeechSynthesizerModule.h; sourceTree = "<group>"; };
@@ -91,7 +92,6 @@
 		A8BA1AD829AC951B004CFB20 /* OpenNoticeEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNoticeEmitter.h; sourceTree = "<group>"; };
 		A8C1CDD829C9562A00B542B4 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../release_ios/assets; sourceTree = "<group>"; };
 		A8C5E73629B5CE7D0078D0A5 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
-		A8E7E74B2A08DE5E00601888 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
 		B8C8223842DB9E47F92DD428 /* libPods-LawyerApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EE264D88817470C876976DB5 /* Pods-LawyerApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LawyerApp.release.xcconfig"; path = "Target Support Files/Pods-LawyerApp/Pods-LawyerApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -162,7 +162,7 @@
 		13B07FAE1A68108700A75B9A /* LawyerApp */ = {
 			isa = PBXGroup;
 			children = (
-				A8E7E74B2A08DE5E00601888 /* main.jsbundle */,
+				A8B1FCDF2A0E1FE600C8D429 /* main.jsbundle */,
 				A8C1CDD829C9562A00B542B4 /* assets */,
 				A8B3CF9329B6E6D60086D052 /* SpeechConstantModule.h */,
 				A8B3CF9229B6E6D60086D052 /* SpeechConstantModule.m */,
@@ -340,7 +340,7 @@
 				A8C1CDD929C9562A00B542B4 /* assets in Resources */,
 				25454CFB29769DDD00EAEAB2 /* Images.xcassets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				A8E7E74C2A08DE5E00601888 /* main.jsbundle in Resources */,
+				A8B1FCE02A0E1FE600C8D429 /* main.jsbundle in Resources */,
 				A893F63C299A40E50013C5CC /* icomoon.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);

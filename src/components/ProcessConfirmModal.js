@@ -154,7 +154,6 @@ export default class ProcessConfirmModal extends Component {
           hourSuffix='时'
           minuteSuffix='分'
           confirm={date => {
-              console.warn(date)
               this.setState({itemStartTimeStr: date[0], itemEndTimeStr: date[1]}, ()=>{
                 destroySibling();
               });
@@ -189,7 +188,8 @@ render() {
           <View style={styles.listTitleView}>
             <View style={styles.titleList1}>
               <MyButton style={styles.titleTime1} onPress={this.showConfirm.bind(this)}>
-                <Text style={styles.listItemTitleFont1} numberOfLines={2}>{itemDateStr}</Text>
+                <Text style={styles.listItemTitleFont1}>{itemDateStr.substring(0, 5)}</Text>
+                <Text style={styles.listItemTitleFont1}>{itemDateStr.substring(5, itemDateStr.length)}</Text>
               </MyButton>
               <MyButton style={styles.listItemTimeView1} onPress={this.showTimeConfirm.bind(this)}>
                 <Text style={styles.listItemTimeStart1}>{itemStartTimeStr}</Text>
@@ -446,7 +446,9 @@ caseItemName:{
   },
   titleTime1: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
+    justifyContent:'center',
+    alignItems:'flex-start',
     position: 'absolute',
     zIndex: 1,
     left: 0
@@ -464,7 +466,6 @@ caseItemName:{
   listItemTitleFont1: {
     fontSize: 14,
     color: '#909399',
-    width: 60,
     lineHeight: 19
   },
   listItemTitleWeekFont: {
