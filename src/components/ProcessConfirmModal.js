@@ -107,7 +107,7 @@ export default class ProcessConfirmModal extends Component {
   showConfirm = () => {
     const {itemDate} = this.state;
     showModal(<View style={[styles.modalContainer,{height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}>
-    <View style={[styles.container,{paddingBottom: 9}]}>
+    <View style={[styles.container,{paddingBottom: 9,paddingTop: 3}]}>
     <DatePicker
       width={Common.window.width - 30}
       titleText='更改日期'
@@ -141,7 +141,7 @@ export default class ProcessConfirmModal extends Component {
   showTimeConfirm = () => {
     const {itemStartTimeStr, itemEndTimeStr} = this.state;
     showModal(<View style={[styles.modalContainer,{height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}>
-    <View style={[styles.container,{paddingBottom: 9}]}>
+    <View style={[styles.container,{paddingBottom: 9,paddingTop: 3}]}>
     <TimePicker
           width={Common.window.width - 30}
           titleText='更改时刻'
