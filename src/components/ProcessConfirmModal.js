@@ -114,7 +114,7 @@ export default class ProcessConfirmModal extends Component {
       confirmText='应用'
       cancelText='取消'
       titleStyle={{color:'#000', fontSize: 18}}
-      toolBarStyle={{borderTopRightRadius: 18, borderTopLeftRadius: 18}}
+      toolBarStyle={{borderTopRightRadius: 18, borderTopLeftRadius: 18, borderBottomColor: '#d3d3d3', borderBottomWidth: 1}}
       toolBarConfirmStyle={{color:'#007afe', fontSize: 16}}
       toolBarCancelStyle={{fontSize: 16}}
       yearSuffix='年'
@@ -148,7 +148,7 @@ export default class ProcessConfirmModal extends Component {
           confirmText='应用'
           cancelText='取消'
           titleStyle={{color:'#000', fontSize: 18}}
-          toolBarStyle={{borderTopRightRadius: 18, borderTopLeftRadius: 18}}
+          toolBarStyle={{borderTopRightRadius: 18, borderTopLeftRadius: 18, borderBottomColor: '#d3d3d3', borderBottomWidth: 1}}
           toolBarConfirmStyle={{color:'#007afe', fontSize: 16}}
           toolBarCancelStyle={{fontSize: 16}}
           hourSuffix='时'
