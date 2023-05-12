@@ -26,6 +26,7 @@ import ModalDropdown from "./ModalDropdown";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { he } from "date-fns/locale";
 import {DatePicker} from "react-native-common-date-picker";
+import TimePicker from '../components/TimePicker/timePicker/TimePicker';
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
 
@@ -41,8 +42,8 @@ export default class ProcessConfirmModal extends Component {
       caseListInfo: props.caseListInfo,
       itemDate: moment(props.item.start_time).format('YYYY-MM-DD'),
       itemDateStr: moment(props.item.start_time).format('YYYY年MM月DD日'),
-      itemStartTime: props.item.start_time ? moment(props.item.start_time).format('HH:mm') : '-- : --',
-      itemEndTime: props.item.end_time ? moment(props.item.end_time).format('HH:mm') : '-- : --',
+      itemStartTimeStr: props.item.start_time ? moment(props.item.start_time).format('HH:mm') : '-- : --',
+      itemEndTimeStr: props.item.end_time ? moment(props.item.end_time).format('HH:mm') : '-- : --',
       // page: 1,
       // totalSize:  props.caseListInfo ? props.caseListInfo.length : 0
     };
@@ -78,9 +79,9 @@ export default class ProcessConfirmModal extends Component {
   handleSubmit = () => {
     const that = this;
     const { dispatch, item } = this.props;
-    const { itemNotice, itemName, caseId } = this.state;
+    const { itemNotice, itemName, caseId, itemDate, itemStartTimeStr, itemEndTimeStr } = this.state;
     showLoading();
-    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, (rs, error) => {
+    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, itemDate + " " +itemStartTimeStr+":00", itemDate + " " +itemEndTimeStr+":00", (rs, error) => {
       destroySibling();
       if (error) {
         logger(error.info)
@@ -135,9 +136,43 @@ export default class ProcessConfirmModal extends Component {
       unselectedRowBackgroundColor='transparent'
   /></View></View>);
   }
+
+
+  showTimeConfirm = () => {
+    const {itemStartTimeStr, itemEndTimeStr} = this.state;
+    showModal(<View style={[styles.modalContainer,{height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}>
+    <View style={[styles.container,{paddingBottom: 9}]}>
+    <TimePicker
+          width={Common.window.width - 30}
+          titleText='更改时刻'
+          confirmText='应用'
+          cancelText='取消'
+          titleStyle={{color:'#000', fontSize: 18}}
+          toolBarStyle={{borderTopRightRadius: 18, borderTopLeftRadius: 18}}
+          toolBarConfirmStyle={{color:'#007afe', fontSize: 16}}
+          toolBarCancelStyle={{fontSize: 16}}
+          hourSuffix='时'
+          minuteSuffix='分'
+          confirm={date => {
+              console.warn(date)
+              this.setState({itemStartTimeStr: date[0], itemEndTimeStr: date[1]}, ()=>{
+                destroySibling();
+              });
+          }}
+          cancel={
+            ()=>{
+              destroySibling();
+            }
+          }
+          defaultStartTime={itemStartTimeStr}
+          defaultEndTime={itemEndTimeStr}
+          selectedTextFontSize={18}
+          unselectedRowBackgroundColor='transparent'
+        /></View></View>);
+  }
 render() {
   const { item, caseLists} = this.props;
-  const { itemNotice, itemName, open, isIcon, caseListInfo, itemDateStr, itemStartTime, itemEndTime } = this.state;
+  const { itemNotice, itemName, open, isIcon, caseListInfo, itemDateStr, itemStartTimeStr, itemEndTimeStr } = this.state;
   // logger('caseListInfo......', caseListInfo)
   const renderItem = (item) => {
     // logger('....renderItem',item)
@@ -156,11 +191,11 @@ render() {
               <MyButton style={styles.titleTime1} onPress={this.showConfirm.bind(this)}>
                 <Text style={styles.listItemTitleFont1} numberOfLines={2}>{itemDateStr}</Text>
               </MyButton>
-              <View style={styles.listItemTimeView1}>
-                <Text style={styles.listItemTimeStart1}>{itemStartTime}</Text>
+              <MyButton style={styles.listItemTimeView1} onPress={this.showTimeConfirm.bind(this)}>
+                <Text style={styles.listItemTimeStart1}>{itemStartTimeStr}</Text>
                 <Text style={styles.listItemTimeStart1}> ~ </Text>
-                <Text style={styles.listItemTimeEnd1}>{itemEndTime}</Text>
-              </View>
+                <Text style={styles.listItemTimeEnd1}>{itemEndTimeStr}</Text>
+              </MyButton>
               <View style={styles.listItemNoticeView1}><MyButton style={styles.setNoticeView} onPress={() => { this.setState({ itemNotice: !this.state.itemNotice }) }}><IcomoonIcon name='alert_0' size={30} color={itemNotice ? '#007afe' : '#fff'} /></MyButton></View>
             </View>
           </View>

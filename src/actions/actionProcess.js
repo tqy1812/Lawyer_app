@@ -99,10 +99,10 @@ export default class actionProcess {
     };
   }
 
-  static reqSubmitProcess(id, wakeup, name, isEnable, caseId, callback) {
+  static reqSubmitProcess(id, wakeup, name, isEnable, caseId, start_time, end_time, callback) {
     return (dispatch, getState) => {
       let state = getState();
-      dispatch(request.submitProcess(id, wakeup, name, isEnable, caseId, (rs, error)=>{
+      dispatch(request.submitProcess(id, wakeup, name, isEnable, caseId, start_time, end_time, (rs, error)=>{
         if(callback) callback(rs, error);
       }));
     };

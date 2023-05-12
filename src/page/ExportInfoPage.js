@@ -100,7 +100,7 @@ class ExportInfoPage extends Component {
                 <Text style={styles.infoTitle1} numberOfLines={1} ellipsizeMode={'tail'}>已提交</Text>
               </View>
               <View style={styles.infoContent}>
-                <Text style={styles.infoName}>个人信息文件将会在72小时内发送至你的 邮箱 1111111111@qq.com</Text>
+                <Text style={styles.infoName}>个人信息文件将会在72小时内发送至你的邮箱</Text>
               </View>
             </View>
             : <View style={[styles.content, { minHeight: platform.isIOS() ? Common.window.height - 105 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 105 - STATUS_BAR_HEIGHT - 76 - 10, }]}>

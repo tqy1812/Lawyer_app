@@ -54,6 +54,7 @@ class CenterPage extends BaseComponent {
             imgAvatar: props.userInfo.avatar,
             caseList: props.caseList,
             caseListInfo: props.caseListInfo,
+            appType: props.user.app_type
         };
         this.globalDate = GlobalData.getInstance();
     }
@@ -216,9 +217,13 @@ class CenterPage extends BaseComponent {
     openWebPage() {
       this.props.navigation.navigate('WebPage', { url: 'userServe/serve.html', title: '时间管理方法访问' })
     }
+
+    openManagePage() {
+      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '项目管理' })
+    }
     render() {
       const { userInfo} = this.props;
-      const { imgAvatar, caseList, caseListInfo} = this.state;
+      const { imgAvatar, caseList, caseListInfo, appType} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight
       // logger('..onBackButtonPressAndroid', this.props.navigation)
       // logger(caseList)
@@ -249,8 +254,9 @@ class CenterPage extends BaseComponent {
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>项目</Text></View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {}}>
-                  <Text style={styles.menuText}>当前项目</Text>
-                  <View style={styles.menuProject}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>
+                  <Text style={appType==3 ? { color: '#606266',fontSize: FontSize(20),marginLeft: 5,} : { flex: 1, color: '#606266',fontSize: FontSize(20),marginLeft: 5,}}>当前项目</Text>
+                  <View style={[styles.menuProject, {justifyContent: appType==3 ? 'center' : 'flex-end'}]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>
+                  {appType==3 && <Text style={styles.manageText} onPress={this.openManagePage.bind(this)}>管理</Text>}
                 </MyButton>
                 <View style={styles.splitLine}></View>
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
@@ -424,9 +430,9 @@ menuButton: {
   padding: 10,
 },
 menuProject: {
+  flex: 1,
   display: 'flex',
   flexDirection: 'row',
-  justifyContent: 'center',
   alignItems: 'center',
 },
 menuText: {
@@ -434,6 +440,12 @@ menuText: {
   color: '#606266',
   fontSize: FontSize(20),
   marginLeft: 5,
+},
+manageText: {
+  color: '#007afe',
+  fontSize: 13,
+  marginTop: 3,
+  marginRight: 5,
 },
 menuText1: {
   color: '#909399',

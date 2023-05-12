@@ -1,4 +1,3 @@
-import Common from "../common/constants";
 let React = require('react-native');
 let { Platform, Dimensions } = React;
 // iPhone X、iPhone XS

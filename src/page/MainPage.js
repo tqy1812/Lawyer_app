@@ -844,24 +844,24 @@ class MainPage extends BaseComponent {
     this.setState({ talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
   }
 
-  sendTalkSuccess = () => {
-    const that = this;
-    const { dispatch } = this.props;
-    const { item, itemNotice, itemName, caseId } = this.state;
-    showLoading();
-    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, (rs, error) => {
-      destroySibling();
-      that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
-      if (error) {
-        Toast.show(error.info);
-      }
-      else {
-        DeviceEventEmitter.emit('refreshDailyProcess');
-        this.finishRef && this.finishRef.close('finish');
-        this.planRef && this.planRef.open('plan');
-      }
-    }));
-  }
+  // sendTalkSuccess = () => {
+  //   const that = this;
+  //   const { dispatch } = this.props;
+  //   const { item, itemNotice, itemName, caseId } = this.state;
+  //   showLoading();
+  //   dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, (rs, error) => {
+  //     destroySibling();
+  //     that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
+  //     if (error) {
+  //       Toast.show(error.info);
+  //     }
+  //     else {
+  //       DeviceEventEmitter.emit('refreshDailyProcess');
+  //       this.finishRef && this.finishRef.close('finish');
+  //       this.planRef && this.planRef.open('plan');
+  //     }
+  //   }));
+  // }
 
   sendProcessConfirm = (item) => {
     const that = this;
@@ -888,16 +888,16 @@ class MainPage extends BaseComponent {
 
   showConfirm = (item, caseListInfo) => {
     // logger('.....caseListInfo',caseListInfo)
-    item=  {
-        id: 313,
-        name:'cessd',
-        case: {
-          id: 3,
-          name: 'dedddd',
-        },
-        start_time: '2022-01-02 11:00:00',
-        end_time: '2022-01-02 12:00:00'
-      }
+    // item=  {
+    //     id: 313,
+    //     name:'cessd',
+    //     case: {
+    //       id: 3,
+    //       name: 'dedddd',
+    //     },
+    //     start_time: '2022-01-02 11:00:00',
+    //     end_time: '2022-01-02 12:00:00'
+    //   }
     
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.state.caseList} 
@@ -959,7 +959,7 @@ class MainPage extends BaseComponent {
               {/* <View style={styles.sliderView}> */}
               <View style={[styles.sliderTopBtn, {top: 35 + menuHeight}]}></View>
             {/* </View> */}
-              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.showConfirm('Daily', [])}>
+              {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>

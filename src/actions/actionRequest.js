@@ -295,7 +295,7 @@ export function getProcess(id, callback = null) {
     };
 }
 
-export function submitProcess(id, wakeup, name, isEnable, caseId, callback = null) {
+export function submitProcess(id, wakeup, name, isEnable, caseId, start_time, end_time, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/process/update'
@@ -304,7 +304,9 @@ export function submitProcess(id, wakeup, name, isEnable, caseId, callback = nul
             is_wakeup: wakeup,
             name: name,
             is_enable: isEnable,
-            case_id: caseId
+            case_id: caseId,
+            start_time: start_time,
+            end_time: end_time
         };
 
         request_impl(api, method, data, (res, error) => {

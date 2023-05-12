@@ -25,7 +25,7 @@ import {
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 
-class ServicePage extends Component {
+class WebPage extends Component {
 
     static mapStateToProps(state) {
         let props = {};
@@ -54,6 +54,15 @@ class ServicePage extends Component {
 
     closeLoading = () => {
       this.setState({loading: false});
+      Storage.getUserRecord().then((user) => {
+        if (user) {
+          let obj = Object.assign({}, JSON.parse(user));
+          let reg = new RegExp('"',"g");  
+          // logger(obj.token, JSON.stringify(this.state.caseSet).replace(reg, "'"))
+          this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '");true;');
+        }
+      });
+
     }
     handleBack = () => {
       if (this.state.backButtonEnabled) {
@@ -66,6 +75,18 @@ class ServicePage extends Component {
       this.setState({
         backButtonEnabled: navState.canGoBack
       });
+    }
+
+    handleNativeMessage = (event) => {
+      const content = event.nativeEvent.data;
+      if(content==='addProjectSuccess'){
+        this.props.dispatch(actionCase.reqCaseList());
+        Toast.show('添加成功');
+      }
+      else if(content.indexOf('addProjectFail:') === 0) {
+        const errorMesg = content.replace('addProjectFail:', '');
+        Toast.show(errorMesg);
+      }
     }
     render() {
       const {webviewUrl,  title} = this.state;
@@ -86,7 +107,7 @@ class ServicePage extends Component {
                         style={{width:windowWidth,height:'100%'}}
                         javaScriptEnabled={true}
                         injectedJavaScript={this.INJECTEDJAVASCRIPT }
-                        // onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
+                        onMessage={this.handleNativeMessage.bind(this)}
                         mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
                         userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         incognito={true}
@@ -100,7 +121,7 @@ class ServicePage extends Component {
                       style={{width:windowWidth,height:'100%'}}
                       javaScriptEnabled={true}
                       injectedJavaScript={this.INJECTEDJAVASCRIPT }
-                      // onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
+                      onMessage={this.handleNativeMessage.bind(this)}
                       mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
                       userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                       incognito={true}
@@ -114,7 +135,7 @@ class ServicePage extends Component {
       )
     }
 }
-export default connect(ServicePage.mapStateToProps)(ServicePage);
+export default connect(WebPage.mapStateToProps)(WebPage);
 
 const styles = StyleSheet.create({
   container: {
