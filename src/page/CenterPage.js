@@ -215,7 +215,7 @@ class CenterPage extends BaseComponent {
     }
 
     openTimePage() {
-      this.props.navigation.navigate('WebPage', { url: 'userServe/serve.html', title: '成功人士如何管理时间' })
+      this.props.navigation.navigate('WebPage', { url: 'time_control/', title: '成功人士如何管理时间' })
     }
 
     openManagePage() {
