@@ -222,11 +222,12 @@ class CenterPage extends BaseComponent {
       this.props.navigation.navigate('WebPage', { url: 'additem/', title: '项目管理' })
     }
     render() {
-      const { userInfo} = this.props;
-      const { imgAvatar, caseList, caseListInfo, appType} = this.state;
+      const { userInfo, caseList, caseListInfo} = this.props;
+      const { imgAvatar, appType} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight
-      // logger('..onBackButtonPressAndroid', this.props.navigation)
-      // logger(caseList)
+
+      // logger('..onBackButtonPressAndroid', this.props)
+      // logger('....caseList',this.props.caseList)
       return (
           <SafeAreaView style={styles.container}>
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />

@@ -2,7 +2,7 @@
 import * as request from './actionRequest';
 import Common from "../common/constants";
 import * as Storage from '../common/Storage';
-import { logger, isSameColor } from '../utils/utils';
+import { logger, isSameColor, filterSameColor } from '../utils/utils';
 export default class actionCase {
 
  static TYPE_CASE_LIST = 'TYPE_CASE_LIST'; // 任务列表
@@ -18,6 +18,7 @@ export default class actionCase {
           for (let i=0; i < infoList.length; i++) {
             caseList[infoList[i]['id']] = Common.color[parseInt(infoList[i]['id'])%103+1] ? Common.color[parseInt(infoList[i]['id'])%103+1] : Common.color[103];
           } 
+          
           dispatch({type: actionCase.TYPE_CASE_LIST_INFO, data: infoList});
           let newData = {};
           Storage.getCaseList(user.phone).then((list) => {
@@ -39,12 +40,12 @@ export default class actionCase {
                   }
                 }
               }
+            
               Storage.setCaseList(user.phone,JSON.stringify(newData));   
               dispatch({type: actionCase.TYPE_CASE_LIST, data: newData});
               if(callback) callback(newData, infoList)
             }
             else{
-              logger(' newData=====')
               Storage.setCaseList(user.phone,JSON.stringify(caseList));    
               dispatch({type: actionCase.TYPE_CASE_LIST, data: caseList});
               if(callback) callback(caseList, infoList)

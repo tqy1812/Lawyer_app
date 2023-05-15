@@ -22,6 +22,8 @@ import {
 import {
   WebView
 } from 'react-native-webview';
+import { logger } from '../utils/utils';
+import actionCase from "../actions/actionCase";
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 

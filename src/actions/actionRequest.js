@@ -454,7 +454,7 @@ export function changeTimesProcess(id, content, callback = null) {
 export function getProcessList(page, isEnd, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
-        let method = 'api/process/list?page='+ page + '&per_page=10' + '&is_end=' +isEnd
+        let method = 'api/process/list?page='+ page + '&per_page=50' + '&is_end=' +isEnd
         let data = {};
 
         request_impl_get(api, method, (res, error) => {
