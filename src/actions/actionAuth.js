@@ -25,6 +25,12 @@ export default class actionAuth {
     };
   }
 
+  static logoutRecord() {
+    return async (dispatch, getState) => {
+      authHelper.save({});
+    };
+  }
+
   static loadUser(user) {
     return async (dispatch, getState) => {
       updateUser(dispatch, user, "loadRecord", false);
