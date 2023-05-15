@@ -219,7 +219,7 @@ class CenterPage extends BaseComponent {
     }
 
     openManagePage() {
-      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '项目管理' })
+      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '添加项目' })
     }
     render() {
       const { userInfo, caseList, caseListInfo} = this.props;
@@ -254,11 +254,11 @@ class CenterPage extends BaseComponent {
               </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>项目</Text></View>
               <View style={styles.menuView}>
-                <MyButton style={styles.menuButton} onPress={() => {}}>
+                <View style={styles.menuButton}>
                   <Text style={appType==3 ? { color: '#606266',fontSize: FontSize(20),marginLeft: 5,} : { flex: 1, color: '#606266',fontSize: FontSize(20),marginLeft: 5,}}>当前项目</Text>
                   <View style={[styles.menuProject, {justifyContent: appType==3 ? 'center' : 'flex-end'}]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>
-                  {appType==3 && <Text style={styles.manageText} onPress={this.openManagePage.bind(this)}>管理</Text>}
-                </MyButton>
+                  {appType==3 && <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openManagePage.bind(this)}><Text style={styles.manageText}>添加</Text></MyButton>}
+                </View>
                 <View style={styles.splitLine}></View>
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
                   <View style={styles.caseView}>
