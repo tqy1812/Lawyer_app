@@ -2,6 +2,7 @@
 import * as request from './actionRequest';
 import moment from 'moment';
 import {getProcessList, getFeeTimeFormat, sortList, logger} from '../utils/utils';
+import Common from "../common/constants";
 
 export default class actionProcess {
 
@@ -18,7 +19,7 @@ export default class actionProcess {
       let state = getState();
       dispatch(request.getProcessList(page, false, (rs)=>{
           let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem) : {last: undefined, rs: []};
-          let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / 10)  : true; 
+          let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / Common.PAGE_SIZE)  : true; 
           if (page==1) {
             dispatch({type: actionProcess.TYPE_PROCESS_PLAN_LIST, data: list.rs});
             let todayItem = {
@@ -48,8 +49,7 @@ export default class actionProcess {
       dispatch(request.getProcessList(page, true, (rs)=>{
           let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem) : {last: undefined, rs: []};
           let totalTime = rs.data && rs.data.monthly_total_fee_time ? rs.data.monthly_total_fee_time : 0;
-          // logger(Math.ceil(rs.total / 10), rs.page, rs.page >= Math.ceil(rs.total / 10))
-          let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / 10)  : true; 
+          let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / Common.PAGE_SIZE)  : true; 
           // logger('.....reqProcessFinishList='+ list.rs.length)
           if(callback) callback(list, totalTime, isFinish);
           if(page==1) {
