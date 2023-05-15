@@ -694,7 +694,7 @@ class MainPage extends BaseComponent {
   }
 
   handleNativeMessage = (event) => {
-    // logger('handleNativeMessage====' + content);
+    logger('handleNativeMessage====' + event.nativeEvent.data);
     const { dispatch } = this.props;
     const that = this;
     const content = event.nativeEvent.data;
