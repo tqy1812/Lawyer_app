@@ -214,8 +214,8 @@ class CenterPage extends BaseComponent {
       }
     }
 
-    openWebPage() {
-      this.props.navigation.navigate('WebPage', { url: 'userServe/serve.html', title: '时间管理方法访问' })
+    openTimePage() {
+      this.props.navigation.navigate('WebPage', { url: 'userServe/serve.html', title: '成功人士如何管理时间' })
     }
 
     openManagePage() {
@@ -284,8 +284,8 @@ class CenterPage extends BaseComponent {
                 </MyButton>
               </View>
               <View style={styles.menuView}>
-                <MyButton style={styles.menuButton} onPress={() => {this.openWebPage()}}>
-                  <Text style={styles.menuText}>时间管理方法访问</Text>
+                <MyButton style={styles.menuButton} onPress={() => {this.openTimePage()}}>
+                  <Text style={styles.menuText}>管理指南</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>

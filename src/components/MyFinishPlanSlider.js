@@ -395,7 +395,7 @@ export default class MyFinishPlanSlider extends Component {
                   stickySectionHeadersEnabled={true}
                   onEndReachedThreshold={0.2}
                   onEndReached={()=>this.loadMoreDataThrottled()}
-                  // getItemLayout={(data, index) => ( {length: 85, offset: 85 * index, index} )}
+                  getItemLayout={(data, index) => ( {length: 35, offset: 35 * index, index} )}
                   />
                   </GestureHandlerRootView>
                   }
