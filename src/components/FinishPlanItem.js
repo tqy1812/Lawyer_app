@@ -38,7 +38,7 @@ class FinishPlanItem extends Component {
     let mapNextState = Immutable.fromJS(nextState);
     let mapProps = Immutable.fromJS(this.props.item);
     let mapNextProps = Immutable.fromJS(nextProps.item);
-    logger('props='+!Immutable.is(mapProps, mapNextProps), 'state='+!Immutable.is(mapState, mapNextState))
+    // logger('props='+!Immutable.is(mapProps, mapNextProps), 'state='+!Immutable.is(mapState, mapNextState))
     if (!Immutable.is(mapProps, mapNextProps) || !Immutable.is(mapState, mapNextState)) {
       return true;
     }

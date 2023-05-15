@@ -11,6 +11,7 @@ let planSibling = null;
 let finishSibling = null;
 let confirmModal = null;
 let elements = [];
+let loadingTimeOut;
 const globalData = GlobalData.getInstance();
 export const showModal = (component) => {
     sibling && sibling.destroy()
@@ -35,6 +36,7 @@ export const showFinishModal = (component) => {
 export const destroySibling = () =>  {
     let lastSibling = elements.pop();
     lastSibling && lastSibling.destroy();
+    loadingTimeOut && clearTimeout(loadingTimeOut)
 }
 
 export const destroyAllSibling = () =>  {
@@ -55,6 +57,7 @@ export const showLoading = () => {
         </View>
       </View>);
       elements.push(sibling);
+      loadingTimeOut = setTimeout(destroySibling,30000)
 };
 export const showRecoding = () => {
     sibling = new RootSiblings(<View style={[styles.isRecoding, { height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}><Wave height={50} lineColor={'#fff'}></Wave></View>);

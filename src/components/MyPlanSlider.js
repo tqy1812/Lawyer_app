@@ -113,7 +113,7 @@ export default class MyPlanSlider extends Component {
     let mapNextState = Immutable.fromJS(nextState);
     let mapProps = Immutable.fromJS(this.props.caseList);
     let mapNextProps = Immutable.fromJS(nextProps.caseList);
-    logger('state='+!Immutable.is(mapState, mapNextState), 'props='+!Immutable.is(mapProps, mapNextProps))
+    // logger('state='+!Immutable.is(mapState, mapNextState), 'props='+!Immutable.is(mapProps, mapNextProps))
     if (!Immutable.is(mapState, mapNextState) || !Immutable.is(mapProps, mapNextProps)) {
       return true;
     }

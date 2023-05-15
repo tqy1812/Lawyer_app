@@ -140,6 +140,7 @@ let devicePushType = {
     'HONOR':5 ,
     'OPPO':6 
 }
+let PAGE_SIZE = 50;
 export default {
     window: window,
     color,
@@ -150,4 +151,5 @@ export default {
     socketUrl,
     env,
     devicePushType,
+    PAGE_SIZE,
 };
