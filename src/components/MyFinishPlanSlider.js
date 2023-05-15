@@ -378,13 +378,13 @@ export default class MyFinishPlanSlider extends Component {
                {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}><SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
-                  ListFooterComponent={loadFinish ? <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> : refreshing ? <View style={styles.loading}><ActivityIndicator size="small" color="black" /></View> : null}
+                  ListFooterComponent={loadFinish ? <View key={'finish_finish'} style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> : refreshing ? <View key={'finish_refresh'} style={styles.loading}><ActivityIndicator size="small" color="black" /></View> : null}
                   sections={DATA}
                   inverted={true}
                   keyExtractor={(item, index) => item + index}
                   renderItem={this.renderItem}
                   renderSectionFooter={({ section: { date,  total, isShowYear} }) => (
-                    <View style={styles.listTitleView}>
+                    <View style={styles.listTitleView} key={'finish_'+moment(date).format('YYYY年')}>
                       {isShowYear && <Text style={styles.listTitleYearFont}>{moment(date).format('YYYY年')}</Text>}
                     <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text>
                     <Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text>
