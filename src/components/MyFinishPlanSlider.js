@@ -65,7 +65,7 @@ export default class MyFinishPlanSlider extends Component {
       }
       this.loadDataThrottled();
        // if (JSON.stringify(caseList)==='{}') {
-    //   dispatch(actionCase.reqCaseList()); 
+    //   dispatch(actionCase.reqCaseList());
     // }
       // dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
       //   const rs = data.rs;
@@ -74,20 +74,30 @@ export default class MyFinishPlanSlider extends Component {
       //   } else {
       //     that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish});
       //   }
-      // })); 
-      this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessFinish', 
+      // }));
+      this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessFinish',
    		        () => { this.loadDataThrottled(); });
+
+      this.eventRefreshCase = DeviceEventEmitter.addListener('refreshCaseFinish',
+            (caseList) => { this.refreshCase(caseList); });
     });
   }
+
+
   shouldComponentUpdate(nextProps, nextState) {
     let mapState = Immutable.fromJS(this.state);
     let mapNextState = Immutable.fromJS(nextState);
     let mapProps = Immutable.fromJS(this.props.caseList);
     let mapNextProps = Immutable.fromJS(nextProps.caseList);
+    console.log(Immutable.is(mapProps, mapNextProps))
     if (!Immutable.is(mapState, mapNextState) || !Immutable.is(mapProps, mapNextProps)) {
       return true;
     }
     return false;
+  }
+
+  refreshCase = (caseList) => {
+    this.setState({caseList})
   }
   initList = () => {
     const {dispatch} = this.props;
@@ -103,22 +113,23 @@ export default class MyFinishPlanSlider extends Component {
           setTimeout(()=>{
             destroySibling();
             that.setState({refreshing: false})
-          }, 800) 
+          }, 800)
         });
       } else {
         that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish},()=>{
           setTimeout(()=>{
             destroySibling();
             that.setState({refreshing: false})
-          }, 800) 
+          }, 800)
         });
       }
-    })); 
+    }));
   }
   componentWillUnmount() {
     this.loadMoreDataThrottled.cancel();
     this.loadDataThrottled.cancel();
     this.eventRefreshReceive && this.eventRefreshReceive.remove();
+    this.eventRefreshCase && this.eventRefreshCase.remove();
   }
 
   setFinishTime = (item) => {
@@ -190,7 +201,7 @@ export default class MyFinishPlanSlider extends Component {
           nowItem.wakeup_time = item.wakeup_time;
           nowItem.fee_time = item.fee_time;
           showConfirmModal(<ProcessTiemConfirmModal dispatch={this.props.dispatch}  submint={(preItem, item)=>this.sendProcessTimeConfirm(preItem, item, callback)} item={nowItem} preItem={preItem}/>);
-          
+
         })
       });
     }
@@ -212,7 +223,7 @@ export default class MyFinishPlanSlider extends Component {
          if(callback) callback(rs)
       }
       // that.setState({refreshing: false});
-    })); 
+    }));
   }
 
   loadModeData = () => {
@@ -236,7 +247,7 @@ export default class MyFinishPlanSlider extends Component {
         if(rs.rs.length > 0) {
           newDate =  newDate.concat(rs.rs)
           flag = true;
-        } 
+        }
       }
       if (flag) {
         this.page = this.page + 1;
@@ -244,7 +255,7 @@ export default class MyFinishPlanSlider extends Component {
           setTimeout(()=>{
             // destroySibling();
             // that.setState({refreshing: false});
-          }, 800) 
+          }, 800)
         });
       }
       else {
@@ -252,10 +263,10 @@ export default class MyFinishPlanSlider extends Component {
           setTimeout(()=>{
             // destroySibling();
             // that.setState({refreshing: false})
-          }, 800) 
+          }, 800)
         });
       }
-    })); 
+    }));
   }
 
   renderRightAction = (text, color, x, progress, item) => {
@@ -318,16 +329,16 @@ export default class MyFinishPlanSlider extends Component {
                     setTimeout(()=>{
                       destroySibling();
                       that.setState({refreshing: false})
-                    }, 800) 
+                    }, 800)
                   });
                 }
               });
-            }));  
+            }));
           }
         }
       ]
     );
-    
+
   }
 
   renderItem = ({ item }) => {
@@ -374,7 +385,7 @@ export default class MyFinishPlanSlider extends Component {
              <View style={styles.content}>
               <View style={[styles.head, {height: 45, marginTop: headHeight}]}><Text style={styles.headFont}>计时</Text></View>
                { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
-               
+
                {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}><SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
@@ -399,12 +410,12 @@ export default class MyFinishPlanSlider extends Component {
                   />
                   </GestureHandlerRootView>
                   }
-                  
+
                 <View style={styles.footer}>
                   <Text style={styles.totalTimeFont} onLongPress={this.scollToTop}>{getFeeTimeFormat(totalTime)}{'’'}</Text>
                   <Text style={styles.totalTimeDesFont}>本月  |   {moment(moment().month(moment().month()).startOf('month').valueOf()).format('YYYY.MM.DD')}~{moment(moment().month(moment().month() + 1).startOf('month').valueOf()).format('YYYY.MM.DD')}  计时总计</Text>
                 </View>
-              </View >  
+              </View >
           </View>
     );
   }

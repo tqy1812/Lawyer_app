@@ -286,7 +286,7 @@ class CenterPage extends BaseComponent {
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openTimePage()}}>
-                  <Text style={styles.menuText}>管理指南</Text>
+                  <Text style={styles.menuText}>时间管理指南</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>

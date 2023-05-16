@@ -106,6 +106,9 @@ export default class MyPlanSlider extends Component {
       // }
       this.eventRefreshReceive = DeviceEventEmitter.addListener('refreshProcessPlan', 
    		        () => { this.loadDataThrottled(); });
+
+      this.eventRefreshCase = DeviceEventEmitter.addListener('refreshCasePlan',
+            (caseList) => { this.refreshCase(caseList); });
     });
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -118,6 +121,10 @@ export default class MyPlanSlider extends Component {
       return true;
     }
     return false;
+  }
+
+  refreshCase = (caseList) => {
+    this.setState({caseList})
   }
   initList = () => {
     logger('.........MyPlanSlider .initList')
@@ -150,6 +157,7 @@ export default class MyPlanSlider extends Component {
     this.loadMoreDataThrottled.cancel();
     this.loadDataThrottled.cancel();
     this.eventRefreshReceive && this.eventRefreshReceive.remove();
+    this.eventRefreshCase && this.eventRefreshCase.remove();
   }
 
   scollToEnd = () => {
