@@ -89,7 +89,6 @@ export default class MyFinishPlanSlider extends Component {
     let mapNextState = Immutable.fromJS(nextState);
     let mapProps = Immutable.fromJS(this.props.caseList);
     let mapNextProps = Immutable.fromJS(nextProps.caseList);
-    console.log(Immutable.is(mapProps, mapNextProps))
     if (!Immutable.is(mapState, mapNextState) || !Immutable.is(mapProps, mapNextProps)) {
       return true;
     }

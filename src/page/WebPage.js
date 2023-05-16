@@ -8,6 +8,7 @@ import {
     Overlay,
     StatusBar,
     Platform,
+    DeviceEventEmitter,
     ImageBackground, ActivityIndicator
 } from 'react-native';
 import Header from '../components/Header';
@@ -82,7 +83,14 @@ class WebPage extends Component {
     handleNativeMessage = (event) => {
       const content = event.nativeEvent.data;
       if(content==='addProjectSuccess'){
-        this.props.dispatch(actionCase.reqCaseList());
+        this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
+          // logger(list)
+          if(list) {
+            DeviceEventEmitter.emit('refreshCaseFinish', list);
+            DeviceEventEmitter.emit('refreshCasePlan', list);
+          }
+        }));
+        
         Toast.show('添加成功');
       }
       else if(content.indexOf('addProjectFail:') === 0) {
