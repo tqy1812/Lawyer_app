@@ -390,7 +390,7 @@ export default class MyFinishPlanSlider extends Component {
     var offsetY = e.nativeEvent.contentOffset.y; //滑动距离
     var contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
     var oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
-    if (offsetY + oriageScrollHeight >= contentSizeHeight){
+    if (offsetY + oriageScrollHeight+1 >= contentSizeHeight){
       this.loadMoreDataThrottled();
     }
   }
