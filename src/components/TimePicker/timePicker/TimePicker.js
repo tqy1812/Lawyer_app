@@ -156,7 +156,7 @@ class TimePicker extends Component {
                     {
                         dataSource.map((item, index) => {
                             const {key, data} = item;
-                            const initialScrollIndex = key === Constants.DATE_KEY_TYPE.START_HOUR ? defaultStartHourIndex : key ===  Constants.DATE_KEY_TYPE.START_MINUTE ? defaultStartMinuteIndex : key ===  Constants.DATE_KEY_TYPE.END_HOUR ? defaultEndHourIndex : defaultEndMinuteIndex;
+                            const initialScrollIndex = key === Constants.DATE_KEY_TYPE.START_HOUR ? defaultStartHourIndex : key ===  Constants.DATE_KEY_TYPE.START_MINUTE ? defaultStartMinuteIndex : key ===  Constants.DATE_KEY_TYPE.END_HOUR ? defaultEndHourIndex : key ===  Constants.DATE_KEY_TYPE.END_MINUTE ? defaultEndMinuteIndex : 0;
                             return (<TimePickerList
                                 key={index}
                                 data={data}
