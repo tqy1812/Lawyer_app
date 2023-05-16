@@ -101,7 +101,7 @@ export default class MyFinishPlanSlider extends Component {
   initList = () => {
     const {dispatch} = this.props;
     const that = this;
-    showLoading();
+    // showLoading();
     // that.setState({refreshing: true});
     // that.scollToTopNoAni();
     this.myScrollRef && this.myScrollRef.scrollTo(0);
@@ -111,14 +111,14 @@ export default class MyFinishPlanSlider extends Component {
         this.page = 2;
         that.setState({DATA: rs, totalTime: t, loadFinish: isFinish },()=>{
           setTimeout(()=>{
-            destroySibling();
+            // destroySibling();
             that.setState({refreshing: false})
           }, 800)
         });
       } else {
         that.setState({totalTime: t, DATA: [], refreshing: false, loadFinish: isFinish},()=>{
           setTimeout(()=>{
-            destroySibling();
+            // destroySibling();
             that.setState({refreshing: false})
           }, 800)
         });
@@ -358,18 +358,14 @@ export default class MyFinishPlanSlider extends Component {
     logger('.......finish renderFoot', this.state.refreshing)
     if(this.state.loadFinish) {
       return (
-        <View key={'finish_finish'} style={[styles.empty, {transform: [
-          { scaleY: -1 },
-        ]}]}>
+        <View key={'finish_finish'} style={styles.empty}>
           <Text style={styles.emptyFont}>您的过去清清白白~</Text>
         </View>
       );
     }
     else if(this.state.refreshing) {
       return (
-        <View key={'finish_refresh'} style={[styles.loading, {transform: [
-          { scaleY: -1 },
-        ]}]}>
+        <View key={'finish_refresh'} style={styles.loading}>
           <ActivityIndicator size="small" color="black" />
         </View>
       );
@@ -452,7 +448,16 @@ export default class MyFinishPlanSlider extends Component {
                   </View>)
                   }
                 )}
-                {this.renderFoot()}
+                { refreshing ? <View key={'finish_refresh'} style={[styles.loading, {transform: [
+                        { scaleY: -1 },
+                      ]}]}>
+                        <ActivityIndicator size="small" color="black" />
+                      </View> : loadFinish ?  <View key={'finish_finish'} style={[styles.empty, {transform: [
+                            { scaleY: -1 },
+                          ]}]}>
+                            <Text style={styles.emptyFont}>您的过去清清白白~</Text>
+                          </View> : null
+                }
                 </ScrollView>
                 {/* <SectionList
                   ref={ (ref) => { this.myListRef = ref } }
