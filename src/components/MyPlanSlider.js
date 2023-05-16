@@ -397,7 +397,7 @@ export default class MyPlanSlider extends Component {
                   stickySectionHeadersEnabled={true}
                   onEndReachedThreshold={0.2}
                   onEndReached={()=>this.loadMoreDataThrottled()}
-                  getItemLayout={(data, index) => ( {length: 35, offset: 35 * index, index} )}
+                  // getItemLayout={(data, index) => ( {length: 35, offset: 35 * index, index} )}
                   // refreshing={true}
                 /></GestureHandlerRootView>
                 }

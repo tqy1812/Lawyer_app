@@ -89,7 +89,7 @@ export default class MyFinishPlanSlider extends Component {
     let mapNextState = Immutable.fromJS(nextState);
     let mapProps = Immutable.fromJS(this.props.caseList);
     let mapNextProps = Immutable.fromJS(nextProps.caseList);
-    if (!Immutable.is(mapState, mapNextState) || !Immutable.is(mapProps, mapNextProps)) {
+    if (!Immutable.is(mapState, mapNextState)) {
       return true;
     }
     return false;
@@ -385,7 +385,8 @@ export default class MyFinishPlanSlider extends Component {
               <View style={[styles.head, {height: 45, marginTop: headHeight}]}><Text style={styles.headFont}>计时</Text></View>
                { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
 
-               {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}><SectionList
+               {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}>
+                <SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
                   ListFooterComponent={loadFinish ? <View key={'finish_finish'} style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> : refreshing ? <View key={'finish_refresh'} style={styles.loading}><ActivityIndicator size="small" color="black" /></View> : null}
@@ -396,16 +397,20 @@ export default class MyFinishPlanSlider extends Component {
                   renderSectionFooter={({ section: { date,  total, isShowYear} }) => (
                     <View style={styles.listTitleView} key={'finish_'+moment(date).format('YYYY年')}>
                       {isShowYear && <Text style={styles.listTitleYearFont}>{moment(date).format('YYYY年')}</Text>}
-                    <View style={styles.titleList}><View style={styles.titleTime}><Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text>
-                    <Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text>
+                      <View style={styles.titleList}>
+                        <View style={styles.titleTime}>
+                          <Text style={styles.listItemTitleFont}>{moment(date).format('MM月DD日')}</Text>
+                          <Text style={styles.listItemTitleWeekFont}>{getWeekXi(date)}</Text>
+                        </View>
+                        <Text style={styles.titleTimeFont}>共 {total > 0 ? getFeeTimeFormat(total) : '00:00'}{'’'}</Text>
+                      </View>
                     </View>
-                    <Text style={styles.titleTimeFont}>共 {total > 0 ? getFeeTimeFormat(total) : '00:00'}{'’'}</Text>
-                    </View>
-                    </View>)}
+                  )}
                   stickySectionHeadersEnabled={true}
-                  onEndReachedThreshold={0.2}
+                  onEndReachedThreshold={0.3}
                   onEndReached={()=>this.loadMoreDataThrottled()}
-                  getItemLayout={(data, index) => ( {length: 35, offset: 35 * index, index} )}
+                  maxToRenderPerBatch={Common.PAGE_SIZE}
+                  // getItemLayout={(data, index) => ( {length: 35, offset: 35 * index, index} )}
                   />
                   </GestureHandlerRootView>
                   }
