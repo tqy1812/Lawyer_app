@@ -900,7 +900,7 @@ class MainPage extends BaseComponent {
     //   }
     
     if(item && item.id) {
-      showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.state.caseList} 
+      showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.props.caseList} 
       caseListInfo={caseListInfo}/>);
     }
   } 
