@@ -43,7 +43,7 @@ export default class ProcessConfirmModal extends Component {
       itemDate: moment(props.item.start_time).format('YYYY-MM-DD'),
       itemDateStr: moment(props.item.start_time).format('YYYY年MM月DD日'),
       itemStartTimeStr: props.item.start_time ? moment(props.item.start_time).format('HH:mm') : '-- : --',
-      itemEndTimeStr: props.item.end_time ? moment(props.item.end_time).format('HH:mm') : '-- : --',
+      itemEndTimeStr: props.item.end_time ? moment(moment(props.item.end_time).format('YYYY-MM-DD 00:00:00')).diff(moment(moment(props.item.start_time).format('YYYY-MM-DD 00:00:00')), "days")==1 ? '24:00' : moment(props.item.end_time).format('HH:mm') : '-- : --',
       // page: 1,
       // totalSize:  props.caseListInfo ? props.caseListInfo.length : 0
     };
@@ -80,8 +80,15 @@ export default class ProcessConfirmModal extends Component {
     const that = this;
     const { dispatch, item } = this.props;
     const { itemNotice, itemName, caseId, itemDate, itemStartTimeStr, itemEndTimeStr } = this.state;
+    let endTime = '';
+    if(itemEndTimeStr=='24:00'){
+      endTime = moment(itemDate).add(1, "days").format("YYYY-MM-DD 00:00:00")
+    }
+    else{
+      endTime = itemDate + " " +itemEndTimeStr+":00";
+    }
     showLoading();
-    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, itemDate + " " +itemStartTimeStr+":00", itemDate + " " +itemEndTimeStr+":00", (rs, error) => {
+    dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, itemDate + " " +itemStartTimeStr+":00", endTime, (rs, error) => {
       destroySibling();
       if (error) {
         logger(error.info)
@@ -164,7 +171,7 @@ export default class ProcessConfirmModal extends Component {
             }
           }
           defaultStartTime={itemStartTimeStr}
-          defaultEndTime={itemEndTimeStr}
+          defaultEndTime={itemEndTimeStr=='24:00'? '23:59' : itemEndTimeStr}
           selectedTextFontSize={18}
           unselectedRowBackgroundColor='transparent'
         /></View></View>);
