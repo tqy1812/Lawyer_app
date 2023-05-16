@@ -13,7 +13,7 @@ import {
   Alert,
   Overlay
 } from 'react-native';
-import {Swipeable, GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
+import {Swipeable, GestureHandlerRootView, RectButton, ScrollView} from 'react-native-gesture-handler';
 import moment from 'moment';
 import Common from '../common/constants';
 import {getWeekXi, getFinishBlankHeight, getFeeTimeFormat, removeFinishItem, updateFinish, FontSize} from '../utils/utils';
@@ -103,7 +103,8 @@ export default class MyFinishPlanSlider extends Component {
     const that = this;
     showLoading();
     // that.setState({refreshing: true});
-    that.scollToTopNoAni();
+    // that.scollToTopNoAni();
+    this.myScrollRef && this.myScrollRef.scrollTo(0);
     dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
       const rs = data.rs;
       if(rs.length > 0) {
@@ -149,14 +150,15 @@ export default class MyFinishPlanSlider extends Component {
   }
 
   scollToTop = () => {
-    let sectionIndex = 0;
-    let itemIndex = 0;
+    // let sectionIndex = 0;
+    // let itemIndex = 0;
 
-    this.myListRef&&this.myListRef.scrollToLocation({
-        itemIndex,
-        sectionIndex,
-        animated: true,
-    });
+    // this.myListRef&&this.myListRef.scrollToLocation({
+    //     itemIndex,
+    //     sectionIndex,
+    //     animated: true,
+    // });
+    this.myScrollRef && this.myScrollRef.scrollTo(0);
   }
 
   scollToTopNoAni = () => {
@@ -234,6 +236,7 @@ export default class MyFinishPlanSlider extends Component {
       return;
     }
     that.setState({refreshing: true});
+    this.myScrollRef && this.myScrollRef.scrollToEnd();
     // showLoading();
     dispatch(actionProcess.reqProcessFinishList(this.page, DATA[DATA.length-1], (rs, t, isFinish)=>{
       let flag = false;
@@ -355,14 +358,18 @@ export default class MyFinishPlanSlider extends Component {
     logger('.......finish renderFoot', this.state.refreshing)
     if(this.state.loadFinish) {
       return (
-        <View key={'finish_finish'} style={styles.empty}>
+        <View key={'finish_finish'} style={[styles.empty, {transform: [
+          { scaleY: -1 },
+        ]}]}>
           <Text style={styles.emptyFont}>您的过去清清白白~</Text>
         </View>
       );
     }
     else if(this.state.refreshing) {
       return (
-        <View key={'finish_refresh'} style={styles.loading}>
+        <View key={'finish_refresh'} style={[styles.loading, {transform: [
+          { scaleY: -1 },
+        ]}]}>
           <ActivityIndicator size="small" color="black" />
         </View>
       );
@@ -383,9 +390,16 @@ export default class MyFinishPlanSlider extends Component {
       </View>
     );
   }
+  _contentViewScroll = (e) => {
+    var offsetY = e.nativeEvent.contentOffset.y; //滑动距离
+    var contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
+    var oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
+    if (offsetY + oriageScrollHeight >= contentSizeHeight){
+      this.loadMoreDataThrottled();
+    }
+  }
   render() {
     const { DATA, totalTime, caseList, loadFinish, refreshing } = this.state;
-    logger('................data==='+DATA.length)
     // const Item = ({ item }) => (
     //   <Swipeable
     //     friction={1}
@@ -402,10 +416,45 @@ export default class MyFinishPlanSlider extends Component {
             </View>} */}
              <View style={styles.content}>
               <View style={[styles.head, {height: 45, marginTop: headHeight}]}><Text style={styles.headFont}>计时</Text></View>
-               { DATA && DATA.length == 0  &&  <View style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
+               { DATA && DATA.length == 0  &&  <View style={[styles.empty, {flex: 1,}]}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> }
 
                {JSON.stringify(caseList)!='{}' && DATA && DATA.length > 0 && <GestureHandlerRootView style={styles.gestureStyle}>
-                <SectionList
+                <ScrollView 
+                  ref={(ref) => { this.myScrollRef = ref }}
+                  style={{transform: [
+                    { scaleY: -1 },
+                  ]}}
+                  onMomentumScrollEnd={this._contentViewScroll} 
+                  >
+                  {DATA && DATA.map(item=>{
+                  return (<View style={[styles.listTitleView, {transform: [{ scaleY: -1 },]}]}>
+                  <View style={styles.listTitleView} key={'finish_'+moment(item.date).format('YYYY年')}>
+                    {item.isShowYear && <Text style={styles.listTitleYearFont}>{moment(item.date).format('YYYY年')}</Text>}
+                    <View style={styles.titleList}>
+                      <View style={styles.titleTime}>
+                        <Text style={styles.listItemTitleFont}>{moment(item.date).format('MM月DD日')}</Text>
+                        <Text style={styles.listItemTitleWeekFont}>{getWeekXi(item.date)}</Text>
+                      </View>
+                      <Text style={styles.titleTimeFont}>共 {item.total > 0 ? getFeeTimeFormat(item.total) : '00:00'}{'’'}</Text>
+                    </View>
+                  </View>
+                  {
+                    item.data && item.data.map(pro=>{
+                      return (<Swipeable
+                        key={pro.id}
+                        friction={1}
+                        rightThreshold={40}
+                        renderRightActions={(progressAnimatedValue) => this.renderRightActions(progressAnimatedValue, pro)}>
+                          <FinishPlanItem item={pro}  finishTime={(pro) => this.setFinishTime(pro)} finishTimeEnd={(value, callback)=>this.setFinishTimeEnd(value, callback)} caseList={this.state.caseList} />
+                      </Swipeable>)
+                    })
+                  }
+                  </View>)
+                  }
+                )}
+                {this.renderFoot()}
+                </ScrollView>
+                {/* <SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
                   ListFooterComponent={this.renderFoot}
@@ -425,12 +474,13 @@ export default class MyFinishPlanSlider extends Component {
                       </View>
                     </View>
                   )}
+                  invertStickyHeaders={true}
                   stickySectionHeadersEnabled={true}
                   onEndReachedThreshold={0.3}
                   onEndReached={()=>this.loadMoreDataThrottled()}
                   maxToRenderPerBatch={Common.PAGE_SIZE}
                   // getItemLayout={(data, index) => ( {length: 35, offset: 35 * index, index} )}
-                  />
+                  /> */}
                   </GestureHandlerRootView>
                   }
 
@@ -636,7 +686,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   empty: {
-    flex: 1,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
