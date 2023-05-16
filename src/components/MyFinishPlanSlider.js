@@ -351,7 +351,26 @@ export default class MyFinishPlanSlider extends Component {
       </Swipeable>
     );
   }
-
+  renderFoot= () => {
+    logger('.......finish renderFoot', this.state.refreshing)
+    if(this.state.loadFinish) {
+      return (
+        <View key={'finish_finish'} style={styles.empty}>
+          <Text style={styles.emptyFont}>您的过去清清白白~</Text>
+        </View>
+      );
+    }
+    else if(this.state.refreshing) {
+      return (
+        <View key={'finish_refresh'} style={styles.loading}>
+          <ActivityIndicator size="small" color="black" />
+        </View>
+      );
+    }
+    else {
+      return null
+    }
+  }
   renderSectionFooter = ({ section: { date,  total, isShowYear} }) => {
     return (
       <View style={styles.listTitleView}>
@@ -389,7 +408,7 @@ export default class MyFinishPlanSlider extends Component {
                 <SectionList
                   ref={ (ref) => { this.myListRef = ref } }
                   ListHeaderComponent={null}
-                  ListFooterComponent={loadFinish ? <View key={'finish_finish'} style={styles.empty}><Text style={styles.emptyFont}>您的过去清清白白~</Text></View> : refreshing ? <View key={'finish_refresh'} style={styles.loading}><ActivityIndicator size="small" color="black" /></View> : null}
+                  ListFooterComponent={this.renderFoot}
                   sections={DATA}
                   inverted={true}
                   keyExtractor={(item, index) => item + index}
@@ -624,7 +643,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loading: {
-    height: 30,
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
