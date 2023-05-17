@@ -9,7 +9,8 @@ import {
     ScrollView,
     StatusBar,
     ImageBackground, InteractionManager, TouchableOpacity,
-    NativeModules
+    NativeModules,Alert,
+    Linking,
 } from 'react-native';
 import Header from '../components/Header';
 import { CommonActions, StackActions } from '@react-navigation/native';
@@ -17,7 +18,7 @@ import {connect} from 'react-redux';
 import actionAuth from '../actions/actionAuth';
 import * as Storage from '../common/Storage';
 import platform from '../utils/platform';
-import {logger, getPhone, FontSize} from '../utils/utils';
+import {logger, getPhone, FontSize, compareVersion} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
@@ -79,6 +80,72 @@ class AboutPage extends Component {
     goPrivacy() {
       this.props.navigation.navigate('Privacy');
     }
+
+    upgradeApp() {
+      let version = '';
+      const {dispatch} = this.props;
+      if(platform.isAndroid()) {
+        NativeModules.ScreenAdaptation.getAppVersion((event) =>{
+            version = event;
+            let downloadUrl = 'https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/app/LAWYER.apk';
+            dispatch(actionAuth.reqAndroidVersion((rs, error) => {
+              if(rs){
+                  logger('.........getAppVersion', rs.version)
+                  const ver = rs.version;
+                  let num = compareVersion(version, ver);
+                  if(num < 0) {
+                    Alert.alert('App升级', `发现最新新版本[${ver}]，是否升级！。`, [{
+                        text: '稍后升级',
+                        onPress: () => {Storage.setVersion(ver)},
+                        },
+                        {
+                          text: '下载升级包',
+                          onPress: () => {
+                            Storage.setVersion(ver);
+                            Linking.openURL(downloadUrl).catch(err => {
+                                logger('.....error', error)
+                            });
+                        },
+                        },
+                    ]);
+                }
+                else{
+                  Toast.show('已经是最新版本！');
+                }
+              }
+            }))
+        });
+      }
+      else {
+        version = NativeModules.SplashScreen && NativeModules.SplashScreen.getAppVersion();
+        let downloadUrl =  'https://apps.apple.com/cn/app/%E5%BE%8B%E6%97%B6/id6446157793';
+        dispatch(actionAuth.reqVersion((ver, error) => {
+          if(ver){
+              let num = compareVersion(version, ver);
+              if(num < 0) {
+                Alert.alert('App升级', `发现最新新版本[${ver}]，是否前往升级！。`, [{
+                    text: '稍后升级',
+                    onPress: () => {Storage.setVersion(ver)},
+                    },
+                    {
+                      text: '去升级',
+                      onPress: () => {
+                        Storage.setVersion(ver);
+                        Linking.openURL(downloadUrl).catch(err => {
+                            logger('.....error', error)
+                        });
+                    },
+                    },
+                ]);
+            }
+            else{
+              Toast.show('已经是最新版本！');
+            }  
+          }
+        }))
+      }
+    }
+
     render() {
       const { version} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
@@ -90,7 +157,7 @@ class AboutPage extends Component {
             <Header title='关于律时与帮助' back={true}  {...this.props}/>  
             <View style={[styles.content]}> 
               <View style={styles.menuView}> 
-                <MyButton style={styles.menuButton} onPress={() => {}}>
+                <MyButton style={styles.menuButton} onPress={this.upgradeApp.bind(this)}>
                   <Text style={styles.menuText}>版本与更新</Text>
                   <Text >{version}</Text>
                 </MyButton>
