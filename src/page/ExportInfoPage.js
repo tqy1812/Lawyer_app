@@ -137,7 +137,7 @@ class ExportInfoPage extends Component {
           <MyButton style={[styles.loadBtn, { borderWidth: 1, borderColor: '#E9E9EB', backgroundColor: '#E9E9EB' } ]} onPress={this.handBack.bind(this)}>
             <Text style={[styles.loadText, { color: '##909399' }]}>好的</Text>
           </MyButton> :
-          <MyButton style={[styles.loadBtn, btnEnable ? { borderWidth: 1, borderColor: '#007AFE', backgroundColor: '#007AFE' } : { borderWidth: 1, borderColor: '#BFBFBF' }]} onPress={this.handSubmit}>
+          <MyButton style={[styles.loadBtn, btnEnable ? { borderWidth: 1, borderColor: '#007AFE', backgroundColor: '#007AFE' } : { borderWidth: 1, borderColor: '#BFBFBF' }]} onPress={this.handSubmit.bind(this)}>
             <Text style={[styles.loadText, btnEnable ? { color: '#fff' } : { color: '#BFBFBF' }]}>提交</Text>
           </MyButton>
         }
