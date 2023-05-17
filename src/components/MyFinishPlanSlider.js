@@ -104,7 +104,7 @@ export default class MyFinishPlanSlider extends Component {
     // showLoading();
     // that.setState({refreshing: true});
     // that.scollToTopNoAni();
-    this.myScrollRef && this.myScrollRef.scrollTo(0);
+    this.myScrollRef && this.myScrollRef.scrollTo({x: 0, y: 0, animated: true});
     dispatch(actionProcess.reqProcessFinishList(1, undefined, (data, t, isFinish)=>{
       const rs = data.rs;
       if(rs.length > 0) {
