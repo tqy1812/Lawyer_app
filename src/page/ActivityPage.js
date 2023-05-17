@@ -68,7 +68,7 @@ class ActivityPage extends BaseComponent {
             }));
             this.eventNoticeReceive = DeviceEventEmitter.addListener('refreshDailyProcess',
                 () => { this.backToday(); });
-            const hour = new Date().getHours();
+            const hour = moment(new Date()).hour();
             if(hour>=7) {
                 this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
             } else if(hour>=17) {
@@ -101,7 +101,7 @@ class ActivityPage extends BaseComponent {
                 this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 8 * 50, animated: true});
             }
             else{
-                const hour = new Date().getHours();
+                const hour = moment(new Date()).hour();;
                 if(hour>=7) {
                     this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
                 } else if(hour>=17) {
@@ -115,7 +115,7 @@ class ActivityPage extends BaseComponent {
         const that = this;
         this.handleList(moment(new Date()).format('YYYY-MM-DD'), () => {
             that.myCalendar && that.myCalendar.setSelectedDate(moment(new Date()));
-            const hour = new Date().getHours();
+            const hour = moment(new Date()).hour();
             if(hour>=7) {
                 this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
             } else if(hour>=17) {
@@ -200,7 +200,7 @@ class ActivityPage extends BaseComponent {
                                 </View>
                             </View>
                         </View>
-                        {isToday && <View style={styles.currentTimeView}>
+                        {isToday && <View style={[styles.currentTimeView, {top: 5 + 50 * moment(new Date()).hours() + moment(new Date()).minutes() / 60 * 50}]}>
                             <View style={styles.currentTimeDot}></View>
                             <View style={styles.currentTimeLine}></View>
                         </View>}
@@ -315,7 +315,6 @@ const styles = StyleSheet.create({
     },
     currentTimeView: {
         position: 'absolute',
-        top: 5 + 50 * moment().hours() + moment().minutes() / 60 * 50,
         height: 6,
         width: Common.window.width - 22,
         display: 'flex',
