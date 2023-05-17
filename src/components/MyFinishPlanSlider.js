@@ -158,7 +158,7 @@ export default class MyFinishPlanSlider extends Component {
     //     sectionIndex,
     //     animated: true,
     // });
-    this.myScrollRef && this.myScrollRef.scrollTo(0);
+    this.myScrollRef && this.myScrollRef.scrollTo({x: 0, y: 0, animated: true});
   }
 
   scollToTopNoAni = () => {
