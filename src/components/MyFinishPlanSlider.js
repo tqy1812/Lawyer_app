@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
   listTitleYearFont: {
     fontSize: FontSize(18),
     color: '#C0C4CC',
-    marginTop: 15,
+    marginTop: 5,
     marginLeft: 12,
     fontWeight: '500',
   },

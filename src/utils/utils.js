@@ -345,13 +345,14 @@ export function getWeek (date) { // 参数时间戳
   }
   return h;
  }
-
- export function getProcessList (plan, preItem) {
+//type: plan正向 finish反向
+ export function getProcessList (plan, preItem, type) {
   let rs = [];
   let last = undefined;
   let year = moment().year();
   let preYear = preItem && preItem.date ? moment(preItem.date).year() : year;
   let index = 0;
+  let isShowYear = false;
   for (let key in plan){
     let timeYear = moment(key).year();
     if(preItem && preItem.date && index == 0 && key== preItem.date){
@@ -372,7 +373,36 @@ export function getWeek (date) { // 参数时间戳
         let item =  plan[key][i];
         total = total + item.fee_time;
       }
-      let map = {date: key, data: plan[key], total, isShowYear: year !== timeYear && preYear && preYear !== timeYear, isFestival: true}
+      if(rs.length>0){
+        preYear = moment(rs[rs.length-1].date).year();
+      }
+      if(type =='plan') {
+        isShowYear = year !== timeYear && preYear !== timeYear;
+      }
+      else {
+        if(year !== timeYear && preYear !== timeYear) {
+          if(rs.length ==0) {
+            last = {date: preItem.date, data: preItem.data.concat(plan[key]), total: preItem.total, isShowYear: true, isFestival: preItem.isFestival}
+            isShowYear = true;
+          }
+          else{
+            rs[rs.length-1].isShowYear = true;
+            isShowYear = true;
+          }
+        }
+        else if(year !== timeYear && preYear === timeYear) {
+          if(rs.length ==0) {
+            last = {date: preItem.date, data: preItem.data.concat(plan[key]), total: preItem.total, isShowYear: false, isFestival: preItem.isFestival}
+            isShowYear = true;
+          }
+          else {
+            rs[rs.length-1].isShowYear = false;
+            isShowYear = true;
+          }
+        }
+      }
+      
+      let map = {date: key, data: plan[key], total, isShowYear: isShowYear, isFestival: true}
       rs.push(map)
     }
     preYear = timeYear;
