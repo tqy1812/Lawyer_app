@@ -18,7 +18,7 @@ export default class actionProcess {
     return (dispatch, getState) => {
       let state = getState();
       dispatch(request.getProcessList(page, false, (rs)=>{
-          let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem) : {last: undefined, rs: []};
+          let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem, 'plan') : {last: undefined, rs: []};
           let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / Common.PAGE_SIZE)  : true; 
           if (page==1) {
             dispatch({type: actionProcess.TYPE_PROCESS_PLAN_LIST, data: list.rs});
@@ -47,7 +47,7 @@ export default class actionProcess {
     return (dispatch, getState) => {
       let state = getState();
       dispatch(request.getProcessList(page, true, (rs)=>{
-          let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem) : {last: undefined, rs: []};
+          let list = rs.data && rs.data.processes ? getProcessList(rs.data.processes, preItem, 'finish') : {last: undefined, rs: []};
           let totalTime = rs.data && rs.data.monthly_total_fee_time ? rs.data.monthly_total_fee_time : 0;
           let isFinish = rs.total && rs.page ?  rs.page >= Math.ceil(rs.total / Common.PAGE_SIZE)  : true; 
           // logger('.....reqProcessFinishList='+ list.rs.length)
