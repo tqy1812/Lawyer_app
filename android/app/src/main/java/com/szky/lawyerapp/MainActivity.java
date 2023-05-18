@@ -97,7 +97,7 @@ public class MainActivity extends ReactActivity {
     super.onCreate(savedInstanceState);
     intent = getIntent();
 
-    Log.i("MainActivity", "******************************onCreate===="+android.os.Build.BRAND);
+//    Log.i("MainActivity", "******************************onCreate===="+android.os.Build.BRAND);
     context = this;
     MainApplication.getInstance().createNotificationChannel();
 //    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -111,7 +111,6 @@ public class MainActivity extends ReactActivity {
 //        ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
 //      }
 //    }
-    registerReceiver();
 //    HeadlessJsTaskService.acquireWakeLockNow(getApplicationContext());
 //    Intent service = new Intent(this, WebSocketTaskService.class);
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -119,19 +118,21 @@ public class MainActivity extends ReactActivity {
 //    } else {
 //      startService(service);
 //    }
-    if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_HUAWEI)) {
+    String brand = android.os.Build.BRAND;
+    if(brand.equalsIgnoreCase(BrandUtils.PHONE_HUAWEI)) {
       getHuaweiToken();
-    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_HONOR)) {
+    } else if(brand.equalsIgnoreCase(BrandUtils.PHONE_HONOR)) {
       getHonorToken();
-    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_XIAOMI)) {
+    } else if(brand.equalsIgnoreCase(BrandUtils.PHONE_XIAOMI)) {
       getOtherToken();
-    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_MEIZU)) {
+    } else if(brand.equalsIgnoreCase(BrandUtils.PHONE_MEIZU)) {
       getOtherToken();
-    } else if(android.os.Build.BRAND.equalsIgnoreCase(BrandUtils.PHONE_OPPO)) {
+    } else if(brand.equalsIgnoreCase(BrandUtils.PHONE_OPPO)) {
       getOtherToken();
     } else {
       getOtherToken();
     }
+    registerReceiver();
   }
 
   private void getHuaweiToken() {

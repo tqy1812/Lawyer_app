@@ -79,6 +79,20 @@
 	"configuration_version":"3.0",
 	"appInfos":[
 		{
+			"package_name":"com.psychologyapp",
+			"client":{
+				"app_id":"108316595"
+			},
+			"app_info":{
+				"package_name":"com.psychologyapp",
+				"app_id":"108316595"
+			},
+			"oauth_client":{
+				"client_type":1,
+				"client_id":"108316595"
+			}
+		},
+		{
 			"package_name":"com.szky.lawyerapp",
 			"client":{
 				"app_id":"108249733"

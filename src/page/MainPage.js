@@ -235,6 +235,15 @@ class MainPage extends BaseComponent {
       PushNotification.getChannels(function (channels) {
         logger('....channels:' + JSON.stringify(channels));
       });
+      
+      NativeModules.NotifyOpen.getDeviceToken((token) =>{
+        NativeModules.NotifyOpen.getDeviceType((type) =>{
+          logger('.....DeviceToken='+token + '' + type);
+          const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
+          this.props.dispatch(actionAuth.reqDeviceToken(deviceType, token));
+        });
+      });
+      
       PushNotification.createChannel(
         {
           channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
