@@ -18,9 +18,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import platform from '../utils/platform';
 import {
-  WebView as WebViewX5
-} from 'react-native-webview-tencentx5';
-import {
   WebView
 } from 'react-native-webview';
 import { logger } from '../utils/utils';
@@ -108,22 +105,7 @@ class WebPage extends Component {
                       <ActivityIndicator size="large" color="black" />
                     </View>}                                                   
                     <View style={styles.container}>                    
-                    {
-                        platform.isAndroid() ? <WebViewX5
-                        ref={this.wv}
-                        source={{ uri:  Common.webUrl + webviewUrl }}
-                        scalesPageToFit={false}
-                        bounces={false}
-                        style={{width:windowWidth,height:'100%'}}
-                        javaScriptEnabled={true}
-                        injectedJavaScript={this.INJECTEDJAVASCRIPT }
-                        onMessage={this.handleNativeMessage.bind(this)}
-                        mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
-                        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-                        incognito={true}
-                        onLoadEnd={this.closeLoading.bind(this)}
-                        onNavigationStateChange={this.onNavigationStateChange.bind(this)}
-                      /> : <WebView
+                      <WebView
                       ref={this.wv}
                       source={{ uri: Common.webUrl + webviewUrl }}
                       scalesPageToFit={false}
@@ -138,8 +120,6 @@ class WebPage extends Component {
                       onLoadEnd={this.closeLoading.bind(this)}
                       onNavigationStateChange={this.onNavigationStateChange.bind(this)}
                     />
-                    }
-
                     </View>
           </SafeAreaView>
       )

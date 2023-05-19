@@ -7,6 +7,7 @@ export default class actionCase {
 
  static TYPE_CASE_LIST = 'TYPE_CASE_LIST'; // 任务列表
  static TYPE_CASE_LIST_INFO = 'TYPE_CASE_LIST_INFO'; // 任务列表
+ static COLOR_LENGTH = 54;
     // 项目
   static reqCaseList(callback) {
     return (dispatch, getState) => {
@@ -16,7 +17,7 @@ export default class actionCase {
           let infoList = rs.data && rs.data.cases ? rs.data.cases : [];
           let caseList = new Map();
           for (let i=0; i < infoList.length; i++) {
-            caseList[infoList[i]['id']] = Common.color[parseInt(infoList[i]['id'])%103+1] ? Common.color[parseInt(infoList[i]['id'])%103+1] : Common.color[103];
+            caseList[infoList[i]['id']] = Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] ? Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] : Common.color[actionCase.COLOR_LENGTH];
           } 
           
           dispatch({type: actionCase.TYPE_CASE_LIST_INFO, data: infoList});
@@ -26,17 +27,17 @@ export default class actionCase {
               newData = Object.assign({}, JSON.parse(list));
               for (let key in caseList) {
                 if(!newData[key+'']) {
-                  if(infoList.length <= 103) {
+                  if(infoList.length <= actionCase.COLOR_LENGTH) {
                     let isSame = isSameColor(newData, caseList[key]);
                     if(isSame) {
                       newData[key] = filterSameColor(newData)
                     }
                     else {
-                      newData[key] = caseList[key] ? caseList[key] : Common.color[103];
+                      newData[key] = caseList[key] ? caseList[key] : Common.color[actionCase.COLOR_LENGTH];
                     }
                   }
                   else{
-                    newData[key] = caseList[key] ? caseList[key] : Common.color[103];
+                    newData[key] = caseList[key] ? caseList[key] : Common.color[actionCase.COLOR_LENGTH];
                   }
                 }
               }

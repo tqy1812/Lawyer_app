@@ -22,9 +22,6 @@ import {
   ImageBackground
 } from 'react-native';
 import {
-  WebView as WebViewX5
-} from 'react-native-webview-tencentx5';
-import {
   WebView
 } from 'react-native-webview';
 import { Recognizer } from 'react-native-speech-iflytek';
@@ -107,11 +104,11 @@ class MainPage extends BaseComponent {
       editDateShow: false
     }
     // DeviceEventEmitter.removeAllListeners();
-    // this.INJECTEDJAVASCRIPT = `
-    // const meta = document.createElement('meta'); 
-    // meta.setAttribute('content', 'initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); 
-    // meta.setAttribute('name', 'viewport'); 
-    // document.getElementsByTagName('head')[0].appendChild(meta);`
+    this.INJECTEDJAVASCRIPT = `
+    const meta = document.createElement('meta'); 
+    meta.setAttribute('content', 'initial-scale=0.5, user-scalable=0'); 
+    meta.setAttribute('name', 'viewport'); 
+    document.getElementsByTagName('head')[0].appendChild(meta);`
     this.wv = React.createRef();
     // logger('###########', Recognizer);
     if(platform.isAndroid()) {
@@ -924,39 +921,23 @@ class MainPage extends BaseComponent {
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
         </View>}
-        {
-          platform.isAndroid() ? <WebViewX5
+        
+        <WebView
             ref={this.wv}
-            source={{ uri: Common.webUrl + 'demo/index.html' }}
+            source={{ uri:  Common.webUrl + 'demo/index.html' }}
             // source={{ uri: 'https://human.kykyai.cn' }}
             scalesPageToFit={true}
             bounces={false}
             style={{ width: windowWidth, height: '100%' }}
             javaScriptEnabled={true}
-            injectedJavaScript={this.INJECTEDJAVASCRIPT}
+            // injectedJavaScript={this.INJECTEDJAVASCRIPT}
             onMessage={this.handleNativeMessage.bind(this)}
             mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined} 
             startInLoadingState={true}
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
             incognito={false}
             onLoadEnd={this.closeLoading.bind(this)}
-          /> : <WebView
-            ref={this.wv}
-            source={{ uri:  Common.webUrl + 'demo/index.html' }}
-            // source={{ uri: 'https://human.kykyai.cn' }}
-            scalesPageToFit={false}
-            bounces={false}
-            style={{ width: windowWidth, height: '100%' }}
-            javaScriptEnabled={true}
-            injectedJavaScript={this.INJECTEDJAVASCRIPT}
-            onMessage={this.handleNativeMessage.bind(this)}
-            mediaPlaybackRequiresUserAction={false}
-            startInLoadingState={true}
-            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-            incognito={false}
-            onLoadEnd={this.closeLoading.bind(this)}
           />
-        }
 
         {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
         <View style={[styles.contentView, { top: 0, height: windowHeight}]} {...this._panResponderMyPlan.panHandlers}>

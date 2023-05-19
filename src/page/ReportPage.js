@@ -25,9 +25,6 @@ import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
 import { caseSetting, logger } from '../utils/utils';
 import {
-  WebView as WebViewX5
-} from 'react-native-webview-tencentx5';
-import {
   WebView
 } from 'react-native-webview';
 const Toast = Overlay.Toast;
@@ -91,22 +88,7 @@ class ReportPage extends Component {
                       <ActivityIndicator size="large" color="black" />
                     </View>}                                                   
                     <View style={styles.container}>                    
-                    {
-                        platform.isAndroid() ? <WebViewX5
-                        ref={this.wv}
-                        source={{ uri:  Common.webUrl + 'report/report.html' }}
-                        // source={{ uri: 'https://human.kykyai.cn' }}
-                        scalesPageToFit={false}
-                        bounces={false}
-                        style={{width:windowWidth,height:'100%'}}
-                        javaScriptEnabled={true}
-                        injectedJavaScript={this.INJECTEDJAVASCRIPT }
-                        // onMessage={(event) => {this.handleNativeMessage(event.nativeEvent.data)}}
-                        mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
-                        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-                        incognito={true}
-                        onLoadEnd={this.closeLoading.bind(this)}
-                      /> : <WebView
+                    <WebView
                       ref={this.wv}
                       source={{ uri: Common.webUrl + 'report/report.html' }}
                       // source={{ uri: 'https://human.kykyai.cn' }}
@@ -121,8 +103,6 @@ class ReportPage extends Component {
                       incognito={true}
                       onLoadEnd={this.closeLoading.bind(this)}
                     />
-                    }
-
                     </View>
                 </SafeAreaView>
             )
