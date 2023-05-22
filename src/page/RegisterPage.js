@@ -48,9 +48,12 @@ class RegisterPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            name: '',
             phone: '',
             password: '',
+            confirm_password: '',
             eyed: false,
+            confirm_eyed: false,
             autoLogin: false,
             lastId: 1,
             code: 0,
@@ -69,68 +72,19 @@ class RegisterPage extends Component {
     }
 
     componentDidMount() {
-        // this.updateApp();
         InteractionManager.runAfterInteractions(() => {
-            const { dispatch, isLogin, navigation, insets } = this.props;
-            // logger("isLogin" + isLogin, insets.top)
-            // this.globalData.setTop(insets.top);
-            // logger("isLogin" + isLogin, this.globalData.getTop())
+            const { dispatch, isLogin } = this.props;
             if (isLogin) {
                 this.props.navigation.navigate('Main');
                 return;
-                // dispatch(actionAuth.reqLogout(() => {
-                // }));
-            }
-            this.autoLoginAction();
-            this.viewDidAppear = this.props.navigation.addListener(
-                'willFocus',
-                (obj) => {
-                    this.autoLoginAction();
-                }
-            )
-            if(platform.isIOS()){
-                
-                PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
-            }
-            else {
-                NativeModules.NotifyOpen.getDeviceToken((token) =>{
-                    logger('.....DeviceToken='+token);
-                    this.setState({
-                        deviceToken:token
-                    })
-                });
-                NativeModules.NotifyOpen.getDeviceType((type) =>{
-                    logger('.....DeviceType='+type);
-                    const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
-                    this.setState({
-                        deviceType:deviceType
-                    })
-                });
-
-                PushNotification.createChannel(
-                    {
-                        channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
-                        channelName: `任务通知`, // (required)
-                        channelDescription: "任务提醒通知", // (optional) default: undefined.
-                        soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
-                        importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-                        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-                    },
-                    (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-                );
             }
         });
     }
 
     componentWillUnmount() {
         logger('......RegisterPage componentWillUnmount')
-        if (typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
-            this.viewDidAppear && this.viewDidAppear.remove();
         this.nameListener && this.nameListener.remove();
-        if (platform.isIOS()) {
-            PushNotificationIOS.removeEventListener('register');
-        }
-        // this.backHandler && this.backHandler.remove();
+       
     }
 
     onRegistered = (deviceToken) => {
@@ -141,50 +95,31 @@ class RegisterPage extends Component {
         }
       };
 
-    async autoLoginAction() {
-        const { dispatch } = this.props;
-        let savedUser = {};
-        let user = await Storage.getUserRecord();
-        logger("user" + user)
-        if (user) {
-            savedUser = Object.assign({}, JSON.parse(user));
-            // if(savedUser.token){
-            //     dispatch(actionAuth.loadRecord());
-            //     this.props.navigation.replace('Main');
-            //     return;
-            // }
-            if (savedUser.phone && savedUser.password) {
-                this.setState({ phone: savedUser.phone, password: savedUser.password });
-            }
-        }
-        let autoLogin = await Storage.getAutoLogin();
-        logger("autoLogin" + autoLogin)
-        if (autoLogin === '1') {
-            this.setState({autoLogin: true});
-            if (savedUser.phone && savedUser.password) {
-                const that = this;
-                requestAnimationFrame(() => that.handleLogin());
-            }
-        }
-    }
-
     // 用户名改变
     handlePhoneChanged(text) {
         let name = text.trim();
         this.setState({ phone: name });
     }
-
+    handleNameChanged(text) {
+        let name = text.trim();
+        this.setState({ name: name });
+    }
     // 密码改变
     handlePasswordChanged(text) {
         this.setState({ password: text });
     }
-
+    handleComfirPasswordChanged(text) {
+        this.setState({ confirm_password: text });
+    }
     // 验证码
     handleIndetifyChanged(text) {
         this.setState({ indetify: text });
     }
     // 登录
     handleLogin() {
+        this.props.navigation.replace('Login');
+    }
+    handleRegister() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, password, autoLogin, deviceToken, deviceType } = this.state;
@@ -248,7 +183,7 @@ class RegisterPage extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-                <ScrollView style={styles.scorllView}>
+                <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
                  <View style={styles.topPart}>
                     <Text style={styles.topPartTitle}>{'律时'}</Text>
                     <View style={styles.topPartRight}>
@@ -256,19 +191,41 @@ class RegisterPage extends Component {
                         <Text  style={styles.topPartName}>{'管理时间'}</Text>
                     </View>
                 </View>
-                <View style={styles.infoPart}>
+                <View style={styles.info}>
+                    <View style={styles.infoPart}>
                         <Text style={styles.topPartName}>{'使用手机号码注册律时账号'}</Text>
                         <View style={styles.register}>
                             <View style={[styles.registerLine,{marginRight: 10}]}></View>
-                            <Text style={[styles.registerText, {color: '#606266'}]}>已有律时账号？</Text><MyButton style={styles.registerBtn}><Text style={[styles.registerText, {color: '#007afe'}]}>去登录</Text></MyButton>
+                            <Text style={[styles.registerText, {color: '#606266'}]}>已有律时账号？</Text>
+                            <MyButton style={styles.registerBtn} onPress={this.handleLogin.bind(this)}>
+                                <Text style={[styles.registerText, {color: '#007afe'}]}>去登录</Text>
+                            </MyButton>
                             <View style={[styles.registerLine, {marginLeft: 10}]}></View>
                         </View>
                     </View>
+                </View>
                 <View style={styles.content}>
                     <View style={[styles.formInput]}>
                         <TextInput
                             ref={(ref) => this.login_name = ref}
-                            placeholder='输入手机号码'
+                            placeholder='昵称'
+                            placeholderTextColor='#999'
+                            style={styles.loginInput}
+                            onChangeText={this.handleNameChanged.bind(this)}
+                            value={this.state.name}
+                        />
+                        {
+                            this.state.name !== '' && this.state.name !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
+                                this.setState({ name: '' });
+                            }}>
+                                <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
+                            </MyButton>
+                        }
+                    </View>
+                    <View style={[styles.formInput]}>
+                        <TextInput
+                            ref={(ref) => this.login_name = ref}
+                            placeholder='手机号码'
                             placeholderTextColor='#999'
                             style={styles.loginInput}
                             onChangeText={this.handlePhoneChanged.bind(this)}
@@ -284,10 +241,20 @@ class RegisterPage extends Component {
                     </View>
                     <View style={styles.formInput}>
                         <TextInput
+                            ref={(ref) => this.login_identify = ref}
+                            style={styles.loginInput}
+                            placeholder='点击获取动态验证码'
+                            placeholderTextColor='#999'
+                            onChangeText={this.handleIndetifyChanged.bind(this)}
+                            value={this.state.indetify} />
+                            <SendIdentify time={90} action={this.send.bind(this)}/>
+                    </View>
+                    <View style={styles.formInput}>
+                        <TextInput
                             ref="login_psw"
                             style={styles.loginInput}
                             secureTextEntry={!this.state.eyed}
-                            placeholder='轻触此处密码'
+                            placeholder='设定密码'
                             placeholderTextColor='#999'
                             onChangeText={this.handlePasswordChanged.bind(this)}
                             value={this.state.password} />
@@ -297,18 +264,20 @@ class RegisterPage extends Component {
                                 {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                             </MyButton>
                     </View>
-                    {/* <View style={styles.formInput}>
+                    <View style={styles.formInput}>
                         <TextInput
-                            ref={(ref) => this.login_identify = ref}
+                            ref="login_psw"
                             style={styles.loginInput}
-                            placeholder='轻触此处输入验证码'
+                            secureTextEntry={!this.state.confirm_eyed}
+                            placeholder='再次输入密码'
                             placeholderTextColor='#999'
-                            onChangeText={this.handleIndetifyChanged.bind(this)}
-                            value={this.state.indetify} />
-                            <SendIdentify time={90} action={this.send.bind(this)}/>
-                    </View> */}
-                    <View style={styles.forgot}>
-                        <MyButton style={styles.forgotBtn}><Text style={styles.forgotText}>忘记密码？</Text></MyButton>
+                            onChangeText={this.handleComfirPasswordChanged.bind(this)}
+                            value={this.state.confirm_password} />
+                            <MyButton style={styles.eyeButton} onPress={() => {
+                                this.setState({ confirm_eyed: !this.state.confirm_eyed });
+                            }}>
+                                {this.state.confirm_eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
+                            </MyButton>
                     </View>
                 </View>
                 <View style={styles.operate}>
@@ -330,7 +299,7 @@ class RegisterPage extends Component {
                         </TouchableOpacity>
                         <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>律时隐私保护指引</Text><Text style={styles.lawText2}>和</Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>律时用户服务协议</Text></View>
                     </View>
-                    <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
+                    <MyButton style={styles.loginBtn} onPress={this.handleRegister.bind(this)}>
                         <Text style={styles.loginText}>注册</Text>
                     </MyButton>
                 </View>
@@ -354,6 +323,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        height: 40,
     },
     registerText: {
         fontSize: 14,
@@ -363,6 +333,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        height: 40, 
     },
     registerLine: {
         flex: 1,
@@ -371,8 +342,6 @@ const styles = StyleSheet.create({
     },
     scorllView: {
         flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
     },
     topPart: {
         width: '100%',
@@ -382,13 +351,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 70,
     },
-    
+    info: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        marginTop: 70,
+        marginBottom: 70,
+    },
     infoPart: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 220,
+        width: 221,
     },
     topPartRight: {
         display: 'flex',
@@ -426,6 +403,7 @@ const styles = StyleSheet.create({
     content: {
         paddingLeft: 25,
         paddingRight: 25,
+
         //   borderTopWidth: 1,
         //   borderTopColor: '#dfdfdf',
         //   borderBottomWidth: 1,
@@ -455,11 +433,12 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         color: '#333',
         fontSize: FontSize(16),
-        borderWidth: 1,
+        // borderWidth: 1,
         borderRadius: 55,
-        borderColor: '#dfdfdf',
+        // borderColor: '#dfdfdf',
         marginTop: 5,
         marginBottom: 5,
+        backgroundColor: '#F2F6FC'
     },
     formInputSplit: {
         borderBottomWidth: 1,
@@ -544,6 +523,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 30,
         marginTop: 5,
+        marginBottom: 50,
     },
     loginText: {
         color: '#ffffff',

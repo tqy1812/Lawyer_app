@@ -31,8 +31,9 @@ export class SendIdentify extends BaseComponent{
             style={{
                 alignItems:'center',
                 marginLeft:10,
-                // backgroundColor: '#007afe',
-                // borderRadius: 10,
+                marginRight:4,
+                backgroundColor: '#C0C4CC',
+                borderRadius: 30,
             }}
             activeOpacity={1}
             disabled={this.state.disabled}
@@ -40,8 +41,8 @@ export class SendIdentify extends BaseComponent{
         >
           <Text style={{
                 fontSize: 15,
-                padding: 10,
-                color: '#007afe',
+                padding: 13,
+                color: '#606266',
             }}>
             {this.state.timing==this.props.time?'获取验证码':this.state.timing+'秒'}
           </Text>
