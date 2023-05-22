@@ -35,7 +35,7 @@ import { SendIdentify } from '../components/SendIdentify';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { ScrollView } from 'react-native-gesture-handler';
 const Toast = Overlay.Toast;
-class LoginPage extends Component {
+class RegisterPage extends Component {
 
     static mapStateToProps(state) {
         let props = {};
@@ -123,7 +123,7 @@ class LoginPage extends Component {
     }
 
     componentWillUnmount() {
-        logger('......LoginPage componentWillUnmount')
+        logger('......RegisterPage componentWillUnmount')
         if (typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
             this.viewDidAppear && this.viewDidAppear.remove();
         this.nameListener && this.nameListener.remove();
@@ -239,53 +239,6 @@ class LoginPage extends Component {
         this.props.navigation.navigate('Privacy');
     }
 
-    //   backAction = () => {
-    //     return false;
-    //   };
-    // updateApp = () => {
-    //     const { dispatch } = this.props;
-    //     let downloadUrl = '';
-    //     if(platform.isIOS()){
-    //         downloadUrl = 'https://apps.apple.com/cn/app/%E5%BE%8B%E6%97%B6/id6446157793';
-    //         dispatch(actionAuth.reqVersion((ver, error) => {
-    //             if(ver){
-    //                 let num = compareVersion(this.version, ver);
-    //                 Storage.getVersion().then((localVersion)=>{ 
-    //                     let oldCompare = -1;
-    //                     if(localVersion) {
-    //                         oldCompare = compareVersion(localVersion, ver);
-    //                     }
-    //                     if(num < 0 && oldCompare < 0) {
-    //                         Alert.alert('App升级', `发现最新新版本[${ver}]，是否前往升级！。`, [{
-    //                             text: '稍后升级',
-    //                             onPress: () => {Storage.setVersion(ver)},
-    //                             },
-    //                             {
-    //                               text: '去升级',
-    //                               onPress: () => {
-    //                                 Storage.setVersion(ver);
-    //                                 Linking.openURL(downloadUrl).catch(err => {
-    //                                     logger('.....error', error)
-    //                                 });
-    //                             },
-    //                             },
-    //                         ]);
-    //                     }
-    //                 })
-                    
-    //             }
-    //         }))
-    //     }
-    //     else {
-    //         // const downloadUrl = '';
-    //         // // 打开下载地址
-    //         // if(downloadUrl){
-    //         //     Linking.openURL(downloadUrl).catch(err => {
-    //         //         logger('.....error', error)
-    //         //     });
-    //         // }
-    //     }
-    // }
     send = () => {
     }
     render() {
@@ -297,30 +250,20 @@ class LoginPage extends Component {
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
                 <ScrollView style={styles.scorllView}>
                  <View style={styles.topPart}>
-                    <Text
-                        style={styles.topPartTitle}>{'律时'}</Text>
-                    <Text
-                        style={styles.topPartName}>{'言语之间，管理时间'}</Text>
-                    {
-                        this.state.code === 1 ?
-                            (<View style={styles.topPartNotice}>
-                                <IcomoonIcon name='warning' size={22} style={{ color: 'rgb(254, 149, 0)', marginBottom: 10 }} />
-                                <Text style={styles.topPartNoticeText}>{'请确认输入了正确的账号'}</Text>
-                            </View>) :
-                            this.state.code === 2 ?
-                                (<View style={styles.topPartNotice}>
-                                    <IcomoonIcon name='error' size={22} style={{ color: 'rgb(254, 61, 47)', marginBottom: 10 }} />
-                                    <Text style={styles.topPartNoticeText}>{'请确认输入了正确的密码'}</Text>
-                                    <Text style={styles.topPartNoticeText}>{'您可以通过联系管理员确认'}</Text>
-                                </View>) : <View style={styles.topPartNotice}></View>
-                                // (<View style={styles.topPartNotice}>
-                                //     <IcomoonIcon name='info' size={22} style={{ color: 'rgb(0, 122, 254)', marginBottom: 10 }} />
-                                //     <Text style={styles.topPartNoticeText}>{'登陆前请确认已使用权限'}</Text>
-                                //     <Text style={styles.topPartNoticeText}>{'并由管理员处获得账号与密码'}</Text>
-                                // </View>)
-                    }
+                    <Text style={styles.topPartTitle}>{'律时'}</Text>
+                    <View style={styles.topPartRight}>
+                        <Text style={styles.topPartName}>{'言语之间'}</Text>
+                        <Text  style={styles.topPartName}>{'管理时间'}</Text>
+                    </View>
                 </View>
-                
+                <View style={styles.infoPart}>
+                        <Text style={styles.topPartName}>{'使用手机号码注册律时账号'}</Text>
+                        <View style={styles.register}>
+                            <View style={[styles.registerLine,{marginRight: 10}]}></View>
+                            <Text style={[styles.registerText, {color: '#606266'}]}>已有律时账号？</Text><MyButton style={styles.registerBtn}><Text style={[styles.registerText, {color: '#007afe'}]}>去登录</Text></MyButton>
+                            <View style={[styles.registerLine, {marginLeft: 10}]}></View>
+                        </View>
+                    </View>
                 <View style={styles.content}>
                     <View style={[styles.formInput]}>
                         <TextInput
@@ -369,17 +312,6 @@ class LoginPage extends Component {
                     </View>
                 </View>
                 <View style={styles.operate}>
-                    {/* <View style={styles.auto}>
-                            <CheckBox
-                                title='自动登录'
-                                textStyle={{color: '#007afe'}}
-                                checked={this.state.autoLogin}
-                                checkedColor='#d81e36'
-                                uncheckedColor='#999'
-                                containerStyle={styles.checkBoxStyle}
-                                onPress={() => this.setState({autoLogin: !this.state.autoLogin})}
-                            />
-                        </View> */}
                     <View style={styles.law}>
                         <TouchableOpacity style={styles.argreeView}
                             onPress={() => this.setState({ autoLogin: !this.state.autoLogin })}>
@@ -399,21 +331,15 @@ class LoginPage extends Component {
                         <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>律时隐私保护指引</Text><Text style={styles.lawText2}>和</Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>律时用户服务协议</Text></View>
                     </View>
                     <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
-                        <Text style={styles.loginText}>登录</Text>
+                        <Text style={styles.loginText}>注册</Text>
                     </MyButton>
-
-                    <View style={styles.register}>
-                        <View style={[styles.registerLine,{marginRight: 10}]}></View>
-                        <Text style={[styles.registerText, {color: '#606266'}]}>还没有律时账号？</Text><MyButton style={styles.registerBtn}><Text style={[styles.registerText, {color: '#007afe'}]}>去注册</Text></MyButton>
-                        <View style={[styles.registerLine, {marginLeft: 10}]}></View>
-                    </View>
                 </View>
                 </ScrollView>
             </SafeAreaView>
         )
     }
 }
-export default connect(LoginPage.mapStateToProps)(withSafeAreaInsets(LoginPage));
+export default connect(RegisterPage.mapStateToProps)(withSafeAreaInsets(RegisterPage));
 
 const styles = StyleSheet.create({
     container: {
@@ -424,7 +350,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     register:{
-        height: 100,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
@@ -434,7 +359,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     registerBtn: {
-        height: 100,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
@@ -453,22 +377,33 @@ const styles = StyleSheet.create({
     topPart: {
         width: '100%',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         marginTop: 70,
     },
-    topPartTitle: {
+    
+    infoPart: {
+        display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        fontSize:69,
+        justifyContent: 'center',
+        width: 220,
+    },
+    topPartRight: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    topPartTitle: {
+        fontSize:50,
         color: '#007afe',
-        fontWeight: 'bold'
+        includeFontPadding: false
     },
     topPartName: {
-        alignItems: 'center',
-        fontSize: 15,
+        fontSize: 18,
         color: '#606266',
-        fontWeight: 'bold',
-        lineHeight: 20
+        lineHeight: 22
     },
     topPartNotice: {
         marginTop: 50,

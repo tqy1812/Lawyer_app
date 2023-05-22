@@ -26,6 +26,7 @@ import AboutPage from '../page/AboutPage';
 import FeedBackPage from '../page/FeedBackPage';
 import PermissionPage from '../page/PermissionPage';
 import ThirdApiListPage from '../page/ThirdApiListPage';
+import RegisterPage from '../page/RegisterPage';
 import WebPage from '../page/WebPage';
 import platform from '../utils/platform';
 import * as Storage from '../common/Storage';
@@ -216,7 +217,7 @@ export default function StackRouter(props) {
                 />
                 <Stack.Screen
                     name="Login"
-                    component={LoginPage}
+                    component={RegisterPage}
                     options={{headerShown: false}}
                 />
                 <Stack.Screen
@@ -275,6 +276,11 @@ export default function StackRouter(props) {
                 <Stack.Screen
                     name="WebPage"
                     component={WebPage}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="Register"
+                    component={RegisterPage}
                     options={{headerShown: false}}
                 />
                 {/* <Stack.Screen

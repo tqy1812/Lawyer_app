@@ -79,7 +79,8 @@ class PrivacyPage extends Component {
                     { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />
                     </View>}                                                   
-                    <View style={styles.container}> <WebView
+                    <View style={styles.container}> 
+                    <WebView
                       ref={this.wv}
                       source={{ uri: Common.webUrl + 'privacy/privacy.html' }}
                       scalesPageToFit={false}
