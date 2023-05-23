@@ -342,7 +342,7 @@ class MainPage extends BaseComponent {
     if (platform.isAndroid()) {
       NativeModules.WebSocketWorkManager.stopBackgroundWork();
     }
-    this.unsubscribe();
+    this.unsubscribe && this.unsubscribe();
     this.wc && this.wc.onDisconnectWS();
     // DeviceEventEmitter.removeAllListeners();
   }
