@@ -188,87 +188,88 @@ class ForgotPage extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-                <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
-
                 <Header title='' close={true}  {...this.props}/>
-                <View style={styles.info}>
-                    <View style={styles.infoPart}>
-                        <Text style={styles.topPartName}>{'验证账号并修改密码'}</Text>
+                <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
+                <View style={styles.body}>
+                    <View style={styles.info}>
+                        <View style={styles.infoPart}>
+                            <Text style={styles.topPartName}>{'验证账号并修改密码'}</Text>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.content}>
-                    <View style={[styles.formInput]}>
-                        <TextInput
-                            ref={(ref) => this.login_name = ref}
-                            placeholder='手机帐号'
-                            placeholderTextColor='#999'
-                            style={styles.loginInput}
-                            onChangeText={this.handlePhoneChanged.bind(this)}
-                            value={this.state.phone}
-                        />
-                        {
-                            this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
-                                this.setState({ phone: '' });
-                            }}>
-                                <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
-                            </MyButton>
-                        }
+                    <View style={styles.content}>
+                        <View style={[styles.formInput]}>
+                            <TextInput
+                                ref={(ref) => this.login_name = ref}
+                                placeholder='手机帐号'
+                                placeholderTextColor='#999'
+                                style={styles.loginInput}
+                                onChangeText={this.handlePhoneChanged.bind(this)}
+                                value={this.state.phone}
+                            />
+                            {
+                                this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
+                                    this.setState({ phone: '' });
+                                }}>
+                                    <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
+                                </MyButton>
+                            }
+                        </View>
+                        <View style={styles.formInput}>
+                            <TextInput
+                                ref={(ref) => this.login_identify = ref}
+                                style={styles.loginInput}
+                                placeholder='输入图形验证码'
+                                placeholderTextColor='#999'
+                                onChangeText={this.handleOptChanged.bind(this)}
+                                value={this.state.opt} />
+                                <Image style={styles.opt} source={{uri: 'https://sslstatic.ktanx.com/images/release/201806/yodEBMnbAOjVodyZ.png'}}/>
+                        </View>
+                        <View style={styles.formInput}>
+                            <TextInput
+                                ref={(ref) => this.login_identify = ref}
+                                style={styles.loginInput}
+                                placeholder='点击获取动态验证码'
+                                placeholderTextColor='#999'
+                                onChangeText={this.handleIndetifyChanged.bind(this)}
+                                value={this.state.indetify} />
+                                <SendIdentify time={90} action={this.send.bind(this)}/>
+                        </View>
+                        <View style={styles.formInput}>
+                            <TextInput
+                                ref="login_psw"
+                                style={styles.loginInput}
+                                secureTextEntry={!this.state.eyed}
+                                placeholder='设定密码'
+                                placeholderTextColor='#999'
+                                onChangeText={this.handlePasswordChanged.bind(this)}
+                                value={this.state.password} />
+                                <MyButton style={styles.eyeButton} onPress={() => {
+                                    this.setState({ eyed: !this.state.eyed });
+                                }}>
+                                    {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
+                                </MyButton>
+                        </View>
+                        <View style={styles.formInput}>
+                            <TextInput
+                                ref="login_psw"
+                                style={styles.loginInput}
+                                secureTextEntry={!this.state.confirm_eyed}
+                                placeholder='再次输入密码'
+                                placeholderTextColor='#999'
+                                onChangeText={this.handleComfirPasswordChanged.bind(this)}
+                                value={this.state.confirm_password} />
+                                <MyButton style={styles.eyeButton} onPress={() => {
+                                    this.setState({ confirm_eyed: !this.state.confirm_eyed });
+                                }}>
+                                    {this.state.confirm_eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
+                                </MyButton>
+                        </View>
                     </View>
-                    <View style={styles.formInput}>
-                        <TextInput
-                            ref={(ref) => this.login_identify = ref}
-                            style={styles.loginInput}
-                            placeholder='输入图形验证码'
-                            placeholderTextColor='#999'
-                            onChangeText={this.handleOptChanged.bind(this)}
-                            value={this.state.opt} />
-                            <Image style={styles.opt} source={{uri: 'https://sslstatic.ktanx.com/images/release/201806/yodEBMnbAOjVodyZ.png'}}/>
+                    <View style={styles.operate}>
+                        <MyButton style={styles.loginBtn} onPress={this.handleRegister.bind(this)}>
+                            <Text style={styles.loginText}>确认</Text>
+                        </MyButton>
                     </View>
-                    <View style={styles.formInput}>
-                        <TextInput
-                            ref={(ref) => this.login_identify = ref}
-                            style={styles.loginInput}
-                            placeholder='点击获取动态验证码'
-                            placeholderTextColor='#999'
-                            onChangeText={this.handleIndetifyChanged.bind(this)}
-                            value={this.state.indetify} />
-                            <SendIdentify time={90} action={this.send.bind(this)}/>
-                    </View>
-                    <View style={styles.formInput}>
-                        <TextInput
-                            ref="login_psw"
-                            style={styles.loginInput}
-                            secureTextEntry={!this.state.eyed}
-                            placeholder='设定密码'
-                            placeholderTextColor='#999'
-                            onChangeText={this.handlePasswordChanged.bind(this)}
-                            value={this.state.password} />
-                            <MyButton style={styles.eyeButton} onPress={() => {
-                                this.setState({ eyed: !this.state.eyed });
-                            }}>
-                                {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
-                            </MyButton>
-                    </View>
-                    <View style={styles.formInput}>
-                        <TextInput
-                            ref="login_psw"
-                            style={styles.loginInput}
-                            secureTextEntry={!this.state.confirm_eyed}
-                            placeholder='再次输入密码'
-                            placeholderTextColor='#999'
-                            onChangeText={this.handleComfirPasswordChanged.bind(this)}
-                            value={this.state.confirm_password} />
-                            <MyButton style={styles.eyeButton} onPress={() => {
-                                this.setState({ confirm_eyed: !this.state.confirm_eyed });
-                            }}>
-                                {this.state.confirm_eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
-                            </MyButton>
-                    </View>
-                </View>
-                <View style={styles.operate}>
-                    <MyButton style={styles.loginBtn} onPress={this.handleRegister.bind(this)}>
-                        <Text style={styles.loginText}>确认</Text>
-                    </MyButton>
                 </View>
                 </ScrollView>
             </SafeAreaView>
@@ -309,23 +310,24 @@ const styles = StyleSheet.create({
     },
     scorllView: {
         flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
     },
-    topPart: {
+    body: {
+        minHeight: '100%',
         width: '100%',
         display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'center',
-        marginTop: 70,
+        alignItems: 'center',
     },
     info: {
+        flex: 1,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        marginTop: 70,
-        marginBottom: 70,
     },
     infoPart: {
         display: 'flex',
@@ -333,6 +335,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: 221,
+        marginTop: 70,
+        marginBottom: 70,
     },
     topPartRight: {
         display: 'flex',
@@ -370,7 +374,7 @@ const styles = StyleSheet.create({
     content: {
         paddingLeft: 25,
         paddingRight: 25,
-
+        width: '100%',
         //   borderTopWidth: 1,
         //   borderTopColor: '#dfdfdf',
         //   borderBottomWidth: 1,
@@ -464,7 +468,8 @@ const styles = StyleSheet.create({
         color: '#C0C4CC',
     },
     operate: {
-        marginTop: 20,
+        width: '100%',
+        paddingTop: 20,
         paddingLeft: 25,
         paddingRight: 25,
         flexDirection: 'column',

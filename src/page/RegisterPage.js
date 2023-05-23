@@ -184,13 +184,16 @@ class RegisterPage extends Component {
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
                 <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
-                 <View style={styles.topPart}>
-                    <Text style={styles.topPartTitle}>{'律时'}</Text>
-                    <View style={styles.topPartRight}>
-                        <Text style={styles.topPartName}>{'言语之间'}</Text>
-                        <Text  style={styles.topPartName}>{'管理时间'}</Text>
+                <View style={styles.body}>
+                    <View style={styles.top}>
+                    <View style={styles.topPart}>
+                        <Text style={styles.topPartTitle}>{'律时'}</Text>
+                        <View style={styles.topPartRight}>
+                            <Text style={styles.topPartName}>{'言语之间'}</Text>
+                            <Text  style={styles.topPartName}>{'管理时间'}</Text>
+                        </View>
                     </View>
-                </View>
+                    </View>
                 <View style={styles.info}>
                     <View style={styles.infoPart}>
                         <Text style={styles.topPartName}>{'使用手机号码注册律时账号'}</Text>
@@ -303,6 +306,7 @@ class RegisterPage extends Component {
                         <Text style={styles.loginText}>注册</Text>
                     </MyButton>
                 </View>
+                </View>
                 </ScrollView>
             </SafeAreaView>
         )
@@ -343,6 +347,22 @@ const styles = StyleSheet.create({
     scorllView: {
         flex: 1,
     },
+    body: {
+        width: '100%',
+        minHeight: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    top: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1
+    },
     topPart: {
         width: '100%',
         display: 'flex',
@@ -350,6 +370,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 70,
+    },
+    topPartTitle: {
+        fontSize:50,
+        color: '#007afe',
+        includeFontPadding: false
     },
     info: {
         display: 'flex',
@@ -371,11 +396,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-    },
-    topPartTitle: {
-        fontSize:50,
-        color: '#007afe',
-        includeFontPadding: false
     },
     topPartName: {
         fontSize: 18,
@@ -401,6 +421,7 @@ const styles = StyleSheet.create({
         marginLeft: 2,
     },
     content: {
+        width: '100%',
         paddingLeft: 25,
         paddingRight: 25,
 
@@ -497,6 +518,7 @@ const styles = StyleSheet.create({
         color: '#C0C4CC',
     },
     operate: {
+        width: '100%',
         marginTop: 20,
         paddingLeft: 25,
         paddingRight: 25,

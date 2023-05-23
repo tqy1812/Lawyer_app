@@ -302,121 +302,123 @@ class LoginPage extends Component {
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
                 <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
-                 <View style={styles.topPart}>
-                    <Text
-                        style={styles.topPartTitle}>{'律时'}</Text>
-                    <Text
-                        style={styles.topPartName}>{'言语之间，管理时间'}</Text>
-                    {
-                        this.state.code === 1 ?
-                            (<View style={styles.topPartNotice}>
-                                <IcomoonIcon name='warning' size={22} style={{ color: 'rgb(254, 149, 0)', marginBottom: 10 }} />
-                                <Text style={styles.topPartNoticeText}>{'请确认输入了正确的账号'}</Text>
-                            </View>) :
-                            this.state.code === 2 ?
-                                (<View style={styles.topPartNotice}>
-                                    <IcomoonIcon name='error' size={22} style={{ color: 'rgb(254, 61, 47)', marginBottom: 10 }} />
-                                    <Text style={styles.topPartNoticeText}>{'请确认输入了正确的密码'}</Text>
-                                    <Text style={styles.topPartNoticeText}>{'您可以通过联系管理员确认'}</Text>
+                    <View style={styles.body}>
+                        <View style={styles.topPart}>
+                            <Text
+                                style={styles.topPartTitle}>{'律时'}</Text>
+                            <Text
+                                style={styles.topPartName}>{'言语之间，管理时间'}</Text>
+                            {
+                                this.state.code === 1 ?
+                                    (<View style={styles.topPartNotice}>
+                                        <IcomoonIcon name='warning' size={22} style={{ color: 'rgb(254, 149, 0)', marginBottom: 10 }} />
+                                        <Text style={styles.topPartNoticeText}>{'请确认输入了正确的账号'}</Text>
+                                    </View>) :
+                                    this.state.code === 2 ?
+                                        (<View style={styles.topPartNotice}>
+                                            <IcomoonIcon name='error' size={22} style={{ color: 'rgb(254, 61, 47)', marginBottom: 10 }} />
+                                            <Text style={styles.topPartNoticeText}>{'请确认输入了正确的密码'}</Text>
+                                            <Text style={styles.topPartNoticeText}>{'您可以通过联系管理员确认'}</Text>
                                 </View>) : <View style={styles.topPartNotice}></View>
                                 // (<View style={styles.topPartNotice}>
                                 //     <IcomoonIcon name='info' size={22} style={{ color: 'rgb(0, 122, 254)', marginBottom: 10 }} />
                                 //     <Text style={styles.topPartNoticeText}>{'登陆前请确认已使用权限'}</Text>
                                 //     <Text style={styles.topPartNoticeText}>{'并由管理员处获得账号与密码'}</Text>
                                 // </View>)
-                    }
-                </View>
+                            }
+                        </View>
                 
-                <View style={styles.content}>
-                    <View style={[styles.formInput]}>
-                        <TextInput
-                            ref={(ref) => this.login_name = ref}
-                            placeholder='输入手机号码'
-                            placeholderTextColor='#999'
-                            style={styles.loginInput}
-                            onChangeText={this.handlePhoneChanged.bind(this)}
-                            value={this.state.phone}
-                        />
-                        {
-                            this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
-                                this.setState({ phone: '' });
-                            }}>
-                                <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
+                        <View style={styles.content}>
+                            <View style={[styles.formInput]}>
+                                <TextInput
+                                    ref={(ref) => this.login_name = ref}
+                                    placeholder='输入手机号码'
+                                    placeholderTextColor='#999'
+                                    style={styles.loginInput}
+                                    onChangeText={this.handlePhoneChanged.bind(this)}
+                                    value={this.state.phone}
+                                />
+                                {
+                                    this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
+                                        this.setState({ phone: '' });
+                                    }}>
+                                        <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
+                                    </MyButton>
+                                }
+                            </View>
+                            <View style={styles.formInput}>
+                                <TextInput
+                                    ref="login_psw"
+                                    style={styles.loginInput}
+                                    secureTextEntry={!this.state.eyed}
+                                    placeholder='轻触此处密码'
+                                    placeholderTextColor='#999'
+                                    onChangeText={this.handlePasswordChanged.bind(this)}
+                                    value={this.state.password} />
+                                    <MyButton style={styles.eyeButton} onPress={() => {
+                                        this.setState({ eyed: !this.state.eyed });
+                                    }}>
+                                        {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
+                                    </MyButton>
+                            </View>
+                            {/* <View style={styles.formInput}>
+                                <TextInput
+                                    ref={(ref) => this.login_identify = ref}
+                                    style={styles.loginInput}
+                                    placeholder='点击获取动态验证码'
+                                    placeholderTextColor='#999'
+                                    onChangeText={this.handleIndetifyChanged.bind(this)}
+                                    value={this.state.indetify} />
+                                    <SendIdentify time={90} action={this.send.bind(this)}/>
+                            </View> */}
+                            <View style={styles.forgot}>
+                                <MyButton style={styles.forgotBtn} onPress={this.forgot.bind(this)}><Text style={styles.forgotText}>忘记密码？</Text></MyButton>
+                            </View>
+                        </View>
+                        <View style={styles.operate}>
+                            {/* <View style={styles.auto}>
+                                    <CheckBox
+                                        title='自动登录'
+                                        textStyle={{color: '#007afe'}}
+                                        checked={this.state.autoLogin}
+                                        checkedColor='#d81e36'
+                                        uncheckedColor='#999'
+                                        containerStyle={styles.checkBoxStyle}
+                                        onPress={() => this.setState({autoLogin: !this.state.autoLogin})}
+                                    />
+                                </View> */}
+                            <View style={styles.law}>
+                                <TouchableOpacity style={styles.argreeView}
+                                    onPress={() => this.setState({ autoLogin: !this.state.autoLogin })}>
+                                    <CheckBox
+                                        title={null}
+                                        checked={this.state.autoLogin}
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        size={15}
+                                        checkedColor='#007afe'
+                                        uncheckedColor='#C0C4CC'
+                                        containerStyle={styles.lawCheck}
+                                        onPress={() => this.setState({ autoLogin: !this.state.autoLogin })}
+                                    />
+                                    <Text style={styles.lawText}>已经阅读并同意</Text>
+                                </TouchableOpacity>
+                                <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>律时隐私保护指引</Text><Text style={styles.lawText2}>和</Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>律时用户服务协议</Text></View>
+                            </View>
+                            <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
+                                <Text style={styles.loginText}>登录</Text>
                             </MyButton>
-                        }
-                    </View>
-                    <View style={styles.formInput}>
-                        <TextInput
-                            ref="login_psw"
-                            style={styles.loginInput}
-                            secureTextEntry={!this.state.eyed}
-                            placeholder='轻触此处密码'
-                            placeholderTextColor='#999'
-                            onChangeText={this.handlePasswordChanged.bind(this)}
-                            value={this.state.password} />
-                            <MyButton style={styles.eyeButton} onPress={() => {
-                                this.setState({ eyed: !this.state.eyed });
-                            }}>
-                                {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
-                            </MyButton>
-                    </View>
-                    {/* <View style={styles.formInput}>
-                        <TextInput
-                            ref={(ref) => this.login_identify = ref}
-                            style={styles.loginInput}
-                            placeholder='点击获取动态验证码'
-                            placeholderTextColor='#999'
-                            onChangeText={this.handleIndetifyChanged.bind(this)}
-                            value={this.state.indetify} />
-                            <SendIdentify time={90} action={this.send.bind(this)}/>
-                    </View> */}
-                    <View style={styles.forgot}>
-                        <MyButton style={styles.forgotBtn} onPress={this.forgot.bind(this)}><Text style={styles.forgotText}>忘记密码？</Text></MyButton>
-                    </View>
-                </View>
-                <View style={styles.operate}>
-                    {/* <View style={styles.auto}>
-                            <CheckBox
-                                title='自动登录'
-                                textStyle={{color: '#007afe'}}
-                                checked={this.state.autoLogin}
-                                checkedColor='#d81e36'
-                                uncheckedColor='#999'
-                                containerStyle={styles.checkBoxStyle}
-                                onPress={() => this.setState({autoLogin: !this.state.autoLogin})}
-                            />
-                        </View> */}
-                    <View style={styles.law}>
-                        <TouchableOpacity style={styles.argreeView}
-                            onPress={() => this.setState({ autoLogin: !this.state.autoLogin })}>
-                            <CheckBox
-                                title={null}
-                                checked={this.state.autoLogin}
-                                checkedIcon='dot-circle-o'
-                                uncheckedIcon='circle-o'
-                                size={15}
-                                checkedColor='#007afe'
-                                uncheckedColor='#C0C4CC'
-                                containerStyle={styles.lawCheck}
-                                onPress={() => this.setState({ autoLogin: !this.state.autoLogin })}
-                            />
-                            <Text style={styles.lawText}>已经阅读并同意</Text>
-                        </TouchableOpacity>
-                        <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>律时隐私保护指引</Text><Text style={styles.lawText2}>和</Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>律时用户服务协议</Text></View>
-                    </View>
-                    <MyButton style={styles.loginBtn} onPress={this.handleLogin.bind(this)}>
-                        <Text style={styles.loginText}>登录</Text>
-                    </MyButton>
 
-                    <View style={styles.register}>
-                        <View style={[styles.registerLine,{marginRight: 10}]}></View>
-                        <Text style={[styles.registerText, {color: '#606266'}]}>还没有律时账号？</Text>
-                        <MyButton style={styles.registerBtn} onPress={this.register.bind(this)}>
-                            <Text style={[styles.registerText, {color: '#007afe'}]}>去注册</Text>
-                        </MyButton>
-                        <View style={[styles.registerLine, {marginLeft: 10}]}></View>
+                            <View style={styles.register}>
+                                <View style={[styles.registerLine,{marginRight: 10}]}></View>
+                                <Text style={[styles.registerText, {color: '#606266'}]}>还没有律时账号？</Text>
+                                <MyButton style={styles.registerBtn} onPress={this.register.bind(this)}>
+                                    <Text style={[styles.registerText, {color: '#007afe'}]}>去注册</Text>
+                                </MyButton>
+                                <View style={[styles.registerLine, {marginLeft: 10}]}></View>
+                            </View>
+                        </View>
                     </View>
-                </View>
                 </ScrollView>
             </SafeAreaView>
         )
@@ -459,19 +461,27 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
     },
+    body: {
+        minHeight: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     topPart: {
         flex: 1,
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 70,
     },
     topPartTitle: {
         alignItems: 'center',
         fontSize:69,
         color: '#007afe',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginTop: 70,
     },
     topPartName: {
         alignItems: 'center',
