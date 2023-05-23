@@ -2,6 +2,7 @@ export default class GlobalData {
     static myInstance = null;
     top = 0;
     screenHeight = 0;
+    isOpenFromNotify = false;
     constructor() {
     }
 
@@ -24,5 +25,12 @@ export default class GlobalData {
     }
     getScreenHeight() {
         return this.screenHeight;
+    }
+
+    setIsOpenFromNotify (val) {
+        this.isOpenFromNotify = val;
+    }
+    getIsOpenFromNotify() {
+        return this.isOpenFromNotify;
     }
 }

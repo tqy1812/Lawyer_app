@@ -1,10 +1,16 @@
 package com.szky.lawyerapp.splash;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.szky.lawyerapp.MainActivity;
 
 public class SplashScreenModule extends ReactContextBaseJavaModule {
     public SplashScreenModule(ReactApplicationContext reactContext) {
@@ -28,8 +34,13 @@ public class SplashScreenModule extends ReactContextBaseJavaModule {
      * 关闭启动屏
      */
     @ReactMethod
-    public void hide() {
-        SplashScreen.hide(getCurrentActivity());
+    public void hide(Callback successCallback) {
+        try {
+            SplashScreen.hide(getCurrentActivity());
+            successCallback.invoke(MainActivity.getIsOpenFromNotify());
+        } catch (IllegalViewOperationException e){
+
+        }
     }
 
     /**
