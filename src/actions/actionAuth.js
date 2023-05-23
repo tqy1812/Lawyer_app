@@ -50,6 +50,12 @@ export default class actionAuth {
     };
   }
 
+  static refreshUserInfo(rs) {
+    return (dispatch, getState) => {
+      dispatch({type: actionAuth.USER_INFO, data: rs});
+    };
+  }
+
   static reqUpload(file, callback) {
     return (dispatch, getState) => {
       let state = getState();
