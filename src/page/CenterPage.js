@@ -259,9 +259,9 @@ class CenterPage extends BaseComponent {
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>项目</Text></View>
               <View style={styles.menuView}>
                 <View style={styles.menuButton}>
-                  <Text style={appType==3 ? { color: '#606266',fontSize: FontSize(20),marginLeft: 5,} : { flex: 1, color: '#606266',fontSize: FontSize(20),marginLeft: 5,}}>当前项目</Text>
-                  <View style={[styles.menuProject, {justifyContent: appType==3 ? 'center' : 'flex-end'}]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>
-                  {appType==3 && <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openManagePage.bind(this)}><Text style={styles.manageText}>添加</Text></MyButton>}
+                  <Text style={styles.menuText}>当前项目</Text>
+                  {/* <View style={[styles.menuProject, {justifyContent: appType==3 ? 'center' : 'flex-end'}]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View> */}
+                  {appType==3 ? <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openManagePage.bind(this)}><Text style={styles.manageText}>添加</Text></MyButton> : <View style={[styles.menuProject]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>}
                 </View>
                 <View style={styles.splitLine}></View>
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
@@ -273,6 +273,7 @@ class CenterPage extends BaseComponent {
                   }
                   </View>
                 </ScrollView>
+                {appType==3 && <View style={[styles.menuProject1]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText3}>{caseListInfo && caseListInfo.length}</Text></View>}
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => { this.props.navigation.navigate('Report')}}>
@@ -284,6 +285,12 @@ class CenterPage extends BaseComponent {
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openSetting()}}>
                   <Text style={styles.menuText}>通知提醒</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
+                </MyButton>
+              </View>
+              <View style={styles.menuView}>
+                <MyButton style={styles.menuButton} onPress={() => {this.openTimePage()}}>
+                  <Text style={styles.menuText}>角色切换</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>
@@ -435,10 +442,16 @@ menuButton: {
   padding: 10,
 },
 menuProject: {
-  flex: 1,
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
+},
+menuProject1: {
+  marginBottom: 5,
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
 },
 menuText: {
   flex: 1,
@@ -462,6 +475,12 @@ menuText2: {
   fontSize: FontSize(21),
   marginLeft: 1,
   fontWeight: '600'
+},
+menuText3: {
+  color: '#909399',
+  fontSize: 15,
+  marginLeft: 2,
+  marginTop: 4,
 },
 caseViewScroll: {
   width: Common.window.width - 60,
