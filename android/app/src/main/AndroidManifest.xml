@@ -64,6 +64,12 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+<!--          <intent-filter>-->
+<!--              <data-->
+<!--                  android:host="com.notification.ky"-->
+<!--                  android:path="/notify"-->
+<!--                  android:scheme="kypush" />-->
+<!--          </intent-filter>-->
       </activity>
 
         <meta-data
@@ -92,7 +98,10 @@
         </service>
 
         <service android:name="com.szky.lawyerapp.task.WebSocketTaskService"
-            android:enabled="true"
-            android:process=":remote" />
+            android:enabled="true" />
+
+<!--        <service android:name="com.szky.lawyerapp.task.WebSocketTaskService"-->
+<!--            android:enabled="true"-->
+<!--            android:process=":remote" />-->
     </application>
 </manifest>

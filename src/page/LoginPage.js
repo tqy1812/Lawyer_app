@@ -460,6 +460,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     topPart: {
+        flex: 1,
         width: '100%',
         display: 'flex',
         flexDirection: 'column',

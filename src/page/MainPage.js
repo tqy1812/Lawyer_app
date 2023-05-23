@@ -174,17 +174,22 @@ class MainPage extends BaseComponent {
     });
     this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);
     if(platform.isAndroid()) {
-      this.wc = WebSocketClient.getInstance();
-    }
-    this.unsubscribe = NetInfo.addEventListener(state => {
-      logger("Listener Is connected?", state.isConnected);
-      if(!state.isConnected){
-        // this.wc && this.wc.onDisconnectWS();
-      }
-      else {
-        this.wc && this.wc.initWebSocket(this.props.user.employee_id);
-      }
-    });
+      NativeModules.NotifyOpen.getDeviceType((type) =>{
+        const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
+        if(Common.devicePushType['WSS'] === deviceType) {
+          this.wc = WebSocketClient.getInstance();
+          this.unsubscribe = NetInfo.addEventListener(state => {
+            logger("Listener Is connected?", state.isConnected);
+            if(!state.isConnected){
+              // this.wc && this.wc.onDisconnectWS();
+            }
+            else {
+              this.wc && this.wc.initWebSocket(this.props.user.employee_id);
+            }
+          });
+        }
+      })
+    }   
   }
   componentDidMount() {
     if (!this.props.isLogin) {
@@ -200,9 +205,6 @@ class MainPage extends BaseComponent {
       }
     }));
     this.props.dispatch(actionAuth.reqUserInfo());
-    // NativeModules.WebSocketWorkManager.startBackgroundWork();
-    // logger(this.wc);
-    // this.wc.initWebSocket(this.props.user.employee_id);
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
     //监听内存报警事件
@@ -238,6 +240,11 @@ class MainPage extends BaseComponent {
           logger('.....DeviceToken='+token + '' + type);
           const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
           this.props.dispatch(actionAuth.reqDeviceToken(deviceType, token));
+          if(deviceType === Common.devicePushType['WSS']) {
+            this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
+            this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
+            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
+          }
         });
       });
       
@@ -252,6 +259,8 @@ class MainPage extends BaseComponent {
         },
         (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
       );
+      
+      this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen', () => { this.openNotfication(); });
     }
     else {
       PushNotificationIOS.addEventListener('register', this.onRegistered);
@@ -287,12 +296,7 @@ class MainPage extends BaseComponent {
     });
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg',
       (msg) => { this.scheduleNotfication(msg); });
-    this.eventNoticeOpen = DeviceEventEmitter.addListener('noticeOpen', () => { this.openNotfication(); });
-    if (platform.isAndroid()) {
-      this.eventKeepAliveSocket = DeviceEventEmitter.addListener('keepTimer', () => { this.wc.keepAlive(); });
-      this.eventWsBind = DeviceEventEmitter.addListener('wsBind', (id) => { this.wc.onSubscription(id); });
-      this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
-    }
+   
     showPlanModal(<DrawerModal
       component={<MyPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={this.state.caseList}/>}
       ref={e => this.planRef = e}
@@ -307,6 +311,15 @@ class MainPage extends BaseComponent {
       height={Common.window.height - 100}
       showType={'top'}
     />);
+
+    if(globalData.getIsOpenFromNotify()){
+      logger('........setIsOpenFromNotify main'+globalData.getIsOpenFromNotify());
+      setTimeout(()=>{
+        this.setState({ menuVisible: false });
+        this.planRef && this.planRef.open('plan');
+      }, 1000);
+      globalData.setIsOpenFromNotify(false)
+    }
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -507,10 +520,14 @@ class MainPage extends BaseComponent {
   handleAppStateChange = (nextAppState) => {
     logger('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      // this.wv && this.wv.current && this.wv.current.reload();
-      if (this.wc) this.wc.setIsBackground(false);
-      if (platform.isAndroid()) {
-        NativeModules.WebSocketWorkManager.stopBackgroundWork();
+      if(platform.isAndroid()){
+        NativeModules.NotifyOpen.getDeviceType((type) =>{
+          const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
+          if(Common.devicePushType['WSS'] === deviceType) {
+            if (this.wc) this.wc.setIsBackground(false);
+            NativeModules.WebSocketWorkManager.stopBackgroundWork();
+          }
+        })
       }
       this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
         if(list) {
@@ -525,9 +542,14 @@ class MainPage extends BaseComponent {
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
       // logger('***************hidden', this.wc);
-      if (this.wc) this.wc.setIsBackground(true);
-      if (platform.isAndroid()) {
-        NativeModules.WebSocketWorkManager.startBackgroundWork();
+      if(platform.isAndroid()){
+        NativeModules.NotifyOpen.getDeviceType((type) =>{
+          const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
+          if(Common.devicePushType['WSS'] === deviceType) {
+            if (this.wc) this.wc.setIsBackground(true);
+            NativeModules.WebSocketWorkManager.startBackgroundWork();
+           }
+        })
       }
     }
     this.setState({ appState: nextAppState });

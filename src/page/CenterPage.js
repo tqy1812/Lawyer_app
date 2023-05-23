@@ -167,6 +167,9 @@ class CenterPage extends BaseComponent {
                 Toast.show(error.info)
               }
               else {
+                let obj = JSON.parse(JSON.stringify(that.props.userInfo));
+                obj.avatar = rs.url;
+                dispatch(actionAuth.refreshUserInfo(obj));
                 that.setState({imgAvatar: rs.url})
               }
             }));

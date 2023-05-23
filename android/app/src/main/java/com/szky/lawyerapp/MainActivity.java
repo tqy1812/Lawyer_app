@@ -17,14 +17,20 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.hihonor.push.sdk.HonorPushCallback;
 import com.hihonor.push.sdk.HonorPushClient;
@@ -40,12 +46,15 @@ public class MainActivity extends ReactActivity {
   private static int REQUEST_PERMISSION_CODE = 1;
   private static final String TAG_HUNG_UP = "HUNG_UP";
   private static final String ACTION_FROM_NOTIFICATION = BuildConfig.APPLICATION_ID + ".ACTION_FROM_NOTIFICATION";
-  Intent intent;
+  private Intent intent;
+  private static boolean isOpenFromNotify;
   private static MainActivity context;
   public static Activity getActivity() {
     return context;
   }
-
+  public static boolean getIsOpenFromNotify() {
+    return isOpenFromNotify;
+  }
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
@@ -65,24 +74,56 @@ public class MainActivity extends ReactActivity {
     return new MainActivityDelegate(this, getMainComponentName());
   }
 
-  public static class MainActivityDelegate extends ReactActivityDelegate {
+  class MainActivityDelegate extends ReactActivityDelegate {
     public MainActivityDelegate(ReactActivity activity, String mainComponentName) {
       super(activity, mainComponentName);
     }
 
-    @Override
-    protected ReactRootView createRootView() {
-      ReactRootView reactRootView = new ReactRootView(getContext());
-      // If you opted-in for the New Architecture, we enable the Fabric Renderer.
-      reactRootView.setIsFabric(BuildConfig.IS_NEW_ARCHITECTURE_ENABLED);
-      return reactRootView;
-    }
+//    @Override
+//    protected ReactRootView createRootView() {
+//      ReactRootView reactRootView = new ReactRootView(getContext());
+//      Bundle updatedProps = reactRootView.getAppProperties();
+//      if(updatedProps==null){
+//        updatedProps = new Bundle();
+//        updatedProps.putString("appType", android.os.Build.BRAND);
+//      }
+//      Log.i("MainActivity", "******************************initProp ReactRootView"+updatedProps.getString("appType"));
+////
+//      reactRootView.setAppProperties(updatedProps);
+//      // If you opted-in for the New Architecture, we enable the Fabric Renderer.
+//      reactRootView.setIsFabric(false);
+//      return reactRootView;
+//    }
+
+//    @Override
+//    protected boolean isConcurrentRootEnabled() {
+//      // If you opted-in for the New Architecture, we enable Concurrent Root (i.e. React 18).
+//      // More on this on https://reactjs.org/blog/2022/03/29/react-v18.html
+//      return false;
+//    }
 
     @Override
-    protected boolean isConcurrentRootEnabled() {
-      // If you opted-in for the New Architecture, we enable Concurrent Root (i.e. React 18).
-      // More on this on https://reactjs.org/blog/2022/03/29/react-v18.html
-      return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
+    protected Bundle getLaunchOptions() {
+      Intent intent = new Intent();
+      Bundle initialProps = new Bundle();
+//      initialProps.putBoolean("notify", true);
+      initialProps.putString("appType", android.os.Build.BRAND);
+      if(intent != null) {
+        Bundle bundle = intent.getBundleExtra("notification");
+        Bundle notifyBundle = intent.getExtras();
+        if (bundle != null) {
+          Log.i("MainActivity", "******************************initProp1" + bundle.getBoolean("foreground"));
+          initialProps.putBoolean("notify", true);
+        } else if (notifyBundle != null) {
+          String content = notifyBundle.getString("_push_msgid");  //华为push
+          Log.i("MainActivity", "******************************initProp2" + content);
+          if (content != null) {
+            initialProps.putBoolean("notify", true);
+          }
+        }
+      }
+      Log.i("MainActivity", "******************************initProp00"+initialProps.getString("appType"));
+      return initialProps;
     }
   }
 
@@ -91,13 +132,15 @@ public class MainActivity extends ReactActivity {
     super.onSaveInstanceState(outState);
     if (outState != null) { outState.clear(); }
   }
+  private final static int OPEN_FROM_NOTIFY = 1;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     SplashScreen.show(this,true);//显示Dialog
     super.onCreate(savedInstanceState);
     intent = getIntent();
-
-//    Log.i("MainActivity", "******************************onCreate===="+android.os.Build.BRAND);
+    isOpenFromNotify = getOpenFromNotify(intent);
+    Log.i("MainActivity", "******************************onCreate===="+android.os.Build.BRAND+" isOpenFromNotify"+isOpenFromNotify);
     context = this;
     MainApplication.getInstance().createNotificationChannel();
 //    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -132,7 +175,6 @@ public class MainActivity extends ReactActivity {
     } else {
       getOtherToken();
     }
-    registerReceiver();
   }
 
   private void getHuaweiToken() {
@@ -150,6 +192,8 @@ public class MainActivity extends ReactActivity {
           editor.commit();
         } catch (ApiException e) {
           Log.i("MainActivity", "get token failed, "+e);
+
+          registerReceiver();
         }
       }
     }.start();
@@ -178,6 +222,7 @@ public class MainActivity extends ReactActivity {
         }
       });
     }
+    registerReceiver();
   }
 
   private void getOtherToken() {
@@ -185,6 +230,7 @@ public class MainActivity extends ReactActivity {
     SharedPreferences.Editor editor = shared.edit();
     editor.putString("deviceToken", "0");
     editor.commit();
+    registerReceiver();
   }
   public static boolean isOpenNotifySetting() {
     NotificationManagerCompat notification = NotificationManagerCompat.from(context);
@@ -227,17 +273,64 @@ public class MainActivity extends ReactActivity {
   @Override
   public void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
-//    setIntent(intent);
     Log.i("MainActivity", "******************************onNewIntent");
-    Bundle bundle = intent.getBundleExtra("notification");
-    if(bundle!=null){
-      Log.i("MainActivity", "MainActivity="+bundle.getBoolean("foreground"));
-      getReactInstanceManager().getCurrentReactContext()
-              .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-              .emit("noticeOpen", null);
+    getIntentAction(intent);
+  }
+
+  private void getIntentAction(Intent intent) {
+//    setIntent(intent);
+//    Uri uri = intent.getData();
+    if(intent != null) {
+      Bundle bundle = intent.getBundleExtra("notification");
+      Bundle notifyBundle = intent.getExtras();
+      ReactContext mReactContext = getReactInstanceManager().getCurrentReactContext();
+      if (bundle != null && mReactContext!=null) {
+        Log.i("MainActivity", "******************************getIntentAction1" + bundle.getBoolean("foreground"));
+        mReactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit("noticeOpen", null);
+
+      } else if (notifyBundle != null) {
+        String content = notifyBundle.getString("_push_msgid");  //华为push
+        Log.i("MainActivity", "******************************getIntentAction2" + content);
+        if (content != null && mReactContext!=null) {
+          mReactContext
+                  .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                  .emit("noticeOpen", null);
+        }
+      }
+//    else if (uri !=null) {
+//      String open = uri.getQueryParameter("foreground");
+//      Log.i("MainActivity", "******************************onNewIntent" + open);
+//       if(open.equals("true")){
+//         getReactInstanceManager().getCurrentReactContext()
+//                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+//                 .emit("noticeOpen", null);
+//       }
+//    }
     }
   }
 
+  private boolean getOpenFromNotify(Intent intent) {
+    boolean flag = false;
+    if(intent != null) {
+      Bundle bundle = intent.getBundleExtra("notification");
+      Bundle notifyBundle = intent.getExtras();
+
+      if (bundle != null) {
+        Log.i("MainActivity", "******************************isOpenFromNotify getIntentAction1" + bundle.getBoolean("foreground"));
+        flag = true;
+
+      } else if (notifyBundle != null) {
+        String content = notifyBundle.getString("_push_msgid");  //华为push
+        Log.i("MainActivity", "******************************isOpenFromNotify getIntentAction2" + content);
+        if (content != null) {
+          flag = true;
+        }
+      }
+    }
+    return flag;
+  }
   @Override
   protected void onResume() {
     super.onResume();

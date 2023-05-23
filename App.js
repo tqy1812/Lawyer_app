@@ -25,46 +25,49 @@ const App: () => Node = () => {
     const userAsync = async() =>{
       let user = await Storage.getUserRecord();
       if (user) {
-          savedUser = Object.assign({}, JSON.parse(user));
+        savedUser = Object.assign({}, JSON.parse(user));
           if(savedUser.token){
             setUser(savedUser)
-          }
+        }
       }
     };
     userAsync(); 
     if(platform.isAndroid()) {
-      NativeModules.SplashScreen && NativeModules.SplashScreen.hide();
-        NativeModules.ScreenAdaptation.getHeight().then((height) => {
+      NativeModules.SplashScreen && NativeModules.SplashScreen.hide((flag)=>{
+          // logger('........setIsOpenFromNotify'+flag);
+          global.setIsOpenFromNotify(flag)
+      });
+      NativeModules.ScreenAdaptation.getHeight().then((height) => {
             logger('height:'+ height/PixelRatio.get()+ '    h:'+Common.window.height);
             if(height){
               global.setScreenHeight(height/PixelRatio.get())
-            }
+          }
         })
         .catch((err) => {
-            logger('err:', err);
+          logger('err:', err);
         });
-      }
+    }
     else {
       NativeModules.SplashScreen && NativeModules.SplashScreen.close();
-      let height = NativeModules.SplashScreen ? NativeModules.SplashScreen.getStatusHeight() : 0; 
+      let height = NativeModules.SplashScreen ? NativeModules.SplashScreen.getStatusHeight() : 0;
       logger('.....height', height)
       if(height){
         global.setTop(parseInt(height))
       }
-      }
+    }
     },
    []);
 
-  return (
-    <RootSiblingParent>
-      <SafeAreaProvider>
-      {/* <GestureHandlerRootView style={{ flex: 1 }}> */}
-        <NavigationContainer>
+    return (
+      <RootSiblingParent>
+        <SafeAreaProvider>
+          {/* <GestureHandlerRootView style={{ flex: 1 }}> */}
+          <NavigationContainer>
           <StackRouter user={user}></StackRouter>
-        </NavigationContainer>
-        {/* </GestureHandlerRootView> */}
-      </SafeAreaProvider>
-    </RootSiblingParent>
+          </NavigationContainer>
+          {/* </GestureHandlerRootView> */}
+        </SafeAreaProvider>
+      </RootSiblingParent>
   );
 };
 

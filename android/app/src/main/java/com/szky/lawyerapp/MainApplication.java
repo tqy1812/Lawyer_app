@@ -81,13 +81,13 @@ public class MainApplication extends Application implements ReactApplication {
     // If you opted-in for the New Architecture, we enable the TurboModule system
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);
-    initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+//    initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
       NOTIFICATION_CHANNEL_NAME = getApplicationContext().getResources().getString(R.string.message_channel_name);
-      boolean isSupport = HonorPushClient.getInstance().checkSupportHonorPush(getApplicationContext());
-      if (isSupport) {
-          HonorPushClient.getInstance().init(getApplicationContext(), true);
-          // TODO: 使用荣耀推送服务能力
-      }
+//      boolean isSupport = HonorPushClient.getInstance().checkSupportHonorPush(getApplicationContext());
+//      if (isSupport) {
+//          HonorPushClient.getInstance().init(getApplicationContext(), true);
+//          // TODO: 使用荣耀推送服务能力
+//      }
   }
 
   /**
