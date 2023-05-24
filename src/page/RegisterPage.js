@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     },
     body: {
         width: '100%',
-        minHeight: '100%',
+        minHeight:  Common.window.height - Common.statusBarHeight,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',

@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     body: {
-        minHeight: '100%',
+        minHeight:  Common.window.height - Common.statusBarHeight,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
