@@ -13,7 +13,8 @@ import {
     NativeModules,
     PixelRatio,
     Linking,
-    Alert
+    Alert,
+    ScrollView
 } from 'react-native';
 import { SafeAreaInsetsContext, withSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
@@ -33,7 +34,7 @@ import moment from 'moment';
 import { logger, compareVersion,FontSize } from '../utils/utils';
 import { SendIdentify } from '../components/SendIdentify';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import { ScrollView } from 'react-native-gesture-handler';
+import { getVerifyPic } from '../actions/actionRequest';
 const Toast = Overlay.Toast;
 class RegisterPage extends Component {
 
@@ -60,6 +61,9 @@ class RegisterPage extends Component {
             indetify: '',
             deviceToken: '0',
             deviceType: Common.devicePushType.WSS,
+            opt: '',
+            imgBase64: '',
+            editStep: 1,
         };
         this.version = '';
         this.globalData = GlobalData.getInstance();
@@ -78,6 +82,7 @@ class RegisterPage extends Component {
                 this.props.navigation.navigate('Main');
                 return;
             }
+            this.getVerifyPic();
         });
     }
 
@@ -87,14 +92,16 @@ class RegisterPage extends Component {
        
     }
 
-    onRegistered = (deviceToken) => {
-        const that = this
-        logger('.......deviceToken='+deviceToken);
-        if(deviceToken) {
-            that.setState({deviceToken: deviceToken, deviceType: Common.devicePushType.IOS})
-        }
-      };
+    getVerifyPic() {
+        const { dispatch } = this.props;
+        dispatch(actionAuth.reqGetVerifyPic((rs)=>{
+            if(rs.image){
+                this.setState({imgBase64: rs.image})
+            }
+        }));
+    }
 
+    
     // 用户名改变
     handlePhoneChanged(text) {
         let name = text.trim();
@@ -122,45 +129,47 @@ class RegisterPage extends Component {
     handleRegister() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
-            const { phone, password, autoLogin, deviceToken, deviceType } = this.state;
+            const { phone, name, password, confirm_password, autoLogin,  editStep, indetify } = this.state;
+            
             if (phone == null || phone.length <= 0) {
                 Toast.show('手机号不能为空!');
                 return;
             }
 
+            if (name == null || name.length <= 0) {
+                Toast.show('图形验证码不能为空!');
+                return;
+            }
+
+            if (indetify == null || indetify.length <= 0) {
+                Toast.show('手机验证码不能为空!');
+                return;
+            }
             if (password == null || password.length <= 0) {
                 Toast.show('密码不能为空!');
                 return;
             }
-
+            if (confirm_password == null || confirm_password.length <= 0) {
+                Toast.show('再次输入密码不能为空!');
+                return;
+            }
             if (autoLogin == false) {
                 Toast.show('请勾选同意政策和服务协议');
                 // Toast.show('请勾选同意政策和服务协议');
                 return;
             }
-            Toast.show("登录中");
-            dispatch(actionAuth.reqLogin(phone, password, deviceToken, deviceType, (res, error) => {
+            
+            if(password != confirm_password) {
+                Toast.show('两次密码输入不一致！');
+                return;
+            }
+            dispatch(actionAuth.reqRegister(name, phone, password, indetify, (res, error) => {
                 logger(res)
                 if (error) {
-                    logger(error)
-                    if (error.code === 17004) {
-                        this.setState({ code: 2 });
-                    }
-                    else if (error.code === 17003) {
-                        this.setState({ code: 1 });
-                    }
-                    else {
-                        if(error.info){
-                            Toast.show(error.info);
-                        }
-                    }
-                } else if (res && res.token) {
-                    // if (autoLogin) {
-                    Storage.setAutoLogin('1');
-                    // }
-                    dispatch(actionCase.reqCaseList());
-                    this.props.navigation.replace('Main');
-                    // Toast.show("登录成功");
+                    Toast.show(error.info);                      
+                } else if (res) {
+                    Toast.show("完成注册,去登录！");
+                    this.props.navigation.replace('Login');
                 }
             }));
         });
@@ -175,10 +184,44 @@ class RegisterPage extends Component {
     }
 
     send = () => {
+        InteractionManager.runAfterInteractions(() => {
+            const { dispatch } = this.props;
+            const { phone, password, autoLogin,  editStep, opt, indetify } = this.state;
+            if(editStep===1){
+                if (phone == null || phone.length <= 0) {
+                    Toast.show('手机号不能为空!');
+                    return;
+                }
+    
+                if (opt == null || opt.length <= 0) {
+                    Toast.show('图形验证码不能为空!');
+                    return;
+                }
+
+                if (autoLogin == false) {
+                    Toast.show('请勾选同意政策和服务协议');
+                    return;
+                }
+                dispatch(actionAuth.reqSendVerifySms(phone, opt, (res, error) => {
+                    logger(res)
+                    if (error) {
+                        Toast.show(error.info);
+                    } 
+                    else {
+                        this.setState({editStep: 2})
+                    }
+                }));
+            }
+            
+            
+        });
+    }
+    handleOptChanged(text) {
+        this.setState({ opt: text });
     }
     render() {
         let logo = '/logo.png';
-        const { insets } = this.props;
+        const { editStep } = this.state;
 
         return (
             <SafeAreaView style={styles.container}>
@@ -211,23 +254,6 @@ class RegisterPage extends Component {
                     <View style={[styles.formInput]}>
                         <TextInput
                             ref={(ref) => this.login_name = ref}
-                            placeholder='昵称'
-                            placeholderTextColor='#999'
-                            style={styles.loginInput}
-                            onChangeText={this.handleNameChanged.bind(this)}
-                            value={this.state.name}
-                        />
-                        {
-                            this.state.name !== '' && this.state.name !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
-                                this.setState({ name: '' });
-                            }}>
-                                <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
-                            </MyButton>
-                        }
-                    </View>
-                    <View style={[styles.formInput]}>
-                        <TextInput
-                            ref={(ref) => this.login_name = ref}
                             placeholder='手机号码'
                             placeholderTextColor='#999'
                             style={styles.loginInput}
@@ -246,13 +272,40 @@ class RegisterPage extends Component {
                         <TextInput
                             ref={(ref) => this.login_identify = ref}
                             style={styles.loginInput}
+                            placeholder='输入图形验证码'
+                            placeholderTextColor='#999'
+                            onChangeText={this.handleOptChanged.bind(this)}
+                            value={this.state.opt} />
+                            <Image style={styles.opt} source={{uri: this.state.imgBase64}} onPress={this.getVerifyPic.bind(this)}/>
+                    </View>
+                    <View style={styles.formInput}>
+                        <TextInput
+                            ref={(ref) => this.login_identify = ref}
+                            style={styles.loginInput}
                             placeholder='点击获取动态验证码'
                             placeholderTextColor='#999'
                             onChangeText={this.handleIndetifyChanged.bind(this)}
                             value={this.state.indetify} />
                             <SendIdentify time={90} action={this.send.bind(this)}/>
-                    </View>
-                    <View style={styles.formInput}>
+                    </View> 
+                     { editStep === 2 && <View style={[styles.formInput]}>
+                        <TextInput
+                            ref={(ref) => this.login_name = ref}
+                            placeholder='昵称'
+                            placeholderTextColor='#999'
+                            style={styles.loginInput}
+                            onChangeText={this.handleNameChanged.bind(this)}
+                            value={this.state.name}
+                        />
+                        {
+                            this.state.name !== '' && this.state.name !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
+                                this.setState({ name: '' });
+                            }}>
+                                <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
+                            </MyButton>
+                        }
+                    </View> }
+                    { editStep === 2 && <View style={styles.formInput}>
                         <TextInput
                             ref="login_psw"
                             style={styles.loginInput}
@@ -266,8 +319,8 @@ class RegisterPage extends Component {
                             }}>
                                 {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                             </MyButton>
-                    </View>
-                    <View style={styles.formInput}>
+                    </View> }
+                    { editStep === 2 && <View style={styles.formInput}>
                         <TextInput
                             ref="login_psw"
                             style={styles.loginInput}
@@ -275,13 +328,14 @@ class RegisterPage extends Component {
                             placeholder='再次输入密码'
                             placeholderTextColor='#999'
                             onChangeText={this.handleComfirPasswordChanged.bind(this)}
-                            value={this.state.confirm_password} />
+                            value={this.state.confirm_password}/>
                             <MyButton style={styles.eyeButton} onPress={() => {
                                 this.setState({ confirm_eyed: !this.state.confirm_eyed });
                             }}>
                                 {this.state.confirm_eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                             </MyButton>
                     </View>
+                    }
                 </View>
                 <View style={styles.operate}>
                     <View style={styles.law}>
@@ -302,7 +356,7 @@ class RegisterPage extends Component {
                         </TouchableOpacity>
                         <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>律时隐私保护指引</Text><Text style={styles.lawText2}>和</Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>律时用户服务协议</Text></View>
                     </View>
-                    <MyButton style={styles.loginBtn} onPress={this.handleRegister.bind(this)}>
+                    <MyButton disabled={this.state.editStep===1} style={styles.loginBtn} onPress={this.handleRegister.bind(this)}>
                         <Text style={styles.loginText}>注册</Text>
                     </MyButton>
                 </View>
@@ -579,5 +633,11 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         backgroundColor: '#fff',
         padding: 0,
+    },
+    opt: {
+        width: 120,
+        height: 44,
+        marginRight: 10,
+        resizeMode: 'contain'
     }
 });

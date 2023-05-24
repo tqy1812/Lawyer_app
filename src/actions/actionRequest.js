@@ -228,6 +228,75 @@ export function userDeviceToken(type, deviceToken, callback = null) {
         }, dispatch);
     };
 }
+export function getVerifyPic(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'get_verify_pic';
+
+        request_impl_get(api, method, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                // logger(retData)
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function sendVerifySms(phone, imageCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'send_verify_sms'
+        let data = {};
+        data.phone = phone;
+        data.image_code = imageCode;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function register(name, phone, password, smsCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'send_verify_sms'
+        let data = {};
+        data.name = name;
+        data.phone = phone;
+        data.password = password;
+        data.sms_code = smsCode;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 
 export function getCase(callback = null) {
     return (dispatch, getState) => {

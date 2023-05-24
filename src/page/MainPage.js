@@ -196,12 +196,34 @@ class MainPage extends BaseComponent {
       this.props.navigation.navigate('Login');
     }
     this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
-      // logger('...caselist==', list['405'])
       if(list) {
         this.setState({caseList: list})
       }
       if(infoList) {
         this.setState({caseListInfo: infoList})
+      }
+      showPlanModal(<DrawerModal
+        component={<MyPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
+        ref={e => this.planRef = e}
+        height={Common.window.height - 100}
+        showType={'bottom'}
+        close={this.showMenu}
+      />);
+  
+      showFinishModal(<DrawerModal
+        component={<MyFinishPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
+        ref={e => this.finishRef = e}
+        height={Common.window.height - 100}
+        showType={'top'}
+      />);
+  
+      if(globalData.getIsOpenFromNotify()){
+        logger('........setIsOpenFromNotify main'+globalData.getIsOpenFromNotify());
+        setTimeout(()=>{
+          this.setState({ menuVisible: false });
+          this.planRef && this.planRef.open('plan');
+        }, 1000);
+        globalData.setIsOpenFromNotify(false)
       }
     }));
     this.props.dispatch(actionAuth.reqUserInfo());
@@ -296,30 +318,6 @@ class MainPage extends BaseComponent {
     });
     this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg',
       (msg) => { this.scheduleNotfication(msg); });
-   
-    showPlanModal(<DrawerModal
-      component={<MyPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={this.state.caseList}/>}
-      ref={e => this.planRef = e}
-      height={Common.window.height - 100}
-      showType={'bottom'}
-      close={this.showMenu}
-    />);
-
-    showFinishModal(<DrawerModal
-      component={<MyFinishPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={this.state.caseList}/>}
-      ref={e => this.finishRef = e}
-      height={Common.window.height - 100}
-      showType={'top'}
-    />);
-
-    if(globalData.getIsOpenFromNotify()){
-      logger('........setIsOpenFromNotify main'+globalData.getIsOpenFromNotify());
-      setTimeout(()=>{
-        this.setState({ menuVisible: false });
-        this.planRef && this.planRef.open('plan');
-      }, 1000);
-      globalData.setIsOpenFromNotify(false)
-    }
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -946,7 +944,7 @@ class MainPage extends BaseComponent {
         
         <WebView
             ref={this.wv}
-            source={{ uri:  Common.webUrl + 'demo/index.html' }}
+            source={{ uri: this.props.userInfo.voice_type==='male' ? Common.webUrl + 'lawyer_male/index.html' :  Common.webUrl + 'demo/index.html' }}
             // source={{ uri: 'https://human.kykyai.cn' }}
             scalesPageToFit={true}
             bounces={false}

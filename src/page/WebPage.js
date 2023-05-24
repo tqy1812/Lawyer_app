@@ -20,8 +20,9 @@ import platform from '../utils/platform';
 import {
   WebView
 } from 'react-native-webview';
-import { logger } from '../utils/utils';
+import { caseSetting, logger } from '../utils/utils';
 import actionCase from "../actions/actionCase";
+import actionAuth from '../actions/actionAuth';
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 
@@ -29,6 +30,8 @@ class WebPage extends Component {
 
     static mapStateToProps(state) {
         let props = {};
+        props.caseList = state.Case.caseList;
+        props.userInfo = state.Auth.userInfo;
         return props;
     }
 
@@ -40,6 +43,8 @@ class WebPage extends Component {
           backButtonEnabled: false,
           webviewUrl: props.route.params.url,
           title: props.route.params.title,
+          type: props.route.params.type,
+          caseSet: caseSetting(props.caseList)
         };
         this.INJECTEDJAVASCRIPT = `
         const meta = document.createElement('meta'); 
@@ -57,9 +62,17 @@ class WebPage extends Component {
       Storage.getUserRecord().then((user) => {
         if (user) {
           let obj = Object.assign({}, JSON.parse(user));
-          let reg = new RegExp('"',"g");  
-          // logger(obj.token, JSON.stringify(this.state.caseSet).replace(reg, "'"))
-          this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '");true;');
+          // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '");true;');
+          if(this.state.type && this.state.type==='role') {
+            logger('voice_type====='+this.props.userInfo.voice_type)
+            this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' +  this.props.userInfo.voice_type + '");true;');
+          }
+          else if(this.state.type && this.state.type==='manageCase') {
+            let reg = new RegExp('"',"g");  
+            this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' + JSON.stringify(this.state.caseSet).replace(reg, "'") + '");true;');
+          } else {
+            this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '");true;');
+          }
         }
       });
 
@@ -93,6 +106,12 @@ class WebPage extends Component {
       else if(content.indexOf('addProjectFail:') === 0) {
         const errorMesg = content.replace('addProjectFail:', '');
         Toast.show(errorMesg);
+      }
+      else if(content.indexOf('editRole:') ===0){
+        const role = content.replace('editRole:', '');
+        if(this.props.userInfo.voice_type !==role){
+          this.props.dispatch(actionAuth.reqUserInfo());
+        }
       }
     }
     render() {

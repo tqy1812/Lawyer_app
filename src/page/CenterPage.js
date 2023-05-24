@@ -222,8 +222,12 @@ class CenterPage extends BaseComponent {
       this.props.navigation.navigate('WebPage', { url: 'time_control/', title: '成功人士如何管理时间' })
     }
 
+    openRole() {
+      this.props.navigation.navigate('WebPage', { url: 'changeRole/', title: '选择您的虚拟助理', type: 'role' })
+    }
+
     openManagePage() {
-      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '添加项目' })
+      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '管理项目', type: 'manageCase' })
     }
     render() {
       const { userInfo, caseList, caseListInfo} = this.props;
@@ -289,8 +293,8 @@ class CenterPage extends BaseComponent {
                 </MyButton>
               </View>
               <View style={styles.menuView}>
-                <MyButton style={styles.menuButton} onPress={() => {this.openTimePage()}}>
-                  <Text style={styles.menuText}>角色切换</Text>
+                <MyButton style={styles.menuButton} onPress={() => {this.openRole()}}>
+                  <Text style={styles.menuText}>主页形象</Text>
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>

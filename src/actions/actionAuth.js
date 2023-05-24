@@ -96,4 +96,25 @@ export default class actionAuth {
       dispatch(request.userDeviceToken(type, deviceToken, callback));
     };
   }
+
+  static reqGetVerifyPic(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.getVerifyPic(callback));
+    };
+  }
+
+  static reqSendVerifySms(phone, imageCode, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.sendVerifySms(phone, imageCode, callback));
+    };
+  }
+  
+  static reqRegister(name, phone, password, smsCode, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.register(name, phone, password, smsCode, callback));
+    };
+  }
 }
