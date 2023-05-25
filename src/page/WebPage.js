@@ -52,6 +52,7 @@ class WebPage extends Component {
         meta.setAttribute('name', 'viewport'); 
         document.getElementsByTagName('head')[0].appendChild(meta);`
         this.wv = React.createRef();
+        this.token = '';
     }
 
     componentDidMount() {
@@ -63,12 +64,12 @@ class WebPage extends Component {
         if (user) {
           let obj = Object.assign({}, JSON.parse(user));
           // this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '");true;');
+          this.token = obj.token;
           if(this.state.type && this.state.type==='role') {
             logger('voice_type====='+this.props.userInfo.voice_type)
             this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' +  this.props.userInfo.voice_type + '");true;');
           }
           else if(this.state.type && this.state.type==='manageCase') {
-            logger('voice_type====='+obj.token)
             let reg = new RegExp('"',"g");  
             this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' + JSON.stringify(this.state.caseSet).replace(reg, "'") + '");true;');
           } else {
@@ -93,19 +94,37 @@ class WebPage extends Component {
 
     handleNativeMessage = (event) => {
       const content = event.nativeEvent.data;
-      if(content==='addProjectSuccess'){
+      if(content==='addProjectSuccess' || content==='closeProjectSuccess' 
+      || content==='openProjectSuccess' || content==='editProjectSuccess' || content==='deleteProjectSuccess'){
         this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
           // logger(list)
           if(list) {
             DeviceEventEmitter.emit('refreshCaseFinish', list);
             DeviceEventEmitter.emit('refreshCasePlan', list);
+            if(content==='addProjectSuccess'){
+              Toast.show('添加成功');
+              let reg = new RegExp('"',"g");  
+              let caseList = caseSetting(list);
+              this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + this.token + '", "' + JSON.stringify(caseList).replace(reg, "'") + '");true;');
+            } else if(content==='closeProjectSuccess'){
+              Toast.show('封存项目成功');
+            } else if(content==='openProjectSuccess'){
+              Toast.show('解封项目成功');
+            } else if(content==='editProjectSuccess'){
+              Toast.show('修改项目成功');
+            } else if(content==='deleteProjectSuccess'){
+              Toast.show('删除项目成功');
+            }
           }
         }));
         
-        Toast.show('添加成功');
       }
       else if(content.indexOf('addProjectFail:') === 0) {
         const errorMesg = content.replace('addProjectFail:', '');
+        Toast.show(errorMesg);
+      }
+      else if(content.indexOf('editProjectFail:') === 0) {
+        const errorMesg = content.replace('editProjectFail:', '');
         Toast.show(errorMesg);
       }
       else if(content.indexOf('editRole:') ===0){
