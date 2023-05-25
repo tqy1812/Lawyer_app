@@ -106,31 +106,21 @@ export function getAndroidAppVersion(callback = null) {
         let state = getState();
         let method = 'app_update_log/latest';
         let headers = {};
-        NetInfo.fetch().then(state => {
-            if(state.isConnected) {
-                request.get(api, method, headers,
-                    (res, error) => {
-                        if(res) {
-                            let retData = res.data;
-                            if (callback) {
-                                callback(retData, error);
-                            }
-                        }
-                        else {
-                            if (callback) {
-                                callback(res, error);
-                            }
-                        }
-                    },
-                    () => {
-                    },
-                    true
-                );
+        
+        request_impl_get_system(api, method, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                // logger(retData)
+                if (callback) {
+                    callback(retData, error);
+                }
             }
-            else{
-                Toast.show("网络已经离线");
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
             }
-        })
+        }, dispatch);
     };
 }
 export function getInfo(callback = null) {
@@ -233,7 +223,7 @@ export function getVerifyPic(callback = null) {
         let state = getState();
         let method = 'get_verify_pic';
 
-        request_impl_get(api, method, (res, error) => {
+        request_impl_get_system(api, method, (res, error) => {
             if(res) {
                 let retData = res.data;
                 // logger(retData)
@@ -695,6 +685,20 @@ function request_impl_get(url, method, callback, dispatch = null) {
        }
     });
     
+}
+
+function request_impl_get_system(url, method, callback, dispatch = null) {
+    let headers = {};
+    request.get(url, method, headers,
+        (rs, error) => {
+            // logger(':::: rs: ' + JSON.stringify(rs));
+            if(callback) callback(rs, error);
+        },
+        () => {
+            requestLoginout(dispatch);
+        },
+        true,
+    );
 }
 
 function requestLoginout(dispatch = null){
