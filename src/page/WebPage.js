@@ -68,6 +68,7 @@ class WebPage extends Component {
             this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' +  this.props.userInfo.voice_type + '");true;');
           }
           else if(this.state.type && this.state.type==='manageCase') {
+            logger('voice_type====='+obj.token)
             let reg = new RegExp('"',"g");  
             this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' + JSON.stringify(this.state.caseSet).replace(reg, "'") + '");true;');
           } else {
@@ -138,6 +139,7 @@ class WebPage extends Component {
                       incognito={true}
                       onLoadEnd={this.closeLoading.bind(this)}
                       onNavigationStateChange={this.onNavigationStateChange.bind(this)}
+                      allowsInlineMediaPlayback={true}
                     />
                     </View>
           </SafeAreaView>
