@@ -337,6 +337,8 @@ class LoginPage extends Component {
                                     style={styles.loginInput}
                                     onChangeText={this.handlePhoneChanged.bind(this)}
                                     value={this.state.phone}
+                                    maxLength={11}
+                                    keyboardType={'numeric'}
                                 />
                                 {
                                     this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {

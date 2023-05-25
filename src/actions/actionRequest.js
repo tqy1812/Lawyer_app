@@ -276,7 +276,7 @@ export function sendVerifySms(phone, imageCode, callback) {
 export function register(name, phone, password, smsCode, callback) {
     return (dispatch, getState) => {
         let state = getState();
-        let method = 'send_verify_sms'
+        let method = 'individual/signup'
         let data = {};
         data.name = name;
         data.phone = phone;

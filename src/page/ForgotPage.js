@@ -49,21 +49,17 @@ class ForgotPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
             phone: '',
             password: '',
             confirm_password: '',
             eyed: false,
             confirm_eyed: false,
-            autoLogin: false,
-            lastId: 1,
             code: 0,
             indetify: '',
-            deviceToken: '0',
-            deviceType: Common.devicePushType.WSS,
-            opt: ''
+            opt: '',
+            imgBase64: '',
+            editStep: 1,
         };
-        this.version = '';
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
@@ -80,7 +76,18 @@ class ForgotPage extends Component {
                 this.props.navigation.navigate('Main');
                 return;
             }
+
+            this.getVerifyPic();
         });
+    }
+
+    getVerifyPic() {
+        const { dispatch } = this.props;
+        dispatch(actionAuth.reqGetVerifyPic((rs)=>{
+            if(rs.image){
+                this.setState({imgBase64: rs.image})
+            }
+        }));
     }
 
     componentWillUnmount() {
@@ -89,22 +96,10 @@ class ForgotPage extends Component {
        
     }
 
-    onRegistered = (deviceToken) => {
-        const that = this
-        logger('.......deviceToken='+deviceToken);
-        if(deviceToken) {
-            that.setState({deviceToken: deviceToken, deviceType: Common.devicePushType.IOS})
-        }
-      };
-
     // 用户名改变
     handlePhoneChanged(text) {
         let name = text.trim();
         this.setState({ phone: name });
-    }
-    handleNameChanged(text) {
-        let name = text.trim();
-        this.setState({ name: name });
     }
     // 密码改变
     handlePasswordChanged(text) {
@@ -124,67 +119,86 @@ class ForgotPage extends Component {
     handleLogin() {
         this.props.navigation.replace('Main');
     }
-    handleRegister() {
+    handleSubmit() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
-            const { phone, password, autoLogin, deviceToken, deviceType } = this.state;
+            const { phone, password, confirm_password, indetify } = this.state;
+            
             if (phone == null || phone.length <= 0) {
                 Toast.show('手机号不能为空!');
                 return;
             }
 
+            if (phone.length !== 11) {
+                Toast.show('请输入正确的手机号!');
+                if(callback) callback(false);
+                return;
+            }
+
+            if (indetify == null || indetify.length <= 0) {
+                Toast.show('手机验证码不能为空!');
+                return;
+            }
             if (password == null || password.length <= 0) {
                 Toast.show('密码不能为空!');
                 return;
             }
-
-            if (autoLogin == false) {
-                Toast.show('请勾选同意政策和服务协议');
-                // Toast.show('请勾选同意政策和服务协议');
+            if (confirm_password == null || confirm_password.length <= 0) {
+                Toast.show('再次输入密码不能为空!');
                 return;
             }
-            Toast.show("登录中");
-            dispatch(actionAuth.reqLogin(phone, password, deviceToken, deviceType, (res, error) => {
+            
+            if(password != confirm_password) {
+                Toast.show('两次密码输入不一致！');
+                return;
+            }
+            dispatch(actionAuth.reqRegister(name, phone, password, indetify, (res, error) => {
                 logger(res)
                 if (error) {
-                    logger(error)
-                    if (error.code === 17004) {
-                        this.setState({ code: 2 });
-                    }
-                    else if (error.code === 17003) {
-                        this.setState({ code: 1 });
-                    }
-                    else {
-                        if(error.info){
-                            Toast.show(error.info);
-                        }
-                    }
-                } else if (res && res.token) {
-                    // if (autoLogin) {
-                    Storage.setAutoLogin('1');
-                    // }
-                    dispatch(actionCase.reqCaseList());
-                    this.props.navigation.replace('Main');
-                    // Toast.show("登录成功");
+                    Toast.show(error.info);                      
+                } else if (res) {
+                    Toast.show("修改完成,去登录！");
+                    this.props.navigation.replace('Login');
                 }
             }));
         });
     }
 
-    goService() {
-        this.props.navigation.navigate('Service');
-    }
+    send = (callback) => {
+        InteractionManager.runAfterInteractions(() => {
+            const { dispatch } = this.props;
+            const { phone, password, opt } = this.state;
+            if (phone == null || phone.length <= 0) {
+                Toast.show('手机号不能为空!');
+                if(callback) callback(false);
+                return;
+            }
+            if (phone.length !== 11) {
+                Toast.show('请输入正确的手机号!');
+                if(callback) callback(false);
+                return;
+            }
+            if (opt == null || opt.length <= 0) {
+                Toast.show('图形验证码不能为空!');
+                if(callback) callback(false);
+                return;
+            }
 
-    goPrivacy() {
-        this.props.navigation.navigate('Privacy');
-    }
-
-    send = () => {
+            dispatch(actionAuth.reqSendVerifySms(phone, opt, (res, error) => {
+                logger(res)
+                if (error) {
+                    Toast.show(error.info);
+                    if(callback) callback(false);
+                } 
+                else {
+                    this.setState({editStep: 2})
+                    if(callback) callback(true);
+                }
+            }));
+        });
     }
     render() {
-        let logo = '/logo.png';
-        const { insets } = this.props;
-
+        const { editStep } = this.state;
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -205,6 +219,8 @@ class ForgotPage extends Component {
                                 style={styles.loginInput}
                                 onChangeText={this.handlePhoneChanged.bind(this)}
                                 value={this.state.phone}
+                                maxLength={11}
+                                keyboardType={'numeric'}
                             />
                             {
                                 this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
@@ -222,7 +238,7 @@ class ForgotPage extends Component {
                                 placeholderTextColor='#999'
                                 onChangeText={this.handleOptChanged.bind(this)}
                                 value={this.state.opt} />
-                                <Image style={styles.opt} source={{uri: this.state.imgBase64}}/>
+                                <MyButton onPress={this.getVerifyPic.bind(this)}><Image style={styles.opt} source={{uri: this.state.imgBase64}}/></MyButton>
                         </View>
                         <View style={styles.formInput}>
                             <TextInput
@@ -232,9 +248,9 @@ class ForgotPage extends Component {
                                 placeholderTextColor='#999'
                                 onChangeText={this.handleIndetifyChanged.bind(this)}
                                 value={this.state.indetify} />
-                                <SendIdentify time={90} action={this.send.bind(this)}/>
+                                <SendIdentify time={90} action={(callback)=> this.send(callback)}/>
                         </View>
-                        <View style={styles.formInput}>
+                        { editStep === 2 && <View style={styles.formInput}>
                             <TextInput
                                 ref="login_psw"
                                 style={styles.loginInput}
@@ -248,8 +264,8 @@ class ForgotPage extends Component {
                                 }}>
                                     {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                                 </MyButton>
-                        </View>
-                        <View style={styles.formInput}>
+                        </View> }
+                        { editStep === 2 && <View style={styles.formInput}>
                             <TextInput
                                 ref="login_psw"
                                 style={styles.loginInput}
@@ -263,10 +279,10 @@ class ForgotPage extends Component {
                                 }}>
                                     {this.state.confirm_eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                                 </MyButton>
-                        </View>
+                        </View>}
                     </View>
                     <View style={styles.operate}>
-                        <MyButton style={styles.loginBtn} onPress={this.handleRegister.bind(this)}>
+                        <MyButton style={styles.loginBtn} onPress={this.handleSubmit.bind(this)}>
                             <Text style={styles.loginText}>确认</Text>
                         </MyButton>
                     </View>
@@ -276,7 +292,7 @@ class ForgotPage extends Component {
         )
     }
 }
-export default connect(ForgotPage.mapStateToProps)(withSafeAreaInsets(ForgotPage));
+export default connect(ForgotPage.mapStateToProps)(ForgotPage);
 
 const styles = StyleSheet.create({
     container: {
@@ -285,28 +301,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-    },
-    register:{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 40,
-    },
-    registerText: {
-        fontSize: 14,
-    },
-    registerBtn: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 40, 
-    },
-    registerLine: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#D9D9D9'
     },
     scorllView: {
         flex: 1,
@@ -338,38 +332,10 @@ const styles = StyleSheet.create({
         marginTop: 70,
         marginBottom: 70,
     },
-    topPartRight: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    topPartTitle: {
-        fontSize:50,
-        color: '#007afe',
-        includeFontPadding: false
-    },
     topPartName: {
         fontSize: 18,
         color: '#606266',
         lineHeight: 22
-    },
-    topPartNotice: {
-        marginTop: 50,
-        marginBottom: 50,
-        height: 70,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    topPartNoticeText: {
-        fontSize: 12,
-        paddingLeft: 10,
-        paddingRight: 10,
-        // color: '#DCDFE6',
-        color: '#606266',
-        lineHeight: 20,
-        marginLeft: 2,
     },
     content: {
         paddingLeft: 25,
@@ -379,21 +345,6 @@ const styles = StyleSheet.create({
         //   borderTopColor: '#dfdfdf',
         //   borderBottomWidth: 1,
         //   borderBottomColor: '#dfdfdf',
-    },
-    forgot: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        width: '100%',
-    },
-    forgotBtn:{
-        paddingRight: 15,
-        paddingLeft: 15,
-    },
-    forgotText: {
-        fontSize: 12,
-        color: '#007afe',
     },
     formInput: {
         flexDirection: 'row',
@@ -411,14 +362,6 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         backgroundColor: '#F2F6FC'
     },
-    formInputSplit: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#dfdfdf',
-    },
-    loginLabel: {
-        fontSize: FontSize(16),
-        color: '#333'
-    },
     loginInput: {
         height: 40,
         paddingLeft: 15,
@@ -426,63 +369,12 @@ const styles = StyleSheet.create({
         fontSize: FontSize(16),
         color: '#333',
     },
-    law: {
-        width: Common.window.width-30,
-        flexDirection: 'row',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        // backgroundColor: '#fff000'
-    },
-    lawStr: {
-        flexDirection: 'row',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        textAlign: 'center',
-        paddingTop: 4,
-        // marginTop: 5,
-    },
-    argreeView: {
-        flexDirection: 'row',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 50,
-    },
-    lawText: {
-        fontSize: 10,
-        color: '#C0C4CC',
-        marginTop: 5,
-        marginLeft: -10,
-    },
-    lawText1: {
-        fontSize: 10,
-        color: '#007afe',
-        textAlign: 'center',
-    },
-    lawText2: {
-        fontSize: 10,
-        color: '#C0C4CC',
-    },
     operate: {
         width: '100%',
         paddingTop: 20,
         paddingLeft: 25,
         paddingRight: 25,
         flexDirection: 'column',
-    },
-    auto: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingTop: 5,
-        paddingBottom: 5,
-    },
-    iconEye: {
-        width: 22,
-        height: 22,
     },
     eyeButton: {
         paddingTop: 10,
@@ -500,35 +392,6 @@ const styles = StyleSheet.create({
     loginText: {
         color: '#ffffff',
         fontSize: FontSize(16),
-    },
-    updatePsdWrap: {
-        width: '100%',
-        flexDirection: 'row',
-        marginTop: 15,
-        justifyContent: 'flex-end',
-    },
-    updatePsd: {
-        fontSize: 15,
-        color: '#000'
-    },
-    checkBoxStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingTop: 5,
-        paddingBottom: 5,
-        backfaceVisibility: 'hidden',
-        borderColor: '#007afe',
-        borderWidth: 0,
-        backgroundColor: '#fff',
-    },
-    lawCheck: {
-        marginTop: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backfaceVisibility: 'hidden',
-        borderWidth: 0,
-        backgroundColor: '#fff',
-        padding: 0,
     },
     opt: {
         width: 120,

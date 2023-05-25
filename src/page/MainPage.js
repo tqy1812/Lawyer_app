@@ -366,6 +366,7 @@ class MainPage extends BaseComponent {
     const {dispatch} = this.props;
     dispatch({type: TYPE_AUTH_USER, data: {}});
     Storage.setAutoLogin('0');
+    dispatch(actionAuth.logoutRecord());
     this.props.navigation.dispatch(state => {
       logger('.......handLogout', state)
       return CommonActions.reset({

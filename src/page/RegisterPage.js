@@ -56,16 +56,11 @@ class RegisterPage extends Component {
             eyed: false,
             confirm_eyed: false,
             autoLogin: false,
-            lastId: 1,
-            code: 0,
             indetify: '',
-            deviceToken: '0',
-            deviceType: Common.devicePushType.WSS,
             opt: '',
             imgBase64: '',
             editStep: 1,
         };
-        this.version = '';
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
@@ -136,6 +131,12 @@ class RegisterPage extends Component {
                 return;
             }
 
+            if (phone.length !== 11) {
+                Toast.show('请输入正确的手机号!');
+                if(callback) callback(false);
+                return;
+            }
+            
             if (name == null || name.length <= 0) {
                 Toast.show('图形验证码不能为空!');
                 return;
@@ -183,44 +184,48 @@ class RegisterPage extends Component {
         this.props.navigation.navigate('Privacy');
     }
 
-    send = () => {
+    send = (callback) => {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, password, autoLogin,  editStep, opt, indetify } = this.state;
-            if(editStep===1){
-                if (phone == null || phone.length <= 0) {
-                    Toast.show('手机号不能为空!');
-                    return;
-                }
-    
-                if (opt == null || opt.length <= 0) {
-                    Toast.show('图形验证码不能为空!');
-                    return;
-                }
-
-                if (autoLogin == false) {
-                    Toast.show('请勾选同意政策和服务协议');
-                    return;
-                }
-                dispatch(actionAuth.reqSendVerifySms(phone, opt, (res, error) => {
-                    logger(res)
-                    if (error) {
-                        Toast.show(error.info);
-                    } 
-                    else {
-                        this.setState({editStep: 2})
-                    }
-                }));
+            if (phone == null || phone.length <= 0) {
+                Toast.show('手机号不能为空!');
+                if(callback) callback(false);
+                return;
             }
-            
-            
+            if (phone.length !== 11) {
+                Toast.show('请输入正确的手机号!');
+                if(callback) callback(false);
+                return;
+            }
+            if (opt == null || opt.length <= 0) {
+                Toast.show('图形验证码不能为空!');
+                if(callback) callback(false);
+                return;
+            }
+
+            if (autoLogin == false) {
+                Toast.show('请勾选同意政策和服务协议');
+                if(callback) callback(false);
+                return;
+            }
+            dispatch(actionAuth.reqSendVerifySms(phone, opt, (res, error) => {
+                logger(res)
+                if (error) {
+                    Toast.show(error.info);
+                    if(callback) callback(false);
+                } 
+                else {
+                    this.setState({editStep: 2})
+                    if(callback) callback(true);
+                }
+            }));
         });
     }
     handleOptChanged(text) {
         this.setState({ opt: text });
     }
     render() {
-        let logo = '/logo.png';
         const { editStep } = this.state;
 
         return (
@@ -259,6 +264,8 @@ class RegisterPage extends Component {
                             style={styles.loginInput}
                             onChangeText={this.handlePhoneChanged.bind(this)}
                             value={this.state.phone}
+                            maxLength={11}
+                            keyboardType={'numeric'}
                         />
                         {
                             this.state.phone !== '' && this.state.phone !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
@@ -276,7 +283,7 @@ class RegisterPage extends Component {
                             placeholderTextColor='#999'
                             onChangeText={this.handleOptChanged.bind(this)}
                             value={this.state.opt} />
-                            <Image style={styles.opt} source={{uri: this.state.imgBase64}} onPress={this.getVerifyPic.bind(this)}/>
+                            <MyButton onPress={this.getVerifyPic.bind(this)}><Image style={styles.opt} source={{uri: this.state.imgBase64}} /></MyButton>
                     </View>
                     <View style={styles.formInput}>
                         <TextInput
@@ -286,7 +293,7 @@ class RegisterPage extends Component {
                             placeholderTextColor='#999'
                             onChangeText={this.handleIndetifyChanged.bind(this)}
                             value={this.state.indetify} />
-                            <SendIdentify time={90} action={this.send.bind(this)}/>
+                            <SendIdentify time={90} action={(callback)=> this.send(callback)}/>
                     </View> 
                      { editStep === 2 && <View style={[styles.formInput]}>
                         <TextInput
@@ -366,7 +373,7 @@ class RegisterPage extends Component {
         )
     }
 }
-export default connect(RegisterPage.mapStateToProps)(withSafeAreaInsets(RegisterPage));
+export default connect(RegisterPage.mapStateToProps)(RegisterPage);
 
 const styles = StyleSheet.create({
     container: {
@@ -456,24 +463,6 @@ const styles = StyleSheet.create({
         color: '#606266',
         lineHeight: 22
     },
-    topPartNotice: {
-        marginTop: 50,
-        marginBottom: 50,
-        height: 70,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    topPartNoticeText: {
-        fontSize: 12,
-        paddingLeft: 10,
-        paddingRight: 10,
-        // color: '#DCDFE6',
-        color: '#606266',
-        lineHeight: 20,
-        marginLeft: 2,
-    },
     content: {
         width: '100%',
         paddingLeft: 25,
@@ -483,21 +472,6 @@ const styles = StyleSheet.create({
         //   borderTopColor: '#dfdfdf',
         //   borderBottomWidth: 1,
         //   borderBottomColor: '#dfdfdf',
-    },
-    forgot: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        width: '100%',
-    },
-    forgotBtn:{
-        paddingRight: 15,
-        paddingLeft: 15,
-    },
-    forgotText: {
-        fontSize: 12,
-        color: '#007afe',
     },
     formInput: {
         flexDirection: 'row',
@@ -514,14 +488,6 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5,
         backgroundColor: '#F2F6FC'
-    },
-    formInputSplit: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#dfdfdf',
-    },
-    loginLabel: {
-        fontSize: FontSize(16),
-        color: '#333'
     },
     loginInput: {
         height: 40,
@@ -578,16 +544,6 @@ const styles = StyleSheet.create({
         paddingRight: 25,
         flexDirection: 'column',
     },
-    auto: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingTop: 5,
-        paddingBottom: 5,
-    },
-    iconEye: {
-        width: 22,
-        height: 22,
-    },
     eyeButton: {
         paddingTop: 10,
         paddingRight: 20,
@@ -604,26 +560,6 @@ const styles = StyleSheet.create({
     loginText: {
         color: '#ffffff',
         fontSize: FontSize(16),
-    },
-    updatePsdWrap: {
-        width: '100%',
-        flexDirection: 'row',
-        marginTop: 15,
-        justifyContent: 'flex-end',
-    },
-    updatePsd: {
-        fontSize: 15,
-        color: '#000'
-    },
-    checkBoxStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingTop: 5,
-        paddingBottom: 5,
-        backfaceVisibility: 'hidden',
-        borderColor: '#007afe',
-        borderWidth: 0,
-        backgroundColor: '#fff',
     },
     lawCheck: {
         marginTop: 10,

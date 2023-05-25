@@ -41,8 +41,11 @@ export class SendIdentify extends BaseComponent{
         >
           <Text style={{
                 fontSize: 15,
-                padding: 13,
+                paddingTop: 13,
+                paddingBottom: 13,
                 color: '#606266',
+                textAlign: 'center',
+                width: 110,
             }}>
             {this.state.timing==this.props.time?'获取验证码':this.state.timing+'秒'}
           </Text>
@@ -66,11 +69,14 @@ export class SendIdentify extends BaseComponent{
     timeout(){
       try {
         if(typeof this.props.action === "function") { //是函数    其中 FunName 为函数名称
-            this.props.action();
+            this.props.action((rs)=>{
+              if(rs) {
+                this.countDown();
+              }
+            });
         } else { //不是函数
             console.log('action not is function');
         }
       } catch(e) {}
-      this.countDown();
     }
   }

@@ -24,6 +24,7 @@ const App: () => Node = () => {
   useEffect(() => {
     const userAsync = async() =>{
       let user = await Storage.getUserRecord();
+      console.log('....user', user)
       if (user) {
         savedUser = Object.assign({}, JSON.parse(user));
           if(savedUser.token){
