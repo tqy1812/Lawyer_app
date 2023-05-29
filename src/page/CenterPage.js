@@ -323,6 +323,12 @@ class CenterPage extends BaseComponent {
                   <AntDesign size={15} name='right' color='#606266'/>
                 </MyButton>
               </View>
+              <View style={styles.menuView}>
+                <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('UpdatePassword')}}>
+                  <Text style={styles.menuText}>修改密码</Text>
+                  <AntDesign size={15} name='right' color='#606266'/>
+                </MyButton>
+              </View>
               <View style={styles.menuView1}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('About')}}>
                   <Text style={styles.menuText}>关于律时与反馈</Text>

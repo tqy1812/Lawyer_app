@@ -117,4 +117,18 @@ export default class actionAuth {
       dispatch(request.register(name, phone, password, smsCode, callback));
     };
   }
+
+  static reqSendVerifyCode(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.sendVerifyCode(callback));
+    };
+  }
+
+  static reqModifyPassword(password, verifyCode, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.modifyPassword(password, verifyCode, callback));
+    };
+  }
 }

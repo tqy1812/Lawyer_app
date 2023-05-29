@@ -263,6 +263,50 @@ export function sendVerifySms(phone, imageCode, callback) {
     };
 }
 
+export function sendVerifyCode(phone, imageCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/employee/send_verify_code'
+        let data = {};
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function modifyPassword(password, verifyCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/employee/modify_password'
+        let data = {};
+        data.new_pass = password;
+        data.verify_code = verifyCode;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 export function register(name, phone, password, smsCode, callback) {
     return (dispatch, getState) => {
         let state = getState();

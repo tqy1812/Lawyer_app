@@ -76,8 +76,6 @@ class UpdatePasswordPage extends Component {
                 this.props.navigation.navigate('Main');
                 return;
             }
-
-            this.getVerifyPic();
         });
     }
 
@@ -120,27 +118,27 @@ class UpdatePasswordPage extends Component {
             const { dispatch } = this.props;
             const { phone, password, confirm_password, indetify } = this.state;
             
-            if (phone == null || phone.length <= 0) {
-                Toast.show('手机号不能为空!');
-                return;
-            }
+            // if (phone == null || phone.length <= 0) {
+            //     Toast.show('手机号不能为空!');
+            //     return;
+            // }
 
-            if (phone.length !== 11) {
-                Toast.show('请输入正确的手机号!');
-                if(callback) callback(false);
-                return;
-            }
+            // if (phone.length !== 11) {
+            //     Toast.show('请输入正确的手机号!');
+            //     if(callback) callback(false);
+            //     return;
+            // }
 
             if (indetify == null || indetify.length <= 0) {
                 Toast.show('手机验证码不能为空!');
                 return;
             }
             if (password == null || password.length <= 0) {
-                Toast.show('密码不能为空!');
+                Toast.show('新密码不能为空!');
                 return;
             }
             if (confirm_password == null || confirm_password.length <= 0) {
-                Toast.show('再次输入密码不能为空!');
+                Toast.show('再次输入新密码不能为空!');
                 return;
             }
             
@@ -148,13 +146,12 @@ class UpdatePasswordPage extends Component {
                 Toast.show('两次密码输入不一致！');
                 return;
             }
-            dispatch(actionAuth.reqRegister(name, phone, password, indetify, (res, error) => {
+            dispatch(actionAuth.reqModifyPassword(password, indetify, (res, error) => {
                 logger(res)
                 if (error) {
                     Toast.show(error.info);                      
                 } else if (res) {
-                    Toast.show("修改完成,去登录！");
-                    this.props.navigation.replace('Login');
+                    Toast.show("修改完成,下次登录请使用新密码！");
                 }
             }));
         });
@@ -163,24 +160,8 @@ class UpdatePasswordPage extends Component {
     send = (callback) => {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
-            const { phone, password, opt } = this.state;
-            if (phone == null || phone.length <= 0) {
-                Toast.show('手机号不能为空!');
-                if(callback) callback(false);
-                return;
-            }
-            if (phone.length !== 11) {
-                Toast.show('请输入正确的手机号!');
-                if(callback) callback(false);
-                return;
-            }
-            if (opt == null || opt.length <= 0) {
-                Toast.show('图形验证码不能为空!');
-                if(callback) callback(false);
-                return;
-            }
-
-            dispatch(actionAuth.reqSendVerifySms(phone, opt, (res, error) => {
+           
+            dispatch(actionAuth.reqSendVerifyCode((res, error) => {
                 logger(res)
                 if (error) {
                     Toast.show(error.info);
@@ -198,16 +179,16 @@ class UpdatePasswordPage extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-                <Header title='' close={true}  {...this.props}/>
+                <Header title='修改密码' close={true}  {...this.props}/>
                 <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
                 <View style={styles.body}>
                     <View style={styles.info}>
                         <View style={styles.infoPart}>
-                            <Text style={styles.topPartName}>{'验证账号并修改密码'}</Text>
+                            <Text style={styles.topPartName}>{'修改密码'}</Text>
                         </View>
                     </View>
                     <View style={styles.content}>
-                        <View style={[styles.formInput]}>
+                        {/* <View style={[styles.formInput]}>
                             <TextInput
                                 ref={(ref) => this.login_name = ref}
                                 placeholder='手机帐号'
@@ -225,8 +206,8 @@ class UpdatePasswordPage extends Component {
                                     <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
                                 </MyButton>
                             }
-                        </View>
-                        <View style={styles.formInput}>
+                        </View> */}
+                        {/* <View style={styles.formInput}>
                             <TextInput
                                 ref={(ref) => this.login_identify = ref}
                                 style={styles.loginInput}
@@ -235,7 +216,7 @@ class UpdatePasswordPage extends Component {
                                 onChangeText={this.handleOptChanged.bind(this)}
                                 value={this.state.opt} />
                                 <MyButton onPress={this.getVerifyPic.bind(this)}><Image style={styles.opt} source={{uri: this.state.imgBase64}}/></MyButton>
-                        </View>
+                        </View> */}
                         <View style={styles.formInput}>
                             <TextInput
                                 ref={(ref) => this.login_identify = ref}
@@ -251,7 +232,7 @@ class UpdatePasswordPage extends Component {
                                 ref="login_psw"
                                 style={styles.loginInput}
                                 secureTextEntry={!this.state.eyed}
-                                placeholder='设定密码'
+                                placeholder='设定新密码'
                                 placeholderTextColor='#999'
                                 onChangeText={this.handlePasswordChanged.bind(this)}
                                 value={this.state.password} />
@@ -266,7 +247,7 @@ class UpdatePasswordPage extends Component {
                                 ref="login_psw"
                                 style={styles.loginInput}
                                 secureTextEntry={!this.state.confirm_eyed}
-                                placeholder='再次输入密码'
+                                placeholder='再次输入新密码'
                                 placeholderTextColor='#999'
                                 onChangeText={this.handleComfirPasswordChanged.bind(this)}
                                 value={this.state.confirm_password} />
