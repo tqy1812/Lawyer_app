@@ -28,7 +28,7 @@ import PermissionPage from '../page/PermissionPage';
 import ThirdApiListPage from '../page/ThirdApiListPage';
 import RegisterPage from '../page/RegisterPage';
 import ForgotPage from '../page/ForgotPage';
-import UpdatePassword from '../page/UpdatePassword';
+import UpdatePasswordPage from '../page/UpdatePasswordPage';
 import WebPage from '../page/WebPage';
 import platform from '../utils/platform';
 import * as Storage from '../common/Storage';
