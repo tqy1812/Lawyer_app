@@ -63,7 +63,7 @@ export class SendIdentify extends BaseComponent{
         this.setState({
             timing:this.state.timing-1, disabled: true
         });
-        setTimeout(this.countDown.bind(this),1000); 
+        this.myTimer = setTimeout(this.countDown.bind(this),1000); 
       }
     }
     timeout(){
@@ -78,5 +78,13 @@ export class SendIdentify extends BaseComponent{
             console.log('action not is function');
         }
       } catch(e) {}
+    }
+
+    forceStop () {
+      this.setState({
+        timing: timer,
+        disabled: false
+      })
+      this.myTimer && clearTimeout(this.myTimer)
     }
   }

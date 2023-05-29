@@ -265,19 +265,21 @@ class CenterPage extends BaseComponent {
                 <View style={styles.menuButton}>
                   <Text style={styles.menuText}>当前项目</Text>
                   {/* <View style={[styles.menuProject, {justifyContent: appType==3 ? 'center' : 'flex-end'}]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View> */}
-                  {appType==3 ? <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openManagePage.bind(this)}><Text style={styles.manageText}>管理项目</Text></MyButton> : <View style={[styles.menuProject]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View>}
+                  {appType==3 ? <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openManagePage.bind(this)}><Text style={styles.manageText}>管理项目</Text></MyButton> : <View style={[styles.menuProject]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.filter(o=> o.state !==3).length}</Text></View>}
                 </View>
                 <View style={styles.splitLine}></View>
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
                   <View style={styles.caseView}>
                   {
                     JSON.stringify(caseList)!='{}' && caseListInfo && caseListInfo.length > 0 && caseListInfo.map((item)=>{
-                        return <View key={item.id} style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
-                    })
+                       
+                        return item.state !==3 && <View key={item.id} style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
+                       
+                      })
                   }
                   </View>
                 </ScrollView>
-                {appType==3 && <View style={[styles.menuProject1]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText3}>{caseListInfo && caseListInfo.length}</Text></View>}
+                {appType==3 && <View style={[styles.menuProject1]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText3}>{caseListInfo && caseListInfo.filter(o=> o.state !==3).length}</Text></View>}
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => { this.props.navigation.navigate('Report')}}>

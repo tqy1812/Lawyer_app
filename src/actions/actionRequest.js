@@ -263,7 +263,7 @@ export function sendVerifySms(phone, imageCode, callback) {
     };
 }
 
-export function sendVerifyCode(phone, imageCode, callback) {
+export function sendVerifyCode(callback) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/employee/send_verify_code'

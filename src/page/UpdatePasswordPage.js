@@ -59,9 +59,10 @@ class UpdatePasswordPage extends Component {
             opt: '',
             imgBase64: '',
             editStep: 1,
+            info: false,
         };
         this.globalData = GlobalData.getInstance();
-        this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
+        // this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
 
@@ -72,10 +73,7 @@ class UpdatePasswordPage extends Component {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin } = this.props;
-            if (isLogin) {
-                this.props.navigation.navigate('Main');
-                return;
-            }
+            
         });
     }
 
@@ -89,7 +87,7 @@ class UpdatePasswordPage extends Component {
     }
 
     componentWillUnmount() {
-        logger('......ForgotPage componentWillUnmount')
+        logger('......UpdatePasswordPage componentWillUnmount')
         this.nameListener && this.nameListener.remove();
        
     }
@@ -117,7 +115,7 @@ class UpdatePasswordPage extends Component {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, password, confirm_password, indetify } = this.state;
-            
+            const that = this;
             // if (phone == null || phone.length <= 0) {
             //     Toast.show('手机号不能为空!');
             //     return;
@@ -146,12 +144,18 @@ class UpdatePasswordPage extends Component {
                 Toast.show('两次密码输入不一致！');
                 return;
             }
+
             dispatch(actionAuth.reqModifyPassword(password, indetify, (res, error) => {
                 logger(res)
                 if (error) {
                     Toast.show(error.info);                      
                 } else if (res) {
-                    Toast.show("修改完成,下次登录请使用新密码！");
+                    Toast.show("修改成功!");
+                    that.setState({ indetify: '', password: '', confirm_password: '', info: true });
+                    setTimeout(()=>{
+                        that.setState({info: false})
+                    }, 3000);
+                    this.identify && this.identify.forceStop();
                 }
             }));
         });
@@ -168,14 +172,14 @@ class UpdatePasswordPage extends Component {
                     if(callback) callback(false);
                 } 
                 else {
-                    this.setState({editStep: 2})
+                    // this.setState({editStep: 2})
                     if(callback) callback(true);
                 }
             }));
         });
     }
     render() {
-        const { editStep } = this.state;
+        const { editStep, info } = this.state;
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -184,7 +188,7 @@ class UpdatePasswordPage extends Component {
                 <View style={styles.body}>
                     <View style={styles.info}>
                         <View style={styles.infoPart}>
-                            <Text style={styles.topPartName}>{'修改密码'}</Text>
+                            { info && <Text style={styles.topPartName}>{'修改完成,下次登录请使用新密码！'}</Text> }
                         </View>
                     </View>
                     <View style={styles.content}>
@@ -219,16 +223,6 @@ class UpdatePasswordPage extends Component {
                         </View> */}
                         <View style={styles.formInput}>
                             <TextInput
-                                ref={(ref) => this.login_identify = ref}
-                                style={styles.loginInput}
-                                placeholder='点击获取动态验证码'
-                                placeholderTextColor='#999'
-                                onChangeText={this.handleIndetifyChanged.bind(this)}
-                                value={this.state.indetify} />
-                                <SendIdentify time={90} action={(callback)=> this.send(callback)}/>
-                        </View>
-                        { editStep === 2 && <View style={styles.formInput}>
-                            <TextInput
                                 ref="login_psw"
                                 style={styles.loginInput}
                                 secureTextEntry={!this.state.eyed}
@@ -241,8 +235,8 @@ class UpdatePasswordPage extends Component {
                                 }}>
                                     {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                                 </MyButton>
-                        </View> }
-                        { editStep === 2 && <View style={styles.formInput}>
+                        </View> 
+                        <View style={styles.formInput}>
                             <TextInput
                                 ref="login_psw"
                                 style={styles.loginInput}
@@ -256,7 +250,18 @@ class UpdatePasswordPage extends Component {
                                 }}>
                                     {this.state.confirm_eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
                                 </MyButton>
-                        </View>}
+                        </View>
+
+                        <View style={styles.formInput}>
+                            <TextInput
+                                ref={(ref) => this.login_identify = ref}
+                                style={styles.loginInput}
+                                placeholder='点击获取动态验证码'
+                                placeholderTextColor='#999'
+                                onChangeText={this.handleIndetifyChanged.bind(this)}
+                                value={this.state.indetify} />
+                                <SendIdentify ref={(ref) => this.identify = ref} time={90} action={(callback)=> this.send(callback)}/>
+                        </View>
                     </View>
                     <View style={styles.operate}>
                         <MyButton style={styles.loginBtn} onPress={this.handleSubmit.bind(this)}>
@@ -312,7 +317,8 @@ const styles = StyleSheet.create({
     topPartName: {
         fontSize: 18,
         color: '#606266',
-        lineHeight: 22
+        lineHeight: 22,
+        textAlign: 'center'
     },
     content: {
         paddingLeft: 25,
