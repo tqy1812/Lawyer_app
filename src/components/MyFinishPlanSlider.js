@@ -292,7 +292,9 @@ export default class MyFinishPlanSlider extends Component {
     <View
       style={{
         width: 100,
-        flexDirection: 'row',
+        flexDirection: 'row',transform: [
+          { scaleY: -1 },
+        ]
       }}>
       {this.renderRightAction('删除', '#5e5e5e', 100, progress, item)}
     </View>
@@ -423,17 +425,8 @@ export default class MyFinishPlanSlider extends Component {
                   onMomentumScrollEnd={this._contentViewScroll} 
                   >
                   {DATA && DATA.map(item=>{
-                  return (<View style={[styles.listTitleView, {transform: [{ scaleY: -1 },]}]}>
-                  <View style={styles.listTitleView} key={'finish_'+moment(item.date).format('YYYY年')}>
-                    {item.isShowYear && <Text style={styles.listTitleYearFont}>{moment(item.date).format('YYYY年')}</Text>}
-                    <View style={styles.titleList}>
-                      <View style={styles.titleTime}>
-                        <Text style={styles.listItemTitleFont}>{moment(item.date).format('MM月DD日')}</Text>
-                        <Text style={styles.listItemTitleWeekFont}>{getWeekXi(item.date)}</Text>
-                      </View>
-                      <Text style={styles.titleTimeFont}>共 {item.total > 0 ? getFeeTimeFormat(item.total) : '00:00'}{'’'}</Text>
-                    </View>
-                  </View>
+                  return (<View style={[styles.listTitleView, ]}>
+
                   {
                     item.data && item.data.map(pro=>{
                       return (<Swipeable
@@ -445,6 +438,16 @@ export default class MyFinishPlanSlider extends Component {
                       </Swipeable>)
                     })
                   }
+                  <View style={[styles.listTitleView, {transform: [{ scaleY: -1 },]}]} key={'finish_'+moment(item.date).format('YYYY年')}>
+                    {item.isShowYear && <Text style={styles.listTitleYearFont}>{moment(item.date).format('YYYY年')}</Text>}
+                    <View style={styles.titleList}>
+                      <View style={styles.titleTime}>
+                        <Text style={styles.listItemTitleFont}>{moment(item.date).format('MM月DD日')}</Text>
+                        <Text style={styles.listItemTitleWeekFont}>{getWeekXi(item.date)}</Text>
+                      </View>
+                      <Text style={styles.titleTimeFont}>共 {item.total > 0 ? getFeeTimeFormat(item.total) : '00:00'}{'’'}</Text>
+                    </View>
+                  </View>
                   </View>)
                   }
                 )}
