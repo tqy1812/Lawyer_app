@@ -74,6 +74,7 @@ public class MainActivity extends ReactActivity {
     return new MainActivityDelegate(this, getMainComponentName());
   }
 
+
   class MainActivityDelegate extends ReactActivityDelegate {
     public MainActivityDelegate(ReactActivity activity, String mainComponentName) {
       super(activity, mainComponentName);
@@ -259,6 +260,12 @@ public class MainActivity extends ReactActivity {
     } else {
       Log.i("MainActivity", "通知权限已经开启");
     }
+  }
+
+  public static void exitApp() {
+
+    Log.i("MainActivity", "******************************exitApp");
+     MainActivity.getActivity().finish();
   }
   @Override
   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

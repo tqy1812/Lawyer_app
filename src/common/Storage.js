@@ -5,6 +5,7 @@ const autoLogin = 'autoLogin';
 const caseList = 'caseList_';
 const caseListUseColor = 'caseListUseColor_';
 const version = 'version';
+const isFirstOpen = 'isFirstOpen';
 export const getUserRecord = async () => {
     return await AsyncStorage.getItem(userRecord)
           .then((user) => {
@@ -99,4 +100,23 @@ export const getUserRecord = async () => {
 
   export const setVersion = async (v) => {
     await AsyncStorage.setItem(version, v, null);
+  };
+
+  export const getIsFirshOpen = async () => {
+    return await AsyncStorage.getItem(isFirstOpen)
+          .then((v) => {
+              if (v) {
+                  return v;
+              } else {
+                  return '0';
+              }
+          })
+          .catch(error => {
+              // logger("::::getAutoLogin"+ error);
+              return '0';
+          });
+  };
+  // 0：第一次打开  1：非第一次打开
+  export const setIsFirshOpen = async (v) => {
+    await AsyncStorage.setItem(isFirstOpen, v, null);
   };

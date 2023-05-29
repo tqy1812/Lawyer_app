@@ -103,6 +103,12 @@ public class ScreenAdaptation extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
+    public void exitApp() {
+        MainActivity.exitApp();
+    }
+
+
+    @ReactMethod
     public void openNotify() {
         MainActivity.open();
     }

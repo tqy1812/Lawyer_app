@@ -34,6 +34,8 @@ import { logger, compareVersion,FontSize } from '../utils/utils';
 import { SendIdentify } from '../components/SendIdentify';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { ScrollView } from 'react-native-gesture-handler';
+import { showConfirmModal } from '../components/ShowModal';
+import PrivacyConfirmModal from '../components/PrivacyConfirmModal';
 const Toast = Overlay.Toast;
 class LoginPage extends Component {
 
@@ -57,6 +59,7 @@ class LoginPage extends Component {
             indetify: '',
             deviceToken: '0',
             deviceType: Common.devicePushType.WSS,
+            visible: false
         };
         this.version = '';
         this.globalData = GlobalData.getInstance();
@@ -89,23 +92,27 @@ class LoginPage extends Component {
                 }
             )
             if(platform.isIOS()){
-                
-                PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
+                // PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
             }
             else {
-                NativeModules.NotifyOpen.getDeviceToken((token) =>{
-                    logger('.....DeviceToken='+token);
-                    this.setState({
-                        deviceToken:token
-                    })
+                Storage.getIsFirshOpen().then((flag)=>{ 
+                    if(flag==='0'){
+                        this.setState({visible: true})
+                    }
                 });
-                NativeModules.NotifyOpen.getDeviceType((type) =>{
-                    logger('.....DeviceType='+type);
-                    const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
-                    this.setState({
-                        deviceType:deviceType
-                    })
-                });
+                // NativeModules.NotifyOpen.getDeviceToken((token) =>{
+                //     logger('.....DeviceToken='+token);
+                //     this.setState({
+                //         deviceToken:token
+                //     })
+                // });
+                // NativeModules.NotifyOpen.getDeviceType((type) =>{
+                //     logger('.....DeviceType='+type);
+                //     const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
+                //     this.setState({
+                //         deviceType:deviceType
+                //     })
+                // });
 
                 PushNotification.createChannel(
                     {
@@ -294,10 +301,20 @@ class LoginPage extends Component {
     forgot=() => {
         this.props.navigation.navigate('Forgot');
     }
+    handleUnAgree = () => {
+        Storage.setIsFirshOpen('0');
+        this.setState({visible: false})
+        NativeModules.ScreenAdaptation.exitApp();
+    }
+    
+    handleAgree = () => {
+        Storage.setIsFirshOpen('1');
+        this.setState({autoLogin: true, visible: false});
+    }
     render() {
         let logo = '/logo.png';
         const { insets } = this.props;
-
+        const {visible} = this.state;
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -421,6 +438,9 @@ class LoginPage extends Component {
                             </View>
                         </View>
                     </View>
+                    {
+                        visible && <PrivacyConfirmModal dispatch={this.props.dispatch} handleUnAgree={this.handleUnAgree} handleAgree={this.handleAgree} goService={this.goService.bind(this)} goPrivacy={this.goPrivacy.bind(this)}/>
+                    }
                 </ScrollView>
             </SafeAreaView>
         )
@@ -666,5 +686,5 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         backgroundColor: '#fff',
         padding: 0,
-    }
+  }
 });
