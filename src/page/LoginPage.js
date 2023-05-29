@@ -373,9 +373,9 @@ class LoginPage extends Component {
                                     value={this.state.indetify} />
                                     <SendIdentify time={90} action={this.send.bind(this)}/>
                             </View> */}
-                            <View style={styles.forgot}>
-                                <MyButton style={styles.forgotBtn} onPress={this.forgot.bind(this)}><Text style={styles.forgotText}>忘记密码？</Text></MyButton>
-                            </View>
+                            {/* <View style={styles.forgot}> */}
+                                {/* <MyButton style={styles.forgotBtn} onPress={this.forgot.bind(this)}><Text style={styles.forgotText}>忘记密码？</Text></MyButton> */}
+                            {/* </View> */}
                         </View>
                         <View style={styles.operate}>
                             {/* <View style={styles.auto}>
@@ -534,6 +534,7 @@ const styles = StyleSheet.create({
         color: '#007afe',
     },
     formInput: {
+        width: '100%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
