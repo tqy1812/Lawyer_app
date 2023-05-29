@@ -29,6 +29,7 @@ import ThirdApiListPage from '../page/ThirdApiListPage';
 import RegisterPage from '../page/RegisterPage';
 import ForgotPage from '../page/ForgotPage';
 import UpdatePasswordPage from '../page/UpdatePasswordPage';
+import ManageProjectPage from '../page/ManageProjectPage';
 import WebPage from '../page/WebPage';
 import platform from '../utils/platform';
 import * as Storage from '../common/Storage';
@@ -294,6 +295,12 @@ export default function StackRouter(props) {
                 <Stack.Screen
                     name="UpdatePassword"
                     component={UpdatePasswordPage}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name="ManageProject"
+                    component={ManageProjectPage}
                     options={{headerShown: false}}
                 />
             </Stack.Navigator>

@@ -227,7 +227,7 @@ class CenterPage extends BaseComponent {
     }
 
     openManagePage() {
-      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '管理项目', type: 'manageCase' })
+      this.props.navigation.navigate('ManageProject', { url: 'additem/', title: '管理项目', type: 'manageCase' })
     }
     render() {
       const { userInfo, caseList, caseListInfo} = this.props;
