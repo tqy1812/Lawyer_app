@@ -16,6 +16,7 @@ import LoginPage from '../page/LoginPage';
 import actionAuth from '../actions/actionAuth';
 import ActivityPage from '../page/ActivityPage';
 import MainPage from '../page/MainPage';
+import CustomMainPage from '../page/CustomMainPage';
 import PrivacyPage from '../page/PrivacyPage';
 import ServicePage from '../page/ServicePage';
 import CenterPage from '../page/CenterPage';
@@ -191,7 +192,7 @@ export default function StackRouter(props) {
       };
     return (
         <Provider store={store}>
-            <Stack.Navigator initialRouteName={props.user && props.user.token ? 'Main': 'Login'} screenOptions={props => {
+            <Stack.Navigator initialRouteName={props.user && props.user.token ? 'CustomMain': 'Login'} screenOptions={props => {
               const { navigation, route } = props;
               // if (route.name === 'Main' && navigation.isFocused()) {
               //     BackHandler.addEventListener('hardwareBackPress',  () => {
@@ -211,6 +212,12 @@ export default function StackRouter(props) {
                 <Stack.Screen
                     name="Main"
                     component={MainPage}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name="CustomMain"
+                    component={CustomMainPage}
                     options={{headerShown: false}}
                 />
                 <Stack.Screen

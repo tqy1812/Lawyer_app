@@ -13,7 +13,8 @@ import {
     NativeModules,
     PixelRatio,
     Linking,
-    Alert
+    Alert,
+    Animated
 } from 'react-native';
 import { SafeAreaInsetsContext, withSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
@@ -59,7 +60,9 @@ class LoginPage extends Component {
             indetify: '',
             deviceToken: '0',
             deviceType: Common.devicePushType.WSS,
-            visible: false
+            visible: false,
+            tabValue: 1,
+            tabAniX: new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0}),
         };
         this.version = '';
         this.globalData = GlobalData.getInstance();
@@ -231,7 +234,7 @@ class LoginPage extends Component {
                     Storage.setAutoLogin('1');
                     // }
                     dispatch(actionCase.reqCaseList());
-                    this.props.navigation.replace('Main');
+                    this.props.navigation.replace('CustomMain');
                     // Toast.show("登录成功");
                 }
             }));
@@ -311,10 +314,31 @@ class LoginPage extends Component {
         Storage.setIsFirshOpen('1');
         this.setState({autoLogin: true, visible: false});
     }
+    changeTab = (value) => {
+        const {tabAniX} = this.state;
+        if(value === 2) {
+            Animated.timing(tabAniX, {
+                toValue: {x: Common.window.width/4 - 15, y:0},
+                duration: 300,
+                useNativeDriver: false,
+              }).start();
+        } 
+        else {
+            Animated.timing(tabAniX, {
+                toValue: {x: -Common.window.width/4 + 15, y:0},
+                duration: 300,
+                useNativeDriver: false,
+              }).start();
+        }
+        this.setState({tabValue: value});
+    }
     render() {
         let logo = '/logo.png';
         const { insets } = this.props;
-        const {visible} = this.state;
+        const {visible, tabValue, tabAniX} = this.state;
+        const aniStyle = {
+            transform: tabAniX.getTranslateTransform(),
+        };
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -346,6 +370,18 @@ class LoginPage extends Component {
                         </View>
                 
                         <View style={styles.content}>
+                            <View style={[styles.tabSwitch]}>
+                                <Animated.View style={[aniStyle, styles.tabSwitchItemSelect]}></Animated.View>
+                                <View style={[styles.tabSwitchBody]}>
+                                    <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(1)}>
+                                        <Text style={[styles.tabSwitchText, { color: tabValue==1 ? '#ffffff': '#909399'}]}>个人/企业用户</Text>
+                                    </MyButton>
+                                    <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(2)}>
+                                        <Text style={[styles.tabSwitchText, { color: tabValue==2 ? '#ffffff': '#909399'}]}>企业客户</Text>
+                                    </MyButton>
+                                </View>
+                            </View>
+
                             <View style={[styles.formInput]}>
                                 <TextInput
                                     ref={(ref) => this.login_name = ref}
@@ -686,5 +722,53 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         backgroundColor: '#fff',
         padding: 0,
-  }
+    },
+    tabSwitch: {
+        width: Common.window.width - 50,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        borderRadius: 55,
+        marginTop: 5,
+        marginBottom: 5,
+        backgroundColor: '#EBEEF5',
+        position:'relative',
+    },
+    tabSwitchBody: {
+        width: Common.window.width - 60,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 40,
+        position:'absolute',
+        zIndex: 2,
+        top: 5,
+        left: 5,
+    },
+    tabSwitchItem: {
+        width: Common.window.width /2 - 30,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 40,
+    },
+    tabSwitchItemSelect: {
+        width: Common.window.width /2 - 30,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 40,
+        position:'absolute',
+        backgroundColor: '#007AFE',
+        zIndex: 1,
+    },
+    tabSwitchText: {
+        height: 40,
+        lineHeight: 40,
+        fontSize: 18,
+    },
 });

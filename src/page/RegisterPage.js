@@ -14,7 +14,8 @@ import {
     PixelRatio,
     Linking,
     Alert,
-    ScrollView
+    ScrollView,
+    Animated
 } from 'react-native';
 import { SafeAreaInsetsContext, withSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
@@ -59,7 +60,10 @@ class RegisterPage extends Component {
             indetify: '',
             opt: '',
             imgBase64: '',
+            inivate: '',
             editStep: 1,
+            tabValue: 1,
+            tabAniX: new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0}),
         };
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
@@ -225,8 +229,32 @@ class RegisterPage extends Component {
     handleOptChanged(text) {
         this.setState({ opt: text });
     }
+    changeTab = (value) => {
+        const {tabAniX} = this.state;
+        if(value === 2) {
+            Animated.timing(tabAniX, {
+                toValue: {x: Common.window.width/4 - 15, y:0},
+                duration: 300,
+                useNativeDriver: false,
+              }).start();
+        } 
+        else {
+            Animated.timing(tabAniX, {
+                toValue: {x: -Common.window.width/4 + 15, y:0},
+                duration: 300,
+                useNativeDriver: false,
+              }).start();
+        }
+        this.setState({tabValue: value});
+    }
+    handleInivateChanged(text) {
+        this.setState({ inivate: text });
+    }
     render() {
-        const { editStep } = this.state;
+        const { editStep, tabValue, tabAniX } = this.state;
+        const aniStyle = {
+            transform: tabAniX.getTranslateTransform(),
+        };
 
         return (
             <SafeAreaView style={styles.container}>
@@ -256,6 +284,17 @@ class RegisterPage extends Component {
                     </View>
                 </View>
                 <View style={styles.content}>
+                    <View style={[styles.tabSwitch]}>
+                        <Animated.View style={[aniStyle, styles.tabSwitchItemSelect]}></Animated.View>
+                        <View style={[styles.tabSwitchBody]}>
+                            <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(1)}>
+                                <Text style={[styles.tabSwitchText, { color: tabValue==1 ? '#ffffff': '#909399'}]}>个人/企业用户</Text>
+                            </MyButton>
+                            <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(2)}>
+                                <Text style={[styles.tabSwitchText, { color: tabValue==2 ? '#ffffff': '#909399'}]}>企业客户</Text>
+                            </MyButton>
+                        </View>
+                    </View>
                     <View style={[styles.formInput]}>
                         <TextInput
                             ref={(ref) => this.login_name = ref}
@@ -275,7 +314,7 @@ class RegisterPage extends Component {
                             </MyButton>
                         }
                     </View>
-                    <View style={styles.formInput}>
+                    { tabValue ===1 && <View style={styles.formInput}>
                         <TextInput
                             ref={(ref) => this.login_identify = ref}
                             style={styles.loginInput}
@@ -284,7 +323,23 @@ class RegisterPage extends Component {
                             onChangeText={this.handleOptChanged.bind(this)}
                             value={this.state.opt} />
                             <MyButton onPress={this.getVerifyPic.bind(this)}><Image style={styles.opt} source={{uri: this.state.imgBase64}} /></MyButton>
-                    </View>
+                    </View> }
+                    { tabValue ===2 && <View style={styles.formInput}>
+                        <TextInput
+                            ref={(ref) => this.login_inivate = ref}
+                            style={styles.loginInput}
+                            placeholder='邀请码'
+                            placeholderTextColor='#999'
+                            onChangeText={this.handleInivateChanged.bind(this)}
+                            value={this.state.inivate} />
+                            {
+                                this.state.inivate !== '' && this.state.inivate !== undefined && <MyButton style={styles.eyeButton} onPress={() => {
+                                    this.setState({ inivate: '' });
+                                }}>
+                                    <AntDesign name='closecircleo' size={15} color='#C0C4CC' />
+                                </MyButton>
+                            }
+                    </View> }
                     <View style={styles.formInput}>
                         <TextInput
                             ref={(ref) => this.login_identify = ref}
@@ -295,7 +350,7 @@ class RegisterPage extends Component {
                             value={this.state.indetify} />
                             <SendIdentify time={90} action={(callback)=> this.send(callback)}/>
                     </View> 
-                     { editStep === 2 && <View style={[styles.formInput]}>
+                    { tabValue ===1 && editStep === 2 && <View style={[styles.formInput]}>
                         <TextInput
                             ref={(ref) => this.login_name = ref}
                             placeholder='昵称'
@@ -575,5 +630,53 @@ const styles = StyleSheet.create({
         height: 44,
         marginRight: 10,
         resizeMode: 'contain'
-    }
+    },
+    tabSwitch: {
+        width: Common.window.width - 50,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        borderRadius: 55,
+        marginTop: 5,
+        marginBottom: 5,
+        backgroundColor: '#EBEEF5',
+        position:'relative',
+    },
+    tabSwitchBody: {
+        width: Common.window.width - 60,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 40,
+        position:'absolute',
+        zIndex: 2,
+        top: 5,
+        left: 5,
+    },
+    tabSwitchItem: {
+        width: Common.window.width /2 - 30,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 40,
+    },
+    tabSwitchItemSelect: {
+        width: Common.window.width /2 - 30,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 40,
+        position:'absolute',
+        backgroundColor: '#007AFE',
+        zIndex: 1,
+    },
+    tabSwitchText: {
+        height: 40,
+        lineHeight: 40,
+        fontSize: 18,
+    },
 });
