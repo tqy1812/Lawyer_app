@@ -629,7 +629,6 @@ const styles = StyleSheet.create({
     height: (33 + StyleSheet.hairlineWidth) * 5,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgray',
-    borderRadius: 2,
     backgroundColor: 'white',
     justifyContent: 'center',
     zIndex: 5,

@@ -8,7 +8,7 @@ import {
 import {connect} from 'react-redux';
 import authHelper from '../helpers/authHelper';
 import MyButton from './MyButton';
-import IcomoonIcon from "../components/IcomoonIcon";
+import FeatherIcons from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BaseComponent from './BaseComponent';
 import {FontSize} from '../utils/utils'
@@ -62,7 +62,7 @@ class Header extends BaseComponent {
           style={styles.leftIcon}
           onPress={this.handleGoBack.bind(this)}
         >   
-          <IcomoonIcon size={18} name='back' color='rgba(0,0,0,0.5)'/>
+          <FeatherIcons size={30} name='chevron-left' color='#303133'/>
         </MyButton>
       );
     } 
@@ -85,7 +85,7 @@ class Header extends BaseComponent {
           style={styles.rightIcon}
           onPress={this.handleRightAction.bind(this)}
         >   
-          <AntDesign size={30} name='close' color='rgba(0,0,0,0.5)'/>
+          <AntDesign size={30} name='close' color='#303133'/>
         </MyButton>
       );
     } 

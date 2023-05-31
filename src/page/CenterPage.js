@@ -33,6 +33,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import GlobalData from '../utils/GlobalData';
 import { showToast } from '../components/ShowModal';
 import BaseComponent from '../components/BaseComponent';
+import ImageArr from '../common/ImageArr';
 const Toast = Overlay.Toast;
 
 class CenterPage extends BaseComponent {
@@ -284,57 +285,58 @@ class CenterPage extends BaseComponent {
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => { this.props.navigation.navigate('Report')}}>
                   <Text style={styles.menuText}>统计报告</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  {/* <AntDesign size={15} name='right' color='#606266'/> */}
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>个性化</Text></View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openSetting()}}>
                   <Text style={styles.menuText}>通知提醒</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openRole()}}>
                   <Text style={styles.menuText}>主页形象</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openTimePage()}}>
                   <Text style={styles.menuText}>时间管理指南</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>隐私安全</Text></View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('Permission')}}>
                   <Text style={styles.menuText}>系统权限管理</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('ThirdApiList')}}>
                   <Text style={styles.menuText}>第三方信息共享清单</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('MyInfo')}}>
                   <Text style={styles.menuText}>个人信息查看</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('UpdatePassword')}}>
                   <Text style={styles.menuText}>修改密码</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
               <View style={styles.menuView1}>
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('About')}}>
                   <Text style={styles.menuText}>关于律时与反馈</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
             </View>
@@ -557,5 +559,8 @@ logoutText: {
   color: '#909399',
   fontSize: FontSize(19),
 },
-
+right: {
+  width: 18,
+  height: 22,
+}
 });

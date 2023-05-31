@@ -925,7 +925,7 @@ class MainPage extends BaseComponent {
     //     start_time: '2022-01-02 11:00:00',
     //     end_time: '2022-01-02 12:00:00'
     //   }
-    
+    //   caseListInfo=[{id: 1, name: 'xxweewe'}, {id: 21, name: 'xxweewe'}]
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.props.caseList} 
       caseListInfo={caseListInfo}/>);

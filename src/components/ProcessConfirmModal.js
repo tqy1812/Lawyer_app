@@ -8,7 +8,8 @@ import {
   Alert,
   Overlay,
   TextInput,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Image
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
@@ -23,10 +24,12 @@ import * as Storage from '../common/Storage';
 import platform from "../utils/platform";
 import GlobalData from "../utils/GlobalData";
 import ModalDropdown from "./ModalDropdown";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FeatherIcons from 'react-native-vector-icons/Feather';
 import { he } from "date-fns/locale";
 import {DatePicker} from "react-native-common-date-picker";
 import TimePicker from '../components/TimePicker/timePicker/TimePicker';
+import ImageArr from '../common/ImageArr';
 const globalData = GlobalData.getInstance();
 const Toast = Overlay.Toast;
 
@@ -223,7 +226,7 @@ render() {
                 value={itemName}
               />
               <ModalDropdown
-                style={styles.drop}
+                style={[styles.drop, isIcon ? {borderBottomRightRadius: 0,borderBottomLeftRadius: 0,} :  {borderBottomRightRadius: 5,borderBottomLeftRadius: 5,}]}
                 textStyle={styles.dropText}
                 dropdownStyle={styles.dropdown}
                 // dropdownTextStyle={styles.dropdownText}
@@ -234,11 +237,11 @@ render() {
                 renderRowText={(item) => item.name}
                 renderRightComponent={() => (
                   <View style={styles.iconStyle}>
-                  <MaterialCommunityIcons
-                    name={isIcon ? 'chevron-down' : 'chevron-up'}
-                    color="#606266"
-                    size={30}
-                  />
+                    <FeatherIcons
+                      name={isIcon ? 'chevron-down' : 'chevron-up'}
+                      color="#606266"
+                      size={27}
+                    />
                   </View>
                 )}
                 options={caseListInfo ? caseListInfo : []}
@@ -319,8 +322,10 @@ const styles = StyleSheet.create({
   },
   drop: {
     justifyContent: 'center',
-    borderRadius: 5,
-    width: Common.window.width - 70,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    width: Common.window.width - 54,
+    borderWidth: 0,
     height: 40,
     paddingLeft: 5,
     backgroundColor: '#E9E9EB',
@@ -331,12 +336,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 40,
     color: '#606266',
-    width: Common.window.width - 95,
+    width: Common.window.width - 79,
     height: 40,
     textAlignVertical: 'center',
   },
   dropdown: {
-    width: Common.window.width - 70,
+    width: Common.window.width - 54,
     minHeight: 100,
     alignItems: 'center',
     backgroundColor: '#E9E9EB',
@@ -347,7 +352,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 15,
-    width: Common.window.width - 80,
+    width: Common.window.width - 64,
     textAlign: 'center',
     color: '#606266',
     borderRadius: 5,
@@ -359,7 +364,7 @@ const styles = StyleSheet.create({
   },
   
 caseItem: {
-  width: Common.window.width - 80,
+  width: Common.window.width - 64,
   padding: 5,
   display: 'flex',
   flexDirection: 'row',
@@ -391,7 +396,7 @@ caseItemName:{
   },
   iconStyle: {
     position: 'absolute',
-    right: 0,
+    right: 2,
   },
   modalContainer: {
     position: 'absolute',
@@ -406,26 +411,27 @@ caseItemName:{
   container: {
     width: Common.window.width - 30,
     backgroundColor: "#FFF",
-    borderTopLeftRadius: 9,
-    borderTopRightRadius: 9,
-    borderBottomLeftRadius: 9,
-    borderBottomRightRadius: 9,
+    borderTopLeftRadius: 31,
+    borderTopRightRadius: 31,
+    borderBottomLeftRadius: 31,
+    borderBottomRightRadius: 31,
     justifyContent: "center",
     alignItems: "center"
   },
   processInfo: {
-    width: Common.window.width - 40,
+    width: Common.window.width - 54,
     fontSize: FontSize(16),
     color: '#333',
   },
   listTitleView: {
     display: 'flex',
     flexDirection: 'column',
-    marginLeft: 15,
-    marginRight: 15,
-    paddingBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#C7C7C7',
+    marginLeft: 5,
+    marginRight: 5,
+    paddingTop: 5,
+    // paddingBottom: 5,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#C7C7C7',
   },
   titleList: {
     marginTop: 5,
@@ -490,24 +496,11 @@ caseItemName:{
     paddingBottom: 5,
     fontWeight: '500',
   },
-  listItemView: {
-    display: 'flex',
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: '#C7C7C7',
-    marginLeft: 15,
-    marginRight: 15,
-    paddingTop: 10,
-    paddingBottom: 10,
-    alignItems: 'center',
-  },
   listItemView1: {
     display: 'flex',
     flexDirection: "column",
-    borderBottomWidth: 1,
-    borderBottomColor: '#C7C7C7',
-    marginLeft: 15,
-    marginRight: 15,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#C7C7C7',
     paddingTop: 10,
     paddingBottom: 10,
     alignItems: 'center',
@@ -573,21 +566,16 @@ caseItemName:{
   },
   talkNameInput: {
     height: 30,
-    width: Common.window.width - 70,
-    borderColor: '#DDD',
+    width: Common.window.width - 54,
+    // borderColor: '#DDD',
     borderWidth: 0,
     borderRadius: 5,
     backgroundColor: '#eee',
     fontSize: FontSize(19),
     textAlign: 'center',
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingRight: 5,
-    paddingLeft: 5,
     lineHeight: 24,
     color: '#606266',
     fontWeight: '500',
-    marginRight: 3,
     marginBottom: 5
   },
   listItemContent: {
@@ -606,10 +594,10 @@ caseItemName:{
     alignItems: 'center'
   },
   centerBtns: {
-    width: '100%',
+    width: Common.window.width - 54,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     backgroundColor: "#fff",
     marginBottom: 0,
     // shadowColor: "#000000",
@@ -618,14 +606,14 @@ caseItemName:{
     // shadowOpacity: 0.1,
     // shadowRadius: 6,
     // elevation: 10,
-    borderBottomLeftRadius: 9,
-    borderBottomRightRadius: 9,
+    borderBottomLeftRadius: 31,
+    borderBottomRightRadius: 31,
     zIndex: -1,
   },
   bottomBtnsView: {
     width: Common.window.width / 2 - 50,
     height: 38,
-    borderRadius: 100,
+    borderRadius: 38,
     marginTop: 12,
     marginBottom: 12,
     justifyContent: "center",
@@ -634,4 +622,8 @@ caseItemName:{
   bottomBtnsText: {
     fontSize: FontSize(16)
   },
+  avatar: {
+    width: 20,
+    height: 20,
+  }
 });

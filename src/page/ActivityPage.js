@@ -51,7 +51,7 @@ class ActivityPage extends BaseComponent {
     }
 
     componentDidMount() {
-        InteractionManager.runAfterInteractions(() => {
+        // InteractionManager.runAfterInteractions(() => {
             const { dispatch, caseList } = this.props;
             const that = this;
             if (!this.props.isLogin) {
@@ -70,11 +70,15 @@ class ActivityPage extends BaseComponent {
                 () => { this.backToday(); });
             const hour = moment(new Date()).hour();
             if(hour>=7) {
-                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
+                setTimeout(()=>{
+                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: (hour-4) * 50, animated: true});
+                }, 200)
             } else if(hour>=17) {
-                this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
+                setTimeout(()=>{
+                    this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
+                }, 200)
             }
-        });
+        // });
     }
 
     componentWillUnmount() {
