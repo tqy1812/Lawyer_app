@@ -61,6 +61,33 @@ export function login(phone, password, device_id, device_type, callback = null) 
     };
 }
 
+export function clientLogin(phone, password, device_id, device_type, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client/login';
+        let data = {};
+        // 要发送的数据
+        data.phone = phone;
+        data.password = password;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                retData.phone = phone;
+                retData.password = password;
+                dispatch(reqSaveUser(retData, true, "login"));
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 export function getAppVersion(callback = null) {
     return (dispatch, getState) => {
         let state = getState();
@@ -332,6 +359,31 @@ export function register(name, phone, password, smsCode, callback) {
     };
 }
 
+export function clientRegister(phone, password, verifyCode, inviteCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client/signup'
+        let data = {};
+        data.password = password;
+        data.phone = phone;
+        data.sms_code = verifyCode;
+        data.invite_code = inviteCode;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 export function getCase(callback = null) {
     return (dispatch, getState) => {
         let state = getState();
@@ -354,6 +406,27 @@ export function getCase(callback = null) {
     };
 }
 
+export function getClientCase(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/case/list?page=1&per_page=1000';
+
+        request_impl_get(api, method, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                // logger(retData)
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 export function addProcess(callback = null) {
     return (dispatch, getState) => {
         let state = getState();

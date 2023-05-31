@@ -16,10 +16,12 @@ export default class actionCase {
       dispatch(request.getCase((rs)=>{
           let infoList = rs.data && rs.data.cases ? rs.data.cases : [];
           let caseList = new Map();
+          // for (let i=0; i < infoList.length; i++) {
+          //   caseList[infoList[i]['id']] = Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] ? Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] : Common.color[actionCase.COLOR_LENGTH];
+          // } 
           for (let i=0; i < infoList.length; i++) {
-            caseList[infoList[i]['id']] = Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] ? Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] : Common.color[actionCase.COLOR_LENGTH];
+            caseList[infoList[i]['id']] = Common.color[i%actionCase.COLOR_LENGTH+1] ? Common.color[i%actionCase.COLOR_LENGTH+1] : Common.color[actionCase.COLOR_LENGTH];
           } 
-          
           dispatch({type: actionCase.TYPE_CASE_LIST_INFO, data: infoList});
           let newData = {};
           Storage.getCaseList(user.phone).then((list) => {
@@ -28,13 +30,14 @@ export default class actionCase {
               for (let key in caseList) {
                 if(!newData[key+'']) {
                   if(infoList.length <= actionCase.COLOR_LENGTH) {
-                    let isSame = isSameColor(newData, caseList[key]);
-                    if(isSame) {
-                      newData[key] = filterSameColor(newData)
-                    }
-                    else {
-                      newData[key] = caseList[key] ? caseList[key] : Common.color[actionCase.COLOR_LENGTH];
-                    }
+                    // let isSame = isSameColor(newData, caseList[key]);
+                    // if(isSame) {
+                    //   newData[key] = filterSameColor(newData)
+                    // }
+                    // else {
+                    //   newData[key] = caseList[key] ? caseList[key] : Common.color[actionCase.COLOR_LENGTH];
+                    // }
+                    newData[key] = filterSameColor(newData)
                   }
                   else{
                     newData[key] = caseList[key] ? caseList[key] : Common.color[actionCase.COLOR_LENGTH];
@@ -55,4 +58,55 @@ export default class actionCase {
       }));
     };
   }
+
+  static reqClientCaseList(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      let user = state.Auth && state.Auth.user;
+      dispatch(request.getClientCase((rs)=>{
+          let infoList = rs.data && rs.data.cases ? rs.data.cases : [];
+          let caseList = new Map();
+          // for (let i=0; i < infoList.length; i++) {
+          //   caseList[infoList[i]['id']] = Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] ? Common.color[parseInt(infoList[i]['id'])%actionCase.COLOR_LENGTH+1] : Common.color[actionCase.COLOR_LENGTH];
+          // } 
+          for (let i=0; i < infoList.length; i++) {
+            caseList[infoList[i]['id']] = Common.color[i%actionCase.COLOR_LENGTH+1] ? Common.color[i%actionCase.COLOR_LENGTH+1] : Common.color[actionCase.COLOR_LENGTH];
+          } 
+          dispatch({type: actionCase.TYPE_CASE_LIST_INFO, data: infoList});
+          let newData = {};
+          Storage.getCaseList(user.phone).then((list) => {
+            if (list) {
+              newData = Object.assign({}, JSON.parse(list));
+              for (let key in caseList) {
+                if(!newData[key+'']) {
+                  if(infoList.length <= actionCase.COLOR_LENGTH) {
+                    // let isSame = isSameColor(newData, caseList[key]);
+                    // if(isSame) {
+                    //   newData[key] = filterSameColor(newData)
+                    // }
+                    // else {
+                    //   newData[key] = caseList[key] ? caseList[key] : Common.color[actionCase.COLOR_LENGTH];
+                    // }
+                    newData[key] = filterSameColor(newData)
+                  }
+                  else{
+                    newData[key] = caseList[key] ? caseList[key] : Common.color[actionCase.COLOR_LENGTH];
+                  }
+                }
+              }
+            
+              Storage.setCaseList(user.phone,JSON.stringify(newData));   
+              dispatch({type: actionCase.TYPE_CASE_LIST, data: newData});
+              if(callback) callback(newData, infoList)
+            }
+            else{
+              Storage.setCaseList(user.phone,JSON.stringify(caseList));    
+              dispatch({type: actionCase.TYPE_CASE_LIST, data: caseList});
+              if(callback) callback(caseList, infoList)
+            }     
+          });
+      }));
+    };
+  }
+  
 }
