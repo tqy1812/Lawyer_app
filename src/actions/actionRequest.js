@@ -13,16 +13,16 @@ const Toast = Overlay.Toast;
 export const TYPE_AUTH_USER = "TYPE_AUTH_USER"; // 账号
 export function reqSaveUser(user, save = true, from = null, callback = null) {
     return (dispatch, getState) => {
-        if (user === undefined || user === null || user === {}) {
+        if (user === undefined || user === null || user === '{}') {
             user = {};
-        } else if (user.token === null || user.token === undefined) {
-            logger('::::::::: reqSaveUser:user.token为空，from:' + from);
-        }
+        } 
         if (dispatch) {
-            // logger('::::::::: reqSaveUser:user' + user);
+            logger('::::::::: reqSaveUser:user' + user);
             dispatch({type: TYPE_AUTH_USER, data: user});
         }
-        if ((from !== "loadRecord" || from !== "requestLoginout" ) && (user === null || user.access_token === null)) {
+        if ((from !== "loadRecord" || from !== "requestLoginout" ) && ( user.token === null)) {
+
+            logger('::::::::: reqSaveUser:user logout');
             if (authHelper.delegate) {
                 authHelper.delegate.onLogout();
             }
@@ -47,6 +47,7 @@ export function login(phone, password, device_id, device_type, callback = null) 
                 let retData = res.data;
                 retData.phone = phone;
                 retData.password = password;
+                retData.type = 1;
                 dispatch(reqSaveUser(retData, true, "login"));
                 if (callback) {
                     callback(retData, error);
@@ -61,7 +62,7 @@ export function login(phone, password, device_id, device_type, callback = null) 
     };
 }
 
-export function clientLogin(phone, password, device_id, device_type, callback = null) {
+export function clientLogin(phone, password, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'client/login';
@@ -74,6 +75,7 @@ export function clientLogin(phone, password, device_id, device_type, callback = 
                 let retData = res.data;
                 retData.phone = phone;
                 retData.password = password;
+                retData.type = 2;
                 dispatch(reqSaveUser(retData, true, "login"));
                 if (callback) {
                     callback(retData, error);

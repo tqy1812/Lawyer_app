@@ -101,15 +101,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  content: {
-    width: Common.window.width,
-    height: Common.window.height-100,
-    backgroundColor: "#FFF",
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    display: 'flex',
-    flexDirection: 'column'
-  },
   listTitleView: {
     display: 'flex',
     flexDirection: 'column',

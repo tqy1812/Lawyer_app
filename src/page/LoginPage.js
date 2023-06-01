@@ -61,12 +61,15 @@ class LoginPage extends Component {
             deviceToken: '0',
             deviceType: Common.devicePushType.WSS,
             visible: false,
-            tabValue: 1,
-            tabAniX: new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0}),
+            tabValue: props.route.params && props.route.params.type ? props.route.params.type : 1,
+            tabAniX: props.route.params && props.route.params.type && props.route.params.type ==2 ? new Animated.ValueXY({x: Common.window.width/4 - 15, y:0}) :
+             new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0}),
         };
         this.version = '';
+        this.isFirstGuide = false;
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
+        logger('......Auth.user',props.user)
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
 
@@ -88,12 +91,19 @@ class LoginPage extends Component {
                 // }));
             }
             this.autoLoginAction();
-            this.viewDidAppear = this.props.navigation.addListener(
-                'willFocus',
-                (obj) => {
-                    this.autoLoginAction();
+            // this.viewDidAppear = this.props.navigation.addListener(
+            //     'willFocus',
+            //     (obj) => {
+            //         this.autoLoginAction();
+            //     }
+            // )
+
+            Storage.getIsFirshGuide().then((flag)=>{ 
+                logger('....isFirstGuide', flag)
+                if(flag==='0'){
+                    this.isFirstGuide = true;
                 }
-            )
+            });
             if(platform.isIOS()){
                 // PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
             }
@@ -134,8 +144,8 @@ class LoginPage extends Component {
 
     componentWillUnmount() {
         logger('......LoginPage componentWillUnmount')
-        if (typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
-            this.viewDidAppear && this.viewDidAppear.remove();
+        // if (typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
+        //     this.viewDidAppear && this.viewDidAppear.remove();
         this.nameListener && this.nameListener.remove();
         if (platform.isIOS()) {
             PushNotificationIOS.removeEventListener('register');
@@ -164,7 +174,8 @@ class LoginPage extends Component {
             //     return;
             // }
             if (savedUser.phone && savedUser.password) {
-                this.setState({ phone: savedUser.phone, password: savedUser.password });
+                this.setState({ phone: savedUser.phone, password: savedUser.password, tabValue:  savedUser.type ? savedUser.type : 1, tabAniX: savedUser.type && savedUser.type == 2 ? new Animated.ValueXY({x: Common.window.width/4 - 15, y:0}) :
+                new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0})});
             }
         }
         let autoLogin = await Storage.getAutoLogin();
@@ -197,7 +208,7 @@ class LoginPage extends Component {
     handleLogin() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
-            const { phone, password, autoLogin, deviceToken, deviceType } = this.state;
+            const { phone, password, autoLogin, deviceToken, deviceType, tabValue } = this.state;
             if (phone == null || phone.length <= 0) {
                 Toast.show('手机号不能为空!');
                 return;
@@ -214,30 +225,60 @@ class LoginPage extends Component {
                 return;
             }
             Toast.show("登录中");
-            dispatch(actionAuth.reqLogin(phone, password, deviceToken, deviceType, (res, error) => {
-                logger(res)
-                if (error) {
-                    logger(error)
-                    if (error.code === 17004) {
-                        this.setState({ code: 2 });
-                    }
-                    else if (error.code === 17003) {
-                        this.setState({ code: 1 });
-                    }
-                    else {
-                        if(error.info){
-                            Toast.show(error.info);
+            if(tabValue==1) {
+                dispatch(actionAuth.reqLogin(phone, password, deviceToken, deviceType, (res, error) => {
+                    logger(res)
+                    if (error) {
+                        logger(error)
+                        if (error.code === 17004) {
+                            this.setState({ code: 2 });
                         }
+                        else if (error.code === 17003) {
+                            this.setState({ code: 1 });
+                        }
+                        else {
+                            if(error.info){
+                                Toast.show(error.info);
+                            }
+                        }
+                    } else if (res && res.token) {
+                        Storage.setAutoLogin('1');
+                        if(this.isFirstGuide) {
+                            this.props.navigation.replace('Guide', { isFirst: 'true' });
+                        } else {
+                            this.props.navigation.replace('Main');
+                        }
+                        dispatch(actionCase.reqCaseList());
+                        // Toast.show("登录成功");
                     }
-                } else if (res && res.token) {
-                    // if (autoLogin) {
-                    Storage.setAutoLogin('1');
-                    // }
-                    dispatch(actionCase.reqCaseList());
-                    this.props.navigation.replace('Main');
-                    // Toast.show("登录成功");
-                }
-            }));
+                }));
+            }
+            else {
+                dispatch(actionAuth.reqClientLogin(phone, password, (res, error) => {
+                    logger(res)
+                    if (error) {
+                        logger(error)
+                        if (error.code === 17004) {
+                            this.setState({ code: 2 });
+                        }
+                        else if (error.code === 17003) {
+                            this.setState({ code: 1 });
+                        }
+                        else {
+                            if(error.info){
+                                Toast.show(error.info);
+                            }
+                        }
+                    } else if (res && res.token) {
+                        // if (autoLogin) {
+                        Storage.setAutoLogin('1');
+                        // }
+                        dispatch(actionCase.reqClientCaseList());
+                        this.props.navigation.replace('CustomMain');
+                        // Toast.show("登录成功");
+                    }
+                }));
+            }
         });
     }
 

@@ -139,7 +139,7 @@ export default class actionAuth {
       dispatch(request.clientRegister(phone, password, verifyCode, inviteCode, callback));
     };
   }
-  static reqClienLogin(phone, password, callback) {
+  static reqClientLogin(phone, password, callback) {
     return (dispatch, getState) => {
       let state = getState();
       dispatch(request.clientLogin(phone, password, callback));

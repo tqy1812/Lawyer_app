@@ -32,6 +32,7 @@ import ForgotPage from '../page/ForgotPage';
 import UpdatePasswordPage from '../page/UpdatePasswordPage';
 import ManageProjectPage from '../page/ManageProjectPage';
 import WebPage from '../page/WebPage';
+import GuidePage from '../page/GuidePage';
 import platform from '../utils/platform';
 import * as Storage from '../common/Storage';
 import { logger, compareVersion } from '../utils/utils';
@@ -42,7 +43,7 @@ stateHelper.store = store;
 let lastBackPressed = Date.now();
 let version = '';
 export default function StackRouter(props) {
-
+  logger('.........init user',props.user)
   props.user && props.user.token && store.dispatch(actionAuth.loadUser(props.user));
   const updateIosApp = () => {
     let downloadUrl =  'https://apps.apple.com/cn/app/%E5%BE%8B%E6%97%B6/id6446157793';
@@ -308,6 +309,12 @@ export default function StackRouter(props) {
                 <Stack.Screen
                     name="ManageProject"
                     component={ManageProjectPage}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name="Guide"
+                    component={GuidePage}
                     options={{headerShown: false}}
                 />
             </Stack.Navigator>

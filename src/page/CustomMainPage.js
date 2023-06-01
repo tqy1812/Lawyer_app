@@ -144,27 +144,27 @@ class CustomMainPage extends BaseComponent {
     if (!this.props.isLogin) {
       this.props.navigation.navigate('Login');
     }
-    this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
+    this.props.dispatch(actionCase.reqClientCaseList((list, infoList)=>{
       if(list) {
         this.setState({caseList: list})
       }
       if(infoList) {
         this.setState({caseListInfo: infoList})
       }
-      showPlanModal(<DrawerModal
-        component={<MyPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
-        ref={e => this.planRef = e}
-        height={Common.window.height - 100}
-        showType={'bottom'}
-        close={this.showMenu}
-      />);
+      // showPlanModal(<DrawerModal
+      //   component={<MyPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
+      //   ref={e => this.planRef = e}
+      //   height={Common.window.height - 100}
+      //   showType={'bottom'}
+      //   close={this.showMenu}
+      // />);
   
-      showFinishModal(<DrawerModal
-        component={<MyFinishPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
-        ref={e => this.finishRef = e}
-        height={Common.window.height - 100}
-        showType={'top'}
-      />);
+      // showFinishModal(<DrawerModal
+      //   component={<MyFinishPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
+      //   ref={e => this.finishRef = e}
+      //   height={Common.window.height - 100}
+      //   showType={'top'}
+      // />);
   
       if(globalData.getIsOpenFromNotify()){
       
@@ -790,7 +790,7 @@ _keyboardDidHide(e) {
   render() {
     const { keyboardDidShow, isMic, recordContent, isShowMic, isInput } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-    // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
+    logger('..menuHeight', menuHeight)
     return (
       <View style={styles.container}>
         <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -815,13 +815,13 @@ _keyboardDidHide(e) {
             onLoadEnd={this.closeLoading.bind(this)}
           />
 
-         <View style={[styles.contentView, { top: 0, height: windowHeight}]} >
-            <View style={[styles.topMenu, {height: 50 + menuHeight}]}>
-              <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
-                <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
+         <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
+            <View style={[styles.topMenu, {height: 80 + menuHeight}]}>
+              <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
+                <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_center'] } />
               </MyButton>
-               <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
-                <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
+               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
+               <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_report'] } />
               </MyButton>
             </View>
             <Text style={styles.content} >
@@ -840,11 +840,11 @@ _keyboardDidHide(e) {
                   />
 
                   {!isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: true }) }}>
-                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/microphone-00.png' }} />
+                      <Image style={{ width: 50, height: 50 }} source={ ImageArr['microphone'] } />
                   </MyButton>}
 
                   {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendMessage(index) }}>
-                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/input.png' }} />
+                      <Image style={{ width: 50, height: 50 }} source={ ImageArr['input'] } />
                   </MyButton>}
               </View>
 
@@ -856,10 +856,10 @@ _keyboardDidHide(e) {
                         {recordContent}
                     </Text>
 
-                    {isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/microphone-01.png' }} />}
+                    {isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={ ImageArr['microphone'] } />}
 
                     <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
-                        <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/keyboard.png' }} />
+                        <Image style={{ width: 50, height: 50 }} source={ ImageArr['input'] } />
                     </MyButton>
                 </View>
             }

@@ -55,7 +55,8 @@ class CenterPage extends BaseComponent {
             imgAvatar: props.userInfo.avatar,
             caseList: props.caseList,
             caseListInfo: props.caseListInfo,
-            appType: props.user.app_type
+            appType: props.user.app_type,
+            type: props.user.type ? props.user.type : 1,
         };
         this.globalDate = GlobalData.getInstance();
     }
@@ -232,7 +233,7 @@ class CenterPage extends BaseComponent {
     }
     render() {
       const { userInfo, caseList, caseListInfo} = this.props;
-      const { imgAvatar, appType} = this.state;
+      const { imgAvatar, appType, type } = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight
 
       // logger('..onBackButtonPressAndroid', this.props)
@@ -262,7 +263,7 @@ class CenterPage extends BaseComponent {
                 </View>
               </View>
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>项目</Text></View>
-              <View style={styles.menuView}>
+              { type ==1 && <View style={styles.menuView}>
                 <View style={styles.menuButton}>
                   <Text style={styles.menuText}>当前项目</Text>
                   {/* <View style={[styles.menuProject, {justifyContent: appType==3 ? 'center' : 'flex-end'}]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText2}>{caseListInfo && caseListInfo.length}</Text></View> */}
@@ -281,21 +282,39 @@ class CenterPage extends BaseComponent {
                   </View>
                 </ScrollView>
                 {appType==3 && <View style={[styles.menuProject1]}><Text style={styles.menuText1}>共</Text><Text style={styles.menuText3}>{caseListInfo && caseListInfo.filter(o=> o.state !==3).length}</Text></View>}
-              </View>
-              <View style={styles.menuView}>
+              </View> }
+              { type ==2 && <View style={styles.menuView}>
+                <View style={styles.menuButton}>
+                  <Text style={styles.menuText}>反馈记录</Text>
+                  <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openManagePage.bind(this)}><Text style={styles.manageText}>详情</Text></MyButton>
+                </View>
+                <View style={styles.splitLine}></View>
+                <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
+                  <View style={styles.caseView}>
+                  {
+                    JSON.stringify(caseList)!='{}' && caseListInfo && caseListInfo.length > 0 && caseListInfo.map((item)=>{
+                       
+                        return item.state !==3 && <View key={item.id} style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
+                       
+                      })
+                  }
+                  </View>
+                </ScrollView>
+              </View> }
+              { type ==1 && <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => { this.props.navigation.navigate('Report')}}>
                   <Text style={styles.menuText}>统计报告</Text>
                   {/* <AntDesign size={15} name='right' color='#606266'/> */}
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
-              </View>
+              </View>}
               <View style={styles.menuTitleView}><Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>个性化</Text></View>
-              <View style={styles.menuView}>
+              { type ==1 && <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openSetting()}}>
                   <Text style={styles.menuText}>通知提醒</Text>
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
-              </View>
+              </View>}
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openRole()}}>
                   <Text style={styles.menuText}>主页形象</Text>

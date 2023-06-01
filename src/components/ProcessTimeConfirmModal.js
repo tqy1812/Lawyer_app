@@ -132,10 +132,10 @@ const styles = StyleSheet.create({
   container: {
     width: Common.window.width - 30,
     backgroundColor: "#FFF",
-    borderTopLeftRadius: 9,
-    borderTopRightRadius: 9,
-    borderBottomLeftRadius: 9,
-    borderBottomRightRadius: 9,
+    borderTopLeftRadius: 31,
+    borderTopRightRadius: 31,
+    borderBottomLeftRadius: 31,
+    borderBottomRightRadius: 31,
     justifyContent: "center",
     alignItems: "center"
   },

@@ -32,6 +32,7 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import ImagePicker from 'react-native-image-crop-picker';
 import GlobalData from '../utils/GlobalData';
 import { showToast } from '../components/ShowModal';
+import ImageArr from '../common/ImageArr';
 const Toast = Overlay.Toast;
 
 class AboutPage extends Component {
@@ -150,7 +151,6 @@ class AboutPage extends Component {
       const { version} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
       // logger('..onBackButtonPressAndroid', this.props.navigation)
-      logger('version11==='+version)
       return (
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -163,9 +163,15 @@ class AboutPage extends Component {
                 </MyButton>
               </View>  
               <View style={styles.menuView}> 
+                <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('Guide', { isFirst: 'false' })}}>
+                  <Text style={styles.menuText}>使用引导</Text>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
+                </MyButton>
+              </View>  
+              <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('FeedBack')}}>
                   <Text style={styles.menuText}>反馈</Text>
-                  <AntDesign size={15} name='right' color='#606266'/>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>  
             </View> 
@@ -237,4 +243,8 @@ lawStr: {
     justifyContent: 'center',
     alignItems: 'center',
 },
+right: {
+  width: 18,
+  height: 22,
+}
 });

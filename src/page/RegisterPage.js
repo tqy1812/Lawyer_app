@@ -65,6 +65,7 @@ class RegisterPage extends Component {
             tabValue: 1,
             tabAniX: new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0}),
         };
+        logger('......RegisterPage Auth.user',props.user)
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
@@ -128,7 +129,7 @@ class RegisterPage extends Component {
     handleRegister() {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
-            const { phone, name, password, confirm_password, autoLogin,  editStep, indetify } = this.state;
+            const { phone, name, password, confirm_password, autoLogin,  editStep, indetify, tabValue, inivate } = this.state;
             
             if (phone == null || phone.length <= 0) {
                 Toast.show('手机号不能为空!');
@@ -141,11 +142,14 @@ class RegisterPage extends Component {
                 return;
             }
             
-            if (name == null || name.length <= 0) {
-                Toast.show('图形验证码不能为空!');
+            if (tabValue==1 && (name == null || name.length <= 0)) {
+                Toast.show('昵称不能为空!');
                 return;
             }
-
+            if (tabValue==2 && (inivate == null || inivate.length <= 0)) {
+                Toast.show('邀请码不能为空!');
+                return;
+            }
             if (indetify == null || indetify.length <= 0) {
                 Toast.show('手机验证码不能为空!');
                 return;
@@ -168,15 +172,32 @@ class RegisterPage extends Component {
                 Toast.show('两次密码输入不一致！');
                 return;
             }
-            dispatch(actionAuth.reqRegister(name, phone, password, indetify, (res, error) => {
-                logger(res)
-                if (error) {
-                    Toast.show(error.info);                      
-                } else if (res) {
-                    Toast.show("完成注册,去登录！");
-                    this.props.navigation.replace('Login');
-                }
-            }));
+            if(tabValue==1) {
+                dispatch(actionAuth.reqRegister(name, phone, password, indetify, (res, error) => {
+                    logger(res)
+                    if (error) {
+                        Toast.show(error.info);   
+                        this.getVerifyPic();        
+                        this.setState({opt: '', indetify: ''});                 
+                    } else if (res) {
+                        Toast.show("完成注册,去登录！");
+                        this.props.navigation.replace('Login');
+                    }
+                }));
+            }
+            else {
+                dispatch(actionAuth.reqClientRegister(phone, password, indetify, inivate, (res, error) => {
+                    logger(res)
+                    if (error) {
+                        Toast.show(error.info);  
+                        this.getVerifyPic();      
+                        this.setState({opt: '', indetify: ''});                     
+                    } else if (res) {
+                        Toast.show("完成注册,去登录！");
+                        this.props.navigation.replace('Login', { type: 2 });
+                    }
+                }));
+            }
         });
     }
 
@@ -217,6 +238,8 @@ class RegisterPage extends Component {
                 logger(res)
                 if (error) {
                     Toast.show(error.info);
+                    this.getVerifyPic();        
+                    this.setState({opt: '', indetify: ''});     
                     if(callback) callback(false);
                 } 
                 else {
@@ -314,7 +337,7 @@ class RegisterPage extends Component {
                             </MyButton>
                         }
                     </View>
-                    { tabValue ===1 && <View style={styles.formInput}>
+                    <View style={styles.formInput}>
                         <TextInput
                             ref={(ref) => this.login_identify = ref}
                             style={styles.loginInput}
@@ -323,8 +346,18 @@ class RegisterPage extends Component {
                             onChangeText={this.handleOptChanged.bind(this)}
                             value={this.state.opt} />
                             <MyButton onPress={this.getVerifyPic.bind(this)}><Image style={styles.opt} source={{uri: this.state.imgBase64}} /></MyButton>
-                    </View> }
-                    { tabValue ===2 && <View style={styles.formInput}>
+                    </View>
+                    <View style={styles.formInput}>
+                        <TextInput
+                            ref={(ref) => this.login_identify = ref}
+                            style={styles.loginInput}
+                            placeholder='点击获取动态验证码'
+                            placeholderTextColor='#999'
+                            onChangeText={this.handleIndetifyChanged.bind(this)}
+                            value={this.state.indetify} />
+                            <SendIdentify time={90} action={(callback)=> this.send(callback)}/>
+                    </View> 
+                    { tabValue ===2 && editStep === 2 && <View style={styles.formInput}>
                         <TextInput
                             ref={(ref) => this.login_inivate = ref}
                             style={styles.loginInput}
@@ -340,16 +373,6 @@ class RegisterPage extends Component {
                                 </MyButton>
                             }
                     </View> }
-                    <View style={styles.formInput}>
-                        <TextInput
-                            ref={(ref) => this.login_identify = ref}
-                            style={styles.loginInput}
-                            placeholder='点击获取动态验证码'
-                            placeholderTextColor='#999'
-                            onChangeText={this.handleIndetifyChanged.bind(this)}
-                            value={this.state.indetify} />
-                            <SendIdentify time={90} action={(callback)=> this.send(callback)}/>
-                    </View> 
                     { tabValue ===1 && editStep === 2 && <View style={[styles.formInput]}>
                         <TextInput
                             ref={(ref) => this.login_name = ref}

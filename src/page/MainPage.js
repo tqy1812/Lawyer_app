@@ -56,6 +56,7 @@ import ImageArr from '../common/ImageArr';
 import ProcessConfirmModal from '../components/ProcessConfirmModal';
 import NetInfo from '@react-native-community/netinfo';
 import { CommonActions, StackActions } from '@react-navigation/native';
+import GuideConfirmModal from '../components/GuideConfirmModal';
 const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
@@ -101,8 +102,10 @@ class MainPage extends BaseComponent {
       caseId: undefined,
       caseList: props.caseList,
       caseListInfo: props.caseListInfo,
-      editDateShow: false
+      editDateShow: false,
+      isOpenGuideDialog: props.route.params && props.route.params.openNotice ? props.route.params.openNotice : false,
     }
+    logger('....isFirstGuide main', props.route.params && props.route.params.openNotice )
     // DeviceEventEmitter.removeAllListeners();
     this.INJECTEDJAVASCRIPT = `
     const meta = document.createElement('meta'); 
@@ -289,7 +292,6 @@ class MainPage extends BaseComponent {
       PushNotificationIOS.addEventListener('registrationError', this.onRegistrationError);
       PushNotificationIOS.addEventListener('notification', this.onRemoteNotification);
       PushNotificationIOS.addEventListener('localNotification', this.onLocalNotification);
-
       PushNotificationIOS.requestPermissions({
         alert: true,
         badge: true,
@@ -316,8 +318,7 @@ class MainPage extends BaseComponent {
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("' + obj.token + '");true;');
       }
     });
-    this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg',
-      (msg) => { this.scheduleNotfication(msg); });
+    this.eventNoticeMsgReceive = DeviceEventEmitter.addListener('noticeMsg', (msg) => { this.scheduleNotfication(msg); });
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -931,8 +932,12 @@ class MainPage extends BaseComponent {
       caseListInfo={caseListInfo}/>);
     }
   } 
+  closeGuide = () => {
+    this.setState({isOpenGuideDialog: false});
+
+  }
   render() {
-    const { menuVisible, caseList } = this.state;
+    const { menuVisible, caseList, isOpenGuideDialog } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     logger('statusBarHeight11......', ''+ moment('2023-04-30 23:59:59').diff(moment(moment().month(moment().month()).startOf('month').valueOf())) >= 0)
     // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
@@ -967,25 +972,17 @@ class MainPage extends BaseComponent {
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
-              {/* <View style={styles.sliderView}> */}
               <View style={[styles.sliderTopBtn, {top: 35 + menuHeight}]}></View>
-            {/* </View> */}
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
-            {/* <View style={[styles.sliderTopBtn, {top: 50 + menuHeight}]}></View> */}
             <Text style={styles.content} >
             </Text>
             <View style={styles.sliderBottomBtn}></View>
           </TouchableOpacity>
-          {/* <BottomSheet hasDraggableIcon ref={this.planRef} height={Common.window.height - 100} closeFunction={this.showMenu} sheetBackgroundColor={'#FFF'}>
-            <MyPlanSlider {...this.props}/>
-          </BottomSheet>
-          <MyFinishPlanSheet hasDraggableIcon ref={this.finishRef} height={Common.window.height - 100} sheetBackgroundColor={'#FFF'}>
-            <MyFinishPlanSlider finishTime={this.handleFinishTime.bind(this)} finishTimeEnd={(callback)=>this.handleFinishTimeEnd.bind(this, callback)} {...this.props}/>
-            </MyFinishPlanSheet> */}
         </View>
+        { isOpenGuideDialog && <GuideConfirmModal close={this.closeGuide.bind(this)}/> }
         </View>)
   }
 }
