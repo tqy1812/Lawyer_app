@@ -42,7 +42,18 @@ export default class actionAuth {
       let state = getState();
       dispatch(request.getInfo((rs, error)=>{
           if(rs) {
-            // logger('......reqUserInfo='+JSON.stringify(rs))
+            dispatch({type: actionAuth.USER_INFO, data: rs});
+          }
+          if(callback) callback()
+      }));
+    };
+  }
+
+  static reqClientUserInfo(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.getClientInfo((rs, error)=>{
+          if(rs) {
             dispatch({type: actionAuth.USER_INFO, data: rs});
           }
           if(callback) callback()

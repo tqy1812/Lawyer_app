@@ -66,7 +66,8 @@ class CenterPage extends BaseComponent {
         this.props.navigation.navigate('Login');
       }
       if(this.state.type===2) {
-
+        this.props.dispatch(actionAuth.reqClientUserInfo());
+        
       }
       else {
         this.props.dispatch(actionAuth.reqUserInfo());

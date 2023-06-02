@@ -173,6 +173,27 @@ export function getInfo(callback = null) {
     };
 }
 
+export function getClientInfo(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/client/info';
+
+        request_impl_get(api, method, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 export function upload(file, callback = null) {
     return (dispatch, getState) => {
         let state = getState();

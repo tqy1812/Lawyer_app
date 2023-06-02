@@ -151,7 +151,7 @@ class CustomMainPage extends BaseComponent {
         globalData.setIsOpenFromNotify(false)
       }
     }));
-    this.props.dispatch(actionAuth.reqUserInfo());
+    this.props.dispatch(actionAuth.reqClientUserInfo());
     //监听状态改变事件
     AppState.addEventListener('change', this.handleAppStateChange);
     //监听内存报警事件
@@ -329,7 +329,7 @@ _keyboardDidHide(e) {
           this.setState({caseListInfo: infoList})
         }
       }));
-      this.props.dispatch(actionAuth.reqUserInfo());
+      this.props.dispatch(actionAuth.reqClientUserInfo());
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
       
@@ -642,10 +642,6 @@ _keyboardDidHide(e) {
     let content = text.trim();
     this.setState({ talkContent: content });
   }
-  handleTalkNameChanged(text) {
-    let content = text.trim();
-    this.setState({ itemName: content });
-  }
   closeTalkSuccess = () => {
     this.setState({ talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
   }
@@ -783,9 +779,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // paddingLeft: 20,
-    // paddingRight: 20,
-    // marginTop: 20,
   },
   bottomMenu: {
     width: windowWidth,
@@ -824,14 +817,11 @@ const styles = StyleSheet.create({
   contentView: {
     position: 'absolute',
     width: windowWidth,
-    // top:  windowHeight/4,
-    // left:  windowWidth/4,
     zIndex: 3,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
-    // backgroundColor: '#ff0000'
   },
   content: {
     flex: 1,
@@ -842,7 +832,6 @@ const styles = StyleSheet.create({
     width: windowWidth / 2,
     top: 0,
     left: windowWidth / 4,
-    // backgroundColor: '#ff0000'
   },
   mask: {
     width: windowWidth,
