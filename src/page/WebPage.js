@@ -133,6 +133,12 @@ class WebPage extends Component {
           this.props.dispatch(actionAuth.reqUserInfo());
         }
       }
+      else if(content.indexOf('gotoNext') ===0){
+        this.props.navigation.replace('Security');
+      }
+      else if(content.indexOf('unchecked') ===0){       
+        Toast.show('请勾选同意用户注销协议');
+      }
     }
     render() {
       const {webviewUrl,  title} = this.state;

@@ -32,16 +32,15 @@ import ImagePicker from 'react-native-image-crop-picker';
 import GlobalData from '../utils/GlobalData';
 import { showToast } from '../components/ShowModal';
 import BaseComponent from '../components/BaseComponent';
+import { SendIdentify } from '../components/SendIdentify';
 const Toast = Overlay.Toast;
 
-class MyInfoPage extends BaseComponent {
+class SecurityPage extends BaseComponent {
 
     static mapStateToProps(state) {
         let props = {};
         props.user = state.Auth.user;
         props.isLogin = authHelper.logined(state.Auth.user);
-        props.caseList = state.Case.caseList;
-        props.caseListInfo = state.Case.caseListInfo;
         props.userInfo = state.Auth.userInfo;
         return props;
     }
@@ -51,8 +50,7 @@ class MyInfoPage extends BaseComponent {
         super(props);
         this.state = {
             imgAvatar: props.userInfo.avatar,
-            caseList: props.caseList,
-            caseListInfo: props.caseListInfo,
+            indetify: ''
         };
         this.globalDate = GlobalData.getInstance();
     }
@@ -62,21 +60,51 @@ class MyInfoPage extends BaseComponent {
         this.props.navigation.navigate('Login');
       }
     }
-    openRemove = () =>{
-      this.props.navigation.navigate('WebPage', { url: 'log_off/', title: '律时', type: 'logOff' })
+    // 验证码
+    handleIndetifyChanged(text) {
+        this.setState({ indetify: text });
+    }
+    send = (callback) => {
+      InteractionManager.runAfterInteractions(() => {
+          const { dispatch } = this.props;
+         
+          dispatch(actionAuth.reqSendVerifyCode((res, error) => {
+              logger(res)
+              if (error) {
+                  Toast.show(error.info);
+                  if(callback) callback(false);
+              } 
+              else {
+                  // this.setState({editStep: 2})
+                  if(callback) callback(true);
+              }
+          }));
+      });
     }
 
+    handleSubmit() {
+      InteractionManager.runAfterInteractions(() => {
+          const { dispatch } = this.props;
+          const { phone, password, confirm_password, indetify } = this.state;
+          const that = this;
+          if (indetify == null || indetify.length <= 0) {
+              Toast.show('手机验证码不能为空!');
+              return;
+          }
+          
+          this.props.navigation.replace('AccountRemove');
+      });
+    }
     render() {
       const { userInfo} = this.props;
-      const { imgAvatar, caseList, caseListInfo} = this.state;
+      const { imgAvatar} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
       // logger('..onBackButtonPressAndroid', this.props.navigation)
-      // logger(caseList)
       return (
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-            <Header title='个人信息' back={true} remove={true} {...this.props} sendFunc={this.openRemove.bind(this)}/>  
-            <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
+            <Header title='帐号安全校验' back={true} />  
+            <View style={[styles.content]}> 
               <View style={styles.infoContent}> 
                 <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>头像</Text>
                   {
@@ -90,24 +118,33 @@ class MyInfoPage extends BaseComponent {
                   <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.name}</Text>
               </View>
               <View style={styles.infoContent}> 
-                <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>手机号</Text>
-                  <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode={'tail'}>{getPhone(userInfo.phone, '*')}</Text>
-              </View>
-              <View style={styles.infoContent}> 
                 <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>工作单位</Text>
                   <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.org_name}</Text>
               </View>
-            </View>          
-            <View style={styles.bottom}>                    
-                <MyButton style={styles.loadBtn} onPress={()=>{this.props.navigation.navigate('Export')}}>
-                    <Text style={styles.loadText}>导出个人信息</Text>
-                </MyButton>
+            </View>      
+            <Text style={[styles.title]}>{'帐号安全校验'}</Text>    
+            <View style={styles.formContent}>
+              <View style={styles.formInput}>
+                <TextInput
+                    ref={(ref) => this.login_identify = ref}
+                    style={styles.loginInput}
+                    placeholder='点击获取动态验证码'
+                    placeholderTextColor='#999'
+                    onChangeText={this.handleIndetifyChanged.bind(this)}
+                    value={this.state.indetify} />
+                    <SendIdentify time={90} action={(callback)=> this.send(callback)}/>
+              </View> 
+            </View>
+            <View style={styles.operate}>
+              <MyButton style={styles.loginBtn} onPress={this.handleSubmit.bind(this)}>
+                  <Text style={styles.loginText}>提交帐号验证信息</Text>
+              </MyButton>
             </View>
           </SafeAreaView>
       )
     }
 }
-export default connect(MyInfoPage.mapStateToProps)(MyInfoPage);
+export default connect(SecurityPage.mapStateToProps)(SecurityPage);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -150,6 +187,7 @@ infoValue:{
   color: '#909399',
   fontSize: FontSize(17),
 },
+
 bottom: {
   width: '100%',
   display: 'flex',
@@ -167,6 +205,59 @@ loadBtn: {
 loadText: {
   color: '#007AFE',
   fontSize: 12,
+},
+formContent: {
+    width: '100%',
+    paddingLeft: 30,
+    paddingRight: 30,
+},
+formInput: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    lineHeight: 50,
+    paddingLeft: 10,
+    color: '#333',
+    fontSize: FontSize(16),
+    // borderWidth: 1,
+    borderRadius: 55,
+    // borderColor: '#dfdfdf',
+    marginTop: 5,
+    marginBottom: 5,
+    backgroundColor: '#F2F6FC'
+},
+loginInput: {
+    height: 40,
+    paddingLeft: 15,
+    flex: 1,
+    fontSize: FontSize(16),
+    color: '#333',
+},
+operate: {
+    width: '100%',
+    paddingTop: 20,
+    paddingLeft: 30,
+    paddingRight: 30,
+    flexDirection: 'column',
+},
+loginBtn: {
+    backgroundColor: '#007afe',
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 30,
+    marginTop: 20,
+    marginBottom: 50,
+},
+loginText: {
+    color: '#ffffff',
+    fontSize: FontSize(16),
+},
+title: {
+  fontSize: FontSize(18),
+  color: '#000',
+  marginTop: 50,
+  marginBottom: 50,
 },
 
 });

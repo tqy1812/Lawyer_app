@@ -104,6 +104,19 @@ class Header extends BaseComponent {
     } 
 
 
+    if (this.props.remove) {
+      NavigationBar.push(
+        <MyButton
+          key={'closeIcon'}
+          activeOpacity={0.75}
+          style={styles.rightIcon}
+          onPress={this.handleRightAction.bind(this)}
+        >   
+          <Text style={styles.removeText}>帐号注销</Text>
+        </MyButton>
+      );
+    } 
+
     return (
       <View style={styles.navigationBarContainer}>
         <View style={styles.navigationBar}>
@@ -159,6 +172,10 @@ const styles = StyleSheet.create({
   bthText: {
     color: '#007AFE',
     fontSize: 12
+  },
+  removeText: {
+    color: '#909399',
+    fontSize: 14
   },
 });
 

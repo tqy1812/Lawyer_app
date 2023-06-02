@@ -33,6 +33,8 @@ import UpdatePasswordPage from '../page/UpdatePasswordPage';
 import ManageProjectPage from '../page/ManageProjectPage';
 import WebPage from '../page/WebPage';
 import GuidePage from '../page/GuidePage';
+import SecurityPage from '../page/SecurityPage';
+import AccountRemovePage from '../page/AccountRemovePage'
 import platform from '../utils/platform';
 import * as Storage from '../common/Storage';
 import { logger, compareVersion } from '../utils/utils';
@@ -315,6 +317,18 @@ export default function StackRouter(props) {
                 <Stack.Screen
                     name="Guide"
                     component={GuidePage}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name="Security"
+                    component={SecurityPage}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name="AccountRemove"
+                    component={AccountRemovePage}
                     options={{headerShown: false}}
                 />
             </Stack.Navigator>
