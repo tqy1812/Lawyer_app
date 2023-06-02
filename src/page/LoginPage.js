@@ -85,7 +85,11 @@ class LoginPage extends Component {
             // this.globalData.setTop(insets.top);
             // logger("isLogin" + isLogin, this.globalData.getTop())
             if (isLogin) {
-                this.props.navigation.navigate('Main');
+                if(this.props.user.type === 2) {
+                    this.props.navigation.navigate('CustomMain');
+                }
+                else 
+                    this.props.navigation.navigate('Main');
                 return;
                 // dispatch(actionAuth.reqLogout(() => {
                 // }));

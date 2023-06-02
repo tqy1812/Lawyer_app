@@ -129,7 +129,7 @@ class CustomMainPage extends BaseComponent {
     const that = this;
     this.timeStampMove = 0;
 
-    //键盘
+    // //键盘
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
     
@@ -190,7 +190,7 @@ class CustomMainPage extends BaseComponent {
 
       
   _keyboardDidShow(e) {
-    // console.log(e)
+    console.log(e)
     this.setState({
         keyboardHeight: e.endCoordinates.height,
         keyboardDidShow: true
@@ -204,17 +204,17 @@ _keyboardDidHide(e) {
     })
 }
 
-  onRegistered = (deviceToken) => {
-    const { dispatch } = this.props;
-    logger('.......deviceToken='+deviceToken);
-    if(deviceToken) {
-      dispatch(actionAuth.reqDeviceToken(Common.devicePushType['IOS'], deviceToken, (result, error)=>{
-        if(error){
-          Toast.show(error.info)
-        }
-      }));
-    }
-  };
+  // onRegistered = (deviceToken) => {
+  //   const { dispatch } = this.props;
+  //   logger('.......deviceToken='+deviceToken);
+  //   if(deviceToken) {
+  //     dispatch(actionAuth.reqDeviceToken(Common.devicePushType['IOS'], deviceToken, (result, error)=>{
+  //       if(error){
+  //         Toast.show(error.info)
+  //       }
+  //     }));
+  //   }
+  // };
 
   handLogout() {
     const {dispatch} = this.props;
@@ -345,6 +345,8 @@ _keyboardDidHide(e) {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
+
+        this.setState({ input: '', isInput: false })
       }
       else {
         that.setState({ loading: false });
@@ -428,26 +430,15 @@ _keyboardDidHide(e) {
     }
     if (e.result== '' || JSON.stringify(e.result)=="" )  {
       Toast.show('不好意思，没听清楚');
-      this.setState({ updateItem: {} });
       destroySibling();
-      // this.sendRecording('stop_recording');
       return;
     }
     logger(e.result + "............." + JSON.stringify(this.state.updateItem));
-    if (this.state.updateItem && this.state.updateItem.id) {
-      showLoading();
-      if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem, e.result);
-      this.setState({ updateItem: {} });
-      // destroySibling();
-    }
-    else{
-      this.setState({loading: true});
-      this.sendRecording(e.result);
-      this.processTimeOut = setTimeout(() => {
-        that.setState({loading: false});
-      }, 5000);
-      // destroySibling();
-    }
+    this.setState({loading: true});
+    this.sendRecording(e.result);
+    this.processTimeOut = setTimeout(() => {
+      that.setState({loading: false});
+    }, 5000);
   }
 
 
@@ -480,9 +471,9 @@ _keyboardDidHide(e) {
   //   }
   // }
 
-  openNotfication = () => {
-    this.props.navigation.navigate('Main');
-  }
+  // openNotfication = () => {
+  //   this.props.navigation.navigate('Main');
+  // }
 
   // test = () => {
   //   if (platform.isAndroid()) {
@@ -676,7 +667,6 @@ _keyboardDidHide(e) {
   }
 
   showConfirm = (item, caseListInfo) => {
-    
     if(item && item.id) {
       showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.props.caseList} 
       caseListInfo={caseListInfo}/>);
@@ -718,13 +708,13 @@ _keyboardDidHide(e) {
                 <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_report'] } />
               </MyButton>
             </View>
-            <Text style={styles.content}></Text>
+            <Text style={[styles.content, keyboardDidShow && { marginTop: windowHeight * 0.2, marginBottom: 5 }]}></Text>
 
             {
               !isMic &&
-              <View style={[styles.bottom, keyboardDidShow && { marginBottom: 80 + this.state.keyboardHeight }]}>
+              <View style={[styles.bottom, keyboardDidShow && { marginBottom: this.state.keyboardHeight }]}>
                   <TextInput
-                      style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20 }}
+                      style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
                       onChange={() => { this.setState({ isInput: true }) }}
                       placeholder="请输入内容"
                       placeholderTextColor={'#b3b3b3'}
@@ -733,11 +723,11 @@ _keyboardDidHide(e) {
                   />
 
                   {!isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: true }) }}>
-                      <Image style={{ width: 30, height: 30 }} source={ ImageArr['microphone'] } />
+                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/microphone-00.png' }} />
                   </MyButton>}
 
-                  {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendMessage(index) }}>
-                      <Image style={{ width: 50, height: 50 }} source={ ImageArr['input'] } />
+                  {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendRecording(this.state.input) }}>
+                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/input.png' }} />
                   </MyButton>}
               </View>
 
@@ -752,7 +742,7 @@ _keyboardDidHide(e) {
                     {!recoding && isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={ ImageArr['microphone'] } />}
 
                     { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
-                        <Image style={{ width: 50, height: 50 }} source={ ImageArr['input'] } />
+                        <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/keyboard.png' }} />
                     </MyButton> }
                     { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
                 </View>
@@ -889,7 +879,7 @@ const styles = StyleSheet.create({
       width: windowWidth * 0.9 - 80,
       zIndex: 2,
       fontSize: 20,
-      color: '#b3b3b3',
+      color: '#fff',
       padding: 20
   },
   bottomBtnClicked: {

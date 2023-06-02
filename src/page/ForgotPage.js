@@ -73,7 +73,11 @@ class ForgotPage extends Component {
         InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin } = this.props;
             if (isLogin) {
-                this.props.navigation.navigate('Main');
+                if(this.props.user.type === 2) {
+                    this.props.navigation.navigate('CustomMain');
+                }
+                else 
+                    this.props.navigation.navigate('Main');
                 return;
             }
 
