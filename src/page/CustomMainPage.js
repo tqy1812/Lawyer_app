@@ -709,10 +709,10 @@ _keyboardDidHide(e) {
          <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
             <View style={[styles.topMenu, {height: 80 + menuHeight}]}>
               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
-                <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_center'] } />
+                <Image style={{ width: 42, height: 42 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_center.png' }} />
               </MyButton>
                <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('ClientCase')}>
-                <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_report'] } />
+                <Image style={{ width: 42, height: 42 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_report.png' }} />
               </MyButton>
             </View>
             <Text style={[styles.content]}></Text>
