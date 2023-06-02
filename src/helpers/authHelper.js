@@ -34,6 +34,7 @@ export default class  authHelper {
               newUser = Object.assign({}, JSON.parse(userRecord));
             }
             newUser.token = null;
+            newUser.voice_type = null;
             Storage.setUserRecord(JSON.stringify(newUser));
           });
         }

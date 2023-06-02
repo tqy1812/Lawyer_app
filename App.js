@@ -21,9 +21,11 @@ const global = GlobalData.getInstance();
 const App: () => Node = () => {
 
   const [user, setUser] = useState({});
+  const [getUser, setGetUser] = useState(false);
   useEffect(() => {
     const userAsync = async() =>{
       let user = await Storage.getUserRecord();
+      setGetUser(true)
       console.log('....user', user)
       if (user) {
         savedUser = Object.assign({}, JSON.parse(user));
@@ -64,7 +66,7 @@ const App: () => Node = () => {
         <SafeAreaProvider>
           {/* <GestureHandlerRootView style={{ flex: 1 }}> */}
           <NavigationContainer>
-          <StackRouter user={user}></StackRouter>
+          { getUser && <StackRouter user={user}></StackRouter> }
           </NavigationContainer>
           {/* </GestureHandlerRootView> */}
         </SafeAreaProvider>

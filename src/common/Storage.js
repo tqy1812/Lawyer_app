@@ -23,6 +23,7 @@ export const getUserRecord = async () => {
   };
 
   export const setUserRecord = async (user) => {
+    logger('....setUserRecord', user)
     await AsyncStorage.setItem(userRecord, user,null);
   };
 

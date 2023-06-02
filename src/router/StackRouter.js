@@ -195,7 +195,7 @@ export default function StackRouter(props) {
       };
     return (
         <Provider store={store}>
-            <Stack.Navigator initialRouteName={props.user && props.user.token ? 'Main': 'Login'} screenOptions={props => {
+            <Stack.Navigator initialRouteName={props.user && props.user.token ? props.user.type ===2 ? 'CustomMain' : 'Main' : 'Login'} screenOptions={props => {
               const { navigation, route } = props;
               // if (route.name === 'Main' && navigation.isFocused()) {
               //     BackHandler.addEventListener('hardwareBackPress',  () => {

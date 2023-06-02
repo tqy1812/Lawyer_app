@@ -52,7 +52,7 @@ import BottomSheet from "react-native-gesture-bottom-sheet";
 import MyFinishPlanSheet from "../components/MyFinishPlanSheet";
 import moment from 'moment';
 import actionAuth from '../actions/actionAuth';
-import BackgroundTimer from 'react-native-background-timer';
+import Wave from "../components/Wave";
 import ImageArr from '../common/ImageArr';
 import ProcessConfirmModal from '../components/ProcessConfirmModal';
 import NetInfo from '@react-native-community/netinfo';
@@ -79,8 +79,6 @@ class CustomMainPage extends BaseComponent {
   constructor(props) {
     super(props);
     // 设置初始值
-    // this.planRef = React.createRef();
-    // this.finishRef = React.createRef();
     this.updateProcessCallback = null;
     this.lastBackPressed = 0;
     this.state = {
@@ -99,7 +97,7 @@ class CustomMainPage extends BaseComponent {
       loading: true,
       menuVisible: true,
       updateItem: {},
-      caseId: undefined,
+      recoding: false,
       caseList: props.caseList,
       caseListInfo: props.caseListInfo,
       editDateShow: false,
@@ -110,22 +108,18 @@ class CustomMainPage extends BaseComponent {
       isShowMic: true,
       isInput: false,//是否输入了内容
     }
-    // DeviceEventEmitter.removeAllListeners();
     this.INJECTEDJAVASCRIPT = `
     const meta = document.createElement('meta'); 
     meta.setAttribute('content', 'initial-scale=0.5, user-scalable=0'); 
     meta.setAttribute('name', 'viewport'); 
     document.getElementsByTagName('head')[0].appendChild(meta);`
     this.wv = React.createRef();
-    // logger('###########', Recognizer);
     if(platform.isAndroid()) {
       Recognizer.init("5f5835be");
     }
     else{
       this.RecognizerIos = NativeModules.SpeechRecognizerModule;
       this.RecognizerIos && this.RecognizerIos.init("5f5835be");
-      // this.RecognizerIos.setParameter('vad_bos', '10000');
-      // this.RecognizerIos.setParameter('vad_eos', '10000');
     }
     Recognizer.setParameter('vad_bos', '10000');
     Recognizer.setParameter('vad_eos', '10000');
@@ -151,20 +145,6 @@ class CustomMainPage extends BaseComponent {
       if(infoList) {
         this.setState({caseListInfo: infoList})
       }
-      // showPlanModal(<DrawerModal
-      //   component={<MyPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
-      //   ref={e => this.planRef = e}
-      //   height={Common.window.height - 100}
-      //   showType={'bottom'}
-      //   close={this.showMenu}
-      // />);
-  
-      // showFinishModal(<DrawerModal
-      //   component={<MyFinishPlanSlider finishTime={platform.isIOS() ? this.handleFinishTimeIOS.bind(this) : this.handleFinishTimeAndroid.bind(this)} finishTimeEnd={(item, callback) => this.handleFinishTimeEnd(item, callback)} {...this.props} caseList={list}/>}
-      //   ref={e => this.finishRef = e}
-      //   height={Common.window.height - 100}
-      //   showType={'top'}
-      // />);
   
       if(globalData.getIsOpenFromNotify()){
       
@@ -234,12 +214,6 @@ _keyboardDidHide(e) {
         }
       }));
     }
-    // Alert.alert('远程消息推送已经注册', `注册令牌: ${deviceToken}`, [
-    //   {
-    //     text: '关闭',
-    //     onPress: null,
-    //   },
-    // ]);
   };
 
   handLogout() {
@@ -257,158 +231,97 @@ _keyboardDidHide(e) {
     });
   }
 
-  onRegistrationError = (error) => {
-    Alert.alert(
-      '远程消息推送注册失败',
-      `Error (${error.code}): ${error.message}`,
-      [
-        {
-          text: '关闭',
-          onPress: null,
-        },
-      ],
-    );
-  };
-  setNotificationCategories = () => {
-    PushNotificationIOS.setNotificationCategories([
-      {
-        id: 'userAction',
-        actions: [
-          { id: 'open', title: '打开', options: { foreground: true } },
-          {
-            id: 'ignore',
-            title: '忽略',
-            options: { foreground: true, destructive: true },
-          },
-        ],
-      },
-    ]);
-  };
+  // onRegistrationError = (error) => {
+  //   Alert.alert(
+  //     '远程消息推送注册失败',
+  //     `Error (${error.code}): ${error.message}`,
+  //     [
+  //       {
+  //         text: '关闭',
+  //         onPress: null,
+  //       },
+  //     ],
+  //   );
+  // };
+  // setNotificationCategories = () => {
+  //   PushNotificationIOS.setNotificationCategories([
+  //     {
+  //       id: 'userAction',
+  //       actions: [
+  //         { id: 'open', title: '打开', options: { foreground: true } },
+  //         {
+  //           id: 'ignore',
+  //           title: '忽略',
+  //           options: { foreground: true, destructive: true },
+  //         },
+  //       ],
+  //     },
+  //   ]);
+  // };
 
-  onRemoteNotification = (notification) => {
-    const isClicked = notification.getData().userInteraction === 1;
-    logger('##########isClicked=' + isClicked);
-    const result = `
-      Title:  ${notification.getTitle()};\n
-      Subtitle:  ${notification.getSubtitle()};\n
-      Message: ${notification.getMessage()};\n
-      badge: ${notification.getBadgeCount()};\n
-      sound: ${notification.getSound()};\n
-      category: ${notification.getCategory()};\n
-      content-available: ${notification.getContentAvailable()};\n
-      Notification is clicked: ${String(isClicked)}.`;
-    if (isClicked) {
-      this.openNotfication();
-      // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
-      //   PushNotificationIOS.setApplicationIconBadgeNumber(num-1);
-      // });
-    }
-    else {
-      this.sendLocalNotification(result);
-    }
-    // else if (notification.getTitle() == undefined) {
-    // Alert.alert('静默推送消息已接收', result, [
-    //   {
-    //     text: '发送本地推送',
-    //     onPress: this.sendLocalNotification(result),
-    //   },
-    // ]);
-    // }
-    // else {
-    //   Alert.alert('消息推送已经接收', result, [
-    //     {
-    //       text: '关闭',
-    //       onPress: null,
-    //     },
-    //   ]);
-    // }
-    notification.finish('UIBackgroundFetchResultNoData')
-  };
-  onLocalNotification = (notification) => {
-    const isClicked = notification.getData().userInteraction === 1;
-    logger('##########isClicked=' + isClicked);
-    if (isClicked) {
-      this.openNotfication();
-      // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
-      //   PushNotificationIOS.setApplicationIconBadgeNumber(num - 1);
-      // });
-    }
-    // Alert.alert(
-    //   'Local Notification Received',
-    //   `Alert title:  ${notification.getTitle()},
-    //   Alert subtitle:  ${notification.getSubtitle()},
-    //   Alert message:  ${notification.getMessage()},
-    //   Badge: ${notification.getBadgeCount()},
-    //   Sound: ${notification.getSound()},
-    //   Thread Id:  ${notification.getThreadID()},
-    //   Action Id:  ${notification.getActionIdentifier()},
-    //   User Text:  ${notification.getUserText()},
-    //   Notification is clicked: ${String(isClicked)}.`,
-    //   [
-    //     {
-    //       text: '关闭',
-    //       onPress: null,
-    //     },
-    //   ],
-    // );
-  };
-  sendLocalNotification = (result) => {
-    // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
-    PushNotificationIOS.presentLocalNotification({
-      alertTitle: result.Title,
-      alertBody: result.Message,
-      applicationIconBadgeNumber: 0,
-      category: ''
-    });
-    // });
-  };
+  // onRemoteNotification = (notification) => {
+  //   const isClicked = notification.getData().userInteraction === 1;
+  //   logger('##########isClicked=' + isClicked);
+  //   const result = `
+  //     Title:  ${notification.getTitle()};\n
+  //     Subtitle:  ${notification.getSubtitle()};\n
+  //     Message: ${notification.getMessage()};\n
+  //     badge: ${notification.getBadgeCount()};\n
+  //     sound: ${notification.getSound()};\n
+  //     category: ${notification.getCategory()};\n
+  //     content-available: ${notification.getContentAvailable()};\n
+  //     Notification is clicked: ${String(isClicked)}.`;
+  //   if (isClicked) {
+  //     this.openNotfication();
+  //   }
+  //   else {
+  //     this.sendLocalNotification(result);
+  //   }
+  //   notification.finish('UIBackgroundFetchResultNoData')
+  // };
+  // onLocalNotification = (notification) => {
+  //   const isClicked = notification.getData().userInteraction === 1;
+  //   logger('##########isClicked=' + isClicked);
+  //   if (isClicked) {
+  //     this.openNotfication();
+  //   }
+  // };
+  // sendLocalNotification = (result) => {
+  //   PushNotificationIOS.presentLocalNotification({
+  //     alertTitle: result.Title,
+  //     alertBody: result.Message,
+  //     applicationIconBadgeNumber: 0,
+  //     category: ''
+  //   });
+  // };
 
-  sendNotification = (result) => {
-    DeviceEventEmitter.emit('remoteNotificationReceived', {
-      remote: true,
-      aps: {
-        alert: { title: result.Title, subtitle: 'subtitle', body: result.Message },
-        badge: 1,
-        sound: 'default',
-        category: 'REACT_NATIVE',
-        'content-available': 1,
-        'mutable-content': 1,
-      },
-    });
-  };
+  // sendNotification = (result) => {
+  //   DeviceEventEmitter.emit('remoteNotificationReceived', {
+  //     remote: true,
+  //     aps: {
+  //       alert: { title: result.Title, subtitle: 'subtitle', body: result.Message },
+  //       badge: 1,
+  //       sound: 'default',
+  //       category: 'REACT_NATIVE',
+  //       'content-available': 1,
+  //       'mutable-content': 1,
+  //     },
+  //   });
+  // };
   processNameForceLoseFocus = () => {
     this.item_name && this.item_name.blur();
   }
 
   onBackButtonPressAndroid = () => {
     logger("...............onBackButtonPressAndroid ")
-    // if(this.props.navigation.state.routeName=="Main"){
-    //   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-    //     //最近2秒内按过back键，可以退出应用。
-    //     BackHandler.exitApp()
-    //     return false
-    //   }
-    //   this.lastBackPressed = Date.now();
-    //   Toast.show('再按一次退出应用');
-    //   return true;
-    // }else{
     return false;
-    // }
   };
 
   handleAppStateChange = (nextAppState) => {
     logger('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      if(platform.isAndroid()){
-        NativeModules.NotifyOpen.getDeviceType((type) =>{
-          const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
-          if(Common.devicePushType['WSS'] === deviceType) {
-            if (this.wc) this.wc.setIsBackground(false);
-            NativeModules.WebSocketWorkManager.stopBackgroundWork();
-          }
-        })
-      }
-      this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
+      
+      this.props.dispatch(actionCase.reqClientCaseList((list, infoList)=>{
         if(list) {
           this.setState({caseList: list})
         }
@@ -417,19 +330,9 @@ _keyboardDidHide(e) {
         }
       }));
       this.props.dispatch(actionAuth.reqUserInfo());
-      DeviceEventEmitter.emit('refreshDailyProcess');
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
-      // logger('***************hidden', this.wc);
-      if(platform.isAndroid()){
-        NativeModules.NotifyOpen.getDeviceType((type) =>{
-          const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
-          if(Common.devicePushType['WSS'] === deviceType) {
-            if (this.wc) this.wc.setIsBackground(true);
-            NativeModules.WebSocketWorkManager.startBackgroundWork();
-           }
-        })
-      }
+      
     }
     this.setState({ appState: nextAppState });
   };
@@ -467,7 +370,7 @@ _keyboardDidHide(e) {
         ]);
       return;
     }
-    showRecoding();
+    this.setState({recoding: true});
     // this.setState({isRecoding: true});
     // this.sendRecording('recording')
     Recognizer.start();
@@ -490,7 +393,7 @@ _keyboardDidHide(e) {
         ]);
         return;
       }
-      showRecoding();
+      this.setState({recoding: true});
       logger('...........RecognizerIos', this.RecognizerIos);
       this.RecognizerIos && this.RecognizerIos.start();
   }
@@ -502,7 +405,7 @@ _keyboardDidHide(e) {
         if (value) {
           Recognizer.stop();
         }
-        destroySibling();
+        that.setState({recoding: false});
         // that.setState({isRecoding: false});
       });
     }
@@ -512,7 +415,7 @@ _keyboardDidHide(e) {
         if (value) {
           this.RecognizerIos.stop();
         }
-        destroySibling();
+        that.setState({recoding: false});
         // that.setState({isRecoding: false});
       });
     }
@@ -556,49 +459,46 @@ _keyboardDidHide(e) {
     }
   }
 
-  scheduleNotfication = (content) => {
-    logger('5555555555555555555555555====' + content);
-    if (content) {
-      let item = JSON.parse(content);
-      if (platform.isAndroid()) {
-        PushNotification.localNotification({
-          channelId: 'NEW_MESSAGE_NOTIFICATION',
-          title: "任务提醒-" + item.process_name,
-          message: '时间:' + item.start_time,
-          id: this.state.lastId,
-          date: new Date(Date.now()),
-          when: new Date().getTime()
-        });
-        this.setState({ lastId: (this.state.lastId + 1) });
-      }
-      else {
-        this.sendLocalNotification({ Title: "任务提醒-" + item.process_name, Message:'时间:' + item.start_time });
-      }
-    }
-  }
+  // scheduleNotfication = (content) => {
+  //   logger('5555555555555555555555555====' + content);
+  //   if (content) {
+  //     let item = JSON.parse(content);
+  //     if (platform.isAndroid()) {
+  //       PushNotification.localNotification({
+  //         channelId: 'NEW_MESSAGE_NOTIFICATION',
+  //         title: "任务提醒-" + item.process_name,
+  //         message: '时间:' + item.start_time,
+  //         id: this.state.lastId,
+  //         date: new Date(Date.now()),
+  //         when: new Date().getTime()
+  //       });
+  //       this.setState({ lastId: (this.state.lastId + 1) });
+  //     }
+  //     else {
+  //       this.sendLocalNotification({ Title: "任务提醒-" + item.process_name, Message:'时间:' + item.start_time });
+  //     }
+  //   }
+  // }
 
   openNotfication = () => {
     this.props.navigation.navigate('Main');
-    this.finishRef && this.finishRef.close('finish');
-    this.setState({ menuVisible: false });
-    this.planRef && this.planRef.open('plan');
   }
 
-  test = () => {
-    if (platform.isAndroid()) {
-      PushNotification.localNotification({
-        channelId: 'NEW_MESSAGE_NOTIFICATION',
-        title: "任务提醒-",
-        message: "test",
-        id: this.state.lastId,
-        when: new Date().getTime(),
-      });
-      this.setState({ lastId: (this.state.lastId + 1) });
-    }
-    else {
-      this.sendLocalNotification({ Title: '任务提醒-', Message: '测试' });
-    }
-  }
+  // test = () => {
+  //   if (platform.isAndroid()) {
+  //     PushNotification.localNotification({
+  //       channelId: 'NEW_MESSAGE_NOTIFICATION',
+  //       title: "任务提醒-",
+  //       message: "test",
+  //       id: this.state.lastId,
+  //       when: new Date().getTime(),
+  //     });
+  //     this.setState({ lastId: (this.state.lastId + 1) });
+  //   }
+  //   else {
+  //     this.sendLocalNotification({ Title: '任务提醒-', Message: '测试' });
+  //   }
+  // }
 
   handleNativeMessage = (event) => {
     logger('handleNativeMessage====' + event.nativeEvent.data);
@@ -672,7 +572,6 @@ _keyboardDidHide(e) {
     }
     this.RecognizerIos.start();
     this.updateProcessCallback = null;
-    // logger('.....handleFinishTime' + JSON.stringify(item))
     this.setState({ updateItem: item });
   }
   async handleFinishTimeAndroid(item) {
@@ -788,9 +687,9 @@ _keyboardDidHide(e) {
     }
   } 
   render() {
-    const { keyboardDidShow, isMic, recordContent, isShowMic, isInput } = this.state;
+    const { keyboardDidShow, isMic, recordContent, isShowMic, isInput, recoding } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-    logger('..menuHeight', menuHeight)
+    logger('..menuHeight', this.props.userInfo)
     return (
       <View style={styles.container}>
         <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
@@ -801,7 +700,6 @@ _keyboardDidHide(e) {
         <WebView
             ref={this.wv}
             source={{ uri: this.props.userInfo.voice_type==='male' ? Common.webUrl + 'lawyer_male/index.html' :  Common.webUrl + 'demo/index.html' }}
-            // source={{ uri: 'https://human.kykyai.cn' }}
             scalesPageToFit={true}
             bounces={false}
             style={{ width: windowWidth, height: '100%' }}
@@ -821,11 +719,10 @@ _keyboardDidHide(e) {
                 <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_center'] } />
               </MyButton>
                <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
-               <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_report'] } />
+                <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_report'] } />
               </MyButton>
             </View>
-            <Text style={styles.content} >
-            </Text>
+            <Text style={styles.content}></Text>
 
             {
               !isMic &&
@@ -840,7 +737,7 @@ _keyboardDidHide(e) {
                   />
 
                   {!isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: true }) }}>
-                      <Image style={{ width: 50, height: 50 }} source={ ImageArr['microphone'] } />
+                      <Image style={{ width: 30, height: 30 }} source={ ImageArr['microphone'] } />
                   </MyButton>}
 
                   {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendMessage(index) }}>
@@ -848,19 +745,20 @@ _keyboardDidHide(e) {
                   </MyButton>}
               </View>
 
-           }
-           {
+            }
+            {
               isMic &&
                 <View style={styles.bottom}>
                     <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS : this.startRecordAndroid} onPressOut={this.stopRecord}>
                         {recordContent}
                     </Text>
 
-                    {isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={ ImageArr['microphone'] } />}
+                    {!recoding && isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={ ImageArr['microphone'] } />}
 
-                    <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
+                    { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
                         <Image style={{ width: 50, height: 50 }} source={ ImageArr['input'] } />
-                    </MyButton>
+                    </MyButton> }
+                    { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
                 </View>
             }
           </View>
@@ -1008,6 +906,15 @@ const styles = StyleSheet.create({
   bottomBtnClicked: {
       backgroundColor: 'rgba(0, 0, 0, 0.20)',
       color: "#fff"
+  },
+  waveView: {
+    height: 60,
+    width: windowWidth * 0.9,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    borderRadius: 40,
+    position: "absolute",
+    zIndex: 3,
+    top: 0,
   },
 });
 export default connect(CustomMainPage.mapStateToProps)(CustomMainPage);

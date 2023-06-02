@@ -65,16 +65,21 @@ class CenterPage extends BaseComponent {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
-      this.props.dispatch(actionAuth.reqUserInfo());
-      this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
-        // logger(list)
-        if(list) {
-          this.setState({caseList: list})
-        }
-        if(infoList) {
-          this.setState({caseListInfo: infoList})
-        }
-      }));
+      if(this.state.type===2) {
+
+      }
+      else {
+        this.props.dispatch(actionAuth.reqUserInfo());
+        this.props.dispatch(actionCase.reqCaseList((list, infoList)=>{
+          // logger(list)
+          if(list) {
+            this.setState({caseList: list})
+          }
+          if(infoList) {
+            this.setState({caseListInfo: infoList})
+          }
+        }));
+      }
       this.cleanupImages();
     }
 
@@ -84,13 +89,7 @@ class CenterPage extends BaseComponent {
       const {routes} = this.state;
       dispatch({type: TYPE_AUTH_USER, data: {}});
       Storage.setAutoLogin('0');
-      dispatch(actionAuth.logoutRecord())
-      // logger('.....#################',routes)
-      // const route = routes.find(r=> r.name == 'Center');
-      // logger('.....',route)
-      // if(route && route.params.key) {
-      //   this.props.navigation.goBack(route.params.key);
-      // }
+      dispatch(actionAuth.logoutRecord());
 
       this.props.navigation.dispatch(state => {
         logger('.......logOut', state)
