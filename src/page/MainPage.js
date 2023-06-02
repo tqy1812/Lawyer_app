@@ -355,12 +355,6 @@ class MainPage extends BaseComponent {
         }
       }));
     }
-    // Alert.alert('远程消息推送已经注册', `注册令牌: ${deviceToken}`, [
-    //   {
-    //     text: '关闭',
-    //     onPress: null,
-    //   },
-    // ]);
   };
 
   handLogout() {
@@ -420,29 +414,10 @@ class MainPage extends BaseComponent {
       Notification is clicked: ${String(isClicked)}.`;
     if (isClicked) {
       this.openNotfication();
-      // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
-      //   PushNotificationIOS.setApplicationIconBadgeNumber(num-1);
-      // });
     }
     else {
       this.sendLocalNotification(result);
     }
-    // else if (notification.getTitle() == undefined) {
-    // Alert.alert('静默推送消息已接收', result, [
-    //   {
-    //     text: '发送本地推送',
-    //     onPress: this.sendLocalNotification(result),
-    //   },
-    // ]);
-    // }
-    // else {
-    //   Alert.alert('消息推送已经接收', result, [
-    //     {
-    //       text: '关闭',
-    //       onPress: null,
-    //     },
-    //   ]);
-    // }
     notification.finish('UIBackgroundFetchResultNoData')
   };
   onLocalNotification = (notification) => {
@@ -450,38 +425,15 @@ class MainPage extends BaseComponent {
     logger('##########isClicked=' + isClicked);
     if (isClicked) {
       this.openNotfication();
-      // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
-      //   PushNotificationIOS.setApplicationIconBadgeNumber(num - 1);
-      // });
     }
-    // Alert.alert(
-    //   'Local Notification Received',
-    //   `Alert title:  ${notification.getTitle()},
-    //   Alert subtitle:  ${notification.getSubtitle()},
-    //   Alert message:  ${notification.getMessage()},
-    //   Badge: ${notification.getBadgeCount()},
-    //   Sound: ${notification.getSound()},
-    //   Thread Id:  ${notification.getThreadID()},
-    //   Action Id:  ${notification.getActionIdentifier()},
-    //   User Text:  ${notification.getUserText()},
-    //   Notification is clicked: ${String(isClicked)}.`,
-    //   [
-    //     {
-    //       text: '关闭',
-    //       onPress: null,
-    //     },
-    //   ],
-    // );
   };
   sendLocalNotification = (result) => {
-    // PushNotificationIOS.getApplicationIconBadgeNumber((num) => {
     PushNotificationIOS.presentLocalNotification({
       alertTitle: result.Title,
       alertBody: result.Message,
       applicationIconBadgeNumber: 0,
       category: ''
     });
-    // });
   };
 
   sendNotification = (result) => {
@@ -503,18 +455,7 @@ class MainPage extends BaseComponent {
 
   onBackButtonPressAndroid = () => {
     logger("...............onBackButtonPressAndroid ")
-    // if(this.props.navigation.state.routeName=="Main"){
-    //   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-    //     //最近2秒内按过back键，可以退出应用。
-    //     BackHandler.exitApp()
-    //     return false
-    //   }
-    //   this.lastBackPressed = Date.now();
-    //   Toast.show('再按一次退出应用');
-    //   return true;
-    // }else{
     return false;
-    // }
   };
 
   handleAppStateChange = (nextAppState) => {
@@ -541,7 +482,6 @@ class MainPage extends BaseComponent {
       DeviceEventEmitter.emit('refreshDailyProcess');
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
-      // logger('***************hidden', this.wc);
       if(platform.isAndroid()){
         NativeModules.NotifyOpen.getDeviceType((type) =>{
           const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
@@ -589,8 +529,6 @@ class MainPage extends BaseComponent {
       return;
     }
     showRecoding();
-    // this.setState({isRecoding: true});
-    // this.sendRecording('recording')
     Recognizer.start();
   }
   startRecordIOS = () => {
@@ -624,7 +562,6 @@ class MainPage extends BaseComponent {
           Recognizer.stop();
         }
         destroySibling();
-        // that.setState({isRecoding: false});
       });
     }
     else {
@@ -634,7 +571,6 @@ class MainPage extends BaseComponent {
           this.RecognizerIos.stop();
         }
         destroySibling();
-        // that.setState({isRecoding: false});
       });
     }
   }
@@ -872,25 +808,6 @@ class MainPage extends BaseComponent {
     this.setState({ talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
   }
 
-  // sendTalkSuccess = () => {
-  //   const that = this;
-  //   const { dispatch } = this.props;
-  //   const { item, itemNotice, itemName, caseId } = this.state;
-  //   showLoading();
-  //   dispatch(actionProcess.reqSubmitProcess(item.id, itemNotice, itemName, true, caseId, (rs, error) => {
-  //     destroySibling();
-  //     that.setState({ loading: false, talkSuccessModalVisible: false, item: {}, itemNotice: false, itemName: '' });
-  //     if (error) {
-  //       Toast.show(error.info);
-  //     }
-  //     else {
-  //       DeviceEventEmitter.emit('refreshDailyProcess');
-  //       this.finishRef && this.finishRef.close('finish');
-  //       this.planRef && this.planRef.open('plan');
-  //     }
-  //   }));
-  // }
-
   sendProcessConfirm = (item) => {
     const that = this;
     const isLast = moment(item.end_time).diff(moment(new Date())) < 0;
@@ -939,7 +856,7 @@ class MainPage extends BaseComponent {
   render() {
     const { menuVisible, caseList, isOpenGuideDialog } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
-    logger('statusBarHeight11......', ''+ moment('2023-04-30 23:59:59').diff(moment(moment().month(moment().month()).startOf('month').valueOf())) >= 0)
+    logger('statusBarHeight11......', this.props.userInfo.id)
     // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
     return (
       <View style={styles.container}>
@@ -948,7 +865,7 @@ class MainPage extends BaseComponent {
           <ActivityIndicator size="large" color="black" />
         </View>}
         
-        <WebView
+        { this.props.userInfo && this.props.userInfo.id && <WebView
             ref={this.wv}
             source={{ uri: this.props.userInfo.voice_type==='male' ? Common.webUrl + 'lawyer_male/index.html' :  Common.webUrl + 'demo/index.html' }}
             // source={{ uri: 'https://human.kykyai.cn' }}
@@ -963,9 +880,8 @@ class MainPage extends BaseComponent {
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
             incognito={false}
             onLoadEnd={this.closeLoading.bind(this)}
-          />
+          /> }
 
-        {/* { this.state.isRecoding && <View style={styles.isRecoding}><Wave height={50} lineColor={'#fff'}></Wave></View> } */}
         <View style={[styles.contentView, { top: 0, height: windowHeight}]} {...this._panResponderMyPlan.panHandlers}>
           <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={platform.isIOS() ? this.startRecordIOS : this.startRecordAndroid} onPressOut={this.stopRecord}>
             <View style={[styles.topMenu, {height: 50 + menuHeight}]}>
@@ -1003,9 +919,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // paddingLeft: 20,
-    // paddingRight: 20,
-    // marginTop: 20,
   },
   bottomMenu: {
     width: windowWidth,
