@@ -723,11 +723,11 @@ _keyboardDidHide(e) {
                   />
 
                   {!isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: true }) }}>
-                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/microphone-00.png' }} />
+                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone-00.png' }} />
                   </MyButton>}
 
                   {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendRecording(this.state.input) }}>
-                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/input.png' }} />
+                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/input.png' }} />
                   </MyButton>}
               </View>
 
@@ -739,10 +739,10 @@ _keyboardDidHide(e) {
                         {recordContent}
                     </Text>
 
-                    {!recoding && isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={ ImageArr['microphone'] } />}
+                    {!recoding && isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
 
                     { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
-                        <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://21-pub-dev.oss-cn-hangzhou.aliyuncs.com/psychology/images/keyboard.png' }} />
+                        <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
                     </MyButton> }
                     { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
                 </View>
