@@ -6,6 +6,7 @@
 //
 
 #import "SplashScreen.h"
+#import "IQKeyboardManager.h"
 @implementation SplashScreen
 
 RCT_EXPORT_MODULE();
@@ -35,5 +36,11 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getStatusHeight) {
     NSString *stringFloat = [NSString stringWithFormat:@"%d",num];
     return stringFloat;
   }
+}
+RCT_EXPORT_METHOD(IqKeyboardDisable){
+  [[IQKeyboardManager sharedManager] setEnable:NO];
+}
+RCT_EXPORT_METHOD(IqKeyboardEnable){
+  [[IQKeyboardManager sharedManager] setEnable:YES];
 }
 @end

@@ -21,6 +21,7 @@ import {
   StatusBar,
   ImageBackground,
   Image,
+  ScrollView
 } from 'react-native';
 import {
   WebView
@@ -129,10 +130,9 @@ class CustomMainPage extends BaseComponent {
     const that = this;
     this.timeStampMove = 0;
 
-    // //键盘
+    //键盘
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
-    
   }
   componentDidMount() {
     if (!this.props.isLogin) {
@@ -182,6 +182,8 @@ class CustomMainPage extends BaseComponent {
     this.eventNoticeOpen && this.eventNoticeOpen.remove();
     this.eventKeepAliveSocket && this.eventKeepAliveSocket.remove();
     this.eventLogoutReceive && this.eventLogoutReceive.remove();
+    // if(platform.isIOS())
+    //   NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardEnable();
     //移除键盘监听
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
@@ -190,7 +192,9 @@ class CustomMainPage extends BaseComponent {
 
       
   _keyboardDidShow(e) {
-    console.log(e)
+    
+    // if(platform.isIOS())
+    //   NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardDisable();
     this.setState({
         keyboardHeight: e.endCoordinates.height,
         keyboardDidShow: true
@@ -340,6 +344,9 @@ _keyboardDidHide(e) {
   sendRecording = (value) => {
     const { dispatch } = this.props;
     const that = this;
+    if(!value || value.trim()==='') {
+      return;
+    }
     that.setState({ talkContent: '', talkModalVisible: false });
     Storage.getUserRecord().then((user) => {
       if (user) {
@@ -698,21 +705,21 @@ _keyboardDidHide(e) {
             incognito={false}
             onLoadEnd={this.closeLoading.bind(this)}
           />
-
+          <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
          <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
             <View style={[styles.topMenu, {height: 80 + menuHeight}]}>
               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_center'] } />
               </MyButton>
-               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Daily')}>
+               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('ClientCase')}>
                 <Image style={{ width: 42, height: 42 }} source={ ImageArr['custom_menu_report'] } />
               </MyButton>
             </View>
-            <Text style={[styles.content, keyboardDidShow && { marginTop: windowHeight * 0.2, marginBottom: 5 }]}></Text>
+            <Text style={[styles.content]}></Text>
 
             {
               !isMic &&
-              <View style={[styles.bottom, keyboardDidShow && { marginBottom: this.state.keyboardHeight }]}>
+              <View style={[styles.bottom, keyboardDidShow && { marginBottom: 20 + this.state.keyboardHeight }]}>
                   <TextInput
                       style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
                       onChange={() => { this.setState({ isInput: true }) }}
@@ -748,7 +755,7 @@ _keyboardDidHide(e) {
                 </View>
             }
           </View>
-
+          </ScrollView>
         </View>)
   }
 }
@@ -757,6 +764,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor:'#ffffff'
+  },
+  scorllView: {
+      position: 'absolute',
+      width: windowWidth,
+      height: windowHeight,
+      display: 'flex',
+      flexDirection: 'column',
+      zIndex: 2,
   },
   item: {
     backgroundColor: "#f9c2ff",
