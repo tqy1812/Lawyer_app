@@ -65,7 +65,7 @@ class ServicePage extends Component {
     render() {
       return (
           <SafeAreaView style={styles.container}>  
-            {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
+            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
             <Header title='律时用户服务协议' back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>                              
             { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />

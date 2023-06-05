@@ -102,8 +102,8 @@ class SecurityPage extends BaseComponent {
       // logger('..onBackButtonPressAndroid', this.props.navigation)
       return (
           <SafeAreaView style={styles.container}>  
-            {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
-            <Header title='帐号安全校验' back={true} />  
+            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+            <Header title='帐号安全校验' back={true} {...this.props}/>  
             <View style={[styles.content]}> 
               <View style={styles.infoContent}> 
                 <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>头像</Text>

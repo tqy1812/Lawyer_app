@@ -246,7 +246,7 @@ class CenterPage extends BaseComponent {
       // logger('....caseList',this.props.caseList)
       return (
           <SafeAreaView style={[styles.container]}>
-            {/* <StatusBar translucent={true}  backgroundColor='#ff0000' barStyle="dark-content" /> */}
+            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
             <Header title='个人中心' close={true}  {...this.props}/>
             <ScrollView style={styles.scrollView}  nestedScrollEnabled={true}>
             <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}>

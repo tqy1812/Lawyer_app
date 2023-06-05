@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   menuBtnView: {
-    width: 80,
+    width: 120,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

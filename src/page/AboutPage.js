@@ -153,7 +153,7 @@ class AboutPage extends Component {
       // logger('..onBackButtonPressAndroid', this.props.navigation)
       return (
           <SafeAreaView style={styles.container}>  
-            {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
+            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
             <Header title='关于律时与帮助' back={true}  {...this.props}/>  
             <View style={[styles.content]}> 
               <View style={styles.menuView}> 

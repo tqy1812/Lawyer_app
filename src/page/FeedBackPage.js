@@ -115,7 +115,7 @@ class FeedBackPage extends Component {
       // logger(caseList)
       return (
           <SafeAreaView style={styles.container}>  
-            {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
+            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
             <Header title='反馈' back={true} send={true}  sendFunc={this.handleSend.bind(this)} {...this.props}/>  
             <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
               <TextInput

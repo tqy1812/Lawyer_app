@@ -205,7 +205,7 @@ class ForgotPage extends Component {
         const { editStep } = this.state;
         return (
             <SafeAreaView style={styles.container}>
-                {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
+                <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
                 <Header title='' close={true}  {...this.props}/>
                 <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
                 <View style={styles.body}>

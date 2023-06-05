@@ -182,7 +182,7 @@ class UpdatePasswordPage extends Component {
         const { editStep, info } = this.state;
         return (
             <SafeAreaView style={styles.container}>
-                {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
+                <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
                 <Header title='修改密码' close={true}  {...this.props}/>
                 <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
                 <View style={styles.body}>
