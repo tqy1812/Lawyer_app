@@ -71,7 +71,7 @@ class MainContainer extends Component {
       logger("****STATUS_BAR_HEIGHT"+STATUS_BAR_HEIGHT)
      return (
       <SafeAreaView style={[styles.container]}>
-        <StatusBar translucent={true} barStyle="dark-content" />
+        {/* <StatusBar translucent={true} barStyle="dark-content" /> */}
         <PagerView style={[styles.pagerView, {height: windowHeight - STATUS_BAR_HEIGHT}]} ref={this.refPagerView} initialPage={this.state.page} scrollEnabled={scrollEnabled}>
           {/* <View key="1">
             <Text>First page</Text>

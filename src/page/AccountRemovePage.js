@@ -78,7 +78,7 @@ class AccountRemovePage extends BaseComponent {
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight;
       return (
           <SafeAreaView style={styles.container}>  
-            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+            {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
             <Header title='帐号注销' back={true}  {...this.props} />  
             <View style={[styles.content]}> 
 

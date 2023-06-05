@@ -91,7 +91,7 @@ class ExportInfoPage extends Component {
     // logger(caseList)
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar translucent={true} backgroundColor='transparent' barStyle="dark-content" />
+        {/* <StatusBar translucent={true} backgroundColor='transparent' barStyle="dark-content" /> */}
         <Header title='' close={true} {...this.props} />
         {
           code === 2 ?

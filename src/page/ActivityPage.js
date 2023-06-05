@@ -156,7 +156,7 @@ class ActivityPage extends BaseComponent {
         // logger(this.props)
         return (
             <SafeAreaView style={styles.container}>
-            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+            {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
                 {/* <StatusBar translucent={true} barStyle="dark-content" /> */}
                 <MyButton style={[styles.backBtn, {top: top}]}
                     activeOpacity={0.75} onPress={this.back.bind(this)}>

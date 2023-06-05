@@ -386,7 +386,7 @@ class LoginPage extends Component {
         };
         return (
             <SafeAreaView style={styles.container}>
-                <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+                {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
                 <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
                     <View style={styles.body}>
                         <View style={styles.topPart}>

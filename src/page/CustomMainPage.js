@@ -685,7 +685,7 @@ _keyboardDidHide(e) {
     logger('..menuHeight', this.props.userInfo)
     return (
       <View style={styles.container}>
-        <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+        {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
         </View>}

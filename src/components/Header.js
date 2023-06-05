@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: '#000',
     width: '100%',
+    // backgroundColor: '#ff0000'
   },
   navigationBar: {
     flexDirection: 'row',

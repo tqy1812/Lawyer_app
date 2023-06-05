@@ -23,6 +23,7 @@ import {
 import { caseSetting, logger } from '../utils/utils';
 import actionCase from "../actions/actionCase";
 import actionAuth from '../actions/actionAuth';
+import GlobalData from '../utils/GlobalData';
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 
@@ -51,6 +52,7 @@ class ClientCasePage extends Component {
         document.getElementsByTagName('head')[0].appendChild(meta);`
         this.wv = React.createRef();
         this.token = '';
+        this.globalDate = GlobalData.getInstance();
     }
 
     componentDidMount() {
@@ -93,9 +95,11 @@ class ClientCasePage extends Component {
     }
     render() {
       const {webviewUrl,  title} = this.state;
+      const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight
+
       return (
-          <SafeAreaView style={styles.container}>  
-            <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+          <SafeAreaView style={[styles.container]}>  
+            {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
             <Header title={title} back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>                              
             { this.state.loading && <View style={styles.mask}>
                       <ActivityIndicator size="large" color="black" />
@@ -131,7 +135,8 @@ const styles = StyleSheet.create({
     height: Common.window.height,
     backgroundColor: '#fff',
     color: '#000',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    // backgroundColor: '#ff00ff'
  },
   mask: {
     flex: 1,
