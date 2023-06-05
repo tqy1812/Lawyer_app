@@ -145,9 +145,9 @@ class CustomMainPage extends BaseComponent {
       if(infoList) {
         this.setState({caseListInfo: infoList})
       }
-  
+
       if(globalData.getIsOpenFromNotify()){
-      
+
         globalData.setIsOpenFromNotify(false)
       }
     }));
@@ -162,7 +162,7 @@ class CustomMainPage extends BaseComponent {
     this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
     this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
     this.eventLogoutReceive = DeviceEventEmitter.addListener('requestLoginout', () => { this.handLogout(); });
-    
+
     destroySibling();
     destroyAllSibling();
     Storage.getUserRecord().then((user) => {
@@ -171,7 +171,7 @@ class CustomMainPage extends BaseComponent {
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveToken("' + obj.token + '");true;');
       }
     });
-   
+
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -190,9 +190,9 @@ class CustomMainPage extends BaseComponent {
   }
 
 
-      
+
   _keyboardDidShow(e) {
-    
+
     // if(platform.isIOS())
     //   NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardDisable();
     this.setState({
@@ -324,7 +324,7 @@ _keyboardDidHide(e) {
   handleAppStateChange = (nextAppState) => {
     logger('****************nextAppState==' + nextAppState);
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      
+
       this.props.dispatch(actionCase.reqClientCaseList((list, infoList)=>{
         if(list) {
           this.setState({caseList: list})
@@ -336,7 +336,7 @@ _keyboardDidHide(e) {
       this.props.dispatch(actionAuth.reqClientUserInfo());
     }
     else if (this.state.appState === 'active' && nextAppState.match(/inactive|background/)) {
-      
+
     }
     this.setState({ appState: nextAppState });
   };
@@ -380,8 +380,6 @@ _keyboardDidHide(e) {
       return;
     }
     this.setState({recoding: true});
-    // this.setState({isRecoding: true});
-    // this.sendRecording('recording')
     Recognizer.start();
   }
   startRecordIOS = () => {
@@ -607,7 +605,7 @@ _keyboardDidHide(e) {
         }
         else {
           that.setState({ updateItem: {} });
-          
+
         }
       });
     }
@@ -620,7 +618,7 @@ _keyboardDidHide(e) {
         }
         else {
           that.setState({ updateItem: {} });
-          
+
         }
       });
     }
@@ -675,21 +673,21 @@ _keyboardDidHide(e) {
 
   showConfirm = (item, caseListInfo) => {
     if(item && item.id) {
-      showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.props.caseList} 
+      showConfirmModal(<ProcessConfirmModal {...this.props} submint={(item)=>this.sendProcessConfirm(item)} item={item} close={this.closeTalkSuccess} caseLists={this.props.caseList}
       caseListInfo={caseListInfo}/>);
     }
-  } 
+  }
   render() {
     const { keyboardDidShow, isMic, recordContent, isShowMic, isInput, recoding } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     logger('..menuHeight', this.props.userInfo)
     return (
       <View style={styles.container}>
-        {/* <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" /> */}
+        <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
         {this.state.loading && <View style={styles.mask}>
           <ActivityIndicator size="large" color="black" />
         </View>}
-        
+
         <WebView
             ref={this.wv}
             source={{ uri: this.props.userInfo.voice_type==='male' ? Common.webUrl + 'lawyer_male/index.html' :  Common.webUrl + 'demo/index.html' }}
@@ -699,7 +697,7 @@ _keyboardDidHide(e) {
             javaScriptEnabled={true}
             // injectedJavaScript={this.INJECTEDJAVASCRIPT}
             onMessage={this.handleNativeMessage.bind(this)}
-            mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined} 
+            mediaPlaybackRequiresUserAction={((Platform.OS !== 'android') || (Platform.Version >= 17)) ? false : undefined}
             startInLoadingState={true}
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
             incognito={false}
@@ -709,17 +707,17 @@ _keyboardDidHide(e) {
          <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
             <View style={[styles.topMenu, {height: 80 + menuHeight}]}>
               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
-                <Image style={{ width: 42, height: 42 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_center.png' }} />
+                <Image style={{ width: 42, height: 42 }} source={platform.isAndroid() ? ImageArr['custom_menu_center'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_center.png' }} />
               </MyButton>
                <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('ClientCase')}>
-                <Image style={{ width: 42, height: 42 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_report.png' }} />
+                <Image style={{ width: 42, height: 42 }} source={platform.isAndroid() ? ImageArr['custom_menu_report'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_report.png' }} />
               </MyButton>
             </View>
             <Text style={[styles.content]}></Text>
 
             {
               !isMic &&
-              <View style={[styles.bottom, keyboardDidShow && { marginBottom: 50  }]}>
+              <View style={[styles.bottom, keyboardDidShow ? platform.isAndroid() ? { marginBottom: this.state.keyboardHeight + 20  } :  { marginBottom: 50  } : {}]}>
                   <TextInput
                       style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
                       onChange={() => { this.setState({ isInput: true }) }}
@@ -742,14 +740,14 @@ _keyboardDidHide(e) {
             {
               isMic &&
                 <View style={styles.bottom}>
-                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS : this.startRecordAndroid} onPressOut={this.stopRecord}>
+                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
                         {recordContent}
                     </Text>
 
-                    {!recoding && isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
+                    {!recoding && isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={platform.isAndroid() ? ImageArr['microphone'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
 
                     { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
-                        <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
+                        <Image style={{ width: 50, height: 50 }} source={platform.isAndroid() ? ImageArr['input'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
                     </MyButton> }
                     { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
                 </View>
@@ -820,9 +818,10 @@ const styles = StyleSheet.create({
     left: windowWidth / 2 - 25,
   },
   contentView: {
-    position: 'absolute',
+    // position: 'absolute',
     width: windowWidth,
-    zIndex: 3,
+    // height: windowHeight,
+    // zIndex: 3,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
