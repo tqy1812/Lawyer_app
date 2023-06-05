@@ -719,7 +719,7 @@ _keyboardDidHide(e) {
 
             {
               !isMic &&
-              <View style={[styles.bottom, keyboardDidShow && { marginBottom: 20 + this.state.keyboardHeight }]}>
+              <View style={[styles.bottom, keyboardDidShow && { marginBottom: 50  }]}>
                   <TextInput
                       style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
                       onChange={() => { this.setState({ isInput: true }) }}
