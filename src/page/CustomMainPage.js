@@ -707,10 +707,10 @@ _keyboardDidHide(e) {
          <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
             <View style={[styles.topMenu, {height: 80 + menuHeight}]}>
               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
-                <Image style={{ width: 42, height: 42 }} source={platform.isAndroid() ? ImageArr['custom_menu_center'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_center.png' }} />
+                <Image resizeMode='contain' style={{ width: 42, height: 42 }} source={ImageArr['custom_menu_center']} />
               </MyButton>
                <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('ClientCase')}>
-                <Image style={{ width: 42, height: 42 }} source={platform.isAndroid() ? ImageArr['custom_menu_report'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/custom_menu_report.png' }} />
+                <Image resizeMode='contain' style={{ width: 42, height: 42 }} source={ImageArr['custom_menu_report']} />
               </MyButton>
             </View>
             <Text style={[styles.content]}></Text>
@@ -744,10 +744,10 @@ _keyboardDidHide(e) {
                         {recordContent}
                     </Text>
 
-                    {!recoding && isShowMic && <Image resizeMode='contain' style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={platform.isAndroid() ? ImageArr['microphone'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
+                    {!recoding && isShowMic && <Image resizeMode='contain' style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={ImageArr['microphone']} />}
 
                     { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
-                        <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={platform.isAndroid() ? ImageArr['input'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
+                        <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={ImageArr['input']} />
                     </MyButton> }
                     { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
                 </View>
@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   menuBtnView: {
-    width: 120,
+    width: 100,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
