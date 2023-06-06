@@ -728,11 +728,11 @@ _keyboardDidHide(e) {
                   />
 
                   {!isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: true }) }}>
-                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone-00.png' }} />
+                      <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone-00.png' }} />
                   </MyButton>}
 
                   {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendRecording(this.state.input) }}>
-                      <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/input.png' }} />
+                      <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/input.png' }} />
                   </MyButton>}
               </View>
 
@@ -740,14 +740,14 @@ _keyboardDidHide(e) {
             {
               isMic &&
                 <View style={styles.bottom}>
-                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
+                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
                         {recordContent}
                     </Text>
 
-                    {!recoding && isShowMic && < Image style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={platform.isAndroid() ? ImageArr['microphone'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
+                    {!recoding && isShowMic && <Image resizeMode='contain' style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={platform.isAndroid() ? ImageArr['microphone'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
 
                     { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
-                        <Image style={{ width: 50, height: 50 }} source={platform.isAndroid() ? ImageArr['input'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
+                        <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={platform.isAndroid() ? ImageArr['input'] : { uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
                     </MyButton> }
                     { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
                 </View>
