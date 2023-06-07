@@ -178,7 +178,7 @@ public class MainActivity extends ReactActivity {
       getOtherToken();
     }
   }
-
+  //华为远程推送
   private void getHuaweiToken() {
     new Thread() {
       @Override
@@ -200,6 +200,7 @@ public class MainActivity extends ReactActivity {
       }
     }.start();
   }
+  //荣耀远程推送
   private void getHonorToken() {
     boolean isSupport = HonorPushClient.getInstance().checkSupportHonorPush(getApplicationContext());
     Log.i("MainActivity", "getHonorToken isSupport: "+isSupport);
@@ -234,6 +235,7 @@ public class MainActivity extends ReactActivity {
     editor.commit();
     registerReceiver();
   }
+  //第一次打开app开启通知设置判断
   public static boolean isOpenNotifySetting() {
     NotificationManagerCompat notification = NotificationManagerCompat.from(context);
     boolean isEnabled = notification.areNotificationsEnabled();
@@ -241,26 +243,26 @@ public class MainActivity extends ReactActivity {
     boolean isFirstOpen = shared.getBoolean("isFirst", true);
     return !isEnabled && isFirstOpen;
   }
-
+  //测试远程推送通知打开传值
   public static String getTextMessage() {
     SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
     String textMessage = shared.getString("testMessage", "");
     return textMessage;
   }
-
+  //测试远程推送通知打开传值
   public static String getTextMessageOpen() {
     SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
     String textMessage = shared.getString("testMessageOpen", "");
     return textMessage;
   }
-
+  //是否第一次打开app值保存
   public static void saveSetting() {
     SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
     SharedPreferences.Editor editor = shared.edit();
     editor.putBoolean("isFirst", false);
     editor.commit();
   }
-
+  //打开通知设置
   public static void open() {
     boolean isEnabled = isOpenNotifySetting();
     if (isEnabled) {
@@ -274,7 +276,7 @@ public class MainActivity extends ReactActivity {
       Log.i("MainActivity", "通知权限已经开启");
     }
   }
-
+  //退出关闭app
   public static void exitApp() {
 
     Log.i("MainActivity", "******************************exitApp");
@@ -297,7 +299,7 @@ public class MainActivity extends ReactActivity {
     setIntent(intent);
     getIntentAction(intent);
   }
-
+  //判断从通知栏开启APP动作
   private void getIntentAction(Intent intent) {
 //    setIntent(intent);
 //    Uri uri = intent.getData();
@@ -340,7 +342,7 @@ public class MainActivity extends ReactActivity {
 //    }
     }
   }
-
+  //是否从通知栏开启APP
   private boolean getOpenFromNotify(Intent intent) {
     boolean flag = false;
     if(intent != null) {
@@ -419,7 +421,7 @@ public class MainActivity extends ReactActivity {
     super.onDestroy();
     unregisterReceiver(mReceiver);
   }
-
+  //打开通知设置
   private static void openNotify(Context context) {
 
     Intent intent = new Intent();

@@ -36,7 +36,7 @@ public class ScreenAdaptation extends ReactContextBaseJavaModule{
     public String getName() {
         return "ScreenAdaptation";
     }
-
+    //小米全屏高度
     @ReactMethod
     public void getHeight(final Promise promise) {
         int height = metrics.heightPixels;
@@ -92,37 +92,38 @@ public class ScreenAdaptation extends ReactContextBaseJavaModule{
         }
     }
 
+    //测试远程推送通知打开传值
     @ReactMethod
     public void testMessageOpen(Callback callback) {
         callback.invoke(MainActivity.getTextMessageOpen());
     }
-
+    //测试远程推送通知打开传值
     @ReactMethod
     public void testMessage(Callback callback) {
         callback.invoke(MainActivity.getTextMessage());
     }
-
+    //第一次打开app开启通知设置判断
     @ReactMethod
     public void isOpenNotify(Callback callback) {
         callback.invoke(MainActivity.isOpenNotifySetting());
     }
-
+    //是否第一次打开app值保存
     @ReactMethod
     public void saveSetting() {
         MainActivity.saveSetting();
     }
-
+    //退出关闭app
     @ReactMethod
     public void exitApp() {
         MainActivity.exitApp();
     }
 
-
+    //打开通知设置
     @ReactMethod
     public void openNotify() {
         MainActivity.open();
     }
-    //    获取 APP 信息
+    //获取 APP 信息
     private PackageInfo getPackageInfo(){
         PackageManager manager = getReactApplicationContext().getPackageManager();
         PackageInfo info = null;
