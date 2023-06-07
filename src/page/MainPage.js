@@ -104,6 +104,8 @@ class MainPage extends BaseComponent {
       caseListInfo: props.caseListInfo,
       editDateShow: false,
       isOpenGuideDialog: props.route.params && props.route.params.openNotice ? props.route.params.openNotice : false,
+      testMessageOpen: '',
+      testMessage: '',
     }
     logger('....isFirstGuide main', props.route.params && props.route.params.openNotice )
     // DeviceEventEmitter.removeAllListeners();
@@ -162,6 +164,18 @@ class MainPage extends BaseComponent {
           this.finishRef.close('finish');
           that.setState({ menuVisible: false })
           this.planRef.open('plan');
+          // if(NativeModules.ScreenAdaptation) {
+          //   NativeModules.ScreenAdaptation.testMessageOpen((event) =>{
+          //     this.setState({
+          //       testMessageOpen:event
+          //     })
+          //   });
+          //   NativeModules.ScreenAdaptation.testMessage((event) =>{
+          //     this.setState({
+          //       testMessage:event
+          //     })
+          //   });
+          // }
           // this.planRef && this.planRef.current.show()
         } else if (this.timeStampMove > 0 && gs.dy > distance) {
           this.timeStampMove = 0;
@@ -854,9 +868,10 @@ class MainPage extends BaseComponent {
 
   }
   render() {
-    const { menuVisible, caseList, isOpenGuideDialog } = this.state;
+    const { menuVisible, caseList, isOpenGuideDialog, testMessageOpen, testMessage } = this.state;
     const menuHeight = platform.isIOS() ? globalData.getTop() : Common.statusBarHeight;
     logger('statusBarHeight11......', this.props.userInfo.id)
+    // const value = 'testMessageOpen:' + testMessageOpen + 'testMessage:' + testMessage
     // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
     return (
       <View style={styles.container}>
@@ -893,7 +908,7 @@ class MainPage extends BaseComponent {
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
-            <Text style={styles.content} >
+            <Text style={styles.content}>
             </Text>
             <View style={styles.sliderBottomBtn}></View>
           </TouchableOpacity>

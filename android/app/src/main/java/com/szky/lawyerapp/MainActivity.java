@@ -140,9 +140,10 @@ public class MainActivity extends ReactActivity {
     SplashScreen.show(this,true);//显示Dialog
     super.onCreate(savedInstanceState);
     intent = getIntent();
+    context = this;
     isOpenFromNotify = getOpenFromNotify(intent);
     Log.i("MainActivity", "******************************onCreate===="+android.os.Build.BRAND+" isOpenFromNotify"+isOpenFromNotify);
-    context = this;
+
     MainApplication.getInstance().createNotificationChannel();
 //    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
 //      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -241,6 +242,18 @@ public class MainActivity extends ReactActivity {
     return !isEnabled && isFirstOpen;
   }
 
+  public static String getTextMessage() {
+    SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
+    String textMessage = shared.getString("testMessage", "");
+    return textMessage;
+  }
+
+  public static String getTextMessageOpen() {
+    SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
+    String textMessage = shared.getString("testMessageOpen", "");
+    return textMessage;
+  }
+
   public static void saveSetting() {
     SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
     SharedPreferences.Editor editor = shared.edit();
@@ -281,6 +294,7 @@ public class MainActivity extends ReactActivity {
   public void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     Log.i("MainActivity", "******************************onNewIntent");
+    setIntent(intent);
     getIntentAction(intent);
   }
 
@@ -298,9 +312,18 @@ public class MainActivity extends ReactActivity {
                 .emit("noticeOpen", null);
 
       } else if (notifyBundle != null) {
+        String testMessage = "";
+        for(String key: notifyBundle.keySet()){
+          testMessage += "key=" + key + ", content=" + notifyBundle.getString(key) + ",";
+          SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
+          SharedPreferences.Editor editor = shared.edit();
+          editor.putString("testMessage", testMessage);
+          editor.commit();
+        }
         String content = notifyBundle.getString("_push_msgid");  //华为push
+        String type = notifyBundle.getString("type");  //荣耀push
         Log.i("MainActivity", "******************************getIntentAction2" + content);
-        if (content != null && mReactContext!=null) {
+        if ((type!=null && type.equals("honor")) || content != null && mReactContext!=null) {
           mReactContext
                   .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                   .emit("noticeOpen", null);
@@ -329,9 +352,18 @@ public class MainActivity extends ReactActivity {
         flag = true;
 
       } else if (notifyBundle != null) {
+        String testMessage = "";
+        for(String key: notifyBundle.keySet()){
+          testMessage += "key=" + key + ", content=" + notifyBundle.getString(key) + ",";
+          SharedPreferences shared = context.getSharedPreferences("notifyData", MODE_PRIVATE);
+          SharedPreferences.Editor editor = shared.edit();
+          editor.putString("testMessageOpen", testMessage);
+          editor.commit();
+        }
         String content = notifyBundle.getString("_push_msgid");  //华为push
+        String type = notifyBundle.getString("type");  //荣耀push
         Log.i("MainActivity", "******************************isOpenFromNotify getIntentAction2" + content);
-        if (content != null) {
+        if ((type!=null && type.equals("honor")) || content != null) {
           flag = true;
         }
       }

@@ -93,6 +93,16 @@ public class ScreenAdaptation extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
+    public void testMessageOpen(Callback callback) {
+        callback.invoke(MainActivity.getTextMessageOpen());
+    }
+
+    @ReactMethod
+    public void testMessage(Callback callback) {
+        callback.invoke(MainActivity.getTextMessage());
+    }
+
+    @ReactMethod
     public void isOpenNotify(Callback callback) {
         callback.invoke(MainActivity.isOpenNotifySetting());
     }
