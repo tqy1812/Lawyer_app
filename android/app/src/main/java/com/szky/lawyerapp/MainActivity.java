@@ -174,6 +174,8 @@ public class MainActivity extends ReactActivity {
       getOtherToken();
     } else if(brand.equalsIgnoreCase(BrandUtils.PHONE_OPPO)) {
       getOtherToken();
+    } else if(brand.equalsIgnoreCase(BrandUtils.PHONE_VIVO)) {
+      getOtherToken();
     } else {
       getOtherToken();
     }

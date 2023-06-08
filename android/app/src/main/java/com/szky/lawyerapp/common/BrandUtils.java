@@ -13,6 +13,8 @@ public class BrandUtils {
 //    public static final String PHONE_NOVA = "nova";
     // OPPO
     public static final String PHONE_OPPO = "OPPO";
+    // OPPO
+    public static final String PHONE_VIVO = "vivo";
 
 
 }
