@@ -18,9 +18,17 @@ function userInfo(state = {}, action) {
   return state;
 }
 
+function comment(state = [], action) {
+  if (action.type === actionAuth.CLIENT_COMMENT_LIST) {
+    return action.data;
+  }
+  return state;
+}
+
 const Auth = combineReducers({
   user,
-  userInfo
+  userInfo,
+  comment
 });
 
 export default Auth;

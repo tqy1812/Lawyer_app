@@ -9,6 +9,7 @@ const updateUser = (dispatch, user, from=null, save=true) => {
 export default class actionAuth {
 
   static USER_INFO = 'USER_INFO'; //用户信息
+  static CLIENT_COMMENT_LIST = 'CLIENT_COMMENT_LIST'; 
     // 登录
   static reqLogin(user, password, device_id, device_type, callback) {
     return (dispatch, getState) => {
@@ -154,6 +155,13 @@ export default class actionAuth {
     return (dispatch, getState) => {
       let state = getState();
       dispatch(request.clientLogin(phone, password, callback));
+    };
+  }
+
+  static reqClientComment(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.clientComment(callback));
     };
   }
 }

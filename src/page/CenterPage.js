@@ -34,6 +34,7 @@ import GlobalData from '../utils/GlobalData';
 import { showToast } from '../components/ShowModal';
 import BaseComponent from '../components/BaseComponent';
 import ImageArr from '../common/ImageArr';
+import moment from 'moment';
 const Toast = Overlay.Toast;
 
 class CenterPage extends BaseComponent {
@@ -45,6 +46,7 @@ class CenterPage extends BaseComponent {
         props.caseList = state.Case.caseList;
         props.caseListInfo = state.Case.caseListInfo;
         props.userInfo = state.Auth.userInfo;
+        props.comment = state.Auth.comment;
         return props;
     }
 
@@ -67,7 +69,7 @@ class CenterPage extends BaseComponent {
       }
       if(this.state.type===2) {
         this.props.dispatch(actionAuth.reqClientUserInfo());
-        
+        this.props.dispatch(actionAuth.reqClientComment());
       }
       else {
         this.props.dispatch(actionAuth.reqUserInfo());
@@ -237,8 +239,12 @@ class CenterPage extends BaseComponent {
     openManagePage() {
       this.props.navigation.navigate('ManageProject', { url: 'additem/', title: '管理项目', type: 'manageCase' })
     }
+
+    openClientCommentPage() {
+      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '反馈记录' })
+    }
     render() {
-      const { userInfo, caseList, caseListInfo} = this.props;
+      const { userInfo, caseList, caseListInfo, comment} = this.props;
       const { imgAvatar, appType, type } = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight
 
@@ -292,16 +298,14 @@ class CenterPage extends BaseComponent {
               { type ==2 && <View style={styles.menuView}>
                 <View style={styles.menuButton}>
                   <Text style={styles.menuText}>反馈记录</Text>
-                  <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openManagePage.bind(this)}><Text style={styles.manageText}>详情</Text></MyButton>
+                  <MyButton style={{paddingTop: 5, paddingBottom: 5}} onPress={this.openClientCommentPage.bind(this)}><Text style={styles.manageText}>详情</Text></MyButton>
                 </View>
                 <View style={styles.splitLine}></View>
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
                   <View style={styles.caseView}>
                   {
-                    JSON.stringify(caseList)!='{}' && caseListInfo && caseListInfo.length > 0 && caseListInfo.map((item)=>{
-                       
-                        return item.state !==3 && <View key={item.id} style={styles.caseItem}><View style={[styles.caseItemBadge, {backgroundColor: caseList[item.id+''] ? caseList[item.id+''][2]: '#ff0000'}]}></View><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text></View>
-                       
+                      comment && comment.length > 0 && comment.map((item)=>{                      
+                        return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.createTiem).format('YYYYMMDD')} - ${item.name}` }</Text></View>                    
                       })
                   }
                   </View>
