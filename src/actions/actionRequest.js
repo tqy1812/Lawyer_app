@@ -7,6 +7,7 @@ import { logger } from "../utils/utils";
 import NetInfo from '@react-native-community/netinfo';
 import { destroySibling } from "../components/ShowModal";
 import { DeviceEventEmitter } from 'react-native';
+import actionAuth from "./actionAuth";
 const api = Common.apiUrl;
 const Toast = Overlay.Toast;
 
@@ -89,28 +90,6 @@ export function clientLogin(phone, password, callback = null) {
         }, dispatch);
     };
 } 
-
-export function clientComment(callback = null) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let method = 'client_api/comment/list';
-        let data = {};
-        request_impl(api, method, data, (res, error) => {
-            if(res) {
-                let list = rs.data && rs.data.data ? rs.data.data : [];
-                dispatch({type: actionCase.CLIENT_COMMENT_LIST, data: list});
-                if (callback) {
-                    callback(list, error);
-                }
-            }
-            else {
-                if (callback) {
-                    callback(res, error);
-                }
-            }
-        }, dispatch);
-    };
-}
 
 
 export function getAppVersion(callback = null) {
@@ -216,7 +195,27 @@ export function getClientInfo(callback = null) {
         }, dispatch);
     };
 }
-
+export function clientComment(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/comment/list';
+        let data = {};
+        request_impl_get(api, method, (res, error) => {
+            if(res) {
+                let list = res.data && res.data.data ? res.data.data : [];
+                dispatch({type: actionAuth.CLIENT_COMMENT_LIST, data: list});
+                if (callback) {
+                    callback(list, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 export function upload(file, callback = null) {
     return (dispatch, getState) => {
         let state = getState();

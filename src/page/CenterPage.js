@@ -241,7 +241,7 @@ class CenterPage extends BaseComponent {
     }
 
     openClientCommentPage() {
-      this.props.navigation.navigate('WebPage', { url: 'additem/', title: '反馈记录' })
+      this.props.navigation.navigate('WebPage', { url: 'feedback/', title: '反馈记录' })
     }
     render() {
       const { userInfo, caseList, caseListInfo, comment} = this.props;
@@ -305,7 +305,7 @@ class CenterPage extends BaseComponent {
                   <View style={styles.caseView}>
                   {
                       comment && comment.length > 0 && comment.map((item)=>{                      
-                        return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.createTiem).format('YYYYMMDD')} - ${item.name}` }</Text></View>                    
+                        return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.createTiem).format('YYYYMMDD')} - ${item.content}` }</Text></View>                    
                       })
                   }
                   </View>
