@@ -895,6 +895,9 @@ class MainPage extends BaseComponent {
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
             incognito={false}
             onLoadEnd={this.closeLoading.bind(this)}
+            onContentProcessDidTerminate={()=>{
+                this.wv && this.wv.current && this.wv.current.reload();
+            }}
           /> }
 
         <View style={[styles.contentView, { top: 0, height: windowHeight}]} {...this._panResponderMyPlan.panHandlers}>
