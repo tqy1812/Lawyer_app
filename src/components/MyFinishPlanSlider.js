@@ -317,26 +317,24 @@ export default class MyFinishPlanSlider extends Component {
             showLoading();
             // that.setState({refreshing: true});
             dispatch(actionProcess.reqDeleteProcess(item.id, (rs, error)=>{
-              InteractionManager.runAfterInteractions(() => {
-                if(error) {
-                  destroySibling();
-                  Toast.show(error.info);
-                  that.setState({refreshing: false})
+              if(error) {
+                destroySibling();
+                Toast.show(error.info);
+                that.setState({refreshing: false})
+              }
+              else {
+                let temp = removeFinishItem(DATA, item);
+                let totalTime = this.state.totalTime;
+                if(moment(item.start_time).diff(moment(moment().month(moment().month()).startOf('month').valueOf())) >= 0) {
+                  totalTime = this.state.totalTime - item.fee_time ;
                 }
-                else {
-                  let temp = removeFinishItem(DATA, item);
-                  let totalTime = this.state.totalTime;
-                  if(moment(item.start_time).diff(moment(moment().month(moment().month()).startOf('month').valueOf())) >= 0) {
-                    totalTime = this.state.totalTime - item.fee_time ;
-                  }
-                  that.setState({DATA: temp, totalTime}, ()=>{
-                    setTimeout(()=>{
-                      destroySibling();
-                      that.setState({refreshing: false})
-                    }, 800)
-                  });
-                }
-              });
+                that.setState({DATA: temp, totalTime}, ()=>{
+                  setTimeout(()=>{
+                    destroySibling();
+                    that.setState({refreshing: false})
+                  }, 800)
+                });
+              }
             }));
           }
         }

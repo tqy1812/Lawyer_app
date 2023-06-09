@@ -57,7 +57,7 @@ export const showLoading = () => {
         </View>
       </View>);
       elements.push(sibling);
-      loadingTimeOut = setTimeout(destroySibling,30000)
+      loadingTimeOut = setTimeout(destroySibling,5000)
 };
 export const showRecoding = () => {
     sibling = new RootSiblings(<View style={[styles.isRecoding, { height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}><Wave height={50} lineColor={'#fff'}></Wave></View>);

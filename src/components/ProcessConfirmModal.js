@@ -565,7 +565,8 @@ caseItemName:{
     right: 0
   },
   talkNameInput: {
-    height: 30,
+    // height: 30,
+    padding: 5,
     width: Common.window.width - 54,
     // borderColor: '#DDD',
     borderWidth: 0,
