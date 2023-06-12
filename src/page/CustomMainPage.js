@@ -690,7 +690,7 @@ _keyboardDidHide(e) {
 
         <WebView
             ref={this.wv}
-            source={{ uri: this.props.userInfo.voice_type==='male' ? Common.webUrl + 'lawyer_male/index.html' :  Common.webUrl + 'demo/index.html' }}
+            source={{ uri: Common.webUrl + 'customer/' }}
             scalesPageToFit={true}
             bounces={false}
             style={{ width: windowWidth, height: '100%' }}
