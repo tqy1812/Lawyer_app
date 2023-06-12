@@ -141,3 +141,9 @@ export const getUserRecord = async () => {
   export const setIsFirshGuide = async (v) => {
     await AsyncStorage.setItem(isFirstGuide, v, null);
   };
+
+  export const clearAll = () => {
+    AsyncStorage.getAllKeys()
+        .then(keys => AsyncStorage.multiRemove(keys))
+        .then(() => logger('success'));
+  };

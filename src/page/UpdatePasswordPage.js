@@ -60,6 +60,7 @@ class UpdatePasswordPage extends Component {
             imgBase64: '',
             editStep: 1,
             info: false,
+            type: props.user.type ? props.user.type : 1,
         };
         this.globalData = GlobalData.getInstance();
         // this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
@@ -71,20 +72,16 @@ class UpdatePasswordPage extends Component {
     }
 
     componentDidMount() {
-        InteractionManager.runAfterInteractions(() => {
-            const { dispatch, isLogin } = this.props;
-            
-        });
     }
 
-    getVerifyPic() {
-        const { dispatch } = this.props;
-        dispatch(actionAuth.reqGetVerifyPic((rs)=>{
-            if(rs.image){
-                this.setState({imgBase64: rs.image})
-            }
-        }));
-    }
+    // getVerifyPic() {
+    //     const { dispatch } = this.props;
+    //     dispatch(actionAuth.reqGetVerifyPic((rs)=>{
+    //         if(rs.image){
+    //             this.setState({imgBase64: rs.image})
+    //         }
+    //     }));
+    // }
 
     componentWillUnmount() {
         logger('......UpdatePasswordPage componentWillUnmount')
@@ -112,9 +109,8 @@ class UpdatePasswordPage extends Component {
         this.setState({ opt: text });
     }
     handleSubmit() {
-        InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
-            const { phone, password, confirm_password, indetify } = this.state;
+            const { phone, password, confirm_password, indetify, type } = this.state;
             const that = this;
             // if (phone == null || phone.length <= 0) {
             //     Toast.show('手机号不能为空!');
@@ -144,39 +140,68 @@ class UpdatePasswordPage extends Component {
                 Toast.show('两次密码输入不一致！');
                 return;
             }
-
-            dispatch(actionAuth.reqModifyPassword(password, indetify, (res, error) => {
-                logger(res)
-                if (error) {
-                    Toast.show(error.info);                      
-                } else if (res) {
-                    Toast.show("修改成功!");
-                    that.setState({ indetify: '', password: '', confirm_password: '', info: true });
-                    setTimeout(()=>{
-                        that.setState({info: false})
-                    }, 3000);
-                    this.identify && this.identify.forceStop();
-                }
-            }));
-        });
+            if(type===1) {
+                dispatch(actionAuth.reqModifyPassword(password, indetify, (res, error) => {
+                    logger(res)
+                    if (error) {
+                        Toast.show(error.info);                      
+                    } else if (res) {
+                        Toast.show("修改成功!");
+                        that.setState({ indetify: '', password: '', confirm_password: '', info: true });
+                        setTimeout(()=>{
+                            that.setState({info: false})
+                        }, 3000);
+                        this.identify && this.identify.forceStop();
+                    }
+                }));
+            }
+            else{
+                dispatch(actionAuth.reqClientModifyPassword(password, indetify, (res, error) => {
+                    logger(res)
+                    if (error) {
+                        Toast.show(error.info);                      
+                    } else if (res) {
+                        Toast.show("修改成功!");
+                        that.setState({ indetify: '', password: '', confirm_password: '', info: true });
+                        setTimeout(()=>{
+                            that.setState({info: false})
+                        }, 3000);
+                        this.identify && this.identify.forceStop();
+                    }
+                }));
+            }
     }
 
     send = (callback) => {
-        InteractionManager.runAfterInteractions(() => {
+        
             const { dispatch } = this.props;
-           
-            dispatch(actionAuth.reqSendVerifyCode((res, error) => {
-                logger(res)
-                if (error) {
-                    Toast.show(error.info);
-                    if(callback) callback(false);
-                } 
-                else {
-                    // this.setState({editStep: 2})
-                    if(callback) callback(true);
-                }
-            }));
-        });
+            if(this.state.type==1){
+                dispatch(actionAuth.reqSendVerifyCode((res, error) => {
+                    logger(res)
+                    if (error) {
+                        Toast.show(error.info);
+                        if(callback) callback(false);
+                    } 
+                    else {
+                        // this.setState({editStep: 2})
+                        if(callback) callback(true);
+                    }
+                }));
+            }
+            else{
+                dispatch(actionAuth.reqSendClientVerifyCode((res, error) => {
+                    logger(res)
+                    if (error) {
+                        Toast.show(error.info);
+                        if(callback) callback(false);
+                    } 
+                    else {
+                        // this.setState({editStep: 2})
+                        if(callback) callback(true);
+                    }
+                }));
+            }
+       
     }
     render() {
         const { editStep, info } = this.state;

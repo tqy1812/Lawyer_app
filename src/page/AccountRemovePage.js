@@ -21,7 +21,6 @@ import {logger, getPhone, FontSize} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
-import {TYPE_AUTH_USER} from '../actions/actionRequest';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import authHelper from '../helpers/authHelper';
 import actionCase from '../actions/actionCase';
@@ -30,6 +29,7 @@ import GlobalData from '../utils/GlobalData';
 import AccountRemoveConfirmModal from '../components/AccountRemoveConfirmModal';
 import { showToast } from '../components/ShowModal';
 import BaseComponent from '../components/BaseComponent';
+import {TYPE_AUTH_USER} from '../actions/actionRequest';
 import { tr } from 'date-fns/locale';
 const Toast = Overlay.Toast;
 
@@ -47,8 +47,10 @@ class AccountRemovePage extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
+            indetify: props.route.params.indetify,
             imgAvatar: props.userInfo.avatar,
-            confirmVisible: false
+            confirmVisible: false,
+            type: props.user.type ? props.user.type : 1,
         };
         this.globalDate = GlobalData.getInstance();
     }
@@ -69,8 +71,46 @@ class AccountRemovePage extends BaseComponent {
       });
     }
     close() {
-
-      this.setState({confirmVisible: false});
+      const {dispatch} = this.props;
+      if(this.state.type===1) {
+        dispatch(actionAuth.reqRemoveAccount(this.state.indetify, (rs, error)=>{
+          if (error) {
+            Toast.show(error.info);
+          } 
+          else {
+            Storage.clearAll();
+            dispatch({type: TYPE_AUTH_USER, data: {}});
+            this.props.navigation.dispatch(state => {
+              logger('......removeLogout', state)
+              return CommonActions.reset({
+                ...state,
+                routes: [{name: 'Login'}],
+                index:0,
+              });
+            });
+            this.setState({confirmVisible: false});
+          }
+        }));
+      } else {
+        dispatch(actionAuth.reqRemoveClientAccount(this.state.indetify, (rs, error)=>{
+          if (error) {
+            Toast.show(error.info);
+          } 
+          else {
+            Storage.clearAll();
+            dispatch({type: TYPE_AUTH_USER, data: {}});
+            this.props.navigation.dispatch(state => {
+              logger('......removeLogout', state)
+              return CommonActions.reset({
+                ...state,
+                routes: [{name: 'Login'}],
+                index:0,
+              });
+            });
+            this.setState({confirmVisible: false});
+          }
+        }));
+      }
     }
     render() {
       const { userInfo} = this.props;

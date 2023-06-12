@@ -51,7 +51,6 @@ class ActivityPage extends BaseComponent {
     }
 
     componentDidMount() {
-        // InteractionManager.runAfterInteractions(() => {
             const { dispatch, caseList } = this.props;
             const that = this;
             if (!this.props.isLogin) {
@@ -78,7 +77,6 @@ class ActivityPage extends BaseComponent {
                     this.myTimeListRef && this.myTimeListRef.scrollTo({x: 0, y: 550, animated: true});
                 }, 200)
             }
-        // });
     }
 
     componentWillUnmount() {

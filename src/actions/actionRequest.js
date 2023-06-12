@@ -18,7 +18,7 @@ export function reqSaveUser(user, save = true, from = null, callback = null) {
             user = {};
         } 
         if (dispatch) {
-            logger('::::::::: reqSaveUser:user' + user);
+            logger('::::::::: reqSaveUser:user', user);
             dispatch({type: TYPE_AUTH_USER, data: user});
         }
         if ((from !== "loadRecord" || from !== "requestLoginout" ) && ( user.token === null)) {
@@ -237,7 +237,27 @@ export function upload(file, callback = null) {
         }, dispatch, { 'Content-Type': 'multipart/form-data'});
     };
 }
-
+export function clientUpload(file, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/upload_oss/avatar'
+        let data = new FormData();
+        data.append('file', file);
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch, { 'Content-Type': 'multipart/form-data'});
+    };
+}
 export function userUpdate(url, iosToken, voiceType, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
@@ -267,7 +287,32 @@ export function userUpdate(url, iosToken, voiceType, callback = null) {
         }, dispatch);
     };
 }
-
+export function clientUserUpdate(url, voiceType, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/client/update'
+        let data = {};
+        if(url){
+            data.avatar = url;
+        }
+        if(voiceType){
+            data.voice_type = voiceType;
+        }
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 export function userDeviceToken(type, deviceToken, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
@@ -356,10 +401,54 @@ export function sendVerifyCode(callback) {
     };
 }
 
+export function sendClientVerifyCode(callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/client/send_verify_code'
+        let data = {};
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 export function modifyPassword(password, verifyCode, callback) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/employee/modify_password'
+        let data = {};
+        data.new_pass = password;
+        data.verify_code = verifyCode;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+export function clientModifyPassword(password, verifyCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/client/modify_password'
         let data = {};
         data.new_pass = password;
         data.verify_code = verifyCode;
@@ -428,7 +517,48 @@ export function clientRegister(phone, password, verifyCode, inviteCode, callback
         }, dispatch);
     };
 }
-
+export function removeAccount(verifyCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/employee/logout'
+        let data = {};
+        data.verify_code = verifyCode;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+export function removeClientAccount(verifyCode, callback) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/client/logout'
+        let data = {};
+        data.verify_code = verifyCode;
+        request_impl(api, method, data, (res, error) => {
+            if(res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 export function getCase(callback = null) {
     return (dispatch, getState) => {
         let state = getState();

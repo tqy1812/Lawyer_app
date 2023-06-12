@@ -21,7 +21,6 @@ import {logger, getPhone} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
-import {TYPE_AUTH_USER} from '../actions/actionRequest';
 // import { CheckBox } from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 // import Feather from 'react-native-vector-icons/Feather';

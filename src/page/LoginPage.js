@@ -210,7 +210,6 @@ class LoginPage extends Component {
     }
     // 登录
     handleLogin() {
-        InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, password, autoLogin, deviceToken, deviceType, tabValue } = this.state;
             if (phone == null || phone.length <= 0) {
@@ -283,7 +282,6 @@ class LoginPage extends Component {
                     }
                 }));
             }
-        });
     }
 
     goService() {

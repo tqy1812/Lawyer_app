@@ -30,6 +30,7 @@ class WebPage extends Component {
 
     static mapStateToProps(state) {
         let props = {};
+        props.user = state.Auth.user;
         props.caseList = state.Case.caseList;
         props.userInfo = state.Auth.userInfo;
         return props;
@@ -44,7 +45,8 @@ class WebPage extends Component {
           webviewUrl: props.route.params.url,
           title: props.route.params.title,
           type: props.route.params.type,
-          caseSet: caseSetting(props.caseList)
+          caseSet: caseSetting(props.caseList),
+          userType: props.user.type ? props.user.type : 1,
         };
         this.INJECTEDJAVASCRIPT = `
         const meta = document.createElement('meta'); 
@@ -72,7 +74,11 @@ class WebPage extends Component {
           else if(this.state.type && this.state.type==='manageCase') {
             let reg = new RegExp('"',"g");  
             this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' + JSON.stringify(this.state.caseSet).replace(reg, "'") + '");true;');
-          } else {
+          } 
+          else if(this.state.type && this.state.type==='logOff') {
+            this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '", "' + this.state.userType + '");true;');
+          } 
+          else {
             this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + obj.token + '");true;');
           }
         }

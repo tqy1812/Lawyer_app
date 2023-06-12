@@ -167,24 +167,47 @@ class CenterPage extends BaseComponent {
           name: image.modificationDate +'.jpg',
           type: image.mime
         }
-        dispatch(actionAuth.reqUpload(file, (rs, error)=>{
-          if(error){
-            Toast.show(error.info)
-          }
-          else {
-            dispatch(actionAuth.reqUserUpdate(rs.url, undefined, undefined, (result, error)=>{
-              if(error){
-                Toast.show(error.info)
-              }
-              else {
-                let obj = JSON.parse(JSON.stringify(that.props.userInfo));
-                obj.avatar = rs.url;
-                dispatch(actionAuth.refreshUserInfo(obj));
-                that.setState({imgAvatar: rs.url})
-              }
-            }));
-          }
-        }));
+        if(that.state.type==1){
+          dispatch(actionAuth.reqUpload(file, (rs, error)=>{
+            if(error){
+              Toast.show(error.info)
+            }
+            else {
+              dispatch(actionAuth.reqUserUpdate(rs.url, undefined, undefined, (result, error)=>{
+                if(error){
+                  Toast.show(error.info)
+                }
+                else {
+                  let obj = JSON.parse(JSON.stringify(that.props.userInfo));
+                  obj.avatar = rs.url;
+                  dispatch(actionAuth.refreshUserInfo(obj));
+                  that.setState({imgAvatar: rs.url})
+                }
+              }));
+            }
+          }));
+        }
+        else 
+        {
+          dispatch(actionAuth.reqClientUpload(file, (rs, error)=>{
+            if(error){
+              Toast.show(error.info)
+            }
+            else {
+              dispatch(actionAuth.reqClientUserUpdate(rs.url, undefined, (result, error)=>{
+                if(error){
+                  Toast.show(error.info)
+                }
+                else {
+                  let obj = JSON.parse(JSON.stringify(that.props.userInfo));
+                  obj.avatar = rs.url;
+                  dispatch(actionAuth.refreshUserInfo(obj));
+                  that.setState({imgAvatar: rs.url})
+                }
+              }));
+            }
+          }));
+        }
       }).catch(e => {
         if(e && e.toString().indexOf('User did not grant library permission') > -1){
           Alert.alert('未授权', `图片访问权限没有开启，请前往设置去开启。`, [{

@@ -21,7 +21,6 @@ import {logger, getPhone, FontSize} from '../utils/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import MyButton from '../components/MyButton';
-import {TYPE_AUTH_USER} from '../actions/actionRequest';
 // import { CheckBox } from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 // import Feather from 'react-native-vector-icons/Feather';
@@ -50,7 +49,8 @@ class SecurityPage extends BaseComponent {
         super(props);
         this.state = {
             imgAvatar: props.userInfo.avatar,
-            indetify: ''
+            indetify: '',
+            type: props.user.type ? props.user.type : 1,
         };
         this.globalDate = GlobalData.getInstance();
     }
@@ -65,10 +65,22 @@ class SecurityPage extends BaseComponent {
         this.setState({ indetify: text });
     }
     send = (callback) => {
-      InteractionManager.runAfterInteractions(() => {
           const { dispatch } = this.props;
-         
-          dispatch(actionAuth.reqSendVerifyCode((res, error) => {
+          if(this.state.type==1){
+            dispatch(actionAuth.reqSendVerifyCode((res, error) => {
+                logger(res)
+                if (error) {
+                    Toast.show(error.info);
+                    if(callback) callback(false);
+                } 
+                else {
+                    // this.setState({editStep: 2})
+                    if(callback) callback(true);
+                }
+            }));
+          }
+          else {
+            dispatch(actionAuth.reqSendClientVerifyCode((res, error) => {
               logger(res)
               if (error) {
                   Toast.show(error.info);
@@ -78,28 +90,28 @@ class SecurityPage extends BaseComponent {
                   // this.setState({editStep: 2})
                   if(callback) callback(true);
               }
-          }));
-      });
+            }));
+          }
     }
 
     handleSubmit() {
-      InteractionManager.runAfterInteractions(() => {
+      
           const { dispatch } = this.props;
-          const { phone, password, confirm_password, indetify } = this.state;
+          const { indetify } = this.state;
           const that = this;
           if (indetify == null || indetify.length <= 0) {
               Toast.show('手机验证码不能为空!');
               return;
           }
           
-          this.props.navigation.replace('AccountRemove');
-      });
+          this.props.navigation.replace('AccountRemove', {indetify: indetify});
+      
     }
     render() {
       const { userInfo} = this.props;
       const { imgAvatar} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
-      // logger('..onBackButtonPressAndroid', this.props.navigation)
+      logger('..onBackButtonPressAndroid', this.props.user)
       return (
           <SafeAreaView style={styles.container}>  
             <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />

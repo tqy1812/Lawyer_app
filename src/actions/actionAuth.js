@@ -74,6 +74,12 @@ export default class actionAuth {
       dispatch(request.upload(file, callback));
     };
   }
+  static reqClientUpload(file, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.clientUpload(file, callback));
+    };
+  }
   static reqUserUpdate(url, iosToken, voiceType, callback) {
     return (dispatch, getState) => {
       let state = getState();
@@ -81,6 +87,12 @@ export default class actionAuth {
     };
   }
   
+  static reqClientUserUpdate(url, voiceType, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.clientUserUpdate(url, voiceType, callback));
+    };
+  }
   static reqAddFeedback(title, content, contact, callback) {
     return (dispatch, getState) => {
       let state = getState();
@@ -137,6 +149,13 @@ export default class actionAuth {
     };
   }
 
+  static reqSendClientVerifyCode(callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.sendClientVerifyCode(callback));
+    };
+  }
+
   static reqModifyPassword(password, verifyCode, callback) {
     return (dispatch, getState) => {
       let state = getState();
@@ -144,7 +163,13 @@ export default class actionAuth {
     };
   }
 
-  
+  static reqClientModifyPassword(password, verifyCode, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.clientModifyPassword(password, verifyCode, callback));
+    };
+  }
+
   static reqClientRegister(phone, password, verifyCode, inviteCode, callback) {
     return (dispatch, getState) => {
       let state = getState();
@@ -162,6 +187,19 @@ export default class actionAuth {
     return (dispatch, getState) => {
       let state = getState();
       dispatch(request.clientComment(callback));
+    };
+  }
+
+  static reqRemoveAccount(verifyCode, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.removeAccount(verifyCode, callback));
+    };
+  }
+  static reqRemoveClientAccount(verifyCode, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.removeClientAccount(verifyCode, callback));
     };
   }
 }

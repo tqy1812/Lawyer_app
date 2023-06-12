@@ -131,7 +131,6 @@ class RegisterPage extends Component {
         this.props.navigation.replace('Login');
     }
     handleRegister() {
-        InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, name, password, confirm_password, autoLogin,  editStep, indetify, tabValue, inivate } = this.state;
             
@@ -202,7 +201,6 @@ class RegisterPage extends Component {
                     }
                 }));
             }
-        });
     }
 
     goService() {
@@ -214,7 +212,6 @@ class RegisterPage extends Component {
     }
 
     send = (callback) => {
-        InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, password, autoLogin,  editStep, opt, indetify } = this.state;
             if (phone == null || phone.length <= 0) {
@@ -251,7 +248,6 @@ class RegisterPage extends Component {
                     if(callback) callback(true);
                 }
             }));
-        });
     }
     handleOptChanged(text) {
         this.setState({ opt: text });

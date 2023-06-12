@@ -124,7 +124,6 @@ class ForgotPage extends Component {
         this.props.navigation.replace('Main');
     }
     handleSubmit() {
-        InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, password, confirm_password, indetify } = this.state;
             
@@ -165,11 +164,9 @@ class ForgotPage extends Component {
                     this.props.navigation.replace('Login');
                 }
             }));
-        });
     }
 
     send = (callback) => {
-        InteractionManager.runAfterInteractions(() => {
             const { dispatch } = this.props;
             const { phone, password, opt } = this.state;
             if (phone == null || phone.length <= 0) {
@@ -199,7 +196,6 @@ class ForgotPage extends Component {
                     if(callback) callback(true);
                 }
             }));
-        });
     }
     render() {
         const { editStep } = this.state;
