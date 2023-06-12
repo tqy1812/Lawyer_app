@@ -42,10 +42,10 @@ import com.szky.lawyerapp.common.BrandUtils;
 import com.szky.lawyerapp.splash.SplashScreen;
 
 public class MainActivity extends ReactActivity {
-  private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
+//  private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
   private static int REQUEST_PERMISSION_CODE = 1;
-  private static final String TAG_HUNG_UP = "HUNG_UP";
-  private static final String ACTION_FROM_NOTIFICATION = BuildConfig.APPLICATION_ID + ".ACTION_FROM_NOTIFICATION";
+//  private static final String TAG_HUNG_UP = "HUNG_UP";
+//  private static final String ACTION_FROM_NOTIFICATION = BuildConfig.APPLICATION_ID + ".ACTION_FROM_NOTIFICATION";
   private Intent intent;
   private static boolean isOpenFromNotify;
   private static MainActivity context;
@@ -133,7 +133,7 @@ public class MainActivity extends ReactActivity {
     super.onSaveInstanceState(outState);
     if (outState != null) { outState.clear(); }
   }
-  private final static int OPEN_FROM_NOTIFY = 1;
+//  private final static int OPEN_FROM_NOTIFY = 1;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -445,36 +445,36 @@ public class MainActivity extends ReactActivity {
     context.startActivity(intent);
   }
 
-  public void startNotice(Context mContext, String title, String content) {
-    NotificationManager notificationMgr = ContextCompat.getSystemService(mContext,NotificationManager.class);
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext,MainApplication.NOTIFICATION_CHANNEL_ID);
-    builder.setAutoCancel(true);
-    builder.setSmallIcon(R.drawable.icon_notification);
-//    builder.setContentIntent(createPendingIntent(mContext));
-    builder.setWhen(System.currentTimeMillis());
-    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-    builder.setDefaults(NotificationCompat.DEFAULT_LIGHTS);
-    builder.setContentTitle(title);
-    builder.setContentText(content);
-    builder.setPriority(NotificationCompat.PRIORITY_MAX);
-    Notification notification = builder.build();
-    notification.defaults = Notification.DEFAULT_SOUND;
-    int id = 1123;
-    Log.i("MainActivity", "notificationId===="+id);
-    notificationMgr.notify(id, notification);
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-      return;
-    }
-//    builder.setFullScreenIntent(notification.contentIntent,false);
-    notificationMgr.notify(TAG_HUNG_UP,id, builder.build());
-//    notificationMgr.cancel(TAG_HUNG_UP,id);
-  }
-  private PendingIntent createPendingIntent(Context mContext){
-    Intent intent =  new Intent(ACTION_FROM_NOTIFICATION);
-    intent.setClass(mContext, MainActivity.class);
-    return PendingIntent.getActivity(mContext, 1,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-  }
+//  public void startNotice(Context mContext, String title, String content) {
+//    NotificationManager notificationMgr = ContextCompat.getSystemService(mContext,NotificationManager.class);
+//    NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext,MainApplication.NOTIFICATION_CHANNEL_ID);
+//    builder.setAutoCancel(true);
+//    builder.setSmallIcon(R.drawable.icon_notification);
+////    builder.setContentIntent(createPendingIntent(mContext));
+//    builder.setWhen(System.currentTimeMillis());
+//    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+//    builder.setDefaults(NotificationCompat.DEFAULT_LIGHTS);
+//    builder.setContentTitle(title);
+//    builder.setContentText(content);
+//    builder.setPriority(NotificationCompat.PRIORITY_MAX);
+//    Notification notification = builder.build();
+//    notification.defaults = Notification.DEFAULT_SOUND;
+//    int id = 1123;
+//    Log.i("MainActivity", "notificationId===="+id);
+//    notificationMgr.notify(id, notification);
+//
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//      return;
+//    }
+////    builder.setFullScreenIntent(notification.contentIntent,false);
+//    notificationMgr.notify(TAG_HUNG_UP,id, builder.build());
+////    notificationMgr.cancel(TAG_HUNG_UP,id);
+//  }
+//  private PendingIntent createPendingIntent(Context mContext){
+//    Intent intent =  new Intent(ACTION_FROM_NOTIFICATION);
+//    intent.setClass(mContext, MainActivity.class);
+//    return PendingIntent.getActivity(mContext, 1,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//  }
 
   public void registerReceiver() {
     IntentFilter intentFilter = new IntentFilter();

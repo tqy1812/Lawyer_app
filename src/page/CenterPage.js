@@ -325,12 +325,12 @@ class CenterPage extends BaseComponent {
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>}
-              <View style={styles.menuView}>
+              { type ==1 && <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openRole()}}>
                   <Text style={styles.menuText}>主页形象</Text>
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
-              </View>
+              </View>}
               <View style={styles.menuView}>
                 <MyButton style={styles.menuButton} onPress={() => {this.openTimePage()}}>
                   <Text style={styles.menuText}>时间管理指南</Text>
