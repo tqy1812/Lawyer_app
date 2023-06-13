@@ -10,7 +10,8 @@ import {
     StatusBar,
     ImageBackground, InteractionManager, TouchableOpacity,
     NativeModules,
-    Alert
+    Alert,
+    Keyboard
 } from 'react-native';
 import Header from '../components/Header';
 import { CommonActions, StackActions } from '@react-navigation/native';
@@ -52,6 +53,7 @@ class FeedBackPage extends Component {
           desc: ''
         };
         this.globalDate = GlobalData.getInstance();
+        this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
     }
 
     componentDidMount() {
@@ -61,6 +63,11 @@ class FeedBackPage extends Component {
     
     }
 
+    nameForceLoseFocus = () => {
+      this.ref_title && this.ref_title.blur();
+      this.ref_email && this.ref_email.blur();
+      this.ref_content && this.ref_content.blur();
+    }
     handleSend() {
       const { title, email, desc } = this.state;
       const { dispatch } = this.props;
@@ -118,6 +125,7 @@ class FeedBackPage extends Component {
             <Header title='反馈' back={true} send={true}  sendFunc={this.handleSend.bind(this)} {...this.props}/>  
             <View style={[styles.content, { minHeight: platform.isIOS() ?  Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 20 : Common.window.height - 45 - STATUS_BAR_HEIGHT - 76 - 10,}]}> 
               <TextInput
+                  ref={(ref) => this.ref_title = ref}
                   placeholder='主题'
                   placeholderTextColor='#909399'
                   style={styles.singleInput}
@@ -125,6 +133,7 @@ class FeedBackPage extends Component {
                   value={title}
               />
               <TextInput
+                  ref={(ref) => this.ref_email = ref}
                   placeholder='邮箱'
                   placeholderTextColor='#909399'
                   style={styles.singleInput}
@@ -132,6 +141,7 @@ class FeedBackPage extends Component {
                   value={email}
               />
               <TextInput
+                  ref={(ref) => this.ref_content = ref}
                   placeholder='输入内容'
                   placeholderTextColor='#909399'
                   style={styles.mutilInput}

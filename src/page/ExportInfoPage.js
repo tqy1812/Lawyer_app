@@ -10,6 +10,7 @@ import {
   StatusBar,
   ImageBackground, InteractionManager, TouchableOpacity,
   NativeModules,
+  Keyboard
 } from 'react-native';
 import Header from '../components/Header';
 import { CommonActions, StackActions } from '@react-navigation/native';
@@ -53,6 +54,7 @@ class ExportInfoPage extends Component {
       code: 0
     };
     this.globalDate = GlobalData.getInstance();
+    this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
   }
 
   componentDidMount() {
@@ -60,7 +62,12 @@ class ExportInfoPage extends Component {
       this.props.navigation.navigate('Login');
     }
   }
-
+  componentWillUnmount() {
+    this.nameListener && this.nameListener.remove();
+  }
+  nameForceLoseFocus = () => {
+    this.ref_email && this.ref_email.blur();
+  }
   handleChanged(text) {
     let name = text.trim();
     this.setState({ email: name, btnEnable: !!name });
@@ -112,6 +119,7 @@ class ExportInfoPage extends Component {
               <View style={styles.infoContent1}>
                 <Text style={styles.emailName} numberOfLines={1} ellipsizeMode={'tail'}>邮箱地址</Text>
                 <TextInput
+                  ref={(ref) => this.ref_email = ref}
                   placeholder='此处填写邮箱地址'
                   placeholderTextColor='#C0C4CC'
                   style={styles.emailInput}

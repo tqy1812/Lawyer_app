@@ -185,8 +185,8 @@ class CustomMainPage extends BaseComponent {
     // if(platform.isIOS())
     //   NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardEnable();
     //移除键盘监听
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener && this.keyboardDidHideListener.remove();
   }
 
 
@@ -206,6 +206,7 @@ _keyboardDidHide(e) {
         keyboardHeight: 0,
         keyboardDidShow: false
     })
+    this.content && this.content.blur();
 }
 
   // onRegistered = (deviceToken) => {
@@ -312,9 +313,6 @@ _keyboardDidHide(e) {
   //     },
   //   });
   // };
-  processNameForceLoseFocus = () => {
-    this.item_name && this.item_name.blur();
-  }
 
   onBackButtonPressAndroid = () => {
     logger("...............onBackButtonPressAndroid ")
@@ -719,6 +717,7 @@ _keyboardDidHide(e) {
               !isMic &&
               <View style={[styles.bottom, keyboardDidShow ? platform.isAndroid() ? { marginBottom: this.state.keyboardHeight + 20  } :  { marginBottom: 50  } : {}]}>
                   <TextInput
+                      ref={(r) => this.content = r}
                       style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
                       onChange={() => { this.setState({ isInput: true }) }}
                       placeholder="请输入内容"

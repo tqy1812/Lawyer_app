@@ -63,12 +63,14 @@ class UpdatePasswordPage extends Component {
             type: props.user.type ? props.user.type : 1,
         };
         this.globalData = GlobalData.getInstance();
-        // this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
+        this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
 
     nameForceLoseFocus = () => {
-        this.login_name && this.login_name.blur();
+        this.login_identify && this.login_identify.blur();
+        this.login_psw && this.login_psw.blur();
+        this.login_psw_again && this.login_psw_again.blur();
     }
 
     componentDidMount() {
@@ -248,7 +250,7 @@ class UpdatePasswordPage extends Component {
                         </View> */}
                         <View style={styles.formInput}>
                             <TextInput
-                                ref="login_psw"
+                                ref={(ref) => this.login_psw = ref}
                                 style={styles.loginInput}
                                 secureTextEntry={!this.state.eyed}
                                 placeholder='设定新密码'
@@ -263,7 +265,7 @@ class UpdatePasswordPage extends Component {
                         </View> 
                         <View style={styles.formInput}>
                             <TextInput
-                                ref="login_psw"
+                                ref={(ref) => this.login_psw_again = ref}
                                 style={styles.loginInput}
                                 secureTextEntry={!this.state.confirm_eyed}
                                 placeholder='再次输入新密码'

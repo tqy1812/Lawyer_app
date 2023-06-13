@@ -9,7 +9,8 @@ import {
     ScrollView,
     StatusBar,
     ImageBackground, InteractionManager, TouchableOpacity,
-    NativeModules
+    NativeModules,
+    Keyboard
 } from 'react-native';
 import Header from '../components/Header';
 import { CommonActions, StackActions } from '@react-navigation/native';
@@ -53,12 +54,19 @@ class SecurityPage extends BaseComponent {
             type: props.user.type ? props.user.type : 1,
         };
         this.globalDate = GlobalData.getInstance();
+        this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
     }
 
     componentDidMount() {
       if(!this.props.isLogin) {
         this.props.navigation.navigate('Login');
       }
+    }
+    componentWillUnmount() {
+      this.nameListener && this.nameListener.remove();
+    }
+    nameForceLoseFocus = () => {
+      this.login_identify && this.login_identify.blur();
     }
     // 验证码
     handleIndetifyChanged(text) {

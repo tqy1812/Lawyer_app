@@ -189,7 +189,6 @@ class MainPage extends BaseComponent {
         that.stopRecord();
       }
     });
-    this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);
     if(platform.isAndroid()) {
       NativeModules.NotifyOpen.getDeviceType((type) =>{
         const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
@@ -343,7 +342,6 @@ class MainPage extends BaseComponent {
     this.eventNoticeOpen && this.eventNoticeOpen.remove();
     this.eventKeepAliveSocket && this.eventKeepAliveSocket.remove();
     this.eventLogoutReceive && this.eventLogoutReceive.remove();
-    this.processName && this.processName.remove();
     if (platform.isIOS()) {
       PushNotificationIOS.removeEventListener('register');
       PushNotificationIOS.removeEventListener('registrationError');
@@ -463,9 +461,6 @@ class MainPage extends BaseComponent {
       },
     });
   };
-  processNameForceLoseFocus = () => {
-    this.item_name && this.item_name.blur();
-  }
 
   onBackButtonPressAndroid = () => {
     logger("...............onBackButtonPressAndroid ")

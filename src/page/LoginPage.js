@@ -75,6 +75,7 @@ class LoginPage extends Component {
 
     nameForceLoseFocus = () => {
         this.login_name && this.login_name.blur();
+        this.login_psw && this.login_psw.blur();
     }
 
     componentDidMount() {
@@ -446,7 +447,7 @@ class LoginPage extends Component {
                             </View>
                             <View style={styles.formInput}>
                                 <TextInput
-                                    ref="login_psw"
+                                    ref={(ref) => this.login_psw = ref}
                                     style={styles.loginInput}
                                     secureTextEntry={!this.state.eyed}
                                     placeholder='轻触此处密码'

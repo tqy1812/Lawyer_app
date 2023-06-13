@@ -67,6 +67,10 @@ class ForgotPage extends Component {
 
     nameForceLoseFocus = () => {
         this.login_name && this.login_name.blur();
+        this.login_opt && this.login_opt.blur();
+        this.login_identify && this.login_identify.blur();
+        this.login_psw && this.login_psw.blur();
+        this.login_psw_again && this.login_psw_again.blur();
     }
 
     componentDidMount() {
@@ -232,7 +236,7 @@ class ForgotPage extends Component {
                         </View>
                         <View style={styles.formInput}>
                             <TextInput
-                                ref={(ref) => this.login_identify = ref}
+                                ref={(ref) => this.login_opt = ref}
                                 style={styles.loginInput}
                                 placeholder='输入图形验证码'
                                 placeholderTextColor='#999'
@@ -252,7 +256,7 @@ class ForgotPage extends Component {
                         </View>
                         { editStep === 2 && <View style={styles.formInput}>
                             <TextInput
-                                ref="login_psw"
+                                ref={(ref) => this.login_psw = ref}
                                 style={styles.loginInput}
                                 secureTextEntry={!this.state.eyed}
                                 placeholder='设定密码'
@@ -267,7 +271,7 @@ class ForgotPage extends Component {
                         </View> }
                         { editStep === 2 && <View style={styles.formInput}>
                             <TextInput
-                                ref="login_psw"
+                                ref={(ref) => this.login_psw_again = ref}
                                 style={styles.loginInput}
                                 secureTextEntry={!this.state.confirm_eyed}
                                 placeholder='再次输入密码'

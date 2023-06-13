@@ -9,7 +9,8 @@ import {
   Overlay,
   TextInput,
   TouchableWithoutFeedback,
-  Image
+  Image,
+  Keyboard,
 } from 'react-native';
 import moment from 'moment';
 import Common from '../common/constants';
@@ -55,10 +56,12 @@ export default class ProcessConfirmModal extends Component {
 
   componentDidMount() {
     logger('.......ProcessConfirmModal componentDidMount')
+    this.processName = Keyboard.addListener('keyboardDidHide', this.processNameForceLoseFocus);
 
   }
   componentWillUnmount() {
     // this.loadMoreDataThrottled.cancel();
+    this.processName && this.processName.remove();
   }
   // getMoreData = () => {
   //   const {page, totalSize} = this.state;
@@ -179,6 +182,13 @@ export default class ProcessConfirmModal extends Component {
           unselectedRowBackgroundColor='transparent'
         /></View></View>);
   }
+
+
+  
+  processNameForceLoseFocus = () => {
+    this.item_name && this.item_name.blur();
+  }
+
 render() {
   const { item, caseLists} = this.props;
   const { itemNotice, itemName, open, isIcon, caseListInfo, itemDateStr, itemStartTimeStr, itemEndTimeStr } = this.state;
