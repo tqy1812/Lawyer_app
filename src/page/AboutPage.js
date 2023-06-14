@@ -168,12 +168,12 @@ class AboutPage extends Component {
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View> }
-              <View style={styles.menuView}> 
+              { type ==1 &&<View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('FeedBack')}}>
                   <Text style={styles.menuText}>反馈</Text>
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
-              </View>  
+              </View> }
             </View> 
             <View style={styles.bottom}>         
               <View style={styles.lawStr}><Text style={styles.lawText1} onPress={this.goPrivacy.bind(this)}>《律时隐私保护指引》</Text><Text style={styles.lawText1}> | </Text><Text style={styles.lawText1} onPress={this.goService.bind(this)}>《律时用户服务协议》</Text></View>
