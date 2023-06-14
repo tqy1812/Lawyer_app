@@ -570,7 +570,7 @@ class MainPage extends BaseComponent {
         if (value) {
           Recognizer.stop();
         }
-        // destroySibling();
+        destroySibling();
       });
     }
     else {
@@ -579,7 +579,7 @@ class MainPage extends BaseComponent {
         if (value) {
           this.RecognizerIos.stop();
         }
-        // destroySibling();
+        destroySibling();
       });
     }
   }

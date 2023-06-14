@@ -412,7 +412,7 @@ _keyboardDidHide(e) {
           Recognizer.stop();
         }
         // that.setState({recoding: false});
-        // destroySibling();
+        destroySibling();
       });
     }
     else {
@@ -422,7 +422,7 @@ _keyboardDidHide(e) {
           this.RecognizerIos.stop();
         }
         // that.setState({recoding: false});
-        // destroySibling();
+        destroySibling();
       });
     }
   }
