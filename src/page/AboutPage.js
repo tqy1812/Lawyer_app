@@ -148,7 +148,7 @@ class AboutPage extends Component {
     }
 
     render() {
-      const { version} = this.state;
+      const { version, type} = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight 
       // logger('..onBackButtonPressAndroid', this.props.navigation)
       return (
