@@ -512,6 +512,7 @@ class MainPage extends BaseComponent {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
+        destroySibling();
       }
       else {
         that.setState({ loading: false });

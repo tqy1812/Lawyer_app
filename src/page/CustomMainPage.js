@@ -350,7 +350,6 @@ _keyboardDidHide(e) {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
-
         this.setState({ input: '', isInput: false })
       }
       else {
@@ -377,7 +376,8 @@ _keyboardDidHide(e) {
         ]);
       return;
     }
-    this.setState({recoding: true});
+    showRecoding();
+    // this.setState({recoding: true});
     Recognizer.start();
   }
   startRecordIOS = () => {
@@ -398,7 +398,8 @@ _keyboardDidHide(e) {
         ]);
         return;
       }
-      this.setState({recoding: true});
+      showRecoding();
+      // this.setState({recoding: true});
       logger('...........RecognizerIos', this.RecognizerIos);
       this.RecognizerIos && this.RecognizerIos.start();
   }
@@ -410,8 +411,8 @@ _keyboardDidHide(e) {
         if (value) {
           Recognizer.stop();
         }
-        that.setState({recoding: false});
-        // that.setState({isRecoding: false});
+        // that.setState({recoding: false});
+        // destroySibling();
       });
     }
     else {
@@ -420,8 +421,8 @@ _keyboardDidHide(e) {
         if (value) {
           this.RecognizerIos.stop();
         }
-        that.setState({recoding: false});
-        // that.setState({isRecoding: false});
+        // that.setState({recoding: false});
+        // destroySibling();
       });
     }
   }
@@ -431,9 +432,9 @@ _keyboardDidHide(e) {
     if (!e.isLast) {
       return;
     }
+    destroySibling();
     if (e.result== '' || JSON.stringify(e.result)=="" )  {
       Toast.show('不好意思，没听清楚');
-      destroySibling();
       return;
     }
     logger(e.result + "............." + JSON.stringify(this.state.updateItem));
@@ -748,7 +749,7 @@ _keyboardDidHide(e) {
                     { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
                         <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={ImageArr['input']} />
                     </MyButton> }
-                    { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> }
+                    {/* { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> } */}
                 </View>
             }
           </View>
