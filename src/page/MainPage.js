@@ -512,7 +512,6 @@ class MainPage extends BaseComponent {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
-        destroySibling();
       }
       else {
         that.setState({ loading: false });
@@ -571,7 +570,7 @@ class MainPage extends BaseComponent {
         if (value) {
           Recognizer.stop();
         }
-        destroySibling();
+        // destroySibling();
       });
     }
     else {
@@ -580,7 +579,7 @@ class MainPage extends BaseComponent {
         if (value) {
           this.RecognizerIos.stop();
         }
-        destroySibling();
+        // destroySibling();
       });
     }
   }
@@ -590,11 +589,10 @@ class MainPage extends BaseComponent {
     if (!e.isLast) {
       return;
     }
+    destroySibling();
     if (e.result== '' || JSON.stringify(e.result)=="" )  {
       Toast.show('不好意思，没听清楚');
       this.setState({ updateItem: {} });
-      destroySibling();
-      // this.sendRecording('stop_recording');
       return;
     }
     logger(e.result + "............." + JSON.stringify(this.state.updateItem));
@@ -602,7 +600,6 @@ class MainPage extends BaseComponent {
       showLoading();
       if (this.updateProcessCallback) this.updateProcessCallback(this.state.updateItem, e.result);
       this.setState({ updateItem: {} });
-      // destroySibling();
     }
     else{
       this.setState({loading: true});
@@ -610,7 +607,6 @@ class MainPage extends BaseComponent {
       this.processTimeOut = setTimeout(() => {
         that.setState({loading: false});
       }, 5000);
-      // destroySibling();
     }
   }
 
