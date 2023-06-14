@@ -48,7 +48,8 @@ class AboutPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          version: ''
+          version: '',
+          type: props.user.type ? props.user.type : 1,
         };
         this.globalDate = GlobalData.getInstance();
         if(platform.isAndroid()) {
@@ -161,12 +162,12 @@ class AboutPage extends Component {
                   <Text >{version}</Text>
                 </MyButton>
               </View>  
-              <View style={styles.menuView}> 
+              { type ==1 &&<View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('Guide', { isFirst: 'false' })}}>
                   <Text style={styles.menuText}>使用引导</Text>
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
-              </View>  
+              </View> }
               <View style={styles.menuView}> 
                 <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('FeedBack')}}>
                   <Text style={styles.menuText}>反馈</Text>
