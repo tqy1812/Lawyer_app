@@ -361,6 +361,7 @@ _keyboardDidHide(e) {
   }
   async startRecordAndroid() {
     let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
+    const that = this;
     if(isHasMic== 0){
       return;
     }
@@ -377,12 +378,16 @@ _keyboardDidHide(e) {
       return;
     }
     showRecoding();
+    setTimeout(()=>{
+      that.stopRecord()
+    }, 60000)
     // this.setState({recoding: true});
     Recognizer.start();
   }
   startRecordIOS = () => {
     const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
     logger('...........isHasMic', isHasMic);
+    const that = this;
     if(isHasMic== 0){
       return;
     }
@@ -399,6 +404,10 @@ _keyboardDidHide(e) {
         return;
       }
       showRecoding();
+      setTimeout(()=>{
+        console.log('....fei error ')
+        that.stopRecord()
+      }, 60000)
       // this.setState({recoding: true});
       logger('...........RecognizerIos', this.RecognizerIos);
       this.RecognizerIos && this.RecognizerIos.start();
@@ -429,6 +438,7 @@ _keyboardDidHide(e) {
 
   onRecognizerResult = (e) => {
     const that = this;
+    console.log('....islast', e.isLast)
     if (!e.isLast) {
       return;
     }
@@ -447,7 +457,8 @@ _keyboardDidHide(e) {
 
 
   onRecognizerError = (result) => {
-    logger("error............." + JSON.stringify(result));
+    console.log("error............." + JSON.stringify(result));
+    destroySibling();
     if (result.errorCode !== 0) {
       // alert(JSON.stringify(result));
 

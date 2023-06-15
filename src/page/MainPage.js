@@ -522,6 +522,7 @@ class MainPage extends BaseComponent {
   }
   async startRecordAndroid() {
     let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
+    const that = this;
     if(isHasMic== 0){
       return;
     }
@@ -538,10 +539,14 @@ class MainPage extends BaseComponent {
       return;
     }
     showRecoding();
+    setTimeout(()=>{
+      that.stopRecord()
+    }, 60000)
     Recognizer.start();
   }
   startRecordIOS = () => {
     const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
+    const that = this;
     logger('...........isHasMic', isHasMic);
     if(isHasMic== 0){
       return;
@@ -559,6 +564,9 @@ class MainPage extends BaseComponent {
         return;
       }
       showRecoding();
+      setTimeout(()=>{
+        that.stopRecord()
+      }, 60000)
       logger('...........RecognizerIos', this.RecognizerIos);
       this.RecognizerIos && this.RecognizerIos.start();
   }
