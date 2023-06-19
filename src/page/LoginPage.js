@@ -80,7 +80,7 @@ class LoginPage extends Component {
 
     componentDidMount() {
         // this.updateApp();
-        InteractionManager.runAfterInteractions(() => {
+        // InteractionManager.runAfterInteractions(() => {
             const { dispatch, isLogin, navigation, insets } = this.props;
             // logger("isLogin" + isLogin, insets.top)
             // this.globalData.setTop(insets.top);
@@ -96,13 +96,6 @@ class LoginPage extends Component {
                 // }));
             }
             this.autoLoginAction();
-            // this.viewDidAppear = this.props.navigation.addListener(
-            //     'willFocus',
-            //     (obj) => {
-            //         this.autoLoginAction();
-            //     }
-            // )
-
             Storage.getIsFirshGuide().then((flag)=>{ 
                 logger('....isFirstGuide', flag)
                 if(flag==='0'){
@@ -144,13 +137,11 @@ class LoginPage extends Component {
                     (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
                 );
             }
-        });
+        // });
     }
 
     componentWillUnmount() {
         logger('......LoginPage componentWillUnmount')
-        // if (typeof this.viewDidAppear != 'undefined' && typeof this.viewDidAppear.remove != 'undefined' && this.viewDidAppear.remove instanceof Function)
-        //     this.viewDidAppear && this.viewDidAppear.remove();
         this.nameListener && this.nameListener.remove();
         if (platform.isIOS()) {
             PushNotificationIOS.removeEventListener('register');
