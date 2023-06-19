@@ -328,7 +328,7 @@ class CenterPage extends BaseComponent {
                   <View style={styles.caseView}>
                   {
                       comment && comment.length > 0 && comment.map((item)=>{                      
-                        return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.createTiem).format('YYYYMMDD')} - ${item.content}` }</Text></View>                    
+                        return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.create_time).format('YYYYMMDD')} - ${item.content}` }</Text></View>                    
                       })
                   }
                   </View>
