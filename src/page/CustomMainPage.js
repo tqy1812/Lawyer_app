@@ -349,6 +349,8 @@ _keyboardDidHide(e) {
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
+        value = value.replace(/\n/g, "&#10;");
+        console.log('....value', value)
         this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
         this.setState({ input: '', isInput: false })
       }
