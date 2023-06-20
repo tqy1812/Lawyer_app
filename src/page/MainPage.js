@@ -540,7 +540,7 @@ class MainPage extends BaseComponent {
     }
     showRecoding();
     Recognizer.start();
-    setTimeout(()=>{
+    this.startTimeout = setTimeout(()=>{
       that.stopRecord()
     }, 60000)
   }
@@ -566,7 +566,7 @@ class MainPage extends BaseComponent {
       showRecoding();
       logger('...........RecognizerIos', this.RecognizerIos);
       this.RecognizerIos && this.RecognizerIos.start();
-      setTimeout(()=>{
+      this.startTimeout = setTimeout(()=>{
         that.stopRecord()
       }, 60000)
   }
@@ -590,6 +590,7 @@ class MainPage extends BaseComponent {
         destroySibling();
       });
     }
+    this.startTimeout && clearTimeout(this.startTimeout)
   }
 
   onRecognizerResult = (e) => {

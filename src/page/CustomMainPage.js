@@ -380,7 +380,7 @@ _keyboardDidHide(e) {
       return;
     }
     showRecoding();
-    setTimeout(()=>{
+    this.startTimeout = setTimeout(()=>{
       that.stopRecord()
     }, 60000)
     // this.setState({recoding: true});
@@ -406,7 +406,7 @@ _keyboardDidHide(e) {
         return;
       }
       showRecoding();
-      setTimeout(()=>{
+      this.startTimeout = setTimeout(()=>{
         console.log('....fei error ')
         that.stopRecord()
       }, 60000)
@@ -436,6 +436,8 @@ _keyboardDidHide(e) {
         destroySibling();
       });
     }
+    
+    this.startTimeout && clearTimeout(this.startTimeout)
   }
 
   onRecognizerResult = (e) => {
