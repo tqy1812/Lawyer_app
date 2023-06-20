@@ -539,10 +539,10 @@ class MainPage extends BaseComponent {
       return;
     }
     showRecoding();
+    Recognizer.start();
     setTimeout(()=>{
       that.stopRecord()
     }, 60000)
-    Recognizer.start();
   }
   startRecordIOS = () => {
     const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
@@ -564,11 +564,11 @@ class MainPage extends BaseComponent {
         return;
       }
       showRecoding();
+      logger('...........RecognizerIos', this.RecognizerIos);
+      this.RecognizerIos && this.RecognizerIos.start();
       setTimeout(()=>{
         that.stopRecord()
       }, 60000)
-      logger('...........RecognizerIos', this.RecognizerIos);
-      this.RecognizerIos && this.RecognizerIos.start();
   }
   stopRecord = () => {
     const that = this;
@@ -901,7 +901,7 @@ class MainPage extends BaseComponent {
           /> }
 
         <View style={[styles.contentView, { top: 0, height: windowHeight}]} {...this._panResponderMyPlan.panHandlers}>
-          <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={platform.isIOS() ? this.startRecordIOS : this.startRecordAndroid} onPressOut={this.stopRecord}>
+          <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
             <View style={[styles.topMenu, {height: 50 + menuHeight}]}>
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
