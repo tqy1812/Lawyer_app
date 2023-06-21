@@ -161,4 +161,13 @@ public class NotifyOpenModule extends ReactContextBaseJavaModule {
     public String getName() {
         return MODULE_NAME;
     }
+
+    @ReactMethod
+    public void getAudioDir(Callback successCallback) {
+        try {
+            successCallback.invoke(MainActivity.getWavFilePath());
+        } catch (IllegalViewOperationException e){
+
+        }
+    }
 }

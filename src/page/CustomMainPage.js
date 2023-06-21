@@ -82,6 +82,7 @@ class CustomMainPage extends BaseComponent {
     // 设置初始值
     this.updateProcessCallback = null;
     this.lastBackPressed = 0;
+    this.currentAudioName = '';
     this.state = {
       appState: AppState.currentState,
       lastId: 0,
@@ -124,8 +125,7 @@ class CustomMainPage extends BaseComponent {
     }
     Recognizer.setParameter('vad_bos', '10000');
     Recognizer.setParameter('vad_eos', '10000');
-    Recognizer.setParameter('audio_source', 'wav');
-    Recognizer.setParameter('asr_audio_source', 'wav');
+    
     Recognizer.getParameter('vad_eos').then(value=>{
       logger('RecognizerIos###########', value);
     })
@@ -381,12 +381,20 @@ _keyboardDidHide(e) {
         ]);
       return;
     }
-    showRecoding();
-    this.startTimeout = setTimeout(()=>{
-      that.stopRecord()
-    }, 60000)
-    // this.setState({recoding: true});
-    Recognizer.start();
+    if(NativeModules.NotifyOpen){
+      NativeModules.NotifyOpen.getAudioDir((file) =>{
+        that.currentAudioName = file +'/'+ moment().format('YYYYMMDDHHmmss')+'.wav';
+        Recognizer.setParameter('audio_format', 'wav');
+        Recognizer.setParameter('asr_audio_path', that.currentAudioName.replace("/storage/emulated/0", ""));
+        logger('.....audioDir='+that.currentAudioName);
+        showRecoding();
+        that.startTimeout = setTimeout(()=>{
+          that.stopRecord()
+        }, 60000)
+        // this.setState({recoding: true});
+        Recognizer.start();
+      });
+    }
   }
   startRecordIOS = () => {
     const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
@@ -438,7 +446,6 @@ _keyboardDidHide(e) {
         destroySibling();
       });
     }
-    
     this.startTimeout && clearTimeout(this.startTimeout)
   }
 
@@ -517,43 +524,19 @@ _keyboardDidHide(e) {
     const { dispatch } = this.props;
     const that = this;
     const content = event.nativeEvent.data;
-    if (content.indexOf('talk:') === 0) {
+    if (content.indexOf('custom:') === 0) {
       const codeArr = content.split('&');
-      const code = codeArr[0].replace('talk:', '')
+      const code = codeArr[0].replace('custom:', '');
       if (code === '0') {
-        const id = codeArr[1].replace('id:', '')
-        const caselist = codeArr.length > 2 ? codeArr[2].replace('caselist:', '') ? JSON.parse(codeArr[2].replace('caselist:', '')) : [] : []
-        if (id) {
-          dispatch(actionProcess.reqGetProcess(id, (rs, error) => {
-            if(error) {
-              Toast.show(error.info);
-              destroySibling();
-              this.processTimeOut && clearTimeout(this.processTimeOut);
-              that.setState({ loading: false});
-            }
-            else {
-              that.showConfirm(rs, caselist);
-              destroySibling();
-              this.processTimeOut && clearTimeout(this.processTimeOut);
-              that.setState({ loading: false});
-            }
-          }));
-        }
-        else {
-          destroySibling();
-          this.processTimeOut && clearTimeout(this.processTimeOut);
-          that.setState({ loading: false });
-        }
+        const id = codeArr[1].replace('id:', '');
       }
-      else {
+      else{
         destroySibling();
-        this.processTimeOut && clearTimeout(this.processTimeOut);
         that.setState({ loading: false });
       }
     }
     else{
       destroySibling();
-      this.processTimeOut && clearTimeout(this.processTimeOut);
       that.setState({ loading: false });
     }
   }

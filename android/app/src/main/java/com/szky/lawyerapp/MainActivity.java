@@ -17,6 +17,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -40,6 +41,8 @@ import com.huawei.hms.utils.Util;
 import com.szky.lawyerapp.R;
 import com.szky.lawyerapp.common.BrandUtils;
 import com.szky.lawyerapp.splash.SplashScreen;
+
+import java.io.File;
 
 public class MainActivity extends ReactActivity {
 //  private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
@@ -504,10 +507,15 @@ public class MainActivity extends ReactActivity {
           return false;
   }
   public static String getWavFilePath(){
-      String mAudioWavPath = "query.wav";
+      String mAudioWavPath = "";
       if(isSdcardExit()){
-          String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-          mAudioWavPath = fileBasePath+"/"+"query.wav";
+          String fileBasePath = context.getExternalFilesDir("lawyer.audio").getAbsolutePath();
+//        Log.i("MainActivity", "******************************getWavFilePath=" + fileBasePath);
+          File fileDir = new File(fileBasePath);
+          if (!fileDir.exists() && !fileDir.mkdirs()) {
+            Log.i("MainActivity", "******************************Can't create directory");
+          }
+          mAudioWavPath = fileBasePath;
       }
       return mAudioWavPath;
   }
