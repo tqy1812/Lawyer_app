@@ -124,6 +124,8 @@ class CustomMainPage extends BaseComponent {
     }
     Recognizer.setParameter('vad_bos', '10000');
     Recognizer.setParameter('vad_eos', '10000');
+    Recognizer.setParameter('audio_source', 'wav');
+    Recognizer.setParameter('asr_audio_source', 'wav');
     Recognizer.getParameter('vad_eos').then(value=>{
       logger('RecognizerIos###########', value);
     })

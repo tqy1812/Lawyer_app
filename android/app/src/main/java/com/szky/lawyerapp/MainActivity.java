@@ -493,4 +493,22 @@ public class MainActivity extends ReactActivity {
       }
     }
   };
+
+  /**
+ * 判断是否有外部存储设备sdcard
+ */
+  public static boolean isSdcardExit(){
+      if (Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
+          return true;
+      else
+          return false;
+  }
+  public static String getWavFilePath(){
+      String mAudioWavPath = "query.wav";
+      if(isSdcardExit()){
+          String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+          mAudioWavPath = fileBasePath+"/"+"query.wav";
+      }
+      return mAudioWavPath;
+  }
 }
