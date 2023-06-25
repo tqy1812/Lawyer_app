@@ -415,6 +415,9 @@ _keyboardDidHide(e) {
         ]);
         return;
       }
+      that.currentAudioName = 'asr'+moment().format('YYYYMMDDHHmmss')+'.pcm';
+      this.RecognizerIos.setParameter('audio_source', '1');
+      this.RecognizerIos.setParameter('asr_audio_path', that.currentAudioName);
       showRecoding();
       this.startTimeout = setTimeout(()=>{
         console.log('....fei error ')
@@ -701,6 +704,7 @@ _keyboardDidHide(e) {
             userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
             incognito={false}
             onLoadEnd={this.closeLoading.bind(this)}
+            allowsInlineMediaPlayback={true}
           />
           <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
          <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
