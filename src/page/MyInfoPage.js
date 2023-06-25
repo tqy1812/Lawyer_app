@@ -97,11 +97,11 @@ class MyInfoPage extends BaseComponent {
                   <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.org_name}</Text>
               </View>
             </View>          
-            <View style={styles.bottom}>                    
+            {/* <View style={styles.bottom}>                    
                 <MyButton style={styles.loadBtn} onPress={()=>{this.props.navigation.navigate('Export')}}>
                     <Text style={styles.loadText}>导出个人信息</Text>
                 </MyButton>
-            </View>
+            </View> */}
           </SafeAreaView>
       )
     }

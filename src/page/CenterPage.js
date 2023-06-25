@@ -327,7 +327,9 @@ class CenterPage extends BaseComponent {
                 <ScrollView style={styles.caseViewScroll} nestedScrollEnabled={true}>
                   <View style={styles.caseView}>
                   {
-                      comment && comment.length > 0 && comment.map((item)=>{                      
+                      comment && comment.length > 0 && comment.map((item)=>{        
+                        
+                        let content = item.content.replace(/<br>/g, " ").replace(/&#10;/g, " ");              
                         return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.create_time).format('YYYYMMDD')} - ${item.content}` }</Text></View>                    
                       })
                   }
