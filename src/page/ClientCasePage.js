@@ -24,10 +24,11 @@ import { caseSetting, logger } from '../utils/utils';
 import actionCase from "../actions/actionCase";
 import actionAuth from '../actions/actionAuth';
 import GlobalData from '../utils/GlobalData';
+import BaseComponent from '../components/BaseComponent';
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 
-class ClientCasePage extends Component {
+class ClientCasePage extends BaseComponent {
 
     static mapStateToProps(state) {
         let props = {};
@@ -56,6 +57,14 @@ class ClientCasePage extends Component {
     }
 
     componentDidMount() {
+      if (!this.props.isLogin) {
+        this.props.navigation.navigate('Login');
+      }
+      this.props.dispatch(actionCase.reqClientCaseList((list, infoList)=>{
+        if(list) {
+          this.setState({caseSet:  caseSetting(list)})
+        }
+      }));
     }
 
     closeLoading = () => {

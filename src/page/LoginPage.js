@@ -409,10 +409,10 @@ class LoginPage extends Component {
                                 <Animated.View style={[aniStyle, styles.tabSwitchItemSelect]}></Animated.View>
                                 <View style={[styles.tabSwitchBody]}>
                                     <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(1)}>
-                                        <Text style={[styles.tabSwitchText, { color: tabValue==1 ? '#ffffff': '#909399'}]}>个人/企业用户</Text>
+                                        <Text style={[styles.tabSwitchText, { color: tabValue==1 ? '#ffffff': '#909399'}]}>用 户</Text>
                                     </MyButton>
                                     <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(2)}>
-                                        <Text style={[styles.tabSwitchText, { color: tabValue==2 ? '#ffffff': '#909399'}]}>企业客户</Text>
+                                        <Text style={[styles.tabSwitchText, { color: tabValue==2 ? '#ffffff': '#909399'}]}>客 户</Text>
                                     </MyButton>
                                 </View>
                             </View>
