@@ -136,9 +136,11 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     recodingText: {
+        position: 'absolute',
+        zIndex: 1,
         fontSize: 20,
         color: '#fff',
         fontWeight: '500',
-        marginTop: 150
+        bottom: 180
     }
 })
