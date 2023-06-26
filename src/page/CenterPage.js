@@ -330,7 +330,7 @@ class CenterPage extends BaseComponent {
                       comment && comment.length > 0 && comment.map((item)=>{        
                         
                         let content = item.content.replace(/<br>/g, " ").replace(/&#10;/g, " ");              
-                        return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.create_time).format('YYYYMMDD')} - ${item.content}` }</Text></View>                    
+                        return <View key={item.id} style={styles.caseItem}><Text style={styles.caseItemName} numberOfLines={1} ellipsizeMode={'tail'}>{ `${moment(item.create_time).format('YYYYMMDD')} - ${content}` }</Text></View>                    
                       })
                   }
                   </View>
