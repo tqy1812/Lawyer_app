@@ -706,8 +706,7 @@ _keyboardDidHide(e) {
             onLoadEnd={this.closeLoading.bind(this)}
             allowsInlineMediaPlayback={true}
           />
-          <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
-         <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
+          <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
             <View style={[styles.topMenu, {height: 80 + menuHeight}]}>
               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <Image resizeMode='contain' style={{ width: 42, height: 42 }} source={ImageArr['custom_menu_center']} />
@@ -716,48 +715,54 @@ _keyboardDidHide(e) {
                 <Image resizeMode='contain' style={{ width: 42, height: 42 }} source={ImageArr['custom_menu_report']} />
               </MyButton>
             </View>
-            <Text style={[styles.content]}></Text>
+          </View>
+          {
+              !isMic && <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
+         
+              <View style={[styles.buttonView, { top: 0, height: windowHeight,}]} >
+                
+                  <View style={[styles.bottom, keyboardDidShow ? platform.isAndroid() ? { marginBottom: this.state.keyboardHeight + 20  } :  { marginBottom: 50  } : {}]}>
+                      <TextInput
+                          ref={(r) => this.content = r}
+                          style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
+                          onChange={() => { this.setState({ isInput: true }) }}
+                          placeholder="请输入内容"
+                          placeholderTextColor={'#b3b3b3'}
+                          value={this.state.input}
+                          onChangeText={newText => this.handleInput(newText)}
+                      />
 
-            {
-              !isMic &&
-              <View style={[styles.bottom, keyboardDidShow ? platform.isAndroid() ? { marginBottom: this.state.keyboardHeight + 20  } :  { marginBottom: 50  } : {}]}>
-                  <TextInput
-                      ref={(r) => this.content = r}
-                      style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
-                      onChange={() => { this.setState({ isInput: true }) }}
-                      placeholder="请输入内容"
-                      placeholderTextColor={'#b3b3b3'}
-                      value={this.state.input}
-                      onChangeText={newText => this.handleInput(newText)}
-                  />
+                      {!isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: true }) }}>
+                          <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone-00.png' }} />
+                      </MyButton>}
 
-                  {!isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: true }) }}>
-                      <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone-00.png' }} />
-                  </MyButton>}
+                      {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendRecording(this.state.input) }}>
+                          <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/input.png' }} />
+                      </MyButton>}
+                  </View>
 
-                  {isInput && <MyButton style={styles.keyboardStyle} onPress={() => { this.sendRecording(this.state.input) }}>
-                      <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/input.png' }} />
-                  </MyButton>}
-              </View>
-
-            }
-            {
-              isMic &&
+              
+                </View>
+            </ScrollView>
+ }
+          {
+              isMic && <View style={[styles.recordView, { top: 0, height: windowHeight,}]}>
+          
                 <View style={styles.bottom}>
                     <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
                         {recordContent}
                     </Text>
 
-                    {!recoding && isShowMic && <Image resizeMode='contain' style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={ImageArr['microphone']} />}
+                    {!recoding && isShowMic && <Image resizeMode='contain' style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
 
                     { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
-                        <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={ImageArr['input']} />
+                        <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
                     </MyButton> }
                     {/* { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> } */}
                 </View>
-            }
-          </View>
-          </ScrollView>
+           
+          </View> 
+          }
         </View>)
   }
 }
@@ -773,7 +778,7 @@ const styles = StyleSheet.create({
       height: windowHeight,
       display: 'flex',
       flexDirection: 'column',
-      zIndex: 2,
+      zIndex: 3,
   },
   item: {
     backgroundColor: "#f9c2ff",
@@ -822,13 +827,29 @@ const styles = StyleSheet.create({
     left: windowWidth / 2 - 25,
   },
   contentView: {
-    // position: 'absolute',
+    position: 'absolute',
     width: windowWidth,
-    // height: windowHeight,
-    // zIndex: 3,
+    height: windowHeight,
+    zIndex: 2,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+  },
+  buttonView: {
+    width: windowWidth,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flexDirection: 'column',
+  },
+  recordView: {
+    position: 'absolute',
+    width: windowWidth,
+    zIndex: 3,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     flexDirection: 'column',
   },
   content: {
