@@ -63,7 +63,13 @@ export const showRecoding = () => {
     sibling = new RootSiblings(<View style={[styles.isRecoding, { height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}><Wave height={50} lineColor={'#fff'}></Wave></View>);
       elements.push(sibling);
 };
-
+export const showCustomRecoding = () => {
+    sibling = new RootSiblings(<View style={[styles.isRecoding, { height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}>
+            <Wave height={50} lineColor={'#fff'}></Wave>
+            <Text style={styles.recodingText}>上滑取消</Text>
+        </View>);
+      elements.push(sibling);
+};
 export const showToast = (value) => {
     sibling = new RootSiblings(<View style={[styles.toastStyle,{height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]}><View style={styles.toastViewStyle}>
         <Text style={styles.toastFontStyle}>{value}</Text>
@@ -101,6 +107,10 @@ const styles = StyleSheet.create({
       backgroundColor: "#000",
       opacity: 0.5,
       top: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
     },
     toastStyle: {
         position: 'absolute',
@@ -125,4 +135,10 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#fff'
     },
+    recodingText: {
+        fontSize: 20,
+        color: '#fff',
+        fontWeight: '500',
+        marginTop: 150
+    }
 })

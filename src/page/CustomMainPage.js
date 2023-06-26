@@ -37,7 +37,7 @@ import BaseComponent from '../components/BaseComponent';
 import Common from "../common/constants";
 import platform from "../utils/platform";
 import { showDrawerModal, DrawerModal, } from '../components/DrawerModal';
-import { destroySibling, destroyAllSibling, showLoading, showModal, showRecoding, showPlanModal, showFinishModal, showConfirmModal, showToast } from '../components/ShowModal';
+import { destroySibling, destroyAllSibling, showLoading, showModal, showCustomRecoding, showPlanModal, showFinishModal, showConfirmModal, showToast } from '../components/ShowModal';
 import MyFinishPlanSlider from '../components/MyFinishPlanSlider';
 import MyPlanSlider from '../components/MyPlanSlider';
 import actionProcess from '../actions/actionProcess';
@@ -136,8 +136,8 @@ class CustomMainPage extends BaseComponent {
       onStartShouldSetPanResponder: () => true,
       // onMoveShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        // logger('onMoveShouldSetPanResponder.......................' + gestureState.dy)
-        if (Math.abs(gestureState.dy) > 25) {
+        logger('onMoveShouldSetPanResponder.......................' + gestureState.dy)
+        if (Math.abs(gestureState.dy) > 15) {
           return true;
         }
         else {
@@ -146,23 +146,29 @@ class CustomMainPage extends BaseComponent {
       },
       onMoveShouldSetPanResponderCapture: () => false,
       onStartShouldSetPanResponderCapture: () => false,
-      onPanResponderTerminationRequest: () => false,
+      onPanResponderTerminationRequest: () => true,
+      onPanResponderTerminate: (evt, gestureState) => {
+        // 另一个组件已经成为了新的响应者，所以当前手势将被取消。
+        logger('劫走移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
+      },
       onPanResponderGrant: (evt, gs) => {
         this.timeStampMove = evt.timeStamp;
-        // logger('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
+        logger('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
       },
       onPanResponderMove: (evt, gs) => {
         if (this.timeStampMove > 0 && gs.dy < -distance) {   //上滑
-          this.timeStampMove = 0;
           this.isCancel = true;
+          logger('上滑')
         } else if (this.timeStampMove > 0 && gs.dy > distance) { //下滑
           this.isCancel = false;
+          logger('下滑')
         }
       },
       onPanResponderRelease: (evt, gs) => {
-        // logger('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
+        logger('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
+        this.timeStampMove = 0;
         that.stopRecord();
-      }
+      },
     });
     //键盘
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
@@ -341,12 +347,14 @@ _keyboardDidHide(e) {
         Recognizer.setParameter('audio_format', 'wav');
         Recognizer.setParameter('asr_audio_path', that.currentAudioName.replace("/storage/emulated/0", ""));
         logger('.....audioDir='+that.currentAudioName);
-        showRecoding();
+        // this.setState({recoding: true});
+        showCustomRecoding();
         that.startTimeout = setTimeout(()=>{
+          this.timeStampMove = 0;
           that.stopRecord()
         }, 60000)
-        // this.setState({recoding: true});
         that.isCancel = false;
+        this.timeStampMove = 0;
         Recognizer.start();
       });
     }
@@ -373,18 +381,23 @@ _keyboardDidHide(e) {
       that.currentAudioName = 'asr'+moment().format('YYYYMMDDHHmmss')+'.pcm';
       this.RecognizerIos.setParameter('audio_source', '1');
       this.RecognizerIos.setParameter('asr_audio_path', that.currentAudioName);
-      showRecoding();
+      showCustomRecoding();
+      // this.setState({recoding: true});
       this.startTimeout = setTimeout(()=>{
         console.log('....fei error ')
+        this.timeStampMove = 0;
         that.stopRecord()
       }, 60000)
-      // this.setState({recoding: true});
       logger('...........RecognizerIos', this.RecognizerIos);
       this.isCancel = false;
+      this.timeStampMove = 0;
       this.RecognizerIos && this.RecognizerIos.start();
   }
   stopRecord = () => {
     const that = this;
+    if(this.timeStampMove > 0) {
+      return;
+    }
     if(platform.isAndroid()){
       Recognizer.isListening().then(value => {
         logger('stopRecord..........' + value)
@@ -414,13 +427,14 @@ _keyboardDidHide(e) {
     if (!e.isLast) {
       return;
     }
+    // this.setState({recoding: false });
     destroySibling();
-    if (e.result== '' || JSON.stringify(e.result)=="" )  {
-      Toast.show('不好意思，没听清楚');
-      return;
-    }
     if(this.isCancel){
       Toast.show('已取消发送');
+      return;
+    }
+    if (e.result== '' || JSON.stringify(e.result)=="" )  {
+      Toast.show('不好意思，没听清楚');
       return;
     }
     logger(e.result + "............." + JSON.stringify(this.state.updateItem));
@@ -434,6 +448,7 @@ _keyboardDidHide(e) {
 
   onRecognizerError = (result) => {
     console.log("error............." + JSON.stringify(result));
+    // this.setState({recoding: false });
     destroySibling();
     if (result.errorCode !== 0) {
       // alert(JSON.stringify(result));
@@ -617,7 +632,7 @@ _keyboardDidHide(e) {
             onLoadEnd={this.closeLoading.bind(this)}
             allowsInlineMediaPlayback={true}
           />
-          <View style={[styles.contentView, { top: 0, height: windowHeight,}]} >
+          <View style={[styles.contentView, { top: 0, height: 80 + menuHeight}]} >
             <View style={[styles.topMenu, {height: 80 + menuHeight}]}>
               <MyButton style={[styles.menuBtnView, {height: 80 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <Image resizeMode='contain' style={{ width: 42, height: 42 }} source={ImageArr['custom_menu_center']} />
@@ -628,9 +643,9 @@ _keyboardDidHide(e) {
             </View>
           </View>
           {
-              !isMic && <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
+              !isMic && <ScrollView style={[styles.scorllView, {bottom: 0, height: windowHeight - 80 - menuHeight}]} alwaysBounceVertical={false}>
          
-              <View style={[styles.buttonView, { top: 0, height: windowHeight,}]} >
+              <View style={[styles.buttonView, { top: 0, height: windowHeight - 80 - menuHeight,}]} >
                 
                   <View style={[styles.bottom, keyboardDidShow ? platform.isAndroid() ? { marginBottom: this.state.keyboardHeight + 20  } :  { marginBottom: 50  } : {}]}>
                       <TextInput
@@ -655,25 +670,28 @@ _keyboardDidHide(e) {
               
                 </View>
             </ScrollView>
- }
+          }
           {
-              isMic && <View style={[styles.recordView, { top: 0, height: windowHeight,}]} {...this._panResponderMyPlan}>
-          
+              isMic && <View style={[styles.recordView, { bottom: 0, height: windowHeight - 80 - menuHeight}]} {...this._panResponderMyPlan.panHandlers}>
                 <View style={styles.bottom}>
-                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} >
+                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
                         {recordContent}
                     </Text>
 
-                    {!recoding && isShowMic && <Image resizeMode='contain' style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
+                    { isShowMic && <Image resizeMode='contain' style={{ width: 30, height: 30, marginLeft: -windowWidth * 0.6 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/microphone.png' }} />}
 
-                    { !recoding && <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
+                    <MyButton style={styles.keyboardStyle} onPress={() => { this.setState({ isMic: false }) }}>
                         <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={{ uri: 'https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/app_img/keyboard.png' }} />
-                    </MyButton> }
+                    </MyButton> 
                     {/* { recoding && <View style={styles.waveView}><Wave height={35} width={6} lineColor={'#fff'}></Wave></View> } */}
                 </View>
-           
-          </View> 
+            </View> 
           }
+
+          {/* { recoding && <View style={[styles.isRecoding, { height: globalData.getScreenHeight() > 0 ? globalData.getScreenHeight() : Common.window.height,}]} >
+              <Wave height={50} lineColor={'#fff'}></Wave>
+            </View>
+          } */}
         </View>)
   }
 }
@@ -686,10 +704,9 @@ const styles = StyleSheet.create({
   scorllView: {
       position: 'absolute',
       width: windowWidth,
-      height: windowHeight,
       display: 'flex',
       flexDirection: 'column',
-      zIndex: 3,
+      zIndex: 2,
   },
   item: {
     backgroundColor: "#f9c2ff",
@@ -740,7 +757,6 @@ const styles = StyleSheet.create({
   contentView: {
     position: 'absolute',
     width: windowWidth,
-    height: windowHeight,
     zIndex: 2,
     display: 'flex',
     alignItems: 'center',
@@ -757,7 +773,7 @@ const styles = StyleSheet.create({
   recordView: {
     position: 'absolute',
     width: windowWidth,
-    zIndex: 3,
+    zIndex: 2,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -785,9 +801,8 @@ const styles = StyleSheet.create({
   },
   isRecoding: {
     position: 'absolute',
-    height: windowHeight,
     width: windowWidth,
-    zIndex: 2,
+    zIndex: 4,
     backgroundColor: "#000",
     opacity: 0.5,
     top: 0,

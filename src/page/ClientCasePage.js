@@ -25,6 +25,7 @@ import actionCase from "../actions/actionCase";
 import actionAuth from '../actions/actionAuth';
 import GlobalData from '../utils/GlobalData';
 import BaseComponent from '../components/BaseComponent';
+import authHelper from '../helpers/authHelper';
 const Toast = Overlay.Toast;
 const { width: windowWidth, height: windowHeight } = Common.window;
 
@@ -34,6 +35,7 @@ class ClientCasePage extends BaseComponent {
         let props = {};
         props.caseList = state.Case.caseList;
         props.userInfo = state.Auth.userInfo;
+        props.isLogin = authHelper.logined(state.Auth.user);
         return props;
     }
 
