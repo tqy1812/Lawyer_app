@@ -110,6 +110,7 @@ class CustomMainPage extends BaseComponent {
       isShowMic: true,
       isInput: false,//是否输入了内容
     }
+    this.isCancel = false;
     this.INJECTEDJAVASCRIPT = `
     const meta = document.createElement('meta'); 
     meta.setAttribute('content', 'initial-scale=0.5, user-scalable=0'); 
@@ -131,7 +132,38 @@ class CustomMainPage extends BaseComponent {
     })
     const that = this;
     this.timeStampMove = 0;
-
+    this._panResponderMyPlan = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      // onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        // logger('onMoveShouldSetPanResponder.......................' + gestureState.dy)
+        if (Math.abs(gestureState.dy) > 25) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      },
+      onMoveShouldSetPanResponderCapture: () => false,
+      onStartShouldSetPanResponderCapture: () => false,
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: (evt, gs) => {
+        this.timeStampMove = evt.timeStamp;
+        // logger('开始移动：' + evt.timeStamp + ' X轴：' + gs.dx + '，Y轴：' + gs.dy);
+      },
+      onPanResponderMove: (evt, gs) => {
+        if (this.timeStampMove > 0 && gs.dy < -distance) {   //上滑
+          this.timeStampMove = 0;
+          this.isCancel = true;
+        } else if (this.timeStampMove > 0 && gs.dy > distance) { //下滑
+          this.isCancel = false;
+        }
+      },
+      onPanResponderRelease: (evt, gs) => {
+        // logger('结束移动：X轴移动了：' + gs.dx + '，Y轴移动了：' + gs.dy);
+        that.stopRecord();
+      }
+    });
     //键盘
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
@@ -238,84 +270,6 @@ _keyboardDidHide(e) {
     });
   }
 
-  // onRegistrationError = (error) => {
-  //   Alert.alert(
-  //     '远程消息推送注册失败',
-  //     `Error (${error.code}): ${error.message}`,
-  //     [
-  //       {
-  //         text: '关闭',
-  //         onPress: null,
-  //       },
-  //     ],
-  //   );
-  // };
-  // setNotificationCategories = () => {
-  //   PushNotificationIOS.setNotificationCategories([
-  //     {
-  //       id: 'userAction',
-  //       actions: [
-  //         { id: 'open', title: '打开', options: { foreground: true } },
-  //         {
-  //           id: 'ignore',
-  //           title: '忽略',
-  //           options: { foreground: true, destructive: true },
-  //         },
-  //       ],
-  //     },
-  //   ]);
-  // };
-
-  // onRemoteNotification = (notification) => {
-  //   const isClicked = notification.getData().userInteraction === 1;
-  //   logger('##########isClicked=' + isClicked);
-  //   const result = `
-  //     Title:  ${notification.getTitle()};\n
-  //     Subtitle:  ${notification.getSubtitle()};\n
-  //     Message: ${notification.getMessage()};\n
-  //     badge: ${notification.getBadgeCount()};\n
-  //     sound: ${notification.getSound()};\n
-  //     category: ${notification.getCategory()};\n
-  //     content-available: ${notification.getContentAvailable()};\n
-  //     Notification is clicked: ${String(isClicked)}.`;
-  //   if (isClicked) {
-  //     this.openNotfication();
-  //   }
-  //   else {
-  //     this.sendLocalNotification(result);
-  //   }
-  //   notification.finish('UIBackgroundFetchResultNoData')
-  // };
-  // onLocalNotification = (notification) => {
-  //   const isClicked = notification.getData().userInteraction === 1;
-  //   logger('##########isClicked=' + isClicked);
-  //   if (isClicked) {
-  //     this.openNotfication();
-  //   }
-  // };
-  // sendLocalNotification = (result) => {
-  //   PushNotificationIOS.presentLocalNotification({
-  //     alertTitle: result.Title,
-  //     alertBody: result.Message,
-  //     applicationIconBadgeNumber: 0,
-  //     category: ''
-  //   });
-  // };
-
-  // sendNotification = (result) => {
-  //   DeviceEventEmitter.emit('remoteNotificationReceived', {
-  //     remote: true,
-  //     aps: {
-  //       alert: { title: result.Title, subtitle: 'subtitle', body: result.Message },
-  //       badge: 1,
-  //       sound: 'default',
-  //       category: 'REACT_NATIVE',
-  //       'content-available': 1,
-  //       'mutable-content': 1,
-  //     },
-  //   });
-  // };
-
   onBackButtonPressAndroid = () => {
     logger("...............onBackButtonPressAndroid ")
     return false;
@@ -392,6 +346,7 @@ _keyboardDidHide(e) {
           that.stopRecord()
         }, 60000)
         // this.setState({recoding: true});
+        that.isCancel = false;
         Recognizer.start();
       });
     }
@@ -425,6 +380,7 @@ _keyboardDidHide(e) {
       }, 60000)
       // this.setState({recoding: true});
       logger('...........RecognizerIos', this.RecognizerIos);
+      this.isCancel = false;
       this.RecognizerIos && this.RecognizerIos.start();
   }
   stopRecord = () => {
@@ -463,6 +419,10 @@ _keyboardDidHide(e) {
       Toast.show('不好意思，没听清楚');
       return;
     }
+    if(this.isCancel){
+      Toast.show('已取消发送');
+      return;
+    }
     logger(e.result + "............." + JSON.stringify(this.state.updateItem));
     this.setState({loading: true});
     this.sendRecording(e.result);
@@ -480,47 +440,6 @@ _keyboardDidHide(e) {
 
     }
   }
-
-  // scheduleNotfication = (content) => {
-  //   logger('5555555555555555555555555====' + content);
-  //   if (content) {
-  //     let item = JSON.parse(content);
-  //     if (platform.isAndroid()) {
-  //       PushNotification.localNotification({
-  //         channelId: 'NEW_MESSAGE_NOTIFICATION',
-  //         title: "任务提醒-" + item.process_name,
-  //         message: '时间:' + item.start_time,
-  //         id: this.state.lastId,
-  //         date: new Date(Date.now()),
-  //         when: new Date().getTime()
-  //       });
-  //       this.setState({ lastId: (this.state.lastId + 1) });
-  //     }
-  //     else {
-  //       this.sendLocalNotification({ Title: "任务提醒-" + item.process_name, Message:'时间:' + item.start_time });
-  //     }
-  //   }
-  // }
-
-  // openNotfication = () => {
-  //   this.props.navigation.navigate('Main');
-  // }
-
-  // test = () => {
-  //   if (platform.isAndroid()) {
-  //     PushNotification.localNotification({
-  //       channelId: 'NEW_MESSAGE_NOTIFICATION',
-  //       title: "任务提醒-",
-  //       message: "test",
-  //       id: this.state.lastId,
-  //       when: new Date().getTime(),
-  //     });
-  //     this.setState({ lastId: (this.state.lastId + 1) });
-  //   }
-  //   else {
-  //     this.sendLocalNotification({ Title: '任务提醒-', Message: '测试' });
-  //   }
-  // }
 
   handleNativeMessage = (event) => {
     logger('handleNativeMessage====' + event.nativeEvent.data);
@@ -627,14 +546,6 @@ _keyboardDidHide(e) {
   }
   closeTalk = () => {
     this.setState({ talkModalVisible: false });
-  }
-  handleSending = () => {
-    if (this.state.talkContent) {
-      this.sendRecording(this.state.talkContent);
-    }
-    else {
-      this.setState({ talkContent: '', talkModalVisible: false })
-    }
   }
   handleTalkContentChanged(text) {
     let content = text.trim();
@@ -746,10 +657,10 @@ _keyboardDidHide(e) {
             </ScrollView>
  }
           {
-              isMic && <View style={[styles.recordView, { top: 0, height: windowHeight,}]}>
+              isMic && <View style={[styles.recordView, { top: 0, height: windowHeight,}]} {...this._panResponderMyPlan}>
           
                 <View style={styles.bottom}>
-                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
+                    <Text style={[styles.micStyle, { height: 60 }]} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} >
                         {recordContent}
                     </Text>
 
