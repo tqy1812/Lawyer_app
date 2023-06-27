@@ -647,7 +647,7 @@ _keyboardDidHide(e) {
          
               <View style={[styles.buttonView, { top: 0, height: windowHeight - 80 - menuHeight,}]} >
                 
-                  <View style={[styles.bottom, keyboardDidShow ? platform.isAndroid() ? { marginBottom: this.state.keyboardHeight + 20  } :  { marginBottom: 50  } : {}]}>
+                  <View style={[styles.bottom, keyboardDidShow ? platform.isAndroid() ? { marginBottom: 20  } :  { marginBottom: 50  } : {}]}>
                       <TextInput
                           ref={(r) => this.content = r}
                           style={{ height: 60, width: windowWidth * 0.9 - 100, marginLeft: 20, fontSize: 20, color: '#fff' }}
@@ -757,7 +757,7 @@ const styles = StyleSheet.create({
   contentView: {
     position: 'absolute',
     width: windowWidth,
-    zIndex: 2,
+    zIndex: 3,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
