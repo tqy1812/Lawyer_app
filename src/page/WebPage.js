@@ -89,6 +89,9 @@ class WebPage extends Component {
       if (this.state.backButtonEnabled) {
         this.wv && this.wv.current && this.wv.current.goBack();
       } else {//否则返回到上一个页面
+        if(this.state.type==='ClientComment') {
+          DeviceEventEmitter.emit('refreshClientList')
+        }
         this.props.navigation.goBack();
       }
     }

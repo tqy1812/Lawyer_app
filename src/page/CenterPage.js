@@ -8,7 +8,7 @@ import {
     Overlay,
     ScrollView,
     StatusBar,
-    ImageBackground, InteractionManager, TouchableOpacity,
+    ImageBackground, InteractionManager, TouchableOpacity, DeviceEventEmitter,
     NativeModules,
     Alert
 } from 'react-native';
@@ -70,6 +70,8 @@ class CenterPage extends BaseComponent {
       if(this.state.type===2) {
         this.props.dispatch(actionAuth.reqClientUserInfo());
         this.props.dispatch(actionAuth.reqClientComment());
+        this.eventList = DeviceEventEmitter.addListener('refreshClientList',
+                () => {  this.props.dispatch(actionAuth.reqClientComment()); });
       }
       else {
         this.props.dispatch(actionAuth.reqUserInfo());
@@ -89,6 +91,7 @@ class CenterPage extends BaseComponent {
       //   NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardEnable();
     }
     componentWillUnmount () {
+      this.eventList && this.eventList.remove();
       // if(platform.isIOS())
       //   NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardDisable();
     }
@@ -264,7 +267,7 @@ class CenterPage extends BaseComponent {
     }
 
     openClientCommentPage() {
-      this.props.navigation.navigate('WebPage', { url: 'feedback/', title: '反馈记录' })
+      this.props.navigation.navigate('WebPage', { url: 'feedback/', title: '反馈记录', type: 'ClientComment' })
     }
     render() {
       const { userInfo, caseList, caseListInfo, comment} = this.props;
