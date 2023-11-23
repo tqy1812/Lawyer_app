@@ -31,7 +31,7 @@ import IcomoonIcon from "../components/IcomoonIcon";
 import PushNotification, { Importance } from 'react-native-push-notification';
 import GlobalData from "../utils/GlobalData";
 import moment from 'moment';
-import { logger, compareVersion,FontSize } from '../utils/utils';
+import { logger, compareVersion, FontSize } from '../utils/utils';
 import { SendIdentify } from '../components/SendIdentify';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { ScrollView } from 'react-native-gesture-handler';
@@ -62,14 +62,14 @@ class LoginPage extends Component {
             deviceType: Common.devicePushType.WSS,
             visible: false,
             tabValue: props.route.params && props.route.params.type ? props.route.params.type : 1,
-            tabAniX: props.route.params && props.route.params.type && props.route.params.type ==2 ? new Animated.ValueXY({x: Common.window.width/4 - 15, y:0}) :
-             new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0}),
+            tabAniX: props.route.params && props.route.params.type && props.route.params.type == 2 ? new Animated.ValueXY({ x: Common.window.width / 4 - 15, y: 0 }) :
+                new Animated.ValueXY({ x: -Common.window.width / 4 + 15, y: 0 }),
         };
         this.version = '';
         this.isFirstGuide = false;
         this.globalData = GlobalData.getInstance();
         this.nameListener = Keyboard.addListener('keyboardDidHide', this.nameForceLoseFocus);
-        logger('......Auth.user',props.user)
+        logger('......Auth.user', props.user)
         // this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.backAction);
     }
 
@@ -81,62 +81,62 @@ class LoginPage extends Component {
     componentDidMount() {
         // this.updateApp();
         // InteractionManager.runAfterInteractions(() => {
-            const { dispatch, isLogin, navigation, insets } = this.props;
-            // logger("isLogin" + isLogin, insets.top)
-            // this.globalData.setTop(insets.top);
-            // logger("isLogin" + isLogin, this.globalData.getTop())
-            if (isLogin) {
-                if(this.props.user.type === 2) {
-                    this.props.navigation.navigate('CustomMain');
-                }
-                else 
-                    this.props.navigation.navigate('Main');
-                return;
-                // dispatch(actionAuth.reqLogout(() => {
-                // }));
+        const { dispatch, isLogin, navigation, insets } = this.props;
+        // logger("isLogin" + isLogin, insets.top)
+        // this.globalData.setTop(insets.top);
+        // logger("isLogin" + isLogin, this.globalData.getTop())
+        if (isLogin) {
+            if (this.props.user.type === 2) {
+                this.props.navigation.navigate('CustomMain');
             }
-            this.autoLoginAction();
-            Storage.getIsFirshGuide().then((flag)=>{ 
-                logger('....isFirstGuide', flag)
-                if(flag==='0'){
-                    this.isFirstGuide = true;
+            else
+                this.props.navigation.navigate('Main');
+            return;
+            // dispatch(actionAuth.reqLogout(() => {
+            // }));
+        }
+        this.autoLoginAction();
+        Storage.getIsFirshGuide().then((flag) => {
+            logger('....isFirstGuide', flag)
+            if (flag === '0') {
+                this.isFirstGuide = true;
+            }
+        });
+        if (platform.isIOS()) {
+            // PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
+        }
+        else {
+            Storage.getIsFirshOpen().then((flag) => {
+                if (flag === '0') {
+                    this.setState({ visible: true })
                 }
             });
-            if(platform.isIOS()){
-                // PushNotificationIOS.addEventListener('register', this.onRegistered.bind(this));
-            }
-            else {
-                Storage.getIsFirshOpen().then((flag)=>{ 
-                    if(flag==='0'){
-                        this.setState({visible: true})
-                    }
-                });
-                // NativeModules.NotifyOpen.getDeviceToken((token) =>{
-                //     logger('.....DeviceToken='+token);
-                //     this.setState({
-                //         deviceToken:token
-                //     })
-                // });
-                // NativeModules.NotifyOpen.getDeviceType((type) =>{
-                //     logger('.....DeviceType='+type);
-                //     const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
-                //     this.setState({
-                //         deviceType:deviceType
-                //     })
-                // });
+            // NativeModules.NotifyOpen.getDeviceToken((token) =>{
+            //     logger('.....DeviceToken='+token);
+            //     this.setState({
+            //         deviceToken:token
+            //     })
+            // });
+            // NativeModules.NotifyOpen.getDeviceType((type) =>{
+            //     logger('.....DeviceType='+type);
+            //     const deviceType = Common.devicePushType[type] ? Common.devicePushType[type] : Common.devicePushType.WSS;
+            //     this.setState({
+            //         deviceType:deviceType
+            //     })
+            // });
 
-                PushNotification.createChannel(
-                    {
-                        channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
-                        channelName: `任务通知`, // (required)
-                        channelDescription: "任务提醒通知", // (optional) default: undefined.
-                        soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
-                        importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-                        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-                    },
-                    (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-                );
-            }
+            PushNotification.createChannel(
+                {
+                    channelId: 'NEW_MESSAGE_NOTIFICATION', // (required)
+                    channelName: `任务通知`, // (required)
+                    channelDescription: "任务提醒通知", // (optional) default: undefined.
+                    soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+                    importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+                    vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+                },
+                (created) => logger(`createChannel '任务通知' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+            );
+        }
         // });
     }
 
@@ -151,11 +151,11 @@ class LoginPage extends Component {
 
     onRegistered = (deviceToken) => {
         const that = this
-        logger('.......deviceToken='+deviceToken);
-        if(deviceToken) {
-            that.setState({deviceToken: deviceToken, deviceType: Common.devicePushType.IOS})
+        logger('.......deviceToken=' + deviceToken);
+        if (deviceToken) {
+            that.setState({ deviceToken: deviceToken, deviceType: Common.devicePushType.IOS })
         }
-      };
+    };
 
     async autoLoginAction() {
         const { dispatch } = this.props;
@@ -170,14 +170,16 @@ class LoginPage extends Component {
             //     return;
             // }
             if (savedUser.phone && savedUser.password) {
-                this.setState({ phone: savedUser.phone, password: savedUser.password, tabValue:  savedUser.type ? savedUser.type : 1, tabAniX: savedUser.type && savedUser.type == 2 ? new Animated.ValueXY({x: Common.window.width/4 - 15, y:0}) :
-                new Animated.ValueXY({x:-Common.window.width/4 + 15, y:0})});
+                this.setState({
+                    phone: savedUser.phone, password: savedUser.password, tabValue: savedUser.type ? savedUser.type : 1, tabAniX: savedUser.type && savedUser.type == 2 ? new Animated.ValueXY({ x: Common.window.width / 4 - 15, y: 0 }) :
+                        new Animated.ValueXY({ x: -Common.window.width / 4 + 15, y: 0 })
+                });
             }
         }
         let autoLogin = await Storage.getAutoLogin();
         logger("autoLogin" + autoLogin)
         if (autoLogin === '1') {
-            this.setState({autoLogin: true});
+            this.setState({ autoLogin: true });
             if (savedUser.phone && savedUser.password) {
                 const that = this;
                 requestAnimationFrame(() => that.handleLogin());
@@ -202,78 +204,82 @@ class LoginPage extends Component {
     }
     // 登录
     handleLogin() {
-            const { dispatch } = this.props;
-            const { phone, password, autoLogin, deviceToken, deviceType, tabValue } = this.state;
-            if (phone == null || phone.length <= 0) {
-                Toast.show('手机号不能为空!');
-                return;
-            }
+        const { dispatch } = this.props;
+        const { phone, password, autoLogin, deviceToken, deviceType, tabValue } = this.state;
+        if (phone == null || phone.length <= 0) {
+            Toast.show('手机号不能为空!');
+            return;
+        }
 
-            if (password == null || password.length <= 0) {
-                Toast.show('密码不能为空!');
-                return;
-            }
+        if (password == null || password.length <= 0) {
+            Toast.show('密码不能为空!');
+            return;
+        }
 
-            if (autoLogin == false) {
-                Toast.show('请勾选同意政策和服务协议');
-                // Toast.show('请勾选同意政策和服务协议');
-                return;
-            }
-            Toast.show("登录中");
-            if(tabValue==1) {
-                dispatch(actionAuth.reqLogin(phone, password, deviceToken, deviceType, (res, error) => {
-                    logger(res)
-                    if (error) {
-                        logger(error)
-                        if (error.code === 17004) {
-                            this.setState({ code: 2 });
-                        }
-                        else if (error.code === 17003) {
-                            this.setState({ code: 1 });
-                        }
-                        else {
-                            if(error.info){
-                                Toast.show(error.info);
-                            }
-                        }
-                    } else if (res && res.token) {
-                        Storage.setAutoLogin('1');
-                        if(this.isFirstGuide) {
-                            this.props.navigation.replace('Guide', { isFirst: 'true' });
-                        } else {
-                            this.props.navigation.replace('Main');
-                        }
-                        dispatch(actionCase.reqCaseList());
-                        // Toast.show("登录成功");
+        if (autoLogin == false) {
+            Toast.show('请勾选同意政策和服务协议');
+            // Toast.show('请勾选同意政策和服务协议');
+            return;
+        }
+        Toast.show("登录中");
+        if (tabValue == 1) {
+            dispatch(actionAuth.reqLogin(phone, password, deviceToken, deviceType, (res, error) => {
+                logger(res)
+                if (error) {
+                    logger(error)
+                    if (error.code === 17004) {
+                        this.setState({ code: 2 });
                     }
-                }));
-            }
-            else {
-                dispatch(actionAuth.reqClientLogin(phone, password, (res, error) => {
-                    logger(res)
-                    if (error) {
-                        logger(error)
-                        if (error.code === 17004) {
-                            this.setState({ code: 2 });
-                        }
-                        else if (error.code === 17003) {
-                            this.setState({ code: 1 });
-                        }
-                        else {
-                            if(error.info){
-                                Toast.show(error.info);
-                            }
-                        }
-                    } else if (res && res.token) {
-                        // if (autoLogin) {
-                        Storage.setAutoLogin('1');
-                        // }
-                        dispatch(actionCase.reqClientCaseList());
-                        this.props.navigation.replace('CustomMain');
-                        // Toast.show("登录成功");
+                    else if (error.code === 17003) {
+                        this.setState({ code: 1 });
                     }
-                }));
-            }
+                    else {
+                        if (error.info) {
+                            Toast.show(error.info);
+                        }
+                    }
+                } else if (res && res.token) {
+                    Storage.setAutoLogin('1');
+                    if (this.isFirstGuide) {
+                        this.props.navigation.replace('Guide', { isFirst: 'true' });
+                    } else {
+                        this.props.navigation.replace('Main');
+                    }
+                    dispatch(actionCase.reqCaseList());
+                    // Toast.show("登录成功");
+                }
+            }));
+        }
+        else {
+            dispatch(actionAuth.reqClientLogin(phone, password, (res, error) => {
+                logger(res)
+                if (error) {
+                    logger(error)
+                    if (error.code === 17004) {
+                        this.setState({ code: 2 });
+                    }
+                    else if (error.code === 17003) {
+                        this.setState({ code: 1 });
+                    }
+                    else {
+                        if (error.info) {
+                            Toast.show(error.info);
+                        }
+                    }
+                } else if (res && res.token) {
+                    // if (autoLogin) {
+                    Storage.setAutoLogin('1');
+                    // }
+                    dispatch(actionCase.reqClientCaseList());
+                    this.props.navigation.replace('CustomMain');
+                    // Toast.show("登录成功");
+                }
+            }));
+        }
+    }
+
+    handleTalk() {
+        this.props.navigation.navigate('Talk');
     }
 
     goService() {
@@ -317,7 +323,7 @@ class LoginPage extends Component {
     //                         ]);
     //                     }
     //                 })
-                    
+
     //             }
     //         }))
     //     }
@@ -333,50 +339,50 @@ class LoginPage extends Component {
     // }
     send = () => {
     }
-    register=() => {
+    register = () => {
         this.props.navigation.replace('Register');
     }
-    forgot=() => {
+    forgot = () => {
         this.props.navigation.navigate('Forgot');
     }
     handleUnAgree = () => {
         Storage.setIsFirshOpen('0');
-        this.setState({visible: false})
+        this.setState({ visible: false })
         NativeModules.ScreenAdaptation.exitApp();
     }
-    
+
     handleAgree = () => {
         Storage.setIsFirshOpen('1');
-        this.setState({autoLogin: true, visible: false});
+        this.setState({ autoLogin: true, visible: false });
     }
     changeTab = (value) => {
-        const {tabAniX} = this.state;
-        if(value === 2) {
+        const { tabAniX } = this.state;
+        if (value === 2) {
             Animated.timing(tabAniX, {
-                toValue: {x: Common.window.width/4 - 15, y:0},
+                toValue: { x: Common.window.width / 4 - 15, y: 0 },
                 duration: 300,
                 useNativeDriver: false,
-              }).start();
-        } 
+            }).start();
+        }
         else {
             Animated.timing(tabAniX, {
-                toValue: {x: -Common.window.width/4 + 15, y:0},
+                toValue: { x: -Common.window.width / 4 + 15, y: 0 },
                 duration: 300,
                 useNativeDriver: false,
-              }).start();
+            }).start();
         }
-        this.setState({tabValue: value});
+        this.setState({ tabValue: value });
     }
     render() {
         let logo = '/logo.png';
         const { insets } = this.props;
-        const {visible, tabValue, tabAniX} = this.state;
+        const { visible, tabValue, tabAniX } = this.state;
         const aniStyle = {
             transform: tabAniX.getTranslateTransform(),
         };
         return (
             <SafeAreaView style={styles.container}>
-                <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
+                <StatusBar translucent={true} backgroundColor='transparent' barStyle="dark-content" />
                 <ScrollView style={styles.scorllView} alwaysBounceVertical={false}>
                     <View style={styles.body}>
                         <View style={styles.topPart}>
@@ -395,7 +401,7 @@ class LoginPage extends Component {
                                             <IcomoonIcon name='error' size={22} style={{ color: 'rgb(254, 61, 47)', marginBottom: 10 }} />
                                             <Text style={styles.topPartNoticeText}>{'请确认输入了正确的密码'}</Text>
                                             <Text style={styles.topPartNoticeText}>{'您可以通过联系管理员确认'}</Text>
-                                </View>) : <View style={styles.topPartNotice}></View>
+                                        </View>) : <View style={styles.topPartNotice}></View>
                                 // (<View style={styles.topPartNotice}>
                                 //     <IcomoonIcon name='info' size={22} style={{ color: 'rgb(0, 122, 254)', marginBottom: 10 }} />
                                 //     <Text style={styles.topPartNoticeText}>{'登陆前请确认已使用权限'}</Text>
@@ -403,16 +409,16 @@ class LoginPage extends Component {
                                 // </View>)
                             }
                         </View>
-                
+
                         <View style={styles.content}>
                             <View style={[styles.tabSwitch]}>
                                 <Animated.View style={[aniStyle, styles.tabSwitchItemSelect]}></Animated.View>
                                 <View style={[styles.tabSwitchBody]}>
-                                    <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(1)}>
-                                        <Text style={[styles.tabSwitchText, { color: tabValue==1 ? '#ffffff': '#909399'}]}>用 户</Text>
+                                    <MyButton style={[styles.tabSwitchItem]} onPress={() => this.changeTab(1)}>
+                                        <Text style={[styles.tabSwitchText, { color: tabValue == 1 ? '#ffffff' : '#909399' }]}>用 户</Text>
                                     </MyButton>
-                                    <MyButton style={[styles.tabSwitchItem]} onPress={()=>this.changeTab(2)}>
-                                        <Text style={[styles.tabSwitchText, { color: tabValue==2 ? '#ffffff': '#909399'}]}>客 户</Text>
+                                    <MyButton style={[styles.tabSwitchItem]} onPress={() => this.changeTab(2)}>
+                                        <Text style={[styles.tabSwitchText, { color: tabValue == 2 ? '#ffffff' : '#909399' }]}>客 户</Text>
                                     </MyButton>
                                 </View>
                             </View>
@@ -445,11 +451,11 @@ class LoginPage extends Component {
                                     placeholderTextColor='#999'
                                     onChangeText={this.handlePasswordChanged.bind(this)}
                                     value={this.state.password} />
-                                    <MyButton style={styles.eyeButton} onPress={() => {
-                                        this.setState({ eyed: !this.state.eyed });
-                                    }}>
-                                        {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
-                                    </MyButton>
+                                <MyButton style={styles.eyeButton} onPress={() => {
+                                    this.setState({ eyed: !this.state.eyed });
+                                }}>
+                                    {this.state.eyed ? <IcomoonIcon name='eye-open' size={15} color='#007afe' /> : <IcomoonIcon name='eye-closed' size={15} color='#007afe' />}
+                                </MyButton>
                             </View>
                             {/* <View style={styles.formInput}>
                                 <TextInput
@@ -462,7 +468,7 @@ class LoginPage extends Component {
                                     <SendIdentify time={90} action={this.send.bind(this)}/>
                             </View> */}
                             {/* <View style={styles.forgot}> */}
-                                {/* <MyButton style={styles.forgotBtn} onPress={this.forgot.bind(this)}><Text style={styles.forgotText}>忘记密码？</Text></MyButton> */}
+                            {/* <MyButton style={styles.forgotBtn} onPress={this.forgot.bind(this)}><Text style={styles.forgotText}>忘记密码？</Text></MyButton> */}
                             {/* </View> */}
                         </View>
                         <View style={styles.operate}>
@@ -499,18 +505,22 @@ class LoginPage extends Component {
                                 <Text style={styles.loginText}>登录</Text>
                             </MyButton>
 
+                            <MyButton style={styles.loginBtn} onPress={this.handleTalk.bind(this)}>
+                                <Text style={styles.loginText}>聊天</Text>
+                            </MyButton>
+
                             <View style={styles.register}>
-                                <View style={[styles.registerLine,{marginRight: 10}]}></View>
-                                <Text style={[styles.registerText, {color: '#606266'}]}>还没有律时账号？</Text>
+                                <View style={[styles.registerLine, { marginRight: 10 }]}></View>
+                                <Text style={[styles.registerText, { color: '#606266' }]}>还没有律时账号？</Text>
                                 <MyButton style={styles.registerBtn} onPress={this.register.bind(this)}>
-                                    <Text style={[styles.registerText, {color: '#007afe'}]}>去注册</Text>
+                                    <Text style={[styles.registerText, { color: '#007afe' }]}>去注册</Text>
                                 </MyButton>
-                                <View style={[styles.registerLine, {marginLeft: 10}]}></View>
+                                <View style={[styles.registerLine, { marginLeft: 10 }]}></View>
                             </View>
                         </View>
                     </View>
                     {
-                        visible && <PrivacyConfirmModal dispatch={this.props.dispatch} handleUnAgree={this.handleUnAgree} handleAgree={this.handleAgree} goService={this.goService.bind(this)} goPrivacy={this.goPrivacy.bind(this)}/>
+                        visible && <PrivacyConfirmModal dispatch={this.props.dispatch} handleUnAgree={this.handleUnAgree} handleAgree={this.handleAgree} goService={this.goService.bind(this)} goPrivacy={this.goPrivacy.bind(this)} />
                     }
                 </ScrollView>
             </SafeAreaView>
@@ -527,7 +537,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
     },
-    register:{
+    register: {
         height: 100,
         display: 'flex',
         flexDirection: 'row',
@@ -555,7 +565,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     body: {
-        minHeight:  Common.window.height - Common.statusBarHeight,
+        minHeight: Common.window.height - Common.statusBarHeight,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -571,7 +581,7 @@ const styles = StyleSheet.create({
     },
     topPartTitle: {
         alignItems: 'center',
-        fontSize:69,
+        fontSize: 69,
         color: '#007afe',
         fontWeight: 'bold',
         marginTop: 70,
@@ -616,7 +626,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
     },
-    forgotBtn:{
+    forgotBtn: {
         paddingRight: 15,
         paddingLeft: 15,
     },
@@ -657,7 +667,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     law: {
-        width: Common.window.width-30,
+        width: Common.window.width - 30,
         flexDirection: 'row',
         display: 'flex',
         justifyContent: 'center',
@@ -768,7 +778,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5,
         backgroundColor: '#EBEEF5',
-        position:'relative',
+        position: 'relative',
     },
     tabSwitchBody: {
         width: Common.window.width - 60,
@@ -777,13 +787,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 40,
         borderRadius: 40,
-        position:'absolute',
+        position: 'absolute',
         zIndex: 2,
         top: 5,
         left: 5,
     },
     tabSwitchItem: {
-        width: Common.window.width /2 - 30,
+        width: Common.window.width / 2 - 30,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -791,13 +801,13 @@ const styles = StyleSheet.create({
         borderRadius: 40,
     },
     tabSwitchItemSelect: {
-        width: Common.window.width /2 - 30,
+        width: Common.window.width / 2 - 30,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,
         borderRadius: 40,
-        position:'absolute',
+        position: 'absolute',
         backgroundColor: '#007AFE',
         zIndex: 1,
     },
