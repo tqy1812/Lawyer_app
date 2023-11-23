@@ -505,9 +505,9 @@ class LoginPage extends Component {
                                 <Text style={styles.loginText}>登录</Text>
                             </MyButton>
 
-                            <MyButton style={styles.loginBtn} onPress={this.handleTalk.bind(this)}>
+                            {/* <MyButton style={styles.loginBtn} onPress={this.handleTalk.bind(this)}>
                                 <Text style={styles.loginText}>聊天</Text>
-                            </MyButton>
+                            </MyButton> */}
 
                             <View style={styles.register}>
                                 <View style={[styles.registerLine, { marginRight: 10 }]}></View>
