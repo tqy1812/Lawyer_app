@@ -19,7 +19,7 @@ import {
   NativeModules,
   Alert,
   StatusBar,
-  ImageBackground
+  ImageBackground, Image
 } from 'react-native';
 import {
   WebView
@@ -83,6 +83,7 @@ class MainPage extends BaseComponent {
     // this.finishRef = React.createRef();
     this.updateProcessCallback = null;
     this.lastBackPressed = 0;
+    this.type = 'talk'
     this.state = {
       appState: AppState.currentState,
       lastId: 0,
@@ -511,7 +512,7 @@ class MainPage extends BaseComponent {
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
-        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '");true;');
+        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '", "' + this.type + '");true;');
       }
       else {
         that.setState({ loading: false });
@@ -520,7 +521,7 @@ class MainPage extends BaseComponent {
       }
     });
   }
-  async startRecordAndroid() {
+  async startRecordAndroid(type) {
     let isHasMic = await NativeModules.NotifyOpen.getRecordPermission();
     const that = this;
     if(isHasMic== 0){
@@ -539,12 +540,17 @@ class MainPage extends BaseComponent {
       return;
     }
     showRecoding();
+    if(type) {
+      this.type = type
+    } else{
+      this.type = 'talk'
+    }
     Recognizer.start();
     this.startTimeout = setTimeout(()=>{
       that.stopRecord()
     }, 60000)
   }
-  startRecordIOS = () => {
+  startRecordIOS = (type) => {
     const isHasMic = NativeModules.OpenNoticeEmitter ? NativeModules.OpenNoticeEmitter.getRecordPermission() : 0;
     const that = this;
     logger('...........isHasMic', isHasMic);
@@ -564,6 +570,12 @@ class MainPage extends BaseComponent {
         return;
       }
       showRecoding();
+      console.log(type)
+      if(type) {
+        this.type = type
+      } else{
+        this.type = 'talk'
+      }
       logger('...........RecognizerIos', this.RecognizerIos);
       this.RecognizerIos && this.RecognizerIos.start();
       this.startTimeout = setTimeout(()=>{
@@ -914,6 +926,14 @@ class MainPage extends BaseComponent {
             </View>
             <Text style={styles.content}>
             </Text>
+            <View style={styles.recordBtn}>
+              <MyButton style={[styles.recordBtn]} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this, 'chat') : this.startRecordAndroid.bind(this, 'chat')} onPressOut={this.stopRecord}>
+                <Image
+                    style={{ width: '100%', height: '100%', }}
+                    resizeMode='contain'
+                    source={{ uri: 'https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/image/microphone.png' }} />
+              </MyButton>
+            </View>
             <View style={styles.sliderBottomBtn}></View>
           </TouchableOpacity>
         </View>
@@ -962,6 +982,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 2,
     left: windowWidth / 2 - Common.window.width /20,
+  },
+  recordBtn: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    position: 'absolute',
+    zIndex: 2,
+    bottom: 100,
+    left: windowWidth / 2 - 40,
   },
   sliderBottomBtn: {
     width: Common.window.width /10,
