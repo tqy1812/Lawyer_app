@@ -512,7 +512,8 @@ class MainPage extends BaseComponent {
     Storage.getUserRecord().then((user) => {
       if (user) {
         let obj = Object.assign({}, JSON.parse(user));
-        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '", "' + obj.token + '", "' + this.type + '");true;');
+        logger('type===', this.type)
+        this.wv && this.wv.current && this.wv.current.injectJavaScript('receiveMessage("' + value + '","' + obj.token + '","' + this.type + '");true;');
       }
       else {
         that.setState({ loading: false });
@@ -570,7 +571,6 @@ class MainPage extends BaseComponent {
         return;
       }
       showRecoding();
-      console.log(type)
       if(type) {
         this.type = type
       } else{
@@ -914,7 +914,7 @@ class MainPage extends BaseComponent {
           /> }
 
         <View style={[styles.contentView, { top: 0, height: windowHeight}]} {...this._panResponderMyPlan.panHandlers}>
-          <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this) : this.startRecordAndroid.bind(this)} onPressOut={this.stopRecord}>
+          <TouchableOpacity activeOpacity={1} style={styles.content} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this, 'talk') : this.startRecordAndroid.bind(this, 'talk')} onPressOut={this.stopRecord}>
             <View style={[styles.topMenu, {height: 50 + menuHeight}]}>
               {menuVisible && <MyButton style={[styles.menuBtnView, {height: 50 + menuHeight}]} onPress={() => this.props.navigation.navigate('Center', { key: this.props.navigation.getState().key })}>
                 <IcomoonIcon name='center' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
