@@ -27,6 +27,7 @@
     "react-native": "0.69.7",
     "react-native-background-timer": "^2.4.1",
     "react-native-common-date-picker": "^2.3.9",
+    "react-native-document-picker": "^9.1.0",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-bottom-sheet": "^1.1.0",
     "react-native-gesture-handler": "^2.8.0",
