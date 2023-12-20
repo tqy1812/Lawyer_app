@@ -29,6 +29,7 @@
     "react-native-common-date-picker": "^2.3.9",
     "react-native-document-picker": "^9.1.0",
     "react-native-elements": "^3.4.2",
+    "react-native-fetch-blob": "^0.10.8",
     "react-native-gesture-bottom-sheet": "^1.1.0",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-headless-task-worker": "^1.0.0",
