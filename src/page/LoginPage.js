@@ -215,32 +215,26 @@ class LoginPage extends Component {
     }
     // 登录
     async handleLogin() {
-        DocumentPicker.pick({
-            type: [FileTypes['All']],
-        }).then(res => {
-            console.log(
-                res.uri,
-                res.type, // mime type
-                res.name,
-                res.size
-            );
-            if (callback) {
-                callback(res);
-            }
-        }).catch(error => {
-            console.log(error);
-            if (errorCallback) {
-                errorCallback(error);
-            }
-        });
+        // DocumentPicker.pick({
+        //     type: [FileTypes['All']],
+        // }).then(res => {
+        //     // res =  [ { fileCopyUri: null,
+        //     //     size: 87829,
+        //     //     name: '111.pdf',
+        //     //     type: 'application/pdf',
+        //     //     uri: 'content://com.android.providers.media.documents/document/document%3A50443' } ]
+        //     console.log('DocumentPicker',res);
+        // }).catch(error => {
+        //     console.log('DocumentPicker', error);
+        // });
         // try {
         //     const savedResponse = await saveFileToLocal('https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/download/case_template.xlsx');
             
-        //     console.log("File saved successfully");
+        //     console.log("File saved successfully", savedResponse);
         // } catch (error) {
         //     console.log("Failed to save the file", error);
         // }
-        return
+        // return
 
         const { dispatch } = this.props;
         const { phone, password, autoLogin, deviceToken, deviceType, tabValue } = this.state;

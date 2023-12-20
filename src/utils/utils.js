@@ -3,6 +3,7 @@ import moment from 'moment';
 import { func } from 'prop-types';
 import Common from "../common/constants";
 import {PixelRatio} from "react-native";
+import platform from './platform';
 import RNFetchBlob from 'react-native-fetch-blob';
 export const locale = {
   name: 'zhCn',
@@ -634,10 +635,18 @@ export async function saveFileToLocal(url) {
       const response = await fetch(url); // 发起网络请求获取文件内容
       
       if (!response.ok) throw new Error('Network request failed');
+      var match = url.match(/\/([^\/?#]+)[^\/]*$/);
+      var fileName = match && match[1];
+      var filePath = '';
+      if(platform.isAndroid()) {
+        filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/lawyerapp/`; // 设置保存路径及文件名
+      }
+      else {
+        filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/lawyerapp/`; // 设置保存路径及文件名
+      }
       
-      const filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/filename`; // 设置保存路径及文件名
-      
-      const res = await RNFetchBlob.config({ path: filePath })
+      console.log(filePath)
+      const res = await RNFetchBlob.config({ path: filePath + fileName })
           .fetch('GET', url); // 将文件保存到指定路径
           
       return res;
