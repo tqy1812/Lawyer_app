@@ -37,6 +37,7 @@ import GuidePage from '../page/GuidePage';
 import SecurityPage from '../page/SecurityPage';
 import AccountRemovePage from '../page/AccountRemovePage'
 import ClientCasePage from '../page/ClientCasePage'
+import ChatPage from '../page/ChatPage'
 import platform from '../utils/platform';
 import * as Storage from '../common/Storage';
 import { logger, compareVersion } from '../utils/utils';
@@ -345,6 +346,12 @@ export default function StackRouter(props) {
         <Stack.Screen
           name="ClientCase"
           component={ClientCasePage}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Chat"
+          component={ChatPage}
           options={{ headerShown: false }}
         />
 
