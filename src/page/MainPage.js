@@ -1025,19 +1025,17 @@ class MainPage extends BaseComponent {
             </View>
             <Text style={styles.content}>
             </Text>
-            <View style={styles.recordBtn}>
+            
+            {false && <View style={styles.recordBtn}>
               <TouchableOpacity style={{ width: '100%', height: '100%', }} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this, 'chat') : this.startRecordAndroid.bind(this, 'chat')} onPressOut={this.stopRecord}>
                 <Image
                   style={{ width: '100%', height: '100%', }}
                   resizeMode='contain'
                   source={{ uri: 'https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/microphone.png' }} />
               </TouchableOpacity>
-            </View>
-
-
+            </View>}
 
             <View style={styles.sliderBottomBtn}></View>
-
 
           </TouchableOpacity>
         </View>

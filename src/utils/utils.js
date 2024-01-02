@@ -384,7 +384,9 @@ export function getWeek (date) { // 参数时间戳
       else {
         if(year !== timeYear && preYear !== timeYear) {
           if(rs.length ==0) {
-            last = {date: preItem.date, data: preItem.data.concat(plan[key]), total: preItem.total, isShowYear: true, isFestival: preItem.isFestival}
+            if(preItem && preItem.date) {
+              last = {date: preItem.date, data: preItem.data.concat(plan[key]), total: preItem.total, isShowYear: true, isFestival: preItem.isFestival}
+            }
             isShowYear = true;
           }
           else{
@@ -394,7 +396,9 @@ export function getWeek (date) { // 参数时间戳
         }
         else if(year !== timeYear && preYear === timeYear) {
           if(rs.length ==0) {
-            last = {date: preItem.date, data: preItem.data.concat(plan[key]), total: preItem.total, isShowYear: false, isFestival: preItem.isFestival}
+            if(preItem && preItem.date) {
+              last = {date: preItem.date, data: preItem.data.concat(plan[key]), total: preItem.total, isShowYear: false, isFestival: preItem.isFestival}
+            }
             isShowYear = true;
           }
           else {
@@ -410,7 +414,7 @@ export function getWeek (date) { // 参数时间戳
     preYear = timeYear;
     ++index;
   }
-  // logger(rs)
+  logger(rs)
   return {last, rs};
  }
 
