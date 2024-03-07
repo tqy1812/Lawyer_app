@@ -969,7 +969,7 @@ export function sendClientMessage(id, content, type, callback = null) {
 }
 
 // 获取可对话的律师列表
-export function getConversableClientList(page, per_page, keywords, callback = null) {
+export function getConversableEmployeeList(page, per_page, keywords, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'client_api/im/employee/list?page=' + page + '&per_page=' + per_page + '&keywords=' + keywords;
@@ -992,7 +992,7 @@ export function getConversableClientList(page, per_page, keywords, callback = nu
 }
 
 // 客户获取对应律师聊天记录，每页代表一天的聊天记录
-export function getClientChatList(page, per_page, id, callback = null) {
+export function getEmployeeChatList(page, per_page, id, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'client_api/im/message/list?page=' + page + '&per_page=' + per_page + '&employee_id=' + id;
