@@ -1,7 +1,7 @@
 import authHelper from "../helpers/authHelper";
 import request from "../utils/request";
 import * as Storage from '../common/Storage';
-import {Overlay} from 'react-native';
+import { Overlay } from 'react-native';
 import Common from "../common/constants";
 import { logger } from "../utils/utils";
 import NetInfo from '@react-native-community/netinfo';
@@ -16,12 +16,12 @@ export function reqSaveUser(user, save = true, from = null, callback = null) {
     return (dispatch, getState) => {
         if (user === undefined || user === null || user === '{}') {
             user = {};
-        } 
+        }
         if (dispatch) {
             logger('::::::::: reqSaveUser:user', user);
-            dispatch({type: TYPE_AUTH_USER, data: user});
+            dispatch({ type: TYPE_AUTH_USER, data: user });
         }
-        if ((from !== "loadRecord" || from !== "requestLoginout" ) && ( user.token === null)) {
+        if ((from !== "loadRecord" || from !== "requestLoginout") && (user.token === null)) {
 
             logger('::::::::: reqSaveUser:user logout');
             if (authHelper.delegate) {
@@ -44,7 +44,7 @@ export function login(phone, password, device_id, device_type, callback = null) 
         data.device_id = device_id;
         data.device_type = device_type;
         request_impl(api, 'login', data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 retData.phone = phone;
                 retData.password = password;
@@ -72,7 +72,7 @@ export function clientLogin(phone, password, callback = null) {
         data.phone = phone;
         data.password = password;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 retData.phone = phone;
                 retData.password = password;
@@ -89,7 +89,7 @@ export function clientLogin(phone, password, callback = null) {
             }
         }, dispatch);
     };
-} 
+}
 
 
 export function getAppVersion(callback = null) {
@@ -99,11 +99,11 @@ export function getAppVersion(callback = null) {
         headers['Content-Type'] = 'application/json';
         let data = {};
         NetInfo.fetch().then(state => {
-            if(state.isConnected) {
+            if (state.isConnected) {
                 request.post('https://itunes.apple.com/cn/lookup?id=6446157793', '', data, headers,
                     (res, error) => {
-                        if(res) {
-                            if(res.resultCount > 0) {
+                        if (res) {
+                            if (res.resultCount > 0) {
                                 let retData = res.results && res.results[0] && res.results[0].version;
                                 logger('app store version===' + retData)
                                 if (callback) {
@@ -123,7 +123,7 @@ export function getAppVersion(callback = null) {
 
                     },
                     true
-                ); 
+                );
             }
             else {
                 Toast.show("网络已经离线");
@@ -137,9 +137,9 @@ export function getAndroidAppVersion(callback = null) {
         let state = getState();
         let method = 'app_update_log/latest';
         let headers = {};
-        
+
         request_impl_get_system(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 // logger(retData)
                 if (callback) {
@@ -160,7 +160,7 @@ export function getInfo(callback = null) {
         let method = 'api/employee/get';
 
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -181,7 +181,7 @@ export function getClientInfo(callback = null) {
         let method = 'client_api/client/info';
 
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -201,9 +201,9 @@ export function clientComment(callback = null) {
         let method = 'client_api/comment/list';
         let data = {};
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let list = res.data && res.data.data ? res.data.data : [];
-                dispatch({type: actionAuth.CLIENT_COMMENT_LIST, data: list});
+                dispatch({ type: actionAuth.CLIENT_COMMENT_LIST, data: list });
                 if (callback) {
                     callback(list, error);
                 }
@@ -223,7 +223,7 @@ export function upload(file, callback = null) {
         let data = new FormData();
         data.append('file', file);
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -234,7 +234,7 @@ export function upload(file, callback = null) {
                     callback(res, error);
                 }
             }
-        }, dispatch, { 'Content-Type': 'multipart/form-data'});
+        }, dispatch, { 'Content-Type': 'multipart/form-data' });
     };
 }
 export function clientUpload(file, callback = null) {
@@ -244,7 +244,7 @@ export function clientUpload(file, callback = null) {
         let data = new FormData();
         data.append('file', file);
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -255,7 +255,7 @@ export function clientUpload(file, callback = null) {
                     callback(res, error);
                 }
             }
-        }, dispatch, { 'Content-Type': 'multipart/form-data'});
+        }, dispatch, { 'Content-Type': 'multipart/form-data' });
     };
 }
 export function userUpdate(url, iosToken, voiceType, callback = null) {
@@ -263,17 +263,17 @@ export function userUpdate(url, iosToken, voiceType, callback = null) {
         let state = getState();
         let method = 'api/employee/update'
         let data = {};
-        if(url){
+        if (url) {
             data.avatar = url;
         }
-        if(iosToken){
+        if (iosToken) {
             data.ios_token = iosToken;
         }
-        if(voiceType){
+        if (voiceType) {
             data.voice_type = voiceType;
         }
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -292,14 +292,14 @@ export function clientUserUpdate(url, voiceType, callback = null) {
         let state = getState();
         let method = 'client_api/client/update'
         let data = {};
-        if(url){
+        if (url) {
             data.avatar = url;
         }
-        if(voiceType){
+        if (voiceType) {
             data.voice_type = voiceType;
         }
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -321,7 +321,7 @@ export function userDeviceToken(type, deviceToken, callback = null) {
         data.device_type = type;
         data.device_id = deviceToken;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -341,7 +341,7 @@ export function getVerifyPic(callback = null) {
         let method = 'get_verify_pic';
 
         request_impl_get_system(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 // logger(retData)
                 if (callback) {
@@ -365,7 +365,7 @@ export function sendVerifySms(phone, imageCode, callback) {
         data.phone = phone;
         data.image_code = imageCode;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -386,7 +386,7 @@ export function sendVerifyCode(callback) {
         let method = 'api/employee/send_verify_code'
         let data = {};
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -407,7 +407,7 @@ export function sendClientVerifyCode(callback) {
         let method = 'client_api/client/send_verify_code'
         let data = {};
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -430,7 +430,7 @@ export function modifyPassword(password, verifyCode, callback) {
         data.new_pass = password;
         data.verify_code = verifyCode;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -453,7 +453,7 @@ export function clientModifyPassword(password, verifyCode, callback) {
         data.new_pass = password;
         data.verify_code = verifyCode;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -478,7 +478,7 @@ export function register(name, phone, password, smsCode, callback) {
         data.password = password;
         data.sms_code = smsCode;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -503,7 +503,7 @@ export function clientRegister(phone, password, verifyCode, inviteCode, callback
         data.sms_code = verifyCode;
         data.invite_code = inviteCode;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -524,7 +524,7 @@ export function removeAccount(verifyCode, callback) {
         let data = {};
         data.verify_code = verifyCode;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -545,7 +545,7 @@ export function removeClientAccount(verifyCode, callback) {
         let data = {};
         data.verify_code = verifyCode;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -565,7 +565,7 @@ export function getCase(callback = null) {
         let method = 'api/case/list?page=1&per_page=1000';
 
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 // logger(retData)
                 if (callback) {
@@ -587,7 +587,7 @@ export function getClientCase(callback = null) {
         let method = 'client_api/case/list?page=1&per_page=1000';
 
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 // logger(retData)
                 if (callback) {
@@ -609,7 +609,7 @@ export function addProcess(callback = null) {
         let data = {};
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -631,7 +631,7 @@ export function getProcess(id, callback = null) {
         let data = {};
 
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data.process;
                 if (callback) {
                     callback(retData, error);
@@ -661,7 +661,7 @@ export function submitProcess(id, wakeup, name, isEnable, caseId, start_time, en
         };
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -687,7 +687,7 @@ export function updateProcessTime(id, start_time, end_time, callback = null) {
         };
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -712,7 +712,7 @@ export function enableProcess(id, wakeup, callback = null) {
         };
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -737,7 +737,7 @@ export function wakeUpProcess(id, wakeup, callback = null) {
         };
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res;
                 if (callback) {
                     callback(retData, error);
@@ -761,7 +761,7 @@ export function deleteProcess(id, callback = null) {
         };
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -786,7 +786,7 @@ export function changeTimesProcess(id, content, callback = null) {
         };
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -805,11 +805,11 @@ export function changeTimesProcess(id, content, callback = null) {
 export function getProcessList(page, isEnd, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
-        let method = 'api/process/list?page='+ page + '&per_page='+ Common.PAGE_SIZE + '&is_end=' +isEnd
+        let method = 'api/process/list?page=' + page + '&per_page=' + Common.PAGE_SIZE + '&is_end=' + isEnd
         let data = {};
 
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -828,11 +828,11 @@ export function getProcessList(page, isEnd, callback = null) {
 export function getDailyProcessList(page, time, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
-        let method = 'api/daily_process/list?page='+ page + '&per_page=100' + '&date=' +time
+        let method = 'api/daily_process/list?page=' + page + '&per_page=100' + '&date=' + time
         let data = {};
 
         request_impl_get(api, method, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -855,7 +855,7 @@ export function addTalk(content, callback = null) {
         // 要发送的数据
         data.ask = content;
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -881,7 +881,7 @@ export function addFeedback(title, content, contact, callback = null) {
         };
 
         request_impl(api, method, data, (res, error) => {
-            if(res) {
+            if (res) {
                 let retData = res.data;
                 if (callback) {
                     callback(retData, error);
@@ -896,87 +896,232 @@ export function addFeedback(title, content, contact, callback = null) {
     };
 }
 
+// 获取可对话的客户列表
+export function getConversableClientList(page, per_page, keywords, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/im/client/list?page=' + page + '&per_page=' + per_page + '&keywords=' + keywords;
+        let data = {};
+
+        request_impl_get(api, method, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+// 获取对应客户聊天记录，每页代表一天的聊天记录
+export function getClientChatList(page, per_page, id, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/im/message/list?page=' + page + '&per_page=' + per_page + '&client_id=' + id;
+        let data = {};
+
+        request_impl_get(api, method, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+// 给客户发送消息,content_type有 “text” 和 “file”两种类型
+export function sendClientMessage(id, content, type, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/im/message/send'
+        let data = {
+            client_id: id,
+            content_type: type,
+            content: content,
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+// 获取可对话的律师列表
+export function getConversableClientList(page, per_page, keywords, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/im/employee/list?page=' + page + '&per_page=' + per_page + '&keywords=' + keywords;
+        let data = {};
+
+        request_impl_get(api, method, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+// 客户获取对应律师聊天记录，每页代表一天的聊天记录
+export function getClientChatList(page, per_page, id, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/im/message/list?page=' + page + '&per_page=' + per_page + '&employee_id=' + id;
+        let data = {};
+
+        request_impl_get(api, method, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+// 给员工发送消息,content_type有 “text” 和 “file”两种类型
+export function sendEmployeeMessage(id, content, type, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/im/message/send'
+        let data = {
+            employee_id: id,
+            content_type: type,
+            content: content,
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
+
 function request_impl(url, method, data, callback, dispatch = null, header) {
     let headers = {};
     NetInfo.fetch().then(state => {
-        if(state.isConnected) {
-     // 消息头
-     if(header) {
-        headers = header;
-     }
-     else{
-        headers['Content-Type'] = 'application/json';
-        headers['Accept'] = 'application/json, application/xml, text/play, text/html, *.*';
-     }
-     Storage.getUserRecord().then((user) => {
-        if (user) {
-            let obj = Object.assign({}, JSON.parse(user));
-            headers['token'] = obj.token;
-            request.post(url, method, data, headers,
-                (rs, error) => {
-                    // logger(':::: request_impl: ' + JSON.stringify(rs));
-                    if(callback) callback(rs, error);
-                },
-                () => {
-                    // logger('xyz:::: logout callback ' + reqKey);
-                    requestLoginout(dispatch);
-                },
-                () => {
+        if (state.isConnected) {
+            // 消息头
+            if (header) {
+                headers = header;
+            }
+            else {
+                headers['Content-Type'] = 'application/json';
+                headers['Accept'] = 'application/json, application/xml, text/play, text/html, *.*';
+            }
+            Storage.getUserRecord().then((user) => {
+                if (user) {
+                    let obj = Object.assign({}, JSON.parse(user));
+                    headers['token'] = obj.token;
+                    request.post(url, method, data, headers,
+                        (rs, error) => {
+                            // logger(':::: request_impl: ' + JSON.stringify(rs));
+                            if (callback) callback(rs, error);
+                        },
+                        () => {
+                            // logger('xyz:::: logout callback ' + reqKey);
+                            requestLoginout(dispatch);
+                        },
+                        () => {
 
+                        }
+                    );
                 }
-            );
-        }    
-        else{
-            request.post(url, method, data, headers,
-                (rs, error) => {
-                    logger(':::: error: ' + error);
-                    if(callback) callback(rs, error);
-                },
-                () => {
-                    logger('xyz:::: logout callback ' + reqKey);
-                    requestLoginout(dispatch);
-                },
-                () => {
+                else {
+                    request.post(url, method, data, headers,
+                        (rs, error) => {
+                            logger(':::: error: ' + error);
+                            if (callback) callback(rs, error);
+                        },
+                        () => {
+                            logger('xyz:::: logout callback ' + reqKey);
+                            requestLoginout(dispatch);
+                        },
+                        () => {
 
+                        }
+                    );
                 }
-            ); 
+            });
         }
-      });
-    }
-    else{
-         destroySibling();
-         Toast.show("网络已经离线");
-    }
- });
+        else {
+            destroySibling();
+            Toast.show("网络已经离线");
+        }
+    });
 }
 
 function request_impl_get(url, method, callback, dispatch = null) {
     let headers = {};
     NetInfo.fetch().then(state => {
-      if(state.isConnected) {
-        Storage.getUserRecord().then((user) => {
-            logger("request_impl_get",  user)
-            if (user) {
-                let obj = Object.assign({}, JSON.parse(user));
-                headers['token'] = obj.token;
-                request.get(url, method, headers,
-                    (rs, error) => {
-                        // logger(':::: rs: ' + JSON.stringify(rs));
-                        if(callback) callback(rs, error);
-                    },
-                    () => {
-                        requestLoginout(dispatch);
-                    }
-                );
-            }    
-        });
-       }
-       else{
+        if (state.isConnected) {
+            Storage.getUserRecord().then((user) => {
+                logger("request_impl_get", user)
+                if (user) {
+                    let obj = Object.assign({}, JSON.parse(user));
+                    headers['token'] = obj.token;
+                    request.get(url, method, headers,
+                        (rs, error) => {
+                            // logger(':::: rs: ' + JSON.stringify(rs));
+                            if (callback) callback(rs, error);
+                        },
+                        () => {
+                            requestLoginout(dispatch);
+                        }
+                    );
+                }
+            });
+        }
+        else {
             destroySibling();
             Toast.show("网络已经离线");
-       }
+        }
     });
-    
+
 }
 
 function request_impl_get_system(url, method, callback, dispatch = null) {
@@ -984,7 +1129,7 @@ function request_impl_get_system(url, method, callback, dispatch = null) {
     request.get(url, method, headers,
         (rs, error) => {
             // logger(':::: rs: ' + JSON.stringify(rs));
-            if(callback) callback(rs, error);
+            if (callback) callback(rs, error);
         },
         () => {
             requestLoginout(dispatch);
@@ -993,7 +1138,7 @@ function request_impl_get_system(url, method, callback, dispatch = null) {
     );
 }
 
-function requestLoginout(dispatch = null){
+function requestLoginout(dispatch = null) {
     DeviceEventEmitter.emit('requestLoginout')
 }
 
