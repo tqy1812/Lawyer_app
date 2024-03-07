@@ -3,6 +3,7 @@ import BaseComponent from '../components/BaseComponent';
 import {connect} from 'react-redux';
 import Chat from '../chat/Chat';
 import authHelper from '../helpers/authHelper';
+import actionChat from '../actions/actionChat';
 import { mockText,mockImage,mockLocation,mockVoice } from "../utils/mock";
 import moment from 'moment';
 
@@ -12,6 +13,7 @@ class ChatPage extends BaseComponent {
         props.user = state.Auth.user;
         props.isLogin = authHelper.logined(state.Auth.user);
         props.userInfo = state.Auth.userInfo;
+        props.chatMessageList = state.Chat.chatMessageList;
         return props;
     }
 
@@ -21,7 +23,19 @@ class ChatPage extends BaseComponent {
             show:false,
             text:"",
             color:"",
+            type: props.user.type ? props.user.type : 1,
+            id: props.route.params.id,
         };
+    }
+    componentDidMount() {
+        if (!this.props.isLogin) {
+          this.props.navigation.navigate('Login');
+        }
+        if(this.state.type===2) {
+            this.props.dispatch(actionChat.getClientChatList(1, 10, this.state.id));
+        } else {
+            this.props.dispatch(actionChat.getEmployeeChatList(1, 10, this.state.id));
+        }
     }
 
     startRecording = ()=>{
