@@ -396,6 +396,13 @@ class CenterPage extends BaseComponent {
                   <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
                 </MyButton>
               </View>
+
+              <View style={styles.menuView1}>
+                <MyButton style={styles.menuButton} onPress={() => {this.props.navigation.navigate('ContactList')}}>
+                  <Text style={styles.menuText}>联系人列表</Text>
+                  <Image style={[styles.right]} source={ImageArr['arrow_right']}></Image>
+                </MyButton>
+              </View>
             </View>
             <View style={styles.bottom}>
                 <MyButton style={styles.logoutBtn} onPress={this.handSubmit.bind(this)}>
