@@ -479,10 +479,10 @@ export default class InputToolbar extends React.Component {
         var height = this.composerHeight + (MIN_INPUT_TOOLBAR_HEIGHT - MIN_COMPOSER_HEIGHT);
         return (
             <View style={[Styles.inputRow, {height:height}]}>
-                <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8}}
+                {/* <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8}}
                                   onPress={this.handleRecordMode.bind(this)}>
                     <Image style={{height:30,width:30}} source={require('./Images/chatBar_record.png')}/>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <View style={Styles.searchRow}>
                     <TextInput
@@ -503,7 +503,7 @@ export default class InputToolbar extends React.Component {
                         underlineColorAndroid='transparent'
                     />
                 </View>
-                { this._renderEmojiButton() }
+                {/* { this._renderEmojiButton() } */}
                 { this._renderSendButton() }
             </View>
         );

@@ -26,8 +26,9 @@ export default class actionChat {
           let state = getState();
              dispatch(request.getClientChatList(page, per_page, id, (rs)=>{
                  let list = rs.data
+                 console.log(rs)
                  dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: list});
-                 if(callback) callback(list);
+                 if(callback) callback(rs);
           }));
          };
      }
@@ -38,9 +39,7 @@ export default class actionChat {
             let state = getState();
             let chatMessageList = state.Chat && state.Chat.chatMessageList;
              dispatch(request.sendClientMessage(id, content, type, (rs)=>{
-                 let list = chatMessageList.push(rs)
-                 dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: list});
-                 if(callback) callback(list);
+                 if(callback) callback(rs);
           }));
          };
      }
@@ -66,20 +65,17 @@ export default class actionChat {
               dispatch(request.getEmployeeChatList(page, per_page, id, (rs)=>{
                   let list = rs.data
                   dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: list});
-                  if(callback) callback(list);
+                  if(callback) callback(rs);
            }));
           };
       }
  
-      // 给客户发送消息
+      // 给律师发送消息
      static sendEmployeeMessage(id, content, type, callback = null) {
          return (dispatch, getState) => {
              let state = getState();
-             let chatMessageList = state.Chat && state.Chat.chatMessageList;
               dispatch(request.sendEmployeeMessage(id, content, type, (rs)=>{
-                  let list = chatMessageList.push(rs)
-                  dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: list});
-                  if(callback) callback(list);
+                  if(callback) callback(rs);
            }));
           };
       }
