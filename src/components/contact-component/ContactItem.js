@@ -2,14 +2,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
-const goDetails = (id) => {
-    console.log('goDetails', id);
-    // 'Chat', { id: 1, name:'zhangsan', avatar: ''}
-};
+// const goDetails = (id) => {
+//     console.log('goDetails', id);
+//     // 'Chat', { id: 1, name:'zhangsan', avatar: ''}
+// };
 
-const ContactItem = ({ name, recentNews, id, isFixed, avatar, date, }) => {
+const ContactItem = ({ name, recentNews, id, isFixed, avatar, date, onPress }) => {
     return (
-        <TouchableOpacity style={[styles.item, isFixed ? styles.fixed : '']} onPress={() => { goDetails(id) }}>
+        <TouchableOpacity style={[styles.item, isFixed ? styles.fixed : '']} onPress={() => onPress(id, name, avatar)}>
             <View style={styles.number}>
                 <Image
                     style={styles.avatar}

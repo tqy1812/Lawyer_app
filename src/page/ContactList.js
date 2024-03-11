@@ -198,6 +198,20 @@ class ReportPage extends Component {
         this.props.navigation.goBack();
     }
 
+    goDetails = (id, name, avatar) => {
+        console.log('goDetails', id, name, avatar);
+        // 'Chat', { id: 1, name:'zhangsan', avatar: ''}
+    };
+
+    contentViewScroll = (e) => {
+        var offsetY = e.nativeEvent.contentOffset.y; //滑动距离
+        var contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
+        var oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
+        if (offsetY + oriageScrollHeight >= contentSizeHeight) {
+            console.log('上传滑动到底部事件')
+        }
+    }
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -237,7 +251,7 @@ class ReportPage extends Component {
 
                 {/* 会话列表 */}
                 <View style={styles.container}>
-                    <ContactList contacts={this.state.contactsList} />
+                    <ContactList contacts={this.state.contactsList} onPress={this.goDetails} contentViewScroll={this.contentViewScroll} />
                 </View>
 
                 {
