@@ -13,7 +13,7 @@ export default class actionChat {
        return (dispatch, getState) => {
          let state = getState();
             dispatch(request.getConversableClientList(page, per_page, keywords, (rs)=>{
-                let list = rs.data
+                let list = rs
                 dispatch({type: actionChat.CHAT_LIST, data: list});
                 if(callback) callback(list);
          }));
@@ -51,7 +51,7 @@ export default class actionChat {
         return (dispatch, getState) => {
           let state = getState();
              dispatch(request.getConversableEmployeeList(page, per_page, keywords, (rs)=>{
-                 let list = rs.data
+                 let list = rs
                  dispatch({type: actionChat.CHAT_LIST, data: list});
                  if(callback) callback(list);
           }));

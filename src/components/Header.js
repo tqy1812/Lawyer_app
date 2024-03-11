@@ -118,7 +118,7 @@ class Header extends BaseComponent {
     } 
 
     return (
-      <View style={styles.navigationBarContainer}>
+      <View style={styles.navigationBarContainer} >
         <View style={styles.navigationBar}>
           {NavigationBar}
         </View>
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: '#000',
     width: '100%',
-    // backgroundColor: '#ff0000'
+    // backgroundColor: '#fff'
   },
   navigationBar: {
     flexDirection: 'row',

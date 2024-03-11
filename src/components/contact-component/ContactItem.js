@@ -1,32 +1,76 @@
 // ContactItem.js  
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
-const ContactItem = ({ name, number }) => {
+const goDetails = (id) => {
+    console.log('goDetails', id);
+};
+
+const ContactItem = ({ name, recentNews, id, isFixed, avatar, date, }) => {
     return (
-        <View style={styles.item}>
+        <TouchableOpacity style={[styles.item, isFixed ? styles.fixed : '']} onPress={() => { goDetails(id) }}>
             <View style={styles.number}>
-                <Text>头像</Text>
+                <Image
+                    style={styles.avatar}
+                    source={{ uri: avatar }}
+                />
             </View>
-            <Text style={styles.name}>{name}</Text>
-        </View>
+            <View style={styles.name_box}>
+                <View style={styles.name}>
+                    <Text style={styles.name_text}>{name}</Text>
+                    <Text style={styles.info_text}>{recentNews}</Text>
+                </View>
+
+                <Text style={styles.time}>{date}</Text>
+            </View>
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     item: {
-        padding: 10,
-        backgroundColor: '#fff',
-        marginVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        padding: 15,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        paddingBottom: 0,
+        paddingTop: 0
     },
-    name: {
+    fixed: {
+        backgroundColor: '#F4F4F5'
+    },
+    name_box: {
         fontSize: 16,
         fontWeight: 'bold',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
+        borderStyle: 'solid', // 边框样式  
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingTop: 15,
+        paddingBottom: 15,
+        flex: 1,
+    },
+    name: {
+        // fontSize: 16,
+        // color: "#303133"
+        marginLeft: 10,
+    },
+    name_text: {
+        fontSize: 18,
+        color: "#303133"
+    },
+    info_text: {
+        fontSize: 14,
+        color: "#B3B3B3",
+
+    },
+    time: {
+        fontSize: 14,
+        color: "#C0C4CC",
+        marginRight: 15
     },
     number: {
         marginRight: 10,
@@ -41,6 +85,12 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        overflow: 'hidden',
+    },
+    avatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 5,
         overflow: 'hidden',
     },
 });

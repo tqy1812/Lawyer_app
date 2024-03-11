@@ -1023,9 +1023,19 @@ class MainPage extends BaseComponent {
                 <IcomoonIcon name='calendar' size={30} style={{ color: 'rgb(0, 122, 254)' }} />
               </MyButton>}
             </View>
+
+            <View style={{ paddingRight: 30, paddingTop: 5, width: windowWidth, }}>
+              <TouchableOpacity style={{ height: 30, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row', width: '100%' }} onPress={() => this.props.navigation.navigate('ContactList')}>
+                <Image
+                  style={{ width: 30, height: 30 }}
+                  resizeMode='contain'
+                  source={{ uri: 'https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/Vector.png' }} />
+              </TouchableOpacity>
+            </View>
+
             <Text style={styles.content}>
             </Text>
-            
+
             {false && <View style={styles.recordBtn}>
               <TouchableOpacity style={{ width: '100%', height: '100%', }} onLongPress={platform.isIOS() ? this.startRecordIOS.bind(this, 'chat') : this.startRecordAndroid.bind(this, 'chat')} onPressOut={this.stopRecord}>
                 <Image
