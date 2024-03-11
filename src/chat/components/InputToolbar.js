@@ -22,6 +22,8 @@ const MODE_TEXT = "mode_text"; // 文本输入模式
 const MODE_RECORD = "mode_record"; // 录音模式
 const MODE_ACTION = "mode_action"; //显示相册，照相、位置的模式
 const width = Dimensions.get('window').width;
+import Common from "../../common/constants";
+const { width: windowWidth, height: windowHeight } = Common.window;
 
 //输入框初始高度
 const MIN_COMPOSER_HEIGHT = Platform.select({
@@ -72,7 +74,7 @@ export default class InputToolbar extends React.Component {
     }
     addKeyboardListener(){
         Keyboard.addListener("keyboardDidShow",(e)=>{
-            let keyboardHeight = e.startCoordinates.height ; // 获取键盘高度
+            let keyboardHeight = e.endCoordinates.height ; // 获取键盘高度
             this.actionBarHeight = keyboardHeight ;
             this.setState({
                 shimVisible:true
@@ -291,7 +293,19 @@ export default class InputToolbar extends React.Component {
 
         this.props.handleLocationClick();
     }
+    /**
+     * 文件选择 点击事件
+     */
+    handleFilePicker() {
+        this.setState({
+            isEmoji: false,
+            actionVisible: false
+        });
+        this.actionBarHeight = 0;
+        this.onHeightChange();
 
+        this.props.handleFilePicker();
+    }
     /**
      * 录音按钮点击事件
      */
@@ -424,10 +438,10 @@ export default class InputToolbar extends React.Component {
                 </View>
             ),(
                 <View key={"location"} style={itemStyle}>
-                    <TouchableOpacity style={Styles.iconTouch} onPress={this.handleLocationClick.bind(this)}>
+                    <TouchableOpacity style={Styles.iconTouch} onPress={this.handleFilePicker.bind(this)}>
                         <Image resizeMode={"contain"} style={style} source={require("./Images/pin.png")}/>
                     </TouchableOpacity>
-                    <Text style={{marginTop:6, fontSize:12}}>位置</Text>
+                    <Text style={{marginTop:6, fontSize:12}}>文件</Text>
                 </View>
             )
         ];
@@ -441,7 +455,7 @@ export default class InputToolbar extends React.Component {
         let { renderTools } = this.props ;
         let { shimVisible, actionVisible } = this.state ; // 如果当前是软键盘弹出则添加一个垫子，防止输入框被键盘遮住
         let height = actionVisible?ACTION_BUTTON_HEIGHT:0;
-        return shimVisible?(<View style={[Styles.iconRow,{ height:this.actionBarHeight }]}></View>):(
+        return shimVisible?( null ):(
             actionVisible?(
                 <Animated.View style={[Styles.iconRow,{ height:height-5 }]}>
                     {renderTools? renderTools(this._renderTools()):this._renderTools() }
@@ -477,12 +491,13 @@ export default class InputToolbar extends React.Component {
     renderTextInput() {
         const {value = '' } = this.state;
         var height = this.composerHeight + (MIN_INPUT_TOOLBAR_HEIGHT - MIN_COMPOSER_HEIGHT);
+        console.log(height)
         return (
             <View style={[Styles.inputRow, {height:height}]}>
-                {/* <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8}}
+                <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8}}
                                   onPress={this.handleRecordMode.bind(this)}>
                     <Image style={{height:30,width:30}} source={require('./Images/chatBar_record.png')}/>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
 
                 <View style={Styles.searchRow}>
                     <TextInput
@@ -574,7 +589,7 @@ export default class InputToolbar extends React.Component {
                         <Text>按住 说话</Text>
                     </View>
                 </View>
-                { this._renderEmojiButton() }
+                {/* { this._renderEmojiButton() } */}
                 { this._renderSendButton() }
             </View>
         );
@@ -609,13 +624,13 @@ export default class InputToolbar extends React.Component {
     _renderSendButton() {
         const {focused, value} = this.state;
         return ((focused && value.length > 0) ) ? (
-            <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingRight:8}}
+            <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8,paddingRight:8}}
                               onPress={this.handleSend.bind(this)}>
                 <Text style={Styles.sendText}>{'发送'}</Text>
             </TouchableOpacity>
 
         ) : (
-            <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingRight:8}}
+            <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8,paddingRight:8}}
                               onPress={this.onActionsPress.bind(this)}>
                 <Image style={{height:30,width:30}}  source={require('./Images/add.png')}/>
             </TouchableOpacity>
@@ -624,11 +639,13 @@ export default class InputToolbar extends React.Component {
 
 
     render() {
-        const {　isEmoji, mode　} = this.state;
+        const {　isEmoji, mode, shimVisible　} = this.state;
+        var height = this.composerHeight + (MIN_INPUT_TOOLBAR_HEIGHT - MIN_COMPOSER_HEIGHT);
+        console.log('**',height)
         return (
-            <View style={Styles.search}>
+            <View style={[Styles.search, shimVisible ? {width: windowWidth, position: 'absolute', zIndex:3, bottom: 10} : {}]}>
                 {mode == MODE_TEXT ? this.renderTextInput() : this.renderReocrdInput()}
-                <View style={{flexGrow:1, height:1, backgroundColor:"lightgray"}}/>
+                <View style={{width: windowWidth, height:1, backgroundColor:"lightgray"}}/>
                 {isEmoji ? this._renderEmoji() : this._renderActions()}
             </View>
         )
@@ -639,6 +656,7 @@ InputToolbar.propTypes = {
     handleImagePicker:PropTypes.func.isRequired,
     handleCameraPicker:PropTypes.func.isRequired,
     handleLocationClick:PropTypes.func.isRequired,
+    handleFilePicker:PropTypes.func.isRequired,
     stopRecording:PropTypes.func.isRequired,
     onEndReachedRecording:PropTypes.func.isRequired, // 手指滑动到取消发送的距离的时候
     onReachedRecording:PropTypes.func.isRequired, //手指为滑动到取消发送的距离的时候
@@ -651,6 +669,7 @@ InputToolbar.defaultProps = {
     handleImagePicker:()=>{},
     handleCameraPicker:()=>{},
     handleLocationClick:()=>{},
+    handleFilePicker:()=>{},
     startRecording:()=>{},
     stopRecording:()=>{},
     onEndReachedRecording:()=>{}, // 手指滑动到取消发送的距离的时候

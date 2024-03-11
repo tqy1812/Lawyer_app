@@ -62,6 +62,9 @@ export default class Chat extends Component {
     onImagePicker =()=>{
        this.props.onImagePicker();
     };
+    onFilePicker =()=>{
+        this.props.onFilePicker();
+     };
     onLocationClick = ()=>{
         this.props.onLocationClick();
     };
@@ -89,6 +92,9 @@ export default class Chat extends Component {
     onLoadMoreAsync = (callback)=>{
         this.props.onLoadMoreAsync(callback);
     };
+    onRefreshAsync = (callback)=>{
+        this.props.onRefreshAsync(callback);
+    };
     renderLoadEarlier = ()=>{  };
     onHeightChange = (height)=>{ this.props.onHeightChange(height); };
     render() {
@@ -103,6 +109,7 @@ export default class Chat extends Component {
                     earlierContainerStyle = {this.props.earlierContainerStyle}
                     earlierWrapperStyle = {this.props.earlierWrapperStyle}
                     onLoadMoreAsync={this.onLoadMoreAsync}
+                    onRefreshAsync={this.onRefreshAsync}
                     isLoadingEarlier = { this.props.isLoadingEarlier }
                     onAvatarPress = { this.props.onAvatarPress }
                     ref={(messageList)=> this.messageList = messageList }
@@ -115,7 +122,9 @@ export default class Chat extends Component {
                     canLoadMore={ this.props.canLoadMore }
                     onPhonePress={this.onPhonePress}
                     onUrlPress = { this.onUrlPress }
-                    onEmailPress = { this.onEmailPress }/>
+                    onEmailPress = { this.onEmailPress }
+                    // messages = { this.props.messages }
+                    />
 
 
                 <MessageInput onHeightChange={ this.onHeightChange }
@@ -127,6 +136,7 @@ export default class Chat extends Component {
                               handleImagePicker = { this.onImagePicker }
                               handleCameraPicker = { this.onCameraPicker }
                               handleLocationClick={this.onLocationClick}
+                              handleFilePicker = { this.onFilePicker }
                               renderTools = { this.props.renderTools }
                               ref={(input)=>this.input = input}
                               onSend={ this.onSend }/>
@@ -157,6 +167,7 @@ Chat.propTypes = {
     onImagePicker:PropTypes.func,
     onCameraPicker:PropTypes.func,
     onLocationClick:PropTypes.func,
+    onFilePicker:PropTypes.func,
     onPhonePress:PropTypes.func,
     onUrlPress:PropTypes.func,
     onEmailPress:PropTypes.func,
@@ -188,6 +199,7 @@ Chat.defaultProps = {
     onImagePicker:()=>{ },
     onCameraPicker:()=>{ },
     onLocationClick:()=>{ },
+    onFilePicker:()=>{ },
     onPhonePress:()=>{ },
     onUrlPress:()=>{ },
     onEmailPress:()=>{ },

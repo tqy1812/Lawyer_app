@@ -634,6 +634,32 @@ export function filterSameColor(oldArr) {
   return color;
 }
 
+export function formatMessageText(isOutgoing, item, counter) {
+  const msgId = `msgid_${counter}` ;   
+  let base = {  
+    fromUser: {
+      _id: item.speaker_id,
+      name: item.speaker_name,
+      avatar: item.speaker_avatar,
+    },
+    msgId,
+    msgType: item.type,
+    status: 'send_success',
+    time: item.time 
+  } 
+  if(isOutgoing){
+      return item.type == 'text' ? { ...base,
+        text: item.content, 
+        isOutgoing, 
+      } : item.type == 'url' ? {...base, isOutgoing,  extend:{ imageHeight:80,imageWidth:50, thumbPath:item.content } } : null
+  } else {
+    return item.type == 'text' ? {  
+      ...base,
+      text: item.content, 
+      isOutgoing: false, 
+    } : item.type == 'url' ? {...base, isOutgoing: false, extend:{ imageHeight:80,imageWidth:50, thumbPath:item.content } } : null;
+  }
+}
 export async function saveFileToLocal(url) {
   try {
       const response = await fetch(url); // 发起网络请求获取文件内容

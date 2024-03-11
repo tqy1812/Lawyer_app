@@ -117,9 +117,9 @@ export default class MessageContainer extends React.Component {
         return null;
     }
     refresh = ()=>{
-        if(typeof this.props.onLoadMoreAsync === "function"){
+        if(typeof this.props.onRefreshAsync === "function"){
             this.setState({ refreshing:true }) ;
-            this.props.onLoadMoreAsync(()=>{
+            this.props.onRefreshAsync(()=>{
                 this.setState({ refreshing:false }) ;
             });
         }
@@ -169,6 +169,17 @@ export default class MessageContainer extends React.Component {
         }
         this.isScrollBottom = true ;
         this.messages = JSON.parse(JSON.stringify([ ...this.messages,...messages ]));
+        this.setState({
+            messagesData: JSON.parse(JSON.stringify(this.messages))
+        });
+    }
+    prepareMessages(messages){
+        if(!messages || messages.length <= 0){
+            return ;
+        }
+        this.isScrollBottom = true ;
+        this.messages = JSON.parse(JSON.stringify(messages));
+        console.log('prepareMessages',this.messages)
         this.setState({
             messagesData: JSON.parse(JSON.stringify(this.messages))
         });

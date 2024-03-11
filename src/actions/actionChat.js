@@ -1,6 +1,6 @@
 import * as request from './actionRequest';
 import moment from 'moment';
-import { logger} from '../utils/utils';
+import { logger, formatMessageText} from '../utils/utils';
 import Common from "../common/constants";
 export default class actionChat {
 
@@ -24,11 +24,23 @@ export default class actionChat {
     static getClientChatList(page, per_page, id, callback = null) {
         return (dispatch, getState) => {
           let state = getState();
-             dispatch(request.getClientChatList(page, per_page, id, (rs)=>{
-                 let list = rs.data
-                 console.log(rs)
-                 dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: list});
-                 if(callback) callback(rs);
+          let userInfo = state.Auth && state.Auth.userInfo;
+            console.log(userInfo)
+          dispatch(request.getClientChatList(page, per_page, id, (rs)=>{
+                let list = rs.data
+                console.log(list)
+                let newList = []
+                for(let i=0; i<list.length; i++) {
+                    console.log(parseInt(list[i].speaker_id), parseInt(userInfo.id))
+                  let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
+                  let newItem = formatMessageText(isRight, list[i], i + (page-1) * per_page)
+                  newList.push(newItem)
+                }
+                if(page == 1) {
+                  dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: newList});
+                }
+                rs.data = newList;
+                if(callback) callback(rs);
           }));
          };
      }
@@ -62,9 +74,20 @@ export default class actionChat {
      static getEmployeeChatList(page, per_page, id, callback = null) {
          return (dispatch, getState) => {
            let state = getState();
+           let userInfo = state.Auth && state.Auth.userInfo;
+             console.log(userInfo)
               dispatch(request.getEmployeeChatList(page, per_page, id, (rs)=>{
                   let list = rs.data
-                  dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: list});
+                  let newList = []
+                  for(let i=0; i<list.length; i++) {
+                    let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
+                    let newItem = formatMessageText(isRight, list[i], i + (page-1) * per_page)
+                    newList.push(newItem)
+                  }
+                  if(page == 1) {
+                    dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: newList});
+                  }
+                  rs.data = newList;
                   if(callback) callback(rs);
            }));
           };

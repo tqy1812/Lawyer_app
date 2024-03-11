@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const goDetails = (id) => {
     console.log('goDetails', id);
+    // 'Chat', { id: 1, name:'zhangsan', avatar: ''}
 };
 
 const ContactItem = ({ name, recentNews, id, isFixed, avatar, date, }) => {

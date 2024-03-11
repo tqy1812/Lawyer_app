@@ -52,7 +52,7 @@ export default class GiftedAvatar extends React.Component {
       return (
         <Image
           resizeMode="contain"
-          source={{uri: this.props.user.avatar}}
+          source={ this.props.user.avatar ?  {uri: this.props.user.avatar} : require('./Images/default.png')}
           style={[defaultStyles.avatarStyle, this.props.avatarStyle]}
         />
       );
@@ -86,7 +86,7 @@ export default class GiftedAvatar extends React.Component {
           );
          
       }
-    if (this.props.user.avatar) {
+    if (this.props.user.name) {
       return (
         <TouchableOpacity
           disabled={this.props.onPress ? false : true}

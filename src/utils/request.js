@@ -25,7 +25,7 @@ let request = {
             headers: headers,
         }).then((rs) => {
             let err = null;
-            logger(rs)
+            // logger(rs)
             if(rs && rs.status && rs.status == 200){
                 if (rs && rs.data && rs.data.code && rs.data.code!== 0) {
                     err = new Error(Error.ERR_REQ, rs.data.code, rs.data.msg, method);
