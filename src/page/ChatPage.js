@@ -32,7 +32,17 @@ class ChatPage extends BaseComponent {
             color:"",
             type: props.user.type ? props.user.type : 1,
             id: props.route.params.id,
-            hasMore: false
+            hasMore: false,
+            rightUser: {
+                _id: props.userInfo.id,
+                name: props.userInfo.name,
+                avatar: props.userInfo.avatar
+            },
+            leftUser: {
+                _id: props.route.params.id,
+                name: props.route.params.name,
+                avatar: props.route.params.avatar
+            },
         };
     }
     componentDidMount() {
@@ -76,31 +86,34 @@ class ChatPage extends BaseComponent {
 
     onSend = (text)=>{ 
         const { id } = this.state;
-        // let sendMsg = this.formatSendText(true,text,"send_going") ;
+        let sendMsg = this.formatSendText(true,text,"send_going") ;
+        this.messageList.appendToBottom([sendMsg]);
         if(this.state.type===2) {
             this.props.dispatch(actionChat.sendEmployeeMessage(id, text, 'text', (rs)=>{
-                
+                sendMsg.status = "send_success" ;
+                this.messageList.updateMsg(sendMsg);
             }));
         } else {
             this.props.dispatch(actionChat.sendClientMessage(id, text, 'text', (rs)=>{
-                
+                sendMsg.status = "send_success" ;
+                this.messageList.updateMsg(sendMsg);
             }));
         }
-        let sendMsg = mockText(true,text,"send_going") ;
-        let receiveMsg = mockText(false,text) ;
-        this.messageList.appendToBottom([sendMsg]);
-        setTimeout(()=>{
-            this.messageList.appendToBottom([receiveMsg]);
-        },800);
-        setTimeout(()=>{
-            sendMsg.status = "send_success" ;
-            this.messageList.updateMsg(sendMsg);
-        },600);
+        // let sendMsg = mockText(true,text,"send_going") ;
+        // let receiveMsg = mockText(false,text) ;
+        // this.messageList.appendToBottom([sendMsg]);
+        // setTimeout(()=>{
+        //     this.messageList.appendToBottom([receiveMsg]);
+        // },800);
+        // setTimeout(()=>{
+        //     sendMsg.status = "send_success" ;
+        //     this.messageList.updateMsg(sendMsg);
+        // },600);
     };
     formatSendText = (isOutgoing=true,text,status)=>{
         const msgId = `msgid_${counter++}` ;
         if(isOutgoing){
-            return { text, isOutgoing, msgType: "text",status,fromUser:rightUser,msgId } ;
+            return { text, isOutgoing, msgType: "text",status,fromUser:this.state.rightUser } ;
         }
     };
     onMessagePress = (message)=>{
@@ -185,7 +198,7 @@ class ChatPage extends BaseComponent {
         return (
             <SafeAreaView style={[styles.container]}>
                 <StatusBar translucent={true}  backgroundColor='transparent' barStyle="dark-content" />
-                <Header title='xx' back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>
+                <Header title={this.state.leftUser.name} back={true} cancelFunc={this.handleBack.bind(this)} {...this.props}/>
                 <Chat onLoad={(messageList,input)=>{
                                 this.messageList = messageList ;
                                 this.input = input ;}}
