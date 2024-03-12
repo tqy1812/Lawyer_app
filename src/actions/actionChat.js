@@ -1,6 +1,6 @@
 import * as request from './actionRequest';
 import moment from 'moment';
-import { logger, formatMessageText} from '../utils/utils';
+import { logger, formatMessage} from '../utils/utils';
 import Common from "../common/constants";
 export default class actionChat {
 
@@ -12,10 +12,15 @@ export default class actionChat {
     static getConversableClientList(page, per_page, keywords, callback = null) {
        return (dispatch, getState) => {
          let state = getState();
-            dispatch(request.getConversableClientList(page, per_page, keywords, (rs)=>{
+            dispatch(request.getConversableClientList(page, per_page, keywords, (rs, error)=>{
+              if(error) {
+                if(callback) callback(rs, error);
+              }
+              else {
                 let list = rs
                 dispatch({type: actionChat.CHAT_LIST, data: list});
-                if(callback) callback(list);
+                if(callback) callback(list, error);
+              }
          }));
         };
     }
@@ -26,21 +31,26 @@ export default class actionChat {
           let state = getState();
           let userInfo = state.Auth && state.Auth.userInfo;
             console.log(userInfo)
-          dispatch(request.getClientChatList(page, per_page, id, (rs)=>{
+          dispatch(request.getClientChatList(page, per_page, id, (rs, error)=>{
+            if(error) {
+              if(callback) callback(rs, error);
+            }
+            else {
                 let list = rs.data
                 console.log(list)
                 let newList = []
                 for(let i=0; i<list.length; i++) {
                     console.log(parseInt(list[i].speaker_id), parseInt(userInfo.id))
                   let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
-                  let newItem = formatMessageText(isRight, list[i], i + (page-1) * per_page)
+                  let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page)
                   newList.push(newItem)
                 }
                 if(page == 1) {
                   dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: newList});
                 }
                 rs.data = newList;
-                if(callback) callback(rs);
+                if(callback) callback(rs, error);
+              }
           }));
          };
      }
@@ -50,57 +60,76 @@ export default class actionChat {
         return (dispatch, getState) => {
             let state = getState();
             let chatMessageList = state.Chat && state.Chat.chatMessageList;
-             dispatch(request.sendClientMessage(id, content, type, (rs)=>{
-                 if(callback) callback(rs);
-          }));
+             dispatch(request.sendClientMessage(id, content, type, callback));
          };
-     }
-
+    }
+    //给客户发送文件  
+    static reqClientFileUpload(file, callback) {
+      return (dispatch, getState) => {
+        let state = getState();
+        dispatch(request.clientFileUpload(file, callback));
+      };
+    }
      
 
      // 获取可对话的律师列表
     static getConversableEmployeeList(page, per_page, keywords, callback = null) {
         return (dispatch, getState) => {
           let state = getState();
-             dispatch(request.getConversableEmployeeList(page, per_page, keywords, (rs)=>{
+             dispatch(request.getConversableEmployeeList(page, per_page, keywords, (rs, error)=>{
+              if(error) {
+                if(callback) callback(rs, error);
+              }
+              else {
                  let list = rs
                  dispatch({type: actionChat.CHAT_LIST, data: list});
                  if(callback) callback(list);
+              }
           }));
          };
-     }
+    }
  
      // 获取对应律师聊天记录
-     static getEmployeeChatList(page, per_page, id, callback = null) {
+    static getEmployeeChatList(page, per_page, id, callback = null) {
          return (dispatch, getState) => {
            let state = getState();
            let userInfo = state.Auth && state.Auth.userInfo;
              console.log(userInfo)
-              dispatch(request.getEmployeeChatList(page, per_page, id, (rs)=>{
+              dispatch(request.getEmployeeChatList(page, per_page, id, (rs, error)=>{
+                if(error) {
+                  if(callback) callback(rs, error);
+                }
+                else {
                   let list = rs.data
                   let newList = []
                   for(let i=0; i<list.length; i++) {
                     let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
-                    let newItem = formatMessageText(isRight, list[i], i + (page-1) * per_page)
+                    let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page)
                     newList.push(newItem)
                   }
                   if(page == 1) {
                     dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: newList});
                   }
                   rs.data = newList;
-                  if(callback) callback(rs);
+                  if(callback) callback(rs, error);
+                }
            }));
           };
       }
  
       // 给律师发送消息
-     static sendEmployeeMessage(id, content, type, callback = null) {
+    static sendEmployeeMessage(id, content, type, callback = null) {
          return (dispatch, getState) => {
              let state = getState();
-              dispatch(request.sendEmployeeMessage(id, content, type, (rs)=>{
-                  if(callback) callback(rs);
-           }));
+              dispatch(request.sendEmployeeMessage(id, content, type, callback));
           };
-      }
+    }
+    //给律师发送文件
+    static reqEmployeeFileUpload(file, callback) {
+        return (dispatch, getState) => {
+          let state = getState();
+          dispatch(request.employeeFileUpload(file, callback));
+        };
+    }
 
 }

@@ -37,18 +37,7 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { ScrollView } from 'react-native-gesture-handler';
 import { showConfirmModal } from '../components/ShowModal';
 import PrivacyConfirmModal from '../components/PrivacyConfirmModal';
-import DocumentPicker from 'react-native-document-picker';
-import {saveFileToLocal} from '../utils/utils';
 const Toast = Overlay.Toast;
-const FileTypes = {
-    All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
-    Image: DocumentPicker.types.images, // All image types (image/* or public.image)
-    Text: DocumentPicker.types.plainText, // Plain text files ie: .txt (text/plain or public.plain-text)
-    Audio: DocumentPicker.types.audio, // All audio types (audio/* or public.audio)
-    PDF: DocumentPicker.types.pdf, // PDF documents (application/pdf or com.adobe.pdf)
-    Zip: DocumentPicker.types.zip, // Zip files (application/zip or public.zip-archive)
-    Csv: DocumentPicker.types.csv, //Csv files (text/csv or public.comma-separated-values-text)
-};
 class LoginPage extends Component {
 
     static mapStateToProps(state) {
@@ -215,27 +204,6 @@ class LoginPage extends Component {
     }
     // 登录
     async handleLogin() {
-        // DocumentPicker.pick({
-        //     type: [FileTypes['All']],
-        // }).then(res => {
-        //     // res =  [ { fileCopyUri: null,
-        //     //     size: 87829,
-        //     //     name: '111.pdf',
-        //     //     type: 'application/pdf',
-        //     //     uri: 'content://com.android.providers.media.documents/document/document%3A50443' } ]
-        //     console.log('DocumentPicker',res);
-        // }).catch(error => {
-        //     console.log('DocumentPicker', error);
-        // });
-        // try {
-        //     const savedResponse = await saveFileToLocal('https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/download/case_template.xlsx');
-            
-        //     console.log("File saved successfully", savedResponse);
-        // } catch (error) {
-        //     console.log("Failed to save the file", error);
-        // }
-        // return
-
         const { dispatch } = this.props;
         const { phone, password, autoLogin, deviceToken, deviceType, tabValue } = this.state;
         if (phone == null || phone.length <= 0) {

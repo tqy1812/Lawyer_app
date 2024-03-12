@@ -10,11 +10,11 @@ export default class MessageImage extends React.Component {
     const {extend} = this.props.currentMessage;
     const {imageHeight,imageWidth} = extend;
     return (
-      <View style={[styles.container, this.props.containerStyle]}>
+      <View style={[styles.container, this.props.containerStyle, {width:100,height:100*(imageHeight/imageWidth)}]}>
         <Image
-            resizeMode={"cover"}
-          style={[styles.image, this.props.imageStyle,{width:150,height:150*(imageHeight/imageWidth)}]}
-          source={{uri: extend.thumbPath}}
+            resizeMode={"contain"}
+            style={[styles.image, this.props.imageStyle,{width:'100%',height:100*(imageHeight/imageWidth)}]}
+            source={{uri: extend.thumbPath}}
         />
       </View>
     );
@@ -23,9 +23,13 @@ export default class MessageImage extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#ffffff',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end'
   },
   image: {
-    borderRadius:5
+    borderRadius:5,
   },
 });
 

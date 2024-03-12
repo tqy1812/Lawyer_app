@@ -78,7 +78,7 @@ export default class Message extends React.Component {
     }
     render() {
         return (
-            <View>
+            <View style={{transform: [{ scaleY: -1 },]}}>
                 {this.renderDay()}
                 <View style={[styles[this.props.position].container, {
                         marginBottom: 12,

@@ -634,7 +634,7 @@ export function filterSameColor(oldArr) {
   return color;
 }
 
-export function formatMessageText(isOutgoing, item, counter) {
+export function formatMessage(isOutgoing, item, counter) {
   const msgId = `msgid_${counter}` ;   
   let base = {  
     fromUser: {
@@ -651,14 +651,46 @@ export function formatMessageText(isOutgoing, item, counter) {
       return item.type == 'text' ? { ...base,
         text: item.content, 
         isOutgoing, 
-      } : item.type == 'url' ? {...base, isOutgoing,  extend:{ imageHeight:80,imageWidth:50, thumbPath:item.content } } : null
+      } : item.type == 'image' ? {...base, isOutgoing,  extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : null
   } else {
     return item.type == 'text' ? {  
       ...base,
       text: item.content, 
       isOutgoing: false, 
-    } : item.type == 'url' ? {...base, isOutgoing: false, extend:{ imageHeight:80,imageWidth:50, thumbPath:item.content } } : null;
+    } : item.type == 'image' ? {...base, isOutgoing: false, extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : null;
   }
+}
+export function getFileType(url) {
+  if(!url) {
+    return null;
+  }
+  let arr = url.split('.');
+  let iconName = arr[arr.length - 1] ? arr[arr.length - 1].toLowerCase() : ''
+  if(iconName=='doc' || iconName=='docx') {
+    return require('../chat/components/Images/word.png')
+  } else if(iconName=='ppt' || iconName=='pptx') {
+    return require('../chat/components/Images/ppt.png')
+  } else if(iconName=='xls' || iconName=='xlsx') {
+    return require('../chat/components/Images/excel.png')
+  } else if(iconName=='pdf') {
+    return require('../chat/components/Images/pdf.png')
+  } else if(iconName=='zip' || iconName=='rar' || iconName=='7z' || iconName=='tar' || iconName=='gz' || iconName=='xz' || iconName=='bz2') {
+    return require('../chat/components/Images/zip.png')
+  } else if(iconName=='txt') {
+    return require('../chat/components/Images/txt.png')
+  } else if(iconName=='jpg' || iconName=='png' || iconName=='bmp' || iconName=='gif' || iconName=='png' || iconName=='jpeg' || iconName=='tif'|| iconName=='wmf'|| iconName=='dib') {
+    return require('../chat/components/Images/image_icon.png')
+  } else {
+    return require('../chat/components/Images/unknown.png')
+  } 
+}
+export function getFileName(url) {
+  if(!url) {
+    return '';
+  }
+  let arr = url.split('/');
+  let iconName = arr[arr.length - 1] ? arr[arr.length - 1].toLowerCase() : ''
+  return iconName
 }
 export async function saveFileToLocal(url) {
   try {

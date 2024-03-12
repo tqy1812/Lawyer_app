@@ -200,6 +200,7 @@ class ReportPage extends Component {
 
     goDetails = (id, name, avatar) => {
         console.log('goDetails', id, name, avatar);
+        this.props.navigation.navigate('Chat', { id, name, avatar})
         // 'Chat', { id: 1, name:'zhangsan', avatar: ''}
     };
 

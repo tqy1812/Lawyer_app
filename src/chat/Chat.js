@@ -57,7 +57,7 @@ export default class Chat extends Component {
         this.props.onFailPress(message);
     };
     onCameraPicker =()=>{
-        this.props.onImagePicker();
+        this.props.onCameraPicker();
     };
     onImagePicker =()=>{
        this.props.onImagePicker();
@@ -123,6 +123,8 @@ export default class Chat extends Component {
                     onPhonePress={this.onPhonePress}
                     onUrlPress = { this.onUrlPress }
                     onEmailPress = { this.onEmailPress }
+                    isShowIncomingDisplayName = {false}
+                    isShowOutgoingDisplayName = {false}
                     // messages = { this.props.messages }
                     />
 

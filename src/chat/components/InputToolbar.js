@@ -439,7 +439,7 @@ export default class InputToolbar extends React.Component {
             ),(
                 <View key={"location"} style={itemStyle}>
                     <TouchableOpacity style={Styles.iconTouch} onPress={this.handleFilePicker.bind(this)}>
-                        <Image resizeMode={"contain"} style={style} source={require("./Images/pin.png")}/>
+                        <Image resizeMode={"contain"} style={style} source={require("./Images/file.png")}/>
                     </TouchableOpacity>
                     <Text style={{marginTop:6, fontSize:12}}>文件</Text>
                 </View>
@@ -491,7 +491,6 @@ export default class InputToolbar extends React.Component {
     renderTextInput() {
         const {value = '' } = this.state;
         var height = this.composerHeight + (MIN_INPUT_TOOLBAR_HEIGHT - MIN_COMPOSER_HEIGHT);
-        console.log(height)
         return (
             <View style={[Styles.inputRow, {height:height}]}>
                 <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8}}
@@ -641,9 +640,8 @@ export default class InputToolbar extends React.Component {
     render() {
         const {　isEmoji, mode, shimVisible　} = this.state;
         var height = this.composerHeight + (MIN_INPUT_TOOLBAR_HEIGHT - MIN_COMPOSER_HEIGHT);
-        console.log('**',height)
         return (
-            <View style={[Styles.search, shimVisible ? {width: windowWidth, position: 'absolute', zIndex:3, bottom: 10} : {}]}>
+            <View style={[Styles.search, shimVisible ? {width: windowWidth, position: 'absolute', zIndex:3, bottom: 5} : {}]}>
                 {mode == MODE_TEXT ? this.renderTextInput() : this.renderReocrdInput()}
                 <View style={{width: windowWidth, height:1, backgroundColor:"lightgray"}}/>
                 {isEmoji ? this._renderEmoji() : this._renderActions()}

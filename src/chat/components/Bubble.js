@@ -11,6 +11,7 @@ import {
 
 import MessageText from './MessageText';
 import MessageImage from './MessageImage';
+import MessageFile from './MessageFile';
 import MessageAudio from './MessageAudio';
 import MessageLocation from './MessageLocation';
 import Time from './Time';
@@ -42,6 +43,17 @@ export default class Bubble extends React.Component {
                 return this.props.renderMessageImage(messageImageProps);
             }
             return <MessageImage {...messageImageProps}/>;
+        }
+        return null;
+    }
+
+    renderMessageFile() {
+        if (this.props.currentMessage.msgType === 'file' && this.props.currentMessage.extend) {
+            const {containerStyle, wrapperStyle, ...messageImageProps} = this.props;
+            if (this.props.renderMessageFile) {
+                return this.props.renderMessageFile(messageImageProps);
+            }
+            return <MessageFile {...messageImageProps}/>;
         }
         return null;
     }
@@ -147,6 +159,7 @@ export default class Bubble extends React.Component {
                         {this.renderMessageText()}
                         {this.renderMessageAudio()}
                         {this.renderMessageLocation()}
+                        {this.renderMessageFile()}
                         {/*this.renderTime()*/}
                     </View>
                 </TouchableNativeFeedback>
@@ -163,6 +176,7 @@ export default class Bubble extends React.Component {
                     {this.renderMessageText()}
                     {this.renderMessageAudio()}
                     {this.renderMessageLocation()}
+                    {this.renderMessageFile()}
                     {/*this.renderTime()*/}
                 </View>
             </TouchableWithoutFeedback>

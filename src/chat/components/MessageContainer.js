@@ -10,6 +10,7 @@ import LoadEarlier from './LoadEarlier';
 import PropTypes from 'prop-types';
 import Message from './Message';
 import _ from "lodash" ;
+import {Swipeable, GestureHandlerRootView, RectButton, ScrollView} from 'react-native-gesture-handler';
 
 export default class MessageContainer extends React.Component {
     constructor(props) {
@@ -58,7 +59,7 @@ export default class MessageContainer extends React.Component {
         });
     }
 
-    renderRow({item,index}) {
+    renderRow(item) {
         if (!item.msgId && item.msgId !== 0) {
             console.warn('GiftedChat: `_id` is missing for message', JSON.stringify(item));
         }
@@ -87,9 +88,8 @@ export default class MessageContainer extends React.Component {
         if (this.props.renderMessage) {
             return this.props.renderMessage(messageProps);
         }
-        return (
-            <View style={{ flex: 1 }}>
-                <Message {...messageProps }/></View>);
+        console.log('item....',item)
+        return (<Message {...messageProps }/>);
     }
     _keyExtractor = (item, index) => item._id+" "+index
     renderFooter() {
@@ -179,7 +179,7 @@ export default class MessageContainer extends React.Component {
         }
         this.isScrollBottom = true ;
         this.messages = JSON.parse(JSON.stringify(messages));
-        console.log('prepareMessages',this.messages)
+        // console.log('prepareMessages',this.messages)
         this.setState({
             messagesData: JSON.parse(JSON.stringify(this.messages))
         });
@@ -222,11 +222,33 @@ export default class MessageContainer extends React.Component {
         this.messages = messagesData ;
         this.setState({ messagesData });
     }
+    _contentViewScroll = (e) => {
+      var offsetY = e.nativeEvent.contentOffset.y; //滑动距离
+      var contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
+      var oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
+      if (offsetY + oriageScrollHeight+1 >= contentSizeHeight){
+        this.props.onLoadMoreAsync();
+      }
+    }
     render() {
-
+        const {messagesData} = this.state
+        console.log('messagesData-----',messagesData.length)
         return (
             <View style={{flex:1}} { ...this.response }>
-                <FlatList
+                <ScrollView 
+                  ref={(ref) => { this.flatList = ref }}
+                  style={{ transform: [
+                    { scaleY: -1 },
+                  ]}}
+                  onMomentumScrollEnd={this._contentViewScroll} 
+                  >
+                    {/* {this.renderLoadEarlier()} */}
+                     {messagesData && messagesData.length > 0 && messagesData.map(item=>{
+                        return this.renderRow(item)
+                     })}
+
+                  </ScrollView>
+                {/* <FlatList
                     keyboardDismissMode={"none"}
                     keyboardShouldPersistTaps={"never"}
                     automaticallyAdjustContentInsets={false}
@@ -238,7 +260,7 @@ export default class MessageContainer extends React.Component {
                     onRefresh={this.refresh}
                     onScroll={this.props.onScroll()}
                     refreshing = { this.state.refreshing }
-                />
+                /> */}
             </View>
         );
     }

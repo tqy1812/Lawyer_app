@@ -967,7 +967,28 @@ export function sendClientMessage(id, content, type, callback = null) {
         }, dispatch);
     };
 }
-
+//给客户发送文件
+export function clientFileUpload(file, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/upload_oss/file'
+        let data = new FormData();
+        data.append('file', file);
+        request_impl(api, method, data, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch, { 'Content-Type': 'multipart/form-data' });
+    };
+}
 // 获取可对话的律师列表
 export function getConversableEmployeeList(page, per_page, keywords, callback = null) {
     return (dispatch, getState) => {
@@ -1039,7 +1060,28 @@ export function sendEmployeeMessage(id, content, type, callback = null) {
         }, dispatch);
     };
 }
-
+//给员工发送文件
+export function employeeFileUpload(file, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/upload_oss/file'
+        let data = new FormData();
+        data.append('file', file);
+        request_impl(api, method, data, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch, { 'Content-Type': 'multipart/form-data' });
+    };
+}
 
 function request_impl(url, method, data, callback, dispatch = null, header) {
     let headers = {};

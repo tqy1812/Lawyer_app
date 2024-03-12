@@ -17,6 +17,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Common from '../common/constants';
 import platform from '../utils/platform';
 import ImagePicker from 'react-native-image-crop-picker';
+import DocumentPicker from 'react-native-document-picker';
+import {saveFileToLocal} from '../utils/utils';
+const FileTypes = {
+    All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
+    Image: DocumentPicker.types.images, // All image types (image/* or public.image)
+    Text: DocumentPicker.types.plainText, // Plain text files ie: .txt (text/plain or public.plain-text)
+    Audio: DocumentPicker.types.audio, // All audio types (audio/* or public.audio)
+    PDF: DocumentPicker.types.pdf, // PDF documents (application/pdf or com.adobe.pdf)
+    Zip: DocumentPicker.types.zip, // Zip files (application/zip or public.zip-archive)
+    Csv: DocumentPicker.types.csv, //Csv files (text/csv or public.comma-separated-values-text)
+};
 
 class ChatPage extends BaseComponent {
     static mapStateToProps(state) {
@@ -59,11 +70,14 @@ class ChatPage extends BaseComponent {
         
     }
     getList = () => {
+        if(!this.state.hasMore && this.page > 1) {
+            return 
+        }
         if(this.state.type===2) {
             this.props.dispatch(actionChat.getEmployeeChatList(this.page, 10, this.state.id, (rs)=>{
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
-                    this.messageList.appendToBottom(rs.data)
+                    this.messageList.appendToTop(rs.data)
                     this.setState({hasMore: rs.data.page * rs.data.per_page < rs.data.total})
                 }
             }));
@@ -72,7 +86,7 @@ class ChatPage extends BaseComponent {
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
                     console.log(rs.data)
-                    this.messageList.appendToBottom(rs.data)
+                    this.messageList.appendToTop(rs.data)
                     this.setState({hasMore: rs.data.page * rs.data.per_page < rs.data.total})
                 }
             }));
@@ -97,22 +111,39 @@ class ChatPage extends BaseComponent {
         },600);
 
     };
-
+    sendApi = (content, content_type, callback) => {
+        const { id, type } = this.state;
+        if(type===2) {
+            this.props.dispatch(actionChat.sendEmployeeMessage(id, content, content_type, callback));
+        } else {
+            this.props.dispatch(actionChat.sendClientMessage(id, content, content_type, callback));
+        }
+    };
     onSend = (text)=>{ 
         const { id } = this.state;
         let sendMsg = this.formatSendText(true,text,"send_going") ;
         this.messageList.appendToBottom([sendMsg]);
-        if(this.state.type===2) {
-            this.props.dispatch(actionChat.sendEmployeeMessage(id, text, 'text', (rs)=>{
+        this.sendApi(text,  'text', (rs, error) => {
+            if(error) {
+                sendMsg.status = "send_failed" ;
+                this.messageList.updateMsg(sendMsg);
+            }
+            else {
                 sendMsg.status = "send_success" ;
                 this.messageList.updateMsg(sendMsg);
-            }));
-        } else {
-            this.props.dispatch(actionChat.sendClientMessage(id, text, 'text', (rs)=>{
-                sendMsg.status = "send_success" ;
-                this.messageList.updateMsg(sendMsg);
-            }));
-        }
+            }
+        })
+        // if(this.state.type===2) {
+        //     this.props.dispatch(actionChat.sendEmployeeMessage(id, text, 'text', (rs)=>{
+        //         sendMsg.status = "send_success" ;
+        //         this.messageList.updateMsg(sendMsg);
+        //     }));
+        // } else {
+        //     this.props.dispatch(actionChat.sendClientMessage(id, text, 'text', (rs)=>{
+        //         sendMsg.status = "send_success" ;
+        //         this.messageList.updateMsg(sendMsg);
+        //     }));
+        // }
         // let sendMsg = mockText(true,text,"send_going") ;
         // let receiveMsg = mockText(false,text) ;
         // this.messageList.appendToBottom([sendMsg]);
@@ -130,10 +161,16 @@ class ChatPage extends BaseComponent {
             return { text, isOutgoing, msgId, msgType: "text",status,fromUser:this.state.rightUser } ;
         }
     };
-    formatSendImage = (isOutgoing=true,url,status)=>{
+    formatSendImage = (isOutgoing=true,url, width, height,status)=>{
         const msgId = `msgid_${Date.now()}` ;
         if(isOutgoing){
-            return { extend:{ imageHeight:80,imageWidth:50,thumbPath:url }, isOutgoing, msgId, msgType: "image",status,fromUser:this.state.rightUser } ;
+            return { extend:{ imageHeight:width,imageWidth:height,thumbPath:url }, isOutgoing, msgId, msgType: "image",status,fromUser:this.state.rightUser } ;
+        }
+    };
+    formatSendFile = (isOutgoing=true,url,status)=>{
+        const msgId = `msgid_${Date.now()}` ;
+        if(isOutgoing){
+            return { extend:{ thumbPath:url }, isOutgoing, msgId, msgType: "file",status,fromUser:this.state.rightUser } ;
         }
     };
     onMessagePress = (message)=>{
@@ -146,22 +183,97 @@ class ChatPage extends BaseComponent {
                 this.messageList.updateMsg(message);
             },1000);
             return ;
+        } else if (message.msgType=== "image") {
+
+            return ;
         }
         alert(message.msgType+"");
         console.log("message press....",message)
     };
     onMessageLongPress = (message)=>{
-        alert(message.msgType+"")
+        // alert(message.msgType+"")
         console.log("message long press....",message)
     };
-    onCameraPicker =()=>{
-        this.handleImagePicker();
+    async onCameraPicker(){
+        const that = this;
+        const {dispatch} = this.props;
+        
+        ImagePicker.openCamera({
+            width: 300,
+            height: 300,
+            cropping: false,
+            cropperCircleOverlay: false,
+        }).then(image => {
+            console.log('....handlePromiseSelectPhoto'+ JSON.stringify(image));
+            const file = {
+            uri: image.path,
+            name: image.creationDate +'.jpg',
+            type: image.mime
+            }
+            let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
+            this.messageList.appendToBottom([sendMsg]);
+            if(that.state.type==2){
+                dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
+                    console.log(rs)
+                    if(error){
+                        sendMsg.status = "send_failed" ;
+                        this.messageList.updateMsg(sendMsg);
+                    }
+                    else {
+                        this.sendApi(rs.url,  'image', (rs, error) => {
+                            if(error){
+                                sendMsg.status = "send_failed" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                            else {
+                                sendMsg.status = "send_success" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                        })
+                    }
+                }));
+            }
+            else 
+            {
+                dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                    console.log(rs)
+                    if(error){
+                        sendMsg.status = "send_failed" ;
+                        this.messageList.updateMsg(sendMsg);
+                    }
+                    else {
+                        this.sendApi(rs.url,  'image', (rs, error) => {
+                            if(error){
+                                sendMsg.status = "send_failed" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                            else {
+                                sendMsg.status = "send_success" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                        })
+                    }
+                }));
+            }
+        }).catch(e => {
+            if(e && e.toString().indexOf('User did not grant library permission') > -1){
+            Alert.alert('未授权', `图片访问权限没有开启，请前往设置去开启。`, [{
+                text: '取消',
+                onPress: null,
+                },
+                {
+                text: '去设置',
+                onPress: () => {this.handleSetting();},
+                },
+                ]);
+            }
+        });
     };
     onFailPress = (message)=>{
         console.log("fail...")
         alert("fail messgae id"+message.msgType);
     };
-    onImagePicker =()=>{
+    // onImagePicker =()=>{
         // let sendMsg = mockImage(true,"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1536298415755&di=3979575fd677e35442398fa90233c586&imgtype=0&src=http%3A%2F%2Fs4.sinaimg.cn%2Fmw690%2F001sB7zxzy74flKL4FJb3%26690") ;
         // let receiveMsg = mockImage(false,"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1536298415755&di=3979575fd677e35442398fa90233c586&imgtype=0&src=http%3A%2F%2Fs4.sinaimg.cn%2Fmw690%2F001sB7zxzy74flKL4FJb3%26690") ;
         // this.messageList.appendToBottom([sendMsg]);
@@ -172,7 +284,7 @@ class ChatPage extends BaseComponent {
         //     sendMsg.status = "send_success" ;
         //     this.messageList.updateMsg(sendMsg);
         // },600);
-    };
+    // };
     onLocationClick = ()=>{
         let sendMsg = mockLocation(true) ;
         let receiveMsg = mockLocation(false) ;
@@ -185,7 +297,78 @@ class ChatPage extends BaseComponent {
             this.messageList.updateMsg(sendMsg);
         },600);
     };
-    onFilePicker = ()=>{
+    async onFilePicker(){
+        const that = this;
+        const {dispatch} = this.props;
+        DocumentPicker.pick({
+            type: [FileTypes['All']],
+            allowMultiSelection: false,
+        }).then(res => {
+            console.log('DocumentPicker',res);
+            // res =  [ { fileCopyUri: null,
+            //     size: 87829,
+            //     name: '111.pdf',
+            //     type: 'application/pdf',
+            //     uri: 'content://com.android.providers.media.documents/document/document%3A50443' } ]
+            const file = {
+                uri: res[0].uri,
+                name: res[0].name
+            }
+            let sendMsg = this.formatSendFile(true,file.name, "send_going") ;
+            this.messageList.appendToBottom([sendMsg]);
+            if(that.state.type==2){
+                dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
+                    console.log(rs)
+                    if(error){
+                        sendMsg.status = "send_failed" ;
+                        this.messageList.updateMsg(sendMsg);
+                    }
+                    else {
+                        this.sendApi(rs.url,  'file', (rs, error) => {
+                            if(error){
+                                sendMsg.status = "send_failed" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                            else {
+                                sendMsg.status = "send_success" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                        })
+                    }
+                }));
+            }
+            else 
+            {
+                dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                    console.log(rs)
+                    if(error){
+                        sendMsg.status = "send_failed" ;
+                        this.messageList.updateMsg(sendMsg);
+                    }
+                    else {
+                        this.sendApi(rs.url,  'file', (rs, error) => {
+                            if(error){
+                                sendMsg.status = "send_failed" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                            else {
+                                sendMsg.status = "send_success" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                        })
+                    }
+                }));
+            }
+        }).catch(error => {
+            console.log('DocumentPicker', error);
+        });
+        // try {
+        //     const savedResponse = await saveFileToLocal('https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/download/case_template.xlsx');
+            
+        //     console.log("File saved successfully", savedResponse);
+        // } catch (error) {
+        //     console.log("Failed to save the file", error);
+        // }
 
     };
     onPhonePress = (phone)=>{
@@ -226,84 +409,106 @@ class ChatPage extends BaseComponent {
     }
 
     async handlePromiseSelectPhoto(){
-    const that = this;
-    const {dispatch} = this.props;
-    if(platform.isAndroid()) {
-        let isGrant = await NativeModules.NotifyOpen.getMediaPermission();
-        if(isGrant== 0){
-        return;
+        const that = this;
+        const {dispatch} = this.props;
+        if(platform.isAndroid()) {
+            let isGrant = await NativeModules.NotifyOpen.getMediaPermission();
+            if(isGrant== 0){
+            return;
+            }
+            else if(isGrant== 1){
+            Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+                text: '取消',
+                onPress: null,
+                },
+                {
+                text: '去设置',
+                onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
+                },
+                ]);
+            return;
+            }
         }
-        else if(isGrant== 1){
-        Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
-            text: '取消',
-            onPress: null,
-            },
-            {
-            text: '去设置',
-            onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
-            },
-            ]);
-        return;
-        }
-    }
 
-    ImagePicker.openPicker({
-        width: 300,
-        height: 300,
-        cropping: true,
-        cropperCircleOverlay: true,
-    }).then(image => {
-        logger('....handlePromiseSelectPhoto'+ JSON.stringify(image));
-        const file = {
-        uri: image.path,
-        name: image.modificationDate +'.jpg',
-        type: image.mime
-        }
-        let sendMsg = this.formatSendImage(true,image.path,"send_going") ;
-        this.messageList.appendToBottom([sendMsg]);
-    //   if(that.state.type==1){
-    //     dispatch(actionAuth.reqUpload(file, (rs, error)=>{
-    //       if(error){
-    //         Toast.show(error.info)
-    //       }
-    //       else {
-            
-    //       }
-    //     }));
-    //   }
-    //   else 
-    //   {
-    //     dispatch(actionAuth.reqClientUpload(file, (rs, error)=>{
-    //       if(error){
-    //         Toast.show(error.info)
-    //       }
-    //       else {
-            
-    //       }
-    //     }));
-    //   }
-    }).catch(e => {
-        if(e && e.toString().indexOf('User did not grant library permission') > -1){
-        Alert.alert('未授权', `图片访问权限没有开启，请前往设置去开启。`, [{
-            text: '取消',
-            onPress: null,
-            },
+        ImagePicker.openPicker({
+            width: 300,
+            height: 300,
+            cropping: false,
+            cropperCircleOverlay: false,
+        }).then(image => {
+            console.log('....handlePromiseSelectPhoto'+ JSON.stringify(image));
+            const file = {
+            uri: image.path,
+            name: image.creationDate +'.jpg',
+            type: image.mime
+            }
+            let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
+            this.messageList.appendToBottom([sendMsg]);
+            if(that.state.type==2){
+                dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
+                    console.log(rs)
+                    if(error){
+                        sendMsg.status = "send_failed" ;
+                        this.messageList.updateMsg(sendMsg);
+                    }
+                    else {
+                        this.sendApi(rs.url,  'image', (rs, error) => {
+                            if(error){
+                                sendMsg.status = "send_failed" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                            else {
+                                sendMsg.status = "send_success" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                        })
+                    }
+                }));
+            }
+            else 
             {
-            text: '去设置',
-            onPress: () => {this.handleSetting();},
-            },
-            ]);
-        }
+                dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                    console.log(rs)
+                    if(error){
+                        sendMsg.status = "send_failed" ;
+                        this.messageList.updateMsg(sendMsg);
+                    }
+                    else {
+                        this.sendApi(rs.url,  'image', (rs, error) => {
+                            if(error){
+                                sendMsg.status = "send_failed" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                            else {
+                                sendMsg.status = "send_success" ;
+                                this.messageList.updateMsg(sendMsg);
+                            }
+                        })
+                    }
+                }));
+            }
+        }).catch(e => {
+            if(e && e.toString().indexOf('User did not grant library permission') > -1){
+            Alert.alert('未授权', `图片访问权限没有开启，请前往设置去开启。`, [{
+                text: '取消',
+                onPress: null,
+                },
+                {
+                text: '去设置',
+                onPress: () => {this.handleSetting();},
+                },
+                ]);
+            }
         });
     }
-      handleSetting = () => {
+    handleSetting = () => {
         if(platform.isAndroid()){
-          NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();
+            NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();
         }
         else {
-          NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
+            NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
         }
-      }
+    }
     render() {
         return (
             <SafeAreaView style={[styles.container]}>
@@ -317,11 +522,11 @@ class ChatPage extends BaseComponent {
                             onAvatarPress={this.onAvatarPress}
                             onMessagePress={this.onMessagePress}
                             onMessageLongPress={this.onMessageLongPress}
-                            onCameraPicker={this.onCameraPicker}
+                            onCameraPicker={this.onCameraPicker.bind(this)}
                             onFailPress={this.onFailPress}
-                            onImagePicker={this.onImagePicker}
+                            onImagePicker={this.handlePromiseSelectPhoto.bind(this)}
                             onLocationClick={this.onLocationClick}
-                            onFilePicker={this.onFilePicker}
+                            onFilePicker={this.onFilePicker.bind(this)}
                             onPhonePress={this.onPhonePress}
                             onUrlPress={this.onUrlPress}
                             onEmailPress={this.onEmailPress}
