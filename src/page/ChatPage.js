@@ -127,7 +127,7 @@ class ChatPage extends BaseComponent {
                     this.messageList.updateMsg(sendMsg);
                 }
                 else {
-                    this.sendApi(rs.url,  'audio', (rs, error) => {
+                    this.sendApi(rs.url,  'voice', (rs, error) => {
                         if(error){
                             sendMsg.status = "send_failed" ;
                             this.messageList.updateMsg(sendMsg);
@@ -149,7 +149,7 @@ class ChatPage extends BaseComponent {
                     this.messageList.updateMsg(sendMsg);
                 }
                 else {
-                    this.sendApi(rs.url,  'audio', (rs, error) => {
+                    this.sendApi(rs.url,  'voice', (rs, error) => {
                         if(error){
                             sendMsg.status = "send_failed" ;
                             this.messageList.updateMsg(sendMsg);
@@ -222,23 +222,36 @@ class ChatPage extends BaseComponent {
             return { extend:{ thumbPath:url }, isOutgoing, msgId, msgType: "voice",status,fromUser:this.state.rightUser,isRead,playing,duration} ;
         }
     };
-    onMessagePress = (message)=>{
-        if(message.msgType=== "voice"){
-            message.playing = true ;
-            message.isRead = true ;
-            this.messageList.updateMsg(message);
-            setTimeout(()=>{
+    onMessagePress = async(message) =>{
+        const that = this;
+        if(message.msgType === "voice"){
+            if(message.playing) {
                 message.playing = false ;
                 this.messageList.updateMsg(message);
-            },1000);
-            return ;
+                that.stopPlay()
+            }
+            else {
+                message.playing = true ;
+                message.isRead = true ;
+                this.messageList.updateMsg(message);
+                await audioRecorderPlayer.startPlayer(message.extend.thumbPath);
+                audioRecorderPlayer.addPlayBackListener((e)=>{
+                    if(e.currentPosition == e.duration) {
+                        message.playing = false ;
+                        that.messageList.updateMsg(message);
+                        that.stopPlay()
+                    }
+                })
+            }
         } else if (message.msgType=== "image") {
-
-            return ;
+            that.stopPlay()
         }
-        alert(message.msgType+"");
         console.log("message press....",message)
     };
+    stopPlay = async() => {
+        await audioRecorderPlayer.stopPlayer();
+        audioRecorderPlayer.removePlayBackListener();
+    }
     onMessageLongPress = (message)=>{
         // alert(message.msgType+"")
         console.log("message long press....",message)

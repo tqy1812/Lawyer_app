@@ -643,7 +643,7 @@ export function formatMessage(isOutgoing, item, counter) {
       avatar: item.speaker_avatar,
     },
     msgId,
-    msgType: item.type,
+    msgType: item.type == 'audio' ? 'voice' : item.type,
     status: 'send_success',
     time: item.time 
   } 
@@ -651,13 +651,15 @@ export function formatMessage(isOutgoing, item, counter) {
       return item.type == 'text' ? { ...base,
         text: item.content, 
         isOutgoing, 
-      } : item.type == 'image' ? {...base, isOutgoing,  extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : null
+      } : item.type == 'image' ? {...base, isOutgoing,  extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : 
+      item.type == 'audio' || item.type == 'voice' ? {...base, isOutgoing,  extend:{ thumbPath:item.content },isRead: false,playing: false,duration: 1000 } : null
   } else {
     return item.type == 'text' ? {  
       ...base,
       text: item.content, 
       isOutgoing: false, 
-    } : item.type == 'image' ? {...base, isOutgoing: false, extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : null;
+    } : item.type == 'image' ? {...base, isOutgoing: false, extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : 
+    item.type == 'audio' || item.type == 'voice' ? {...base, isOutgoing,  extend:{ thumbPath:item.content },isRead: false,playing: false,duration: 1000 } : null;
   }
 }
 export function getFileType(url) {
