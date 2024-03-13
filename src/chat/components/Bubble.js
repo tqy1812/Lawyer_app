@@ -102,12 +102,12 @@ export default class Bubble extends React.Component {
             if (msg.status === 'send_failed') { // 消息发送失败
                 return Platform.OS === 'android'?(
                     <TouchableNativeFeedback onPress={()=>{ onFailPress(msg); }}>
-                        <Image style={{alignSelf:"flex-end", width:20, height:20}}
+                        <Image style={{alignSelf:"center", width:10, height:10, marginRight: 5}}
                                source={require('./Images/MessageSendError.png')}>
                         </Image>
                     </TouchableNativeFeedback>
                 ):(<TouchableWithoutFeedback onPress={()=>onFailPress(msg)}>
-                    <Image style={{alignSelf:"flex-end", width:30, height:30}}
+                    <Image style={{alignSelf:"center", width:20, height:20, marginRight: 5}}
                            source={require('./Images/MessageSendError.png')}>
                     </Image>
                 </TouchableWithoutFeedback>);

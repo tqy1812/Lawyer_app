@@ -5,16 +5,17 @@ import {
   View,Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image'
 export default class MessageImage extends React.Component {
   render() {
     const {extend} = this.props.currentMessage;
     const {imageHeight,imageWidth} = extend;
     return (
       <View style={[styles.container, this.props.containerStyle, {width:100,height:100*(imageHeight/imageWidth)}]}>
-        <Image
-            resizeMode={"contain"}
+        <FastImage
+            resizeMode={FastImage.resizeMode.contain}
             style={[styles.image, this.props.imageStyle,{width:'100%',height:100*(imageHeight/imageWidth)}]}
-            source={{uri: extend.thumbPath}}
+            source={{uri: extend.thumbPath, priority: FastImage.priority.normal}}
         />
       </View>
     );

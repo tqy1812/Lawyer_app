@@ -45,7 +45,7 @@ export default class MessageAudio extends React.Component {
                 {
                     msg.isOutgoing?(
                         <Fragment>
-                            <Text style={{color:'#fff',fontSize:12,lineHeight:25}}> {parseInt((msg.duration)/1000)}'' </Text>
+                            <Text style={{color:'#fff',fontSize:12,lineHeight:35}}> {parseInt((msg.duration)/1000)}'' </Text>
                             <Image style={[styles.image,msg.isOutgoing ? {marginLeft:margin} : { marginRight:margin}]}
                                    source={this.source}>
                             </Image>
@@ -55,7 +55,7 @@ export default class MessageAudio extends React.Component {
                             <Image style={[styles.image,msg.isOutgoing ? {marginLeft:margin} : { marginRight:margin}]}
                                    source={this.source}>
                             </Image>
-                            <Text style={{color:'#666666',fontSize:12,lineHeight:25}}> {parseInt((msg.duration)/1000)}'' </Text>
+                            <Text style={{color:'#666666',fontSize:12,lineHeight:35}}> {parseInt((msg.duration)/1000)}'' </Text>
                         </Fragment>
                     )
                 }

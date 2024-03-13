@@ -19,6 +19,8 @@ import platform from '../utils/platform';
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
 import {saveFileToLocal} from '../utils/utils';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player'
+const audioRecorderPlayer = new AudioRecorderPlayer();
 const FileTypes = {
     All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
     Image: DocumentPicker.types.images, // All image types (image/* or public.image)
@@ -77,7 +79,7 @@ class ChatPage extends BaseComponent {
             this.props.dispatch(actionChat.getEmployeeChatList(this.page, 10, this.state.id, (rs)=>{
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
-                    this.messageList.appendToTop(rs.data)
+                    this.messageList.appendToBottom(rs.data)
                     this.setState({hasMore: rs.data.page * rs.data.per_page < rs.data.total})
                 }
             }));
@@ -86,29 +88,91 @@ class ChatPage extends BaseComponent {
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
                     console.log(rs.data)
-                    this.messageList.appendToTop(rs.data)
+                    this.messageList.appendToBottom(rs.data)
                     this.setState({hasMore: rs.data.page * rs.data.per_page < rs.data.total})
                 }
             }));
         }
     }
-    startRecording = ()=>{
+    startRecording = async() =>{
         console.log("开始录音...")
+        this.recorderName = new Date().getTime() + '.m4a'
+        const rs = await audioRecorderPlayer.startRecorder(this.recorderName);
+        audioRecorderPlayer.addRecordBackListener((e)=>{
+            console.log("startRecording", e)
+            this.recorderNameDuration = Math.round(e.currentPosition)
+        })
+        this.recorderUrl = rs
+        console.log("startRecording.....", rs)
     };
-    stopRecording = (canceled)=>{
+    stopRecording = async(canceled)=>{
         if(canceled){// 取消录音发送
-            return  ;
+            return;
         }
-        let sendMsg = mockVoice(true) ;
-        let receiveMsg = mockVoice(false) ;
-        this.messageList.appendToBottom([sendMsg]);
-        setTimeout(()=>{
-            this.messageList.appendToBottom([receiveMsg]);
-        },800);
-        setTimeout(()=>{
-            sendMsg.status = "send_success" ;
-            this.messageList.updateMsg(sendMsg);
-        },600);
+        const that = this;
+        const {dispatch} = this.props;
+        const rs = await audioRecorderPlayer.stopRecorder();
+        audioRecorderPlayer.removeRecordBackListener();
+        const file = {
+            uri: this.recorderUrl,
+            name: this.recorderName
+        }
+        let sendMsg = this.formatSendVoice(true, file.uri, false, false, this.recorderNameDuration, "send_going") ;
+        this.messageList.appendToTop([sendMsg]);
+        if(that.state.type==2){
+            dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
+                console.log(rs)
+                if(error){
+                    sendMsg.status = "send_failed" ;
+                    this.messageList.updateMsg(sendMsg);
+                }
+                else {
+                    this.sendApi(rs.url,  'audio', (rs, error) => {
+                        if(error){
+                            sendMsg.status = "send_failed" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                        else {
+                            sendMsg.status = "send_success" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                    })
+                }
+            }));
+        }
+        else 
+        {
+            dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                console.log(rs)
+                if(error){
+                    sendMsg.status = "send_failed" ;
+                    this.messageList.updateMsg(sendMsg);
+                }
+                else {
+                    this.sendApi(rs.url,  'audio', (rs, error) => {
+                        if(error){
+                            sendMsg.status = "send_failed" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                        else {
+                            sendMsg.status = "send_success" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                    })
+                }
+            }));
+        }
+
+        // let sendMsg = mockVoice(true) ;
+        // let receiveMsg = mockVoice(false) ;
+        // this.messageList.appendToTop([sendMsg]);
+        // setTimeout(()=>{
+        //     this.messageList.appendToTop([receiveMsg]);
+        // },800);
+        // setTimeout(()=>{
+        //     sendMsg.status = "send_success" ;
+        //     this.messageList.updateMsg(sendMsg);
+        // },600);
 
     };
     sendApi = (content, content_type, callback) => {
@@ -122,7 +186,7 @@ class ChatPage extends BaseComponent {
     onSend = (text)=>{ 
         const { id } = this.state;
         let sendMsg = this.formatSendText(true,text,"send_going") ;
-        this.messageList.appendToBottom([sendMsg]);
+        this.messageList.appendToTop([sendMsg]);
         this.sendApi(text,  'text', (rs, error) => {
             if(error) {
                 sendMsg.status = "send_failed" ;
@@ -133,27 +197,6 @@ class ChatPage extends BaseComponent {
                 this.messageList.updateMsg(sendMsg);
             }
         })
-        // if(this.state.type===2) {
-        //     this.props.dispatch(actionChat.sendEmployeeMessage(id, text, 'text', (rs)=>{
-        //         sendMsg.status = "send_success" ;
-        //         this.messageList.updateMsg(sendMsg);
-        //     }));
-        // } else {
-        //     this.props.dispatch(actionChat.sendClientMessage(id, text, 'text', (rs)=>{
-        //         sendMsg.status = "send_success" ;
-        //         this.messageList.updateMsg(sendMsg);
-        //     }));
-        // }
-        // let sendMsg = mockText(true,text,"send_going") ;
-        // let receiveMsg = mockText(false,text) ;
-        // this.messageList.appendToBottom([sendMsg]);
-        // setTimeout(()=>{
-        //     this.messageList.appendToBottom([receiveMsg]);
-        // },800);
-        // setTimeout(()=>{
-        //     sendMsg.status = "send_success" ;
-        //     this.messageList.updateMsg(sendMsg);
-        // },600);
     };
     formatSendText = (isOutgoing=true,text,status)=>{
         const msgId = `msgid_${Date.now()}` ;
@@ -171,6 +214,12 @@ class ChatPage extends BaseComponent {
         const msgId = `msgid_${Date.now()}` ;
         if(isOutgoing){
             return { extend:{ thumbPath:url }, isOutgoing, msgId, msgType: "file",status,fromUser:this.state.rightUser } ;
+        }
+    };
+    formatSendVoice = (isOutgoing=true,url,isRead=false ,playing=false, duration,status)=>{
+        const msgId = `msgid_${Date.now()}` ;
+        if(isOutgoing){
+            return { extend:{ thumbPath:url }, isOutgoing, msgId, msgType: "voice",status,fromUser:this.state.rightUser,isRead,playing,duration} ;
         }
     };
     onMessagePress = (message)=>{
@@ -211,7 +260,7 @@ class ChatPage extends BaseComponent {
             type: image.mime
             }
             let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
-            this.messageList.appendToBottom([sendMsg]);
+            this.messageList.appendToTop([sendMsg]);
             if(that.state.type==2){
                 dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
                     console.log(rs)
@@ -273,24 +322,12 @@ class ChatPage extends BaseComponent {
         console.log("fail...")
         alert("fail messgae id"+message.msgType);
     };
-    // onImagePicker =()=>{
-        // let sendMsg = mockImage(true,"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1536298415755&di=3979575fd677e35442398fa90233c586&imgtype=0&src=http%3A%2F%2Fs4.sinaimg.cn%2Fmw690%2F001sB7zxzy74flKL4FJb3%26690") ;
-        // let receiveMsg = mockImage(false,"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1536298415755&di=3979575fd677e35442398fa90233c586&imgtype=0&src=http%3A%2F%2Fs4.sinaimg.cn%2Fmw690%2F001sB7zxzy74flKL4FJb3%26690") ;
-        // this.messageList.appendToBottom([sendMsg]);
-        // setTimeout(()=>{
-        //     this.messageList.appendToBottom([receiveMsg]);
-        // },800);
-        // setTimeout(()=>{
-        //     sendMsg.status = "send_success" ;
-        //     this.messageList.updateMsg(sendMsg);
-        // },600);
-    // };
     onLocationClick = ()=>{
         let sendMsg = mockLocation(true) ;
         let receiveMsg = mockLocation(false) ;
-        this.messageList.appendToBottom([sendMsg]);
+        this.messageList.appendToTop([sendMsg]);
         setTimeout(()=>{
-            this.messageList.appendToBottom([receiveMsg]);
+            this.messageList.appendToTop([receiveMsg]);
         },800);
         setTimeout(()=>{
             sendMsg.status = "send_success" ;
@@ -315,7 +352,7 @@ class ChatPage extends BaseComponent {
                 name: res[0].name
             }
             let sendMsg = this.formatSendFile(true,file.name, "send_going") ;
-            this.messageList.appendToBottom([sendMsg]);
+            this.messageList.appendToTop([sendMsg]);
             if(that.state.type==2){
                 dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
                     console.log(rs)
@@ -443,7 +480,7 @@ class ChatPage extends BaseComponent {
             type: image.mime
             }
             let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
-            this.messageList.appendToBottom([sendMsg]);
+            this.messageList.appendToTop([sendMsg]);
             if(that.state.type==2){
                 dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
                     console.log(rs)
@@ -518,6 +555,7 @@ class ChatPage extends BaseComponent {
                                 this.messageList = messageList ;
                                 this.input = input ;}}
                             onSend = { this.onSend }
+                            startRecording={this.startRecording}
                             stopRecording={this.stopRecording}
                             onAvatarPress={this.onAvatarPress}
                             onMessagePress={this.onMessagePress}

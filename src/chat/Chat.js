@@ -79,7 +79,7 @@ export default class Chat extends Component {
     };
     onMessageListTouch = ()=>{
         this.dismissTools();
-        this.props.onMessageListTouch();
+        // this.props.onMessageListTouch();
     };
     onScroll(){
         this.props.onScroll();

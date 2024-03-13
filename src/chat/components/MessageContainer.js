@@ -88,7 +88,7 @@ export default class MessageContainer extends React.Component {
         if (this.props.renderMessage) {
             return this.props.renderMessage(messageProps);
         }
-        console.log('item....',item)
+        // console.log('item....',item)
         return (<Message {...messageProps }/>);
     }
     _keyExtractor = (item, index) => item._id+" "+index
