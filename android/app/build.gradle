@@ -288,6 +288,8 @@ dependencies {
     implementation project(':react-native-background-timer')
     implementation project(':react-native-fast-image')
     implementation project(':react-native-audio-recorder-player')
+    implementation project(':react-native-file-viewer')
+    implementation project(':@react-native-camera-roll_camera-roll')
 
     implementation 'com.hihonor.mcs:push:7.0.41.301'
     implementation 'com.huawei.hms:push:6.9.0.300'
