@@ -56,11 +56,11 @@ export default class actionChat {
      }
 
      // 给客户发送消息
-    static sendClientMessage(id, content, type, callback = null) {
+    static sendClientMessage(id, content, type, meta, callback = null) {
         return (dispatch, getState) => {
             let state = getState();
             let chatMessageList = state.Chat && state.Chat.chatMessageList;
-             dispatch(request.sendClientMessage(id, content, type, callback));
+             dispatch(request.sendClientMessage(id, content, type, meta, callback));
          };
     }
     //给客户发送文件  
@@ -118,10 +118,10 @@ export default class actionChat {
       }
  
       // 给律师发送消息
-    static sendEmployeeMessage(id, content, type, callback = null) {
+    static sendEmployeeMessage(id, content, type, meta, callback = null) {
          return (dispatch, getState) => {
              let state = getState();
-              dispatch(request.sendEmployeeMessage(id, content, type, callback));
+              dispatch(request.sendEmployeeMessage(id, content, type, meta, callback));
           };
     }
     //给律师发送文件

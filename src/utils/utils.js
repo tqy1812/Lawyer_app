@@ -647,20 +647,26 @@ export function formatMessage(isOutgoing, item, counter) {
     status: 'send_success',
     time: item.time 
   } 
-  if(isOutgoing){
-      return item.type == 'text' ? { ...base,
-        text: item.content, 
-        isOutgoing, 
-      } : item.type == 'image' ? {...base, isOutgoing,  extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : 
-      item.type == 'audio' || item.type == 'voice' ? {...base, isOutgoing,  extend:{ thumbPath:item.content },isRead: false,playing: false,duration: 1000 } : null
-  } else {
-    return item.type == 'text' ? {  
-      ...base,
+  if(item.type == 'text' ) {
+    return { ...base,
       text: item.content, 
-      isOutgoing: false, 
-    } : item.type == 'image' ? {...base, isOutgoing: false, extend:{ imageHeight:100,imageWidth:100, thumbPath:item.content } } : item.type == 'file' ? {...base, isOutgoing,  extend:{ thumbPath:item.content } } : 
-    item.type == 'audio' || item.type == 'voice' ? {...base, isOutgoing,  extend:{ thumbPath:item.content },isRead: false,playing: false,duration: 1000 } : null;
+      isOutgoing, 
+    }
+  } else if (item.type == 'image') {
+    let imageMeta = item.meta ? JSON.parse(item.meta) : {}
+    let width = imageMeta.width ? imageMeta.width : 100
+    let height = imageMeta.height ? imageMeta.height : 100
+    return  {...base, isOutgoing,  extend:{ imageHeight:height,imageWidth:width, thumbPath:item.content } }
+  } else if (item.type == 'file') {
+    let fileMeta = item.meta ? JSON.parse(item.meta) : {}
+    let size = fileMeta.size ? fileMeta.size : 0
+    return  {...base, isOutgoing, extend:{ thumbPath:item.content, size } }
+  } else if (item.type == 'audio' || item.type == 'voice') {
+    let voiceMeta = item.meta ? JSON.parse(item.meta) : {}
+    let duration = voiceMeta.duration ? voiceMeta.duration : 1000
+    return  {...base, isOutgoing, extend:{ thumbPath:item.content },isRead: false,playing: false,duration: duration }
   }
+  return null
 }
 export function getFileType(url) {
   if(!url) {

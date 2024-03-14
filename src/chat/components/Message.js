@@ -8,8 +8,19 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import Day from './Day';
 
+import shallowequal from '../utils/showEqual';
 import PropTypes from 'prop-types';
 export default class Message extends React.Component {
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (!shallowequal(this.props, nextProps)) {
+            return true;
+        }
+        if (!shallowequal(this.state, nextState)) {
+            return true;
+        }
+        return false;
+    }
 
     isSameDay(currentMessage = {}, diffMessage = {}) {
         let diff = 0;

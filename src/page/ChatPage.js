@@ -119,6 +119,7 @@ class ChatPage extends BaseComponent {
         }
         let sendMsg = this.formatSendVoice(true, file.uri, false, false, this.recorderNameDuration, "send_going") ;
         this.messageList.appendToTop([sendMsg]);
+        let meta = {duration: this.recorderNameDuration}
         if(that.state.type==2){
             dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
                 console.log(rs)
@@ -127,7 +128,7 @@ class ChatPage extends BaseComponent {
                     this.messageList.updateMsg(sendMsg);
                 }
                 else {
-                    this.sendApi(rs.url,  'voice', (rs, error) => {
+                    this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
                         if(error){
                             sendMsg.status = "send_failed" ;
                             this.messageList.updateMsg(sendMsg);
@@ -149,7 +150,7 @@ class ChatPage extends BaseComponent {
                     this.messageList.updateMsg(sendMsg);
                 }
                 else {
-                    this.sendApi(rs.url,  'voice', (rs, error) => {
+                    this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
                         if(error){
                             sendMsg.status = "send_failed" ;
                             this.messageList.updateMsg(sendMsg);
@@ -175,19 +176,19 @@ class ChatPage extends BaseComponent {
         // },600);
 
     };
-    sendApi = (content, content_type, callback) => {
+    sendApi = (content, content_type, meta, callback) => {
         const { id, type } = this.state;
         if(type===2) {
-            this.props.dispatch(actionChat.sendEmployeeMessage(id, content, content_type, callback));
+            this.props.dispatch(actionChat.sendEmployeeMessage(id, content, content_type, meta, callback));
         } else {
-            this.props.dispatch(actionChat.sendClientMessage(id, content, content_type, callback));
+            this.props.dispatch(actionChat.sendClientMessage(id, content, content_type, meta, callback));
         }
     };
     onSend = (text)=>{ 
         const { id } = this.state;
         let sendMsg = this.formatSendText(true,text,"send_going") ;
         this.messageList.appendToTop([sendMsg]);
-        this.sendApi(text,  'text', (rs, error) => {
+        this.sendApi(text, 'text', (rs, error) => {
             if(error) {
                 sendMsg.status = "send_failed" ;
                 this.messageList.updateMsg(sendMsg);
@@ -207,13 +208,13 @@ class ChatPage extends BaseComponent {
     formatSendImage = (isOutgoing=true,url, width, height,status)=>{
         const msgId = `msgid_${Date.now()}` ;
         if(isOutgoing){
-            return { extend:{ imageHeight:width,imageWidth:height,thumbPath:url }, isOutgoing, msgId, msgType: "image",status,fromUser:this.state.rightUser } ;
+            return { extend:{ imageHeight:height,imageWidth:width,thumbPath:url }, isOutgoing, msgId, msgType: "image",status,fromUser:this.state.rightUser } ;
         }
     };
-    formatSendFile = (isOutgoing=true,url,status)=>{
+    formatSendFile = (isOutgoing=true,url,size, status)=>{
         const msgId = `msgid_${Date.now()}` ;
         if(isOutgoing){
-            return { extend:{ thumbPath:url }, isOutgoing, msgId, msgType: "file",status,fromUser:this.state.rightUser } ;
+            return { extend:{ thumbPath:url, size }, isOutgoing, msgId, msgType: "file",status,fromUser:this.state.rightUser } ;
         }
     };
     formatSendVoice = (isOutgoing=true,url,isRead=false ,playing=false, duration,status)=>{
@@ -226,11 +227,13 @@ class ChatPage extends BaseComponent {
         const that = this;
         if(message.msgType === "voice"){
             if(message.playing) {
+                this.voicePlaying = false
                 message.playing = false ;
                 this.messageList.updateMsg(message);
                 that.stopPlay()
             }
             else {
+                this.voicePlaying = true
                 message.playing = true ;
                 message.isRead = true ;
                 this.messageList.updateMsg(message);
@@ -249,6 +252,9 @@ class ChatPage extends BaseComponent {
         console.log("message press....",message)
     };
     stopPlay = async() => {
+        if(!this.voicePlaying) {
+            return
+        }
         await audioRecorderPlayer.stopPlayer();
         audioRecorderPlayer.removePlayBackListener();
     }
@@ -268,10 +274,11 @@ class ChatPage extends BaseComponent {
         }).then(image => {
             console.log('....handlePromiseSelectPhoto'+ JSON.stringify(image));
             const file = {
-            uri: image.path,
-            name: image.creationDate +'.jpg',
-            type: image.mime
+                uri: image.path,
+                name: image.creationDate +'.jpg',
+                type: image.mime
             }
+            let meta = {width: image.width, height: image.height}
             let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
             this.messageList.appendToTop([sendMsg]);
             if(that.state.type==2){
@@ -282,7 +289,7 @@ class ChatPage extends BaseComponent {
                         this.messageList.updateMsg(sendMsg);
                     }
                     else {
-                        this.sendApi(rs.url,  'image', (rs, error) => {
+                        this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
                             if(error){
                                 sendMsg.status = "send_failed" ;
                                 this.messageList.updateMsg(sendMsg);
@@ -304,7 +311,7 @@ class ChatPage extends BaseComponent {
                         this.messageList.updateMsg(sendMsg);
                     }
                     else {
-                        this.sendApi(rs.url,  'image', (rs, error) => {
+                        this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
                             if(error){
                                 sendMsg.status = "send_failed" ;
                                 this.messageList.updateMsg(sendMsg);
@@ -364,7 +371,8 @@ class ChatPage extends BaseComponent {
                 uri: res[0].uri,
                 name: res[0].name
             }
-            let sendMsg = this.formatSendFile(true,file.name, "send_going") ;
+            let meta = {size: res[0].size}
+            let sendMsg = this.formatSendFile(true,file.name, res[0].size, "send_going") ;
             this.messageList.appendToTop([sendMsg]);
             if(that.state.type==2){
                 dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
@@ -374,7 +382,7 @@ class ChatPage extends BaseComponent {
                         this.messageList.updateMsg(sendMsg);
                     }
                     else {
-                        this.sendApi(rs.url,  'file', (rs, error) => {
+                        this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
                             if(error){
                                 sendMsg.status = "send_failed" ;
                                 this.messageList.updateMsg(sendMsg);
@@ -396,7 +404,7 @@ class ChatPage extends BaseComponent {
                         this.messageList.updateMsg(sendMsg);
                     }
                     else {
-                        this.sendApi(rs.url,  'file', (rs, error) => {
+                        this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
                             if(error){
                                 sendMsg.status = "send_failed" ;
                                 this.messageList.updateMsg(sendMsg);
@@ -492,6 +500,7 @@ class ChatPage extends BaseComponent {
             name: image.creationDate +'.jpg',
             type: image.mime
             }
+            let meta = {width: image.width, height: image.height}
             let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
             this.messageList.appendToTop([sendMsg]);
             if(that.state.type==2){
@@ -502,7 +511,7 @@ class ChatPage extends BaseComponent {
                         this.messageList.updateMsg(sendMsg);
                     }
                     else {
-                        this.sendApi(rs.url,  'image', (rs, error) => {
+                        this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
                             if(error){
                                 sendMsg.status = "send_failed" ;
                                 this.messageList.updateMsg(sendMsg);
@@ -524,7 +533,7 @@ class ChatPage extends BaseComponent {
                         this.messageList.updateMsg(sendMsg);
                     }
                     else {
-                        this.sendApi(rs.url,  'image', (rs, error) => {
+                        this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
                             if(error){
                                 sendMsg.status = "send_failed" ;
                                 this.messageList.updateMsg(sendMsg);

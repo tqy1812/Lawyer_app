@@ -942,7 +942,7 @@ export function getClientChatList(page, per_page, id, callback = null) {
     };
 }
 // 给客户发送消息,content_type有 “text” 和 “file”两种类型
-export function sendClientMessage(id, content, type, callback = null) {
+export function sendClientMessage(id, content, type, meta, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'api/im/message/send'
@@ -950,6 +950,7 @@ export function sendClientMessage(id, content, type, callback = null) {
             client_id: id,
             content_type: type,
             content: content,
+            meta: meta
         };
 
         request_impl(api, method, data, (res, error) => {
@@ -1035,7 +1036,7 @@ export function getEmployeeChatList(page, per_page, id, callback = null) {
     };
 }
 // 给员工发送消息,content_type有 “text” 和 “file”两种类型
-export function sendEmployeeMessage(id, content, type, callback = null) {
+export function sendEmployeeMessage(id, content, type, meta, callback = null) {
     return (dispatch, getState) => {
         let state = getState();
         let method = 'client_api/im/message/send'
@@ -1043,6 +1044,7 @@ export function sendEmployeeMessage(id, content, type, callback = null) {
             employee_id: id,
             content_type: type,
             content: content,
+            meta: meta
         };
 
         request_impl(api, method, data, (res, error) => {

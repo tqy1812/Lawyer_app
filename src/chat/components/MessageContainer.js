@@ -26,18 +26,18 @@ export default class MessageContainer extends React.Component {
         };
     }
     componentWillMount(){
-        let response = {
-            onStartShouldSetResponder: (evt) => true,
-            onMoveShouldSetResponder: (evt) => true,
-            onResponderGrant: (evt) => { this.props.onMessageListTouch(); },
-            onResponderReject: (evt) => {},
-            onResponderMove: (evt) => {},
-            onResponderRelease: (evt) => {},
-            onResponderTerminationRequest: (evt) => true,
-            onResponderTerminate: (evt) => {
-            },
-        };
-        this.response = response ;
+        // let response = {
+        //     onStartShouldSetResponder: (evt) => true,
+        //     onMoveShouldSetResponder: (evt) => true,
+        //     onResponderGrant: (evt) => { this.props.onMessageListTouch(); },
+        //     onResponderReject: (evt) => {},
+        //     onResponderMove: (evt) => {},
+        //     onResponderRelease: (evt) => {},
+        //     onResponderTerminationRequest: (evt) => true,
+        //     onResponderTerminate: (evt) => {
+        //     },
+        // };
+        // this.response = response ;
     }
     shouldComponentUpdate(nextProps, nextState) {
         if (!shallowequal(this.props, nextProps)) {
@@ -234,7 +234,7 @@ export default class MessageContainer extends React.Component {
         const {messagesData} = this.state
         console.log('messagesData-----',messagesData.length)
         return (
-            <View style={{flex:1}} { ...this.response }>
+            <View style={{flex:1}}>
                 <ScrollView 
                   ref={(ref) => { this.flatList = ref }}
                   style={{ transform: [
