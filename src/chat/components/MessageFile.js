@@ -13,8 +13,10 @@ export default class MessageFile extends React.Component {
     const {extend} = this.props.currentMessage;
     const {imageHeight,imageWidth} = extend;
     return (
-      <View style={[styles.container, this.props.containerStyle, {width:windowWidth * 0.7,height: 90}]}>
-        <View style={styles.titleView}><Text style={styles.title} ellipsizeMode='middle'>{getFileName(extend.thumbPath)}</Text></View>
+      <View style={[styles.container, this.props.containerStyle, {width:windowWidth * 0.7,height: 70}]}>
+        <View style={styles.titleView}>
+          <Text style={styles.title} numberOflines={2} ellipsizeMode='tail'> {getFileName(extend.thumbPath)} </Text>
+         </View>
         <Image
             resizeMode={"contain"}
             style={[styles.image, this.props.imageStyle,]}
