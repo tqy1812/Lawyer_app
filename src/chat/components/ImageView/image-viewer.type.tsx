@@ -55,8 +55,8 @@ export class Props {
    * Menu Context Values
    */
   public menuContext?: any = {
-    saveToLocal: 'save to the album',
-    cancel: 'cancel',
+    saveToLocal: '保存到相册',
+    cancel: '取消',
   };
 
   /**

@@ -64,11 +64,11 @@ export default (
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'white',
-      height: 40,
+      height: 70,
       borderBottomColor: '#ccc',
       borderBottomWidth: 1,
     },
-    operateText: { color: '#333' },
+    operateText: { color: '#333', fontSize: 18 },
     loadingTouchable: { width, height },
     loadingContainer: {
       flex: 1,
