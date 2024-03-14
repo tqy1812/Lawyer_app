@@ -27,6 +27,8 @@ import Modal from "react-native-modal"
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageViewer from '../chat/components/ImageView'
 import { closeModal, showModal } from '../components/ShowModal';
+import FileViewer from 'react-native-file-viewer';
+import RNFS from 'react-native-fs';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const FileTypes = {
     All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
@@ -244,23 +246,47 @@ class ChatPage extends BaseComponent {
             }
         } else {
             that.stopPlay()
+            let filePath = message.extend.thumbPath
             if(message.msgType === "image"){
-                that.setState({imagePath: message.extend.thumbPath})
-                showModal(<ImageViewer
-                    style={{position: 'absolute', top: 0, left: 0, width: Common.window.width, height: Common.window.height,}}
-                    swipeDownThreshold={100}
-                    onSwipeDown={this.closeImageModal}
-                    onClick={this.closeImageModal}
-                    renderFooter={this.renderFooter}
-                    enableSwipeDown
-                    enableImageZoom
-                    imageUrls={[
-                        {
-                        url: message.extend.thumbPath,
-                        },
-                    ]}
-                />)
-                
+                if(filePath) {
+                    that.setState({imagePath: message.extend.thumbPath})
+                    showModal(<ImageViewer
+                        style={{position: 'absolute', top: 0, left: 0, width: Common.window.width, height: Common.window.height,}}
+                        swipeDownThreshold={100}
+                        onSwipeDown={this.closeImageModal}
+                        onClick={this.closeImageModal}
+                        renderFooter={this.renderFooter}
+                        enableSwipeDown
+                        enableImageZoom
+                        imageUrls={[
+                            {
+                            url: message.extend.thumbPath,
+                            },
+                        ]}
+                    />)
+                }
+            } else if(message.msgType === "file"){
+                if(filePath) {
+                    RNFS.exists(filePath).then(isExit => {
+                        if (isExit) {
+                          FileViewer.open(filePath, {showOpenWithDialog: true}) // absolute-path-to-my-local-file.
+                            .then(() => {
+                              console.log('open success');
+                            })
+                            .catch(error => {
+                              console.log('open file error', error);
+                            });
+                        } else {
+                            console.log('加入下载队列');
+                            try {
+                                const savedResponse = await saveFileToLocal(filePath);
+                                console.log("File saved successfully", savedResponse);
+                            } catch (error) {
+                                console.log("Failed to save the file", error);
+                            }
+                        }
+                    });
+                }
             }
         }
         console.log("message press....",message)
@@ -435,14 +461,6 @@ class ChatPage extends BaseComponent {
         }).catch(error => {
             console.log('DocumentPicker', error);
         });
-        // try {
-        //     const savedResponse = await saveFileToLocal('https://lawyer-ky.oss-cn-hangzhou.aliyuncs.com/download/case_template.xlsx');
-            
-        //     console.log("File saved successfully", savedResponse);
-        // } catch (error) {
-        //     console.log("Failed to save the file", error);
-        // }
-
     };
     onPhonePress = (phone)=>{
         console.log("电话号码点击事件...",phone);
