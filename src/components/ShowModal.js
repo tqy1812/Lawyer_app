@@ -18,6 +18,9 @@ export const showModal = (component) => {
     sibling = new RootSiblings(component);
     elements.push(sibling);
 };
+export const closeModal = () => {
+    sibling && sibling.destroy()
+};
 export const showConfirmModal = (component) => {
     confirmModal && confirmModal.destroy();
     confirmModal = new RootSiblings(component);
@@ -42,6 +45,7 @@ export const destroySibling = () =>  {
 export const destroyAllSibling = () =>  {
     finishSibling && finishSibling.destroy();
     planSibling && planSibling.destroy();
+    sibling && sibling.destroy();
 }
 
 export const destroyConfirmSibling = () =>  {

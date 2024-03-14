@@ -25,7 +25,6 @@ export default class MessageImage extends React.Component {
         size.width = maxWidth
         size.height = imageHeight * maxWidth / imageWidth
       }
-      console.log(size, imageHeight, imageWidth)
       return size
     }
     return (

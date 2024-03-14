@@ -299,6 +299,8 @@ PODS:
     - glog
   - react-native-background-timer (2.4.1):
     - React-Core
+  - react-native-cameraroll (7.5.0):
+    - React-Core
   - react-native-document-picker (9.1.0):
     - React-Core
   - react-native-fetch-blob (0.10.6):
@@ -467,6 +469,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
+  - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -560,6 +563,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-background-timer:
     :path: "../node_modules/react-native-background-timer"
+  react-native-cameraroll:
+    :path: "../node_modules/@react-native-camera-roll/camera-roll"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-fetch-blob:
@@ -653,6 +658,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 8134ee22182b8dd98dc0973db6266c398103ce6c
   React-logger: 1e7ac909607ee65fd5c4d8bea8c6e644f66b8843
   react-native-background-timer: 117fffdc9b0d6f144444bb49029f94275a45fdb5
+  react-native-cameraroll: 6ee4b1c204b571a551e32d57d77c0d524bb89156
   react-native-document-picker: 0fa7991074ad812aab09200bc083ef8f1ac956c1
   react-native-fetch-blob: 0cbdf9764c75d9438c162427395f4bc35a857d5a
   react-native-netinfo: 85f4311a8272324a2bf56583248f0a0bba5315a8

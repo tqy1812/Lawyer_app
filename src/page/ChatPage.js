@@ -4,7 +4,9 @@ import {
     StyleSheet,
     StatusBar,
     NativeModules,
-    Image
+    Image,
+    View,
+    TouchableOpacity
 } from 'react-native';
 import Header from '../components/Header';
 import {connect} from 'react-redux';
@@ -24,6 +26,7 @@ import AudioRecorderPlayer from 'react-native-audio-recorder-player'
 import Modal from "react-native-modal"
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageViewer from '../chat/components/ImageView'
+import { closeModal, showModal } from '../components/ShowModal';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const FileTypes = {
     All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
@@ -64,8 +67,6 @@ class ChatPage extends BaseComponent {
                 name: props.route.params.name,
                 avatar: props.route.params.avatar
             },
-            imageVisible: false,
-            imageOpacity: 1,
             imagePath: ''
         };
         this.page = 1;
@@ -170,18 +171,6 @@ class ChatPage extends BaseComponent {
                 }
             }));
         }
-
-        // let sendMsg = mockVoice(true) ;
-        // let receiveMsg = mockVoice(false) ;
-        // this.messageList.appendToTop([sendMsg]);
-        // setTimeout(()=>{
-        //     this.messageList.appendToTop([receiveMsg]);
-        // },800);
-        // setTimeout(()=>{
-        //     sendMsg.status = "send_success" ;
-        //     this.messageList.updateMsg(sendMsg);
-        // },600);
-
     };
     sendApi = (content, content_type, meta, callback) => {
         const { id, type } = this.state;
@@ -255,7 +244,24 @@ class ChatPage extends BaseComponent {
             }
         } else {
             that.stopPlay()
-            that.setState({imageOpacity: 1, imageVisible: true, imagePath: message.extend.thumbPath})
+            if(message.msgType === "image"){
+                that.setState({imagePath: message.extend.thumbPath})
+                showModal(<ImageViewer
+                    style={{position: 'absolute', top: 0, left: 0, width: Common.window.width, height: Common.window.height,}}
+                    swipeDownThreshold={100}
+                    onSwipeDown={this.closeImageModal}
+                    onClick={this.closeImageModal}
+                    renderFooter={this.renderFooter}
+                    enableSwipeDown
+                    enableImageZoom
+                    imageUrls={[
+                        {
+                        url: message.extend.thumbPath,
+                        },
+                    ]}
+                />)
+                
+            }
         }
         console.log("message press....",message)
     };
@@ -289,9 +295,10 @@ class ChatPage extends BaseComponent {
             let meta = {width: image.width, height: image.height}
             let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
             this.messageList.appendToTop([sendMsg]);
+            console.log(file)
             if(that.state.type==2){
                 dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-                    console.log(rs)
+                    // console.log(rs)
                     if(error){
                         sendMsg.status = "send_failed" ;
                         this.messageList.updateMsg(sendMsg);
@@ -313,7 +320,7 @@ class ChatPage extends BaseComponent {
             else 
             {
                 dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-                    console.log(rs)
+                    // console.log(rs)
                     if(error){
                         sendMsg.status = "send_failed" ;
                         this.messageList.updateMsg(sendMsg);
@@ -502,18 +509,18 @@ class ChatPage extends BaseComponent {
             cropping: false,
             cropperCircleOverlay: false,
         }).then(image => {
-            console.log('....handlePromiseSelectPhoto'+ JSON.stringify(image));
+            console.log('...........handlePromiseSelectPhoto', JSON.stringify(image));
             const file = {
-            uri: image.path,
-            name: image.creationDate +'.jpg',
-            type: image.mime
+                uri: image.path,
+                name: image.filename,
+                // type: image.mime
             }
             let meta = {width: image.width, height: image.height}
             let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
             this.messageList.appendToTop([sendMsg]);
             if(that.state.type==2){
                 dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-                    console.log(rs)
+                    // console.log(rs)
                     if(error){
                         sendMsg.status = "send_failed" ;
                         this.messageList.updateMsg(sendMsg);
@@ -576,12 +583,12 @@ class ChatPage extends BaseComponent {
             NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
         }
     }
-    closeModal = () => {
-        this.setState({imageVisible: false, imagePath: ''})
+    closeImageModal = () => {
+        closeModal()
     }
     saveToLocal = async () => {
         // const result = check(PERMISSIONS.IOS.PHOTO_LIBRARY);
-        // console.log(result);
+        console.log(this.state.imagePath)
         if (this.state.imagePath) {
           const response = await CameraRoll.save(this.state.imagePath);
           console.log('response', response);
@@ -590,17 +597,19 @@ class ChatPage extends BaseComponent {
    renderFooter = () => {
         return (
           <View style={{...styles.footer, width: Common.window.width}}>
+            <TouchableOpacity  onPress={this.closeImageModal}>
             <Image
               source={require('../chat/components/Images/close.png')}
               style={styles.icon}
-              onPress={this.closeModal}
+             
             />
-    
+            </TouchableOpacity>
+            <TouchableOpacity  onPress={this.saveToLocal}>
             <Image
               source={require('../chat/components/Images/download.png')}
               style={styles.icon}
-              onPress={this.saveToLocal}
             />
+            </TouchableOpacity>
           </View>
         );
       };
@@ -633,27 +642,6 @@ class ChatPage extends BaseComponent {
                             onRefreshAsync={this.onRefreshAsync}
                             messages={this.props.chatMessageList}
                 />
-                <Modal
-                    isVisible={visible}
-                    backdropColor="black"
-                    backdropOpacity={opacity}
-                    animationIn="fadeIn"
-                    animationOut="fadeOutDown"
-                    style={{margin: 0}}>
-                    <ImageViewer
-                        swipeDownThreshold={100}
-                        onSwipeDown={this.closeModal}
-                        onClick={this.closeModal}
-                        renderFooter={renderFooter}
-                        enableSwipeDown
-                        enableImageZoom
-                        imageUrls={[
-                            {
-                            url: this.data.imagePath,
-                            },
-                        ]}
-                    />
-                </Modal>
         </SafeAreaView>  )
     }
 }
@@ -670,15 +658,14 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
    },
    icon: {
-     width: 30,
-     height: 30,
+     width: 50,
+     height: 50,
    },
    footer: {
      display: 'flex',
      flexDirection: 'row',
-     justifyContent: 'space-between',
-     marginBottom: 50,
-     paddingLeft: 10,
-     paddingRight: 10,
+     justifyContent: 'space-around',
+     alignItems: 'center',
+     marginBottom: 20
    },
   });

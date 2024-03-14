@@ -49,15 +49,15 @@ export default class MessageContainer extends React.Component {
         return false;
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.messages === nextProps.messages) {
-            return;
-        }
+    // componentWillReceiveProps(nextProps) {
+    //     if (this.props.messages === nextProps.messages) {
+    //         return;
+    //     }
 
-        this.setState({
-            messagesData: this.prepareMessages(nextProps.messages)
-        });
-    }
+    //     this.setState({
+    //         messagesData: this.prepareMessages(nextProps.messages)
+    //     });
+    // }
 
     renderRow(item) {
         if (!item.msgId && item.msgId !== 0) {
@@ -125,11 +125,11 @@ export default class MessageContainer extends React.Component {
         }
     };
     isScrollBottom = true ;
-    componentDidUpdate(){
-        if(this.isScrollBottom){
-            this.scrollToBottom()
-        }
-    }
+    // componentDidUpdate(){
+    //     if(this.isScrollBottom){
+    //         this.scrollToBottom()
+    //     }
+    // }
     /**
      * 列表滑动到底部
      */
@@ -153,7 +153,7 @@ export default class MessageContainer extends React.Component {
         if(!messages){
             return ;
         }
-        this.isScrollBottom = false ;
+        this.isScrollBottom = true ;
         this.messages = JSON.parse(JSON.stringify([ ...messages,...this.messages ]));
         this.setState({
             messagesData: JSON.parse(JSON.stringify(this.messages))
@@ -167,7 +167,7 @@ export default class MessageContainer extends React.Component {
         if(!messages){
             return ;
         }
-        this.isScrollBottom = true ;
+        this.isScrollBottom = false ;
         this.messages = JSON.parse(JSON.stringify([ ...this.messages,...messages ]));
         this.setState({
             messagesData: JSON.parse(JSON.stringify(this.messages))
@@ -202,6 +202,7 @@ export default class MessageContainer extends React.Component {
             }
             return message ;
         });
+        this.isScrollBottom = false ;
         this.messages = _list ;
         this.setState({ messagesData:_list });
     }
@@ -235,6 +236,7 @@ export default class MessageContainer extends React.Component {
         console.log('messagesData-----',messagesData.length)
         return (
             <View style={{flex:1}}>
+                <View>
                 <ScrollView 
                   ref={(ref) => { this.flatList = ref }}
                   style={{ transform: [
@@ -248,6 +250,7 @@ export default class MessageContainer extends React.Component {
                      })}
 
                   </ScrollView>
+                  </View>
                 {/* <FlatList
                     keyboardDismissMode={"none"}
                     keyboardShouldPersistTaps={"never"}

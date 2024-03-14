@@ -4,12 +4,23 @@ import MessageList from './components/MessageContainer';
 import MessageInput from "./components/InputToolbar" ;
 import RecordMask from "./components/RecordMask" ;
 import PropTypes from "prop-types" ;
+import Immutable from 'immutable';
 export default class Chat extends Component {
     state = {
         show:false,
         text:"",
         color:"",
     };
+    shouldComponentUpdate(nextProps, nextState) {
+        let mapState = Immutable.fromJS(this.state);
+        let mapNextState = Immutable.fromJS(nextState);
+        let mapProps = Immutable.fromJS(this.props.caseList);
+        let mapNextProps = Immutable.fromJS(nextProps.caseList);
+        if (!Immutable.is(mapState, mapNextState)) {
+          return true;
+        }
+        return false;
+      }
     startRecording = ()=>{
         this.setState({ show:true, text:"手指上滑, 取消发送", color:"transparent" });
         this.props.startRecording();
