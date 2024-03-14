@@ -4,6 +4,7 @@ import {
     StyleSheet,
     StatusBar,
     NativeModules,
+    Image
 } from 'react-native';
 import Header from '../components/Header';
 import {connect} from 'react-redux';
@@ -20,6 +21,9 @@ import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
 import {saveFileToLocal} from '../utils/utils';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player'
+import Modal from "react-native-modal"
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import ImageViewer from '../chat/components/ImageView'
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const FileTypes = {
     All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
@@ -60,6 +64,9 @@ class ChatPage extends BaseComponent {
                 name: props.route.params.name,
                 avatar: props.route.params.avatar
             },
+            imageVisible: false,
+            imageOpacity: 1,
+            imagePath: ''
         };
         this.page = 1;
     }
@@ -246,8 +253,9 @@ class ChatPage extends BaseComponent {
                     }
                 })
             }
-        } else if (message.msgType=== "image") {
+        } else {
             that.stopPlay()
+            that.setState({imageOpacity: 1, imageVisible: true, imagePath: message.extend.thumbPath})
         }
         console.log("message press....",message)
     };
@@ -568,6 +576,34 @@ class ChatPage extends BaseComponent {
             NativeModules.OpenNoticeEmitter && NativeModules.OpenNoticeEmitter.openSetting();
         }
     }
+    closeModal = () => {
+        this.setState({imageVisible: false, imagePath: ''})
+    }
+    saveToLocal = async () => {
+        // const result = check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+        // console.log(result);
+        if (this.state.imagePath) {
+          const response = await CameraRoll.save(this.state.imagePath);
+          console.log('response', response);
+        }
+      };
+   renderFooter = () => {
+        return (
+          <View style={{...styles.footer, width: Common.window.width}}>
+            <Image
+              source={require('../chat/components/Images/close.png')}
+              style={styles.icon}
+              onPress={this.closeModal}
+            />
+    
+            <Image
+              source={require('../chat/components/Images/download.png')}
+              style={styles.icon}
+              onPress={this.saveToLocal}
+            />
+          </View>
+        );
+      };
     render() {
         return (
             <SafeAreaView style={[styles.container]}>
@@ -597,6 +633,27 @@ class ChatPage extends BaseComponent {
                             onRefreshAsync={this.onRefreshAsync}
                             messages={this.props.chatMessageList}
                 />
+                <Modal
+                    isVisible={visible}
+                    backdropColor="black"
+                    backdropOpacity={opacity}
+                    animationIn="fadeIn"
+                    animationOut="fadeOutDown"
+                    style={{margin: 0}}>
+                    <ImageViewer
+                        swipeDownThreshold={100}
+                        onSwipeDown={this.closeModal}
+                        onClick={this.closeModal}
+                        renderFooter={renderFooter}
+                        enableSwipeDown
+                        enableImageZoom
+                        imageUrls={[
+                            {
+                            url: this.data.imagePath,
+                            },
+                        ]}
+                    />
+                </Modal>
         </SafeAreaView>  )
     }
 }
@@ -611,5 +668,17 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       color: '#000',
       justifyContent: 'center'
+   },
+   icon: {
+     width: 30,
+     height: 30,
+   },
+   footer: {
+     display: 'flex',
+     flexDirection: 'row',
+     justifyContent: 'space-between',
+     marginBottom: 50,
+     paddingLeft: 10,
+     paddingRight: 10,
    },
   });
