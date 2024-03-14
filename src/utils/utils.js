@@ -702,6 +702,7 @@ export function getFileName(url) {
 }
 export async function saveFileToLocal(url) {
   try {
+      url = encodeURI(url)
       const response = await fetch(url); // 发起网络请求获取文件内容
       
       if (!response.ok) throw new Error('Network request failed');
@@ -712,10 +713,10 @@ export async function saveFileToLocal(url) {
         filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/lawyerapp/`; // 设置保存路径及文件名
       }
       else {
-        filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/lawyerapp/`; // 设置保存路径及文件名
+        filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/`; // 设置保存路径及文件名
       }
       
-      console.log(filePath)
+      console.log(filePath + fileName)
       const res = await RNFetchBlob.config({ path: filePath + fileName })
           .fetch('GET', url); // 将文件保存到指定路径
           

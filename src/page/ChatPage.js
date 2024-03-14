@@ -28,6 +28,7 @@ import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageViewer from '../chat/components/ImageView'
 import { closeModal, showModal } from '../components/ShowModal';
 import FileViewer from 'react-native-file-viewer';
+import RNFetchBlob from 'react-native-fetch-blob';
 import RNFS from 'react-native-fs';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const FileTypes = {
@@ -267,7 +268,11 @@ class ChatPage extends BaseComponent {
                 }
             } else if(message.msgType === "file"){
                 if(filePath) {
-                    RNFS.exists(filePath).then(isExit => {
+                    var match = filePath.match(/\/([^\/?#]+)[^\/]*$/);
+                    var fileName = match && match[1];
+                    var localFilePath = `${RNFetchBlob.fs.dirs.DocumentDir}/`+ encodeURI(fileName);
+                    console.log('localFilePath=', localFilePath);
+                    RNFS.exists(localFilePath).then(isExit => {
                         if (isExit) {
                           FileViewer.open(filePath, {showOpenWithDialog: true}) // absolute-path-to-my-local-file.
                             .then(() => {
@@ -277,13 +282,7 @@ class ChatPage extends BaseComponent {
                               console.log('open file error', error);
                             });
                         } else {
-                            console.log('加入下载队列');
-                            try {
-                                const savedResponse = await saveFileToLocal(filePath);
-                                console.log("File saved successfully", savedResponse);
-                            } catch (error) {
-                                console.log("Failed to save the file", error);
-                            }
+                            that.downloadFile(filePath);
                         }
                     });
                 }
@@ -291,6 +290,15 @@ class ChatPage extends BaseComponent {
         }
         console.log("message press....",message)
     };
+    downloadFile = async(filePath) => {
+        console.log('加入下载队列', filePath);
+        try {
+            const savedResponse = await saveFileToLocal(filePath);
+            console.log("File saved successfully", savedResponse);
+        } catch (error) {
+            console.log("Failed to save the file", error);
+        }
+    }
     stopPlay = async() => {
         if(!this.voicePlaying) {
             return
