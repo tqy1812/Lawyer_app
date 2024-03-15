@@ -11,6 +11,7 @@ import {
 
 import MessageText from './MessageText';
 import MessageImage from './MessageImage';
+import MessageVideo from './MessageVideo';
 import MessageFile from './MessageFile';
 import MessageAudio from './MessageAudio';
 import MessageLocation from './MessageLocation';
@@ -49,15 +50,24 @@ export default class Bubble extends React.Component {
 
     renderMessageFile() {
         if (this.props.currentMessage.msgType === 'file' && this.props.currentMessage.extend) {
-            const {containerStyle, wrapperStyle, ...messageImageProps} = this.props;
+            const {containerStyle, wrapperStyle, ...messageFileProps} = this.props;
             if (this.props.renderMessageFile) {
-                return this.props.renderMessageFile(messageImageProps);
+                return this.props.renderMessageFile(messageFileProps);
             }
-            return <MessageFile {...messageImageProps}/>;
+            return <MessageFile {...messageFileProps}/>;
         }
         return null;
     }
-
+    renderMessageVideo() {
+        if (this.props.currentMessage.msgType === 'video' && this.props.currentMessage.extend) {
+            const {containerStyle, wrapperStyle, ...messageVideoProps} = this.props;
+            if (this.props.renderMessageVideo) {
+                return this.props.renderMessageVideo(messageVideoProps);
+            }
+            return <MessageVideo {...messageVideoProps}/>;
+        }
+        return null;
+    }
     renderMessageAudio() {
         if (this.props.currentMessage.msgType === 'voice') {
             return <MessageAudio {...this.props}/>;
@@ -160,6 +170,7 @@ export default class Bubble extends React.Component {
                         {this.renderMessageAudio()}
                         {this.renderMessageLocation()}
                         {this.renderMessageFile()}
+                        {this.renderMessageVideo()}
                         {/*this.renderTime()*/}
                     </View>
                 </TouchableNativeFeedback>
@@ -177,6 +188,7 @@ export default class Bubble extends React.Component {
                     {this.renderMessageAudio()}
                     {this.renderMessageLocation()}
                     {this.renderMessageFile()}
+                    {this.renderMessageVideo()}
                     {/*this.renderTime()*/}
                 </View>
             </TouchableWithoutFeedback>

@@ -31,6 +31,7 @@ import FileViewer from 'react-native-file-viewer';
 import RNFetchBlob from 'react-native-fetch-blob';
 import RNFS from 'react-native-fs';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import {createThumbnail} from 'react-native-create-thumbnail';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const FileTypes = {
     All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
@@ -132,49 +133,50 @@ class ChatPage extends BaseComponent {
         let sendMsg = this.formatSendVoice(true, file.uri, false, false, this.recorderNameDuration, "send_going") ;
         this.messageList.appendToTop([sendMsg]);
         let meta = {duration: this.recorderNameDuration}
-        if(that.state.type==2){
-            dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-                console.log(rs)
-                if(error){
-                    sendMsg.status = "send_failed" ;
-                    this.messageList.updateMsg(sendMsg);
-                }
-                else {
-                    this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
-                        if(error){
-                            sendMsg.status = "send_failed" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                        else {
-                            sendMsg.status = "send_success" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                    })
-                }
-            }));
-        }
-        else 
-        {
-            dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-                console.log(rs)
-                if(error){
-                    sendMsg.status = "send_failed" ;
-                    this.messageList.updateMsg(sendMsg);
-                }
-                else {
-                    this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
-                        if(error){
-                            sendMsg.status = "send_failed" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                        else {
-                            sendMsg.status = "send_success" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                    })
-                }
-            }));
-        }
+        this.uploadAip(sendMsg, file, 'voice', meta);
+        // if(that.state.type==2){
+        //     dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
+        //         console.log(rs)
+        //         if(error){
+        //             sendMsg.status = "send_failed" ;
+        //             this.messageList.updateMsg(sendMsg);
+        //         }
+        //         else {
+        //             this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
+        //                 if(error){
+        //                     sendMsg.status = "send_failed" ;
+        //                     this.messageList.updateMsg(sendMsg);
+        //                 }
+        //                 else {
+        //                     sendMsg.status = "send_success" ;
+        //                     this.messageList.updateMsg(sendMsg);
+        //                 }
+        //             })
+        //         }
+        //     }));
+        // }
+        // else 
+        // {
+        //     dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+        //         console.log(rs)
+        //         if(error){
+        //             sendMsg.status = "send_failed" ;
+        //             this.messageList.updateMsg(sendMsg);
+        //         }
+        //         else {
+        //             this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
+        //                 if(error){
+        //                     sendMsg.status = "send_failed" ;
+        //                     this.messageList.updateMsg(sendMsg);
+        //                 }
+        //                 else {
+        //                     sendMsg.status = "send_success" ;
+        //                     this.messageList.updateMsg(sendMsg);
+        //                 }
+        //             })
+        //         }
+        //     }));
+        // }
     };
     sendApi = (content, content_type, meta, callback) => {
         const { id, type } = this.state;
@@ -370,57 +372,39 @@ class ChatPage extends BaseComponent {
                 let meta;
                 let sendMsg;
                 if(type ===  "video/quicktime"){
-                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri) }
+                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri), coverPath, coverWidth, coverHeight }
                     sendMsg = this.formatSendVideo(true, uri, image.width, image.height,"send_going") ;
+                    this.messageList.appendToTop([sendMsg]);
+                    const {
+                        path: coverPath,
+                        width: coverWidth,
+                        height: coverHeight,
+                      } = await createThumbnail({
+                        url: uri,
+                      });
+                      console.log('coverPath', coverPath);
+                    if(that.state.type==2){
+                        dispatch(actionChat.reqEmployeeFileUpload(coverPath, (rs, error)=>{
+                            // console.log(rs)
+                            meta.coverPath = rs.url
+                            this.uploadAip(sendMsg, file, 'video', meta);
+                        }));
+                    }
+                    else 
+                    {
+                        dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                            console.log('coverPath',rs)
+                            meta.coverPath = rs.url
+                            this.uploadAip(sendMsg, file, 'video', meta);
+                        }));
+                    }
+                   
                 } else {
                     meta = {width, height, localPath: decodeURI(uri)}
-                    sendMsg = this.formatSendImage(true, uri, width, height,"send_going") ;
+                    sendMsg = this.formatSendImage(true, uri, width, height, "send_going") ;
+                    this.messageList.appendToTop([sendMsg]);                   
+                    this.uploadAip(sendMsg, file, 'image', meta);
                 }
-                this.messageList.appendToTop([sendMsg]);
-                if(that.state.type==2){
-                    dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-                        // console.log(rs)
-                        if(error){
-                            sendMsg.status = "send_failed" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                        else {
-                            this.sendApi(rs.url, type ===  "video/quicktime" ? 'video' : 'image', JSON.stringify(meta), (rs, error) => {
-                                if(error){
-                                    sendMsg.status = "send_failed" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                                else {
-                                    sendMsg.status = "send_success" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                            })
-                        }
-                    }));
-                }
-                else 
-                {
-                    dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-                        // console.log(rs)
-                        if(error){
-                            sendMsg.status = "send_failed" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                        else {
-                            this.sendApi(rs.url, type ===  "video/quicktime" ? 'video' : 'image', JSON.stringify(meta), (rs, error) => {
-                                if(error){
-                                    sendMsg.status = "send_failed" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                                else {
-                                    sendMsg.status = "send_success" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                            })
-                        }
-                    }));
-                }
-
             }
             console.log(rs)
         })
@@ -534,49 +518,50 @@ class ChatPage extends BaseComponent {
             let meta = {size: res.size, name: res.name, localPath: decodeURI(res.uri)}
             let sendMsg = this.formatSendFile(true, file.fileCopyUri, res.size, res.name, "send_going") ;
             this.messageList.appendToTop([sendMsg]);
-            if(that.state.type==2){
-                dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-                    console.log(rs)
-                    if(error){
-                        sendMsg.status = "send_failed" ;
-                        this.messageList.updateMsg(sendMsg);
-                    }
-                    else {
-                        this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
-                            if(error){
-                                sendMsg.status = "send_failed" ;
-                                this.messageList.updateMsg(sendMsg);
-                            }
-                            else {
-                                sendMsg.status = "send_success" ;
-                                this.messageList.updateMsg(sendMsg);
-                            }
-                        })
-                    }
-                }));
-            }
-            else 
-            {
-                dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-                    console.log(rs)
-                    if(error){
-                        sendMsg.status = "send_failed" ;
-                        this.messageList.updateMsg(sendMsg);
-                    }
-                    else {
-                        this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
-                            if(error){
-                                sendMsg.status = "send_failed" ;
-                                this.messageList.updateMsg(sendMsg);
-                            }
-                            else {
-                                sendMsg.status = "send_success" ;
-                                this.messageList.updateMsg(sendMsg);
-                            }
-                        })
-                    }
-                }));
-            }
+            this.uploadAip(sendMsg, file, 'file', meta);
+            // if(that.state.type==2){
+            //     dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
+            //         console.log(rs)
+            //         if(error){
+            //             sendMsg.status = "send_failed" ;
+            //             this.messageList.updateMsg(sendMsg);
+            //         }
+            //         else {
+            //             this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
+            //                 if(error){
+            //                     sendMsg.status = "send_failed" ;
+            //                     this.messageList.updateMsg(sendMsg);
+            //                 }
+            //                 else {
+            //                     sendMsg.status = "send_success" ;
+            //                     this.messageList.updateMsg(sendMsg);
+            //                 }
+            //             })
+            //         }
+            //     }));
+            // }
+            // else 
+            // {
+            //     dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+            //         console.log(rs)
+            //         if(error){
+            //             sendMsg.status = "send_failed" ;
+            //             this.messageList.updateMsg(sendMsg);
+            //         }
+            //         else {
+            //             this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
+            //                 if(error){
+            //                     sendMsg.status = "send_failed" ;
+            //                     this.messageList.updateMsg(sendMsg);
+            //                 }
+            //                 else {
+            //                     sendMsg.status = "send_success" ;
+            //                     this.messageList.updateMsg(sendMsg);
+            //                 }
+            //             })
+            //         }
+            //     }));
+            // }
         }).catch(error => {
             console.log('DocumentPicker', error);
         });
@@ -656,55 +641,38 @@ class ChatPage extends BaseComponent {
                 let meta;
                 let sendMsg;
                 if(type ===  "video/quicktime"){
-                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri) }
+                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri), coverPath, coverWidth, coverHeight }
                     sendMsg = this.formatSendVideo(true, uri, image.width, image.height,"send_going") ;
+                    this.messageList.appendToTop([sendMsg]);
+                    const {
+                        path: coverPath,
+                        width: coverWidth,
+                        height: coverHeight,
+                      } = await createThumbnail({
+                        url: uri,
+                      });
+                      console.log('coverPath', coverPath);
+                    if(that.state.type==2){
+                        dispatch(actionChat.reqEmployeeFileUpload(coverPath, (rs, error)=>{
+                            // console.log(rs)
+                            meta.coverPath = rs.url
+                            this.uploadAip(sendMsg, file, 'video', meta);
+                        }));
+                    }
+                    else 
+                    {
+                        dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                            console.log('coverPath',rs)
+                            meta.coverPath = rs.url
+                            this.uploadAip(sendMsg, file, 'video', meta);
+                        }));
+                    }
+                   
                 } else {
                     meta = {width, height, localPath: decodeURI(uri)}
-                    sendMsg = this.formatSendImage(true, uri, width, height,"send_going") ;
-                }
-                this.messageList.appendToTop([sendMsg]);
-                if(that.state.type==2){
-                    dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-                        // console.log(rs)
-                        if(error){
-                            sendMsg.status = "send_failed" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                        else {
-                            this.sendApi(rs.url, type ===  "video/quicktime" ? 'video' : 'image', JSON.stringify(meta), (rs, error) => {
-                                if(error){
-                                    sendMsg.status = "send_failed" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                                else {
-                                    sendMsg.status = "send_success" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                            })
-                        }
-                    }));
-                }
-                else 
-                {
-                    dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-                        console.log(rs)
-                        if(error){
-                            sendMsg.status = "send_failed" ;
-                            this.messageList.updateMsg(sendMsg);
-                        }
-                        else {
-                            this.sendApi(rs.url, type ===  "video/quicktime" ? 'video' : 'image', JSON.stringify(meta), (rs, error) => {
-                                if(error){
-                                    sendMsg.status = "send_failed" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                                else {
-                                    sendMsg.status = "send_success" ;
-                                    this.messageList.updateMsg(sendMsg);
-                                }
-                            })
-                        }
-                    }));
+                    sendMsg = this.formatSendImage(true, uri, width, height, "send_going") ;
+                    this.messageList.appendToTop([sendMsg]);                   
+                    this.uploadAip(sendMsg, file, 'image', meta);
                 }
             }
         });
@@ -819,6 +787,53 @@ class ChatPage extends BaseComponent {
           </View>
         );
       };
+    uploadAip = (sendMsg, file, type, meta) => {
+        const that = this;
+        const {dispatch} = this.props;
+        if(that.state.type==2){
+            dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
+                // console.log(rs)
+                if(error){
+                    sendMsg.status = "send_failed" ;
+                    this.messageList.updateMsg(sendMsg);
+                }
+                else {
+                    this.sendApi(rs.url, type, JSON.stringify(meta), (rs, error) => {
+                        if(error){
+                            sendMsg.status = "send_failed" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                        else {
+                            sendMsg.status = "send_success" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                    })
+                }
+            }));
+        }
+        else 
+        {
+            dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                // console.log(rs)
+                if(error){
+                    sendMsg.status = "send_failed" ;
+                    this.messageList.updateMsg(sendMsg);
+                }
+                else {
+                    this.sendApi(rs.url, type, JSON.stringify(meta), (rs, error) => {
+                        if(error){
+                            sendMsg.status = "send_failed" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                        else {
+                            sendMsg.status = "send_success" ;
+                            this.messageList.updateMsg(sendMsg);
+                        }
+                    })
+                }
+            }));
+        }
+    }
     render() {
         return (
             <SafeAreaView style={[styles.container]}>
