@@ -211,6 +211,13 @@ class ChatPage extends BaseComponent {
             return { extend:{ imageHeight:height,imageWidth:width,thumbPath:url }, isOutgoing, msgId, msgType: "image",status,fromUser:this.state.rightUser } ;
         }
     };
+
+    formatSendVideo = (isOutgoing=true,url, meta,status)=>{
+        const msgId = `msgid_${Date.now()}` ;
+        if(isOutgoing){
+            return { extend:{ ...meta, thumbPath:url }, isOutgoing, msgId, msgType: "video",status,fromUser:this.state.rightUser } ;
+        }
+    };
     formatSendFile = (isOutgoing=true,url,size, name, status)=>{
         const msgId = `msgid_${Date.now()}` ;
         if(isOutgoing){
@@ -253,21 +260,41 @@ class ChatPage extends BaseComponent {
             // let filePath = decodeURI('file:///var/mobile/Containers/Data/Application/B21DA04D-9099-4FE4-A24E-584FB6F8EAC6/Library/Caches/7DDA4417-C0D3-4F0A-A877-2C9D538CF381/1130%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E5%90%88%E4%BD%9C%E5%8D%8F%E8%AE%AE%EF%BC%88%E5%BE%8B%E6%97%B6%E9%A1%B9%E7%9B%AE%E4%BA%8C%E6%9C%9F%20%20%E5%BF%AB%E8%AF%AD%E4%B8%8E%E5%B0%86%E6%89%8D%EF%BC%890%202.docx')
             if(message.msgType === "image"){
                 if(filePath) {
-                    that.setState({imagePath: message.extend.thumbPath})
-                    showModal(<ImageViewer
-                        style={{position: 'absolute', top: 0, left: 0, width: Common.window.width, height: Common.window.height,}}
-                        swipeDownThreshold={100}
-                        onSwipeDown={this.closeImageModal}
-                        onClick={this.closeImageModal}
-                        renderFooter={this.renderFooter}
-                        enableSwipeDown
-                        enableImageZoom
-                        imageUrls={[
-                            {
-                            url: message.extend.thumbPath,
-                            },
-                        ]}
-                    />)
+                    let localFilePath;
+                    if(filePath.indexOf('http')==0) {
+                        if(message.extend.localPath && message.extend.localPath.length > 0) {
+                            localFilePath = decodeURI(message.extend.localPath)
+                        }
+                        else {
+                            let match = filePath.match(/\/([^\/?#]+)[^\/]*$/);
+                            let fileName = match && match[1];
+                            localFilePath = `${RNFetchBlob.fs.dirs.DocumentDir}/lawyerapp/view/`+ fileName;
+                        }
+                    } else {
+                        localFilePath = decodeURI(filePath);
+                    }
+                    that.setState({imagePath: filePath})
+                    RNFS.exists(localFilePath).then(isExit => {
+                        console.log(isExit)
+                        if (!isExit) {
+                            localFilePath = filePath
+                        } 
+                        console.log('image', localFilePath)
+                        showModal(<ImageViewer
+                            style={{position: 'absolute', top: 0, left: 0, width: Common.window.width, height: Common.window.height,}}
+                            swipeDownThreshold={100}
+                            onSwipeDown={this.closeImageModal}
+                            onClick={this.closeImageModal}
+                            renderFooter={this.renderFooter}
+                            enableSwipeDown
+                            enableImageZoom
+                            imageUrls={[
+                                {
+                                url: localFilePath,
+                                },
+                            ]}
+                        />) 
+                    });
                 }
             } else if(message.msgType === "file"){
                 if(filePath) {
@@ -344,13 +371,12 @@ class ChatPage extends BaseComponent {
                 let sendMsg;
                 if(type ===  "video/quicktime"){
                     meta = {width, height, duration, fileSize, localPath: decodeURI(uri) }
-                    sendMsg = this.formatSendImage(true, uri, image.width, image.height,"send_going") ;
-                    this.messageList.appendToTop([sendMsg]);
+                    sendMsg = this.formatSendVideo(true, uri, image.width, image.height,"send_going") ;
                 } else {
                     meta = {width, height, localPath: decodeURI(uri)}
                     sendMsg = this.formatSendImage(true, uri, width, height,"send_going") ;
-                    this.messageList.appendToTop([sendMsg]);
                 }
+                this.messageList.appendToTop([sendMsg]);
                 if(that.state.type==2){
                     dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
                         // console.log(rs)
@@ -618,16 +644,24 @@ class ChatPage extends BaseComponent {
             presentationStyle: 'fullScreen',
             selectionLimit: 1,
         }).then((rs)=>{
-            console.log('launchImageLibrary', image)
+            console.log('launchImageLibrary', rs)
+            return;
             const {assets} = rs;
             if(assets && assets.length > 0) {
-                const {fileName, fileSize, height, uri, width} = assets[0]
+                const {fileName, fileSize, height, uri, width, type} = assets[0]
                 const file = {
                     uri: uri,
                     name: fileName
                 }
-                let meta = {width: width, height: height, localPath: decodeURI(uri)}
-                let sendMsg = this.formatSendImage(true, uri, width, height,"send_going") ;
+                let meta;
+                let sendMsg;
+                if(type ===  "video/quicktime"){
+                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri) }
+                    sendMsg = this.formatSendVideo(true, uri, image.width, image.height,"send_going") ;
+                } else {
+                    meta = {width, height, localPath: decodeURI(uri)}
+                    sendMsg = this.formatSendImage(true, uri, width, height,"send_going") ;
+                }
                 this.messageList.appendToTop([sendMsg]);
                 if(that.state.type==2){
                     dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
@@ -637,7 +671,7 @@ class ChatPage extends BaseComponent {
                             this.messageList.updateMsg(sendMsg);
                         }
                         else {
-                            this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
+                            this.sendApi(rs.url, type ===  "video/quicktime" ? 'video' : 'image', JSON.stringify(meta), (rs, error) => {
                                 if(error){
                                     sendMsg.status = "send_failed" ;
                                     this.messageList.updateMsg(sendMsg);
@@ -659,7 +693,7 @@ class ChatPage extends BaseComponent {
                             this.messageList.updateMsg(sendMsg);
                         }
                         else {
-                            this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
+                            this.sendApi(rs.url, type ===  "video/quicktime" ? 'video' : 'image', JSON.stringify(meta), (rs, error) => {
                                 if(error){
                                     sendMsg.status = "send_failed" ;
                                     this.messageList.updateMsg(sendMsg);

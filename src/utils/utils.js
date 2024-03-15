@@ -668,6 +668,9 @@ export function formatMessage(isOutgoing, item, counter) {
     let voiceMeta = item.meta ? JSON.parse(item.meta) : {}
     let duration = voiceMeta.duration ? voiceMeta.duration : 1000
     return  {...base, isOutgoing, extend:{ thumbPath:item.content },isRead: false,playing: false,duration: duration }
+  } else if (item.type == 'video') {
+    let videoMeta = item.meta ? JSON.parse(item.meta) : {}
+    return  {...base, isOutgoing, extend:{ thumbPath:item.content, ...videoMeta } }
   }
   return null
 }
