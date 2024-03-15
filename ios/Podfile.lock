@@ -301,6 +301,8 @@ PODS:
     - React-Core
   - react-native-cameraroll (7.5.0):
     - React-Core
+  - react-native-create-thumbnail (2.0.0):
+    - React-Core
   - react-native-document-picker (9.1.0):
     - React-Core
   - react-native-fetch-blob (0.10.6):
@@ -481,6 +483,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
+  - react-native-create-thumbnail (from `../node_modules/react-native-create-thumbnail`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -580,6 +583,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-timer"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
+  react-native-create-thumbnail:
+    :path: "../node_modules/react-native-create-thumbnail"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-fetch-blob:
@@ -682,6 +687,7 @@ SPEC CHECKSUMS:
   React-logger: 1e7ac909607ee65fd5c4d8bea8c6e644f66b8843
   react-native-background-timer: 117fffdc9b0d6f144444bb49029f94275a45fdb5
   react-native-cameraroll: 6ee4b1c204b571a551e32d57d77c0d524bb89156
+  react-native-create-thumbnail: ab55d24aea01723cf386f18b0b542aabb1982f27
   react-native-document-picker: 0fa7991074ad812aab09200bc083ef8f1ac956c1
   react-native-fetch-blob: 0cbdf9764c75d9438c162427395f4bc35a857d5a
   react-native-image-picker: e2c0a84f4973d1f39a3076ed29524ce38b2f8528

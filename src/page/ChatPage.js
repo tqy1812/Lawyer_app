@@ -21,11 +21,12 @@ import Common from '../common/constants';
 import platform from '../utils/platform';
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
-import {saveFileToLocal} from '../utils/utils';
+import {getFileName, saveFileToLocal} from '../utils/utils';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player'
 import Modal from "react-native-modal"
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageViewer from '../chat/components/ImageView'
+import {VideoScreen} from '../chat/components/VideoScreen/video_screen'
 import { closeModal, showModal, showToast } from '../components/ShowModal';
 import FileViewer from 'react-native-file-viewer';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -190,12 +191,14 @@ class ChatPage extends BaseComponent {
         const { id } = this.state;
         let sendMsg = this.formatSendText(true,text,"send_going") ;
         this.messageList.appendToTop([sendMsg]);
-        this.sendApi(text, 'text', (rs, error) => {
+        this.sendApi(text, 'text', undefined, (rs, error) => {
+            console.log('send succsee', rs, error)
             if(error) {
                 sendMsg.status = "send_failed" ;
                 this.messageList.updateMsg(sendMsg);
             }
             else {
+                console.log('send succsee')
                 sendMsg.status = "send_success" ;
                 this.messageList.updateMsg(sendMsg);
             }
@@ -268,9 +271,7 @@ class ChatPage extends BaseComponent {
                             localFilePath = decodeURI(message.extend.localPath)
                         }
                         else {
-                            let match = filePath.match(/\/([^\/?#]+)[^\/]*$/);
-                            let fileName = match && match[1];
-                            localFilePath = `${RNFetchBlob.fs.dirs.DocumentDir}/lawyerapp/view/`+ fileName;
+                            localFilePath = filePath;
                         }
                     } else {
                         localFilePath = decodeURI(filePath);
@@ -296,6 +297,33 @@ class ChatPage extends BaseComponent {
                                 },
                             ]}
                         />) 
+                    });
+                }
+            } else if(message.msgType === "video") {
+                if(filePath) {
+                    let localFilePath;
+                    if(filePath.indexOf('http')==0) {
+                        if(message.extend.localPath && message.extend.localPath.length > 0) {
+                            localFilePath = decodeURI(message.extend.localPath)
+                        }
+                        else {
+                            localFilePath = filePath;
+                        }
+                    } else {
+                        localFilePath = decodeURI(filePath);
+                    }
+                    console.log('video', localFilePath)
+                    RNFS.exists(localFilePath).then(isExit => {
+                        console.log(isExit)
+                        if (!isExit) {
+                            localFilePath = filePath
+                        } 
+                        console.log('image', localFilePath)
+                        showModal(<VideoScreen
+                            onScreenDismissed={this.closeImageModal}
+                            url={localFilePath}
+                        />) 
+                        
                     });
                 }
             } else if(message.msgType === "file"){
@@ -363,28 +391,44 @@ class ChatPage extends BaseComponent {
             presentationStyle: 'fullScreen'
         }).then((rs)=>{
             const {assets} = rs;
-            if(assets && assets.length > 0) {
-                const {duration, fileName, fileSize, height, uri, width, type} = assets[0]
-                let file = {
-                    uri: uri,
-                    name: fileName,
-                }
-                let meta;
-                let sendMsg;
-                if(type ===  "video/quicktime"){
-                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri), coverPath, coverWidth, coverHeight }
-                    sendMsg = this.formatSendVideo(true, uri, image.width, image.height,"send_going") ;
-                    this.messageList.appendToTop([sendMsg]);
+            console.log(rs)
+            this.sendImageVideo(assets);
+        })
+    };
+    sendImageVideo = (assets) => {
+        const that = this;
+        const {dispatch} = this.props;
+        
+        if(assets && assets.length > 0) {
+            const {duration, fileName, fileSize, height, uri, width, type} = assets[0]
+            let file = {
+                uri: uri,
+                name: fileName,
+            }
+            let meta;
+            let sendMsg;
+            if(type ===  "video/quicktime"){
+                createThumbnail({
+                    url: uri,
+                }).then(thumb=>{
+                    console.log("createThumbnail", thumb)
                     const {
-                        path: coverPath,
+                        path,
                         width: coverWidth,
                         height: coverHeight,
-                      } = await createThumbnail({
-                        url: uri,
-                      });
-                      console.log('coverPath', coverPath);
+                    } =thumb;
+                    let coverPath = "file://" + path;
+                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri), coverPath, coverWidth, coverHeight }
+                    console.log(meta)
+                    sendMsg = this.formatSendVideo(true, uri, meta,"send_going") ;
+                    this.messageList.appendToTop([sendMsg]);
+
+                    const coverPathFile = {
+                        uri: coverPath,
+                        name: new Date().getTime() +'.jpg',
+                    }
                     if(that.state.type==2){
-                        dispatch(actionChat.reqEmployeeFileUpload(coverPath, (rs, error)=>{
+                        dispatch(actionChat.reqEmployeeFileUpload(coverPathFile, (rs, error)=>{
                             // console.log(rs)
                             meta.coverPath = rs.url
                             this.uploadAip(sendMsg, file, 'video', meta);
@@ -392,94 +436,21 @@ class ChatPage extends BaseComponent {
                     }
                     else 
                     {
-                        dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
+                        dispatch(actionChat.reqClientFileUpload(coverPathFile, (rs, error)=>{
                             console.log('coverPath',rs)
                             meta.coverPath = rs.url
                             this.uploadAip(sendMsg, file, 'video', meta);
                         }));
                     }
-                   
-                } else {
-                    meta = {width, height, localPath: decodeURI(uri)}
-                    sendMsg = this.formatSendImage(true, uri, width, height, "send_going") ;
-                    this.messageList.appendToTop([sendMsg]);                   
-                    this.uploadAip(sendMsg, file, 'image', meta);
-                }
+                })
+            } else {
+                meta = {width, height, localPath: decodeURI(uri)}
+                sendMsg = this.formatSendImage(true, uri, width, height, "send_going") ;
+                this.messageList.appendToTop([sendMsg]);                   
+                this.uploadAip(sendMsg, file, 'image', meta);
             }
-            console.log(rs)
-        })
-        // ImagePicker.openCamera({
-        //     width: 300,
-        //     height: 300,
-        //     cropping: false,
-        //     cropperCircleOverlay: false,
-        // }).then(image => {
-        //     console.log('....handlePromiseSelectPhoto'+ JSON.stringify(image));
-        //     const file = {
-        //         uri: image.path,
-        //         name: image.creationDate +'.jpg',
-        //     }
-        //     let meta = {width: image.width, height: image.height}
-        //     let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
-        //     this.messageList.appendToTop([sendMsg]);
-        //     console.log(file)
-        //     if(that.state.type==2){
-        //         dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-        //             // console.log(rs)
-        //             if(error){
-        //                 sendMsg.status = "send_failed" ;
-        //                 this.messageList.updateMsg(sendMsg);
-        //             }
-        //             else {
-        //                 this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
-        //                     if(error){
-        //                         sendMsg.status = "send_failed" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                     else {
-        //                         sendMsg.status = "send_success" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                 })
-        //             }
-        //         }));
-        //     }
-        //     else 
-        //     {
-        //         dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-        //             // console.log(rs)
-        //             if(error){
-        //                 sendMsg.status = "send_failed" ;
-        //                 this.messageList.updateMsg(sendMsg);
-        //             }
-        //             else {
-        //                 this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
-        //                     if(error){
-        //                         sendMsg.status = "send_failed" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                     else {
-        //                         sendMsg.status = "send_success" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                 })
-        //             }
-        //         }));
-        //     }
-        // }).catch(e => {
-        //     if(e && e.toString().indexOf('User did not grant library permission') > -1){
-        //     Alert.alert('未授权', `图片访问权限没有开启，请前往设置去开启。`, [{
-        //         text: '取消',
-        //         onPress: null,
-        //         },
-        //         {
-        //         text: '去设置',
-        //         onPress: () => {this.handleSetting();},
-        //         },
-        //         ]);
-        //     }
-        // });
-    };
+        }
+    }
     onFailPress = (message)=>{
         console.log("fail...")
         alert("fail messgae id"+message.msgType);
@@ -516,7 +487,7 @@ class ChatPage extends BaseComponent {
                 name: res.name
             }
             let meta = {size: res.size, name: res.name, localPath: decodeURI(res.uri)}
-            let sendMsg = this.formatSendFile(true, file.fileCopyUri, res.size, res.name, "send_going") ;
+            let sendMsg = this.formatSendFile(true, file.uri, res.size, res.name, "send_going") ;
             this.messageList.appendToTop([sendMsg]);
             this.uploadAip(sendMsg, file, 'file', meta);
             // if(that.state.type==2){
@@ -630,124 +601,9 @@ class ChatPage extends BaseComponent {
             selectionLimit: 1,
         }).then((rs)=>{
             console.log('launchImageLibrary', rs)
-            return;
             const {assets} = rs;
-            if(assets && assets.length > 0) {
-                const {fileName, fileSize, height, uri, width, type} = assets[0]
-                const file = {
-                    uri: uri,
-                    name: fileName
-                }
-                let meta;
-                let sendMsg;
-                if(type ===  "video/quicktime"){
-                    meta = {width, height, duration, fileSize, localPath: decodeURI(uri), coverPath, coverWidth, coverHeight }
-                    sendMsg = this.formatSendVideo(true, uri, image.width, image.height,"send_going") ;
-                    this.messageList.appendToTop([sendMsg]);
-                    const {
-                        path: coverPath,
-                        width: coverWidth,
-                        height: coverHeight,
-                      } = await createThumbnail({
-                        url: uri,
-                      });
-                      console.log('coverPath', coverPath);
-                    if(that.state.type==2){
-                        dispatch(actionChat.reqEmployeeFileUpload(coverPath, (rs, error)=>{
-                            // console.log(rs)
-                            meta.coverPath = rs.url
-                            this.uploadAip(sendMsg, file, 'video', meta);
-                        }));
-                    }
-                    else 
-                    {
-                        dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-                            console.log('coverPath',rs)
-                            meta.coverPath = rs.url
-                            this.uploadAip(sendMsg, file, 'video', meta);
-                        }));
-                    }
-                   
-                } else {
-                    meta = {width, height, localPath: decodeURI(uri)}
-                    sendMsg = this.formatSendImage(true, uri, width, height, "send_going") ;
-                    this.messageList.appendToTop([sendMsg]);                   
-                    this.uploadAip(sendMsg, file, 'image', meta);
-                }
-            }
+            this.sendImageVideo(assets);
         });
-        return
-        // ImagePicker.openPicker({
-        //     width: 300,
-        //     height: 300,
-        //     cropping: false,
-        //     cropperCircleOverlay: false,
-        // }).then(image => {
-        //     console.log('...........handlePromiseSelectPhoto', JSON.stringify(image));
-        //     const file = {
-        //         uri: image.path,
-        //         name: image.filename,
-        //         // type: image.mime
-        //     }
-        //     let meta = {width: image.width, height: image.height}
-        //     let sendMsg = this.formatSendImage(true,image.path, image.width, image.height,"send_going") ;
-        //     this.messageList.appendToTop([sendMsg]);
-        //     if(that.state.type==2){
-        //         dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-        //             // console.log(rs)
-        //             if(error){
-        //                 sendMsg.status = "send_failed" ;
-        //                 this.messageList.updateMsg(sendMsg);
-        //             }
-        //             else {
-        //                 this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
-        //                     if(error){
-        //                         sendMsg.status = "send_failed" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                     else {
-        //                         sendMsg.status = "send_success" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                 })
-        //             }
-        //         }));
-        //     }
-        //     else 
-        //     {
-        //         dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-        //             console.log(rs)
-        //             if(error){
-        //                 sendMsg.status = "send_failed" ;
-        //                 this.messageList.updateMsg(sendMsg);
-        //             }
-        //             else {
-        //                 this.sendApi(rs.url, 'image', JSON.stringify(meta), (rs, error) => {
-        //                     if(error){
-        //                         sendMsg.status = "send_failed" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                     else {
-        //                         sendMsg.status = "send_success" ;
-        //                         this.messageList.updateMsg(sendMsg);
-        //                     }
-        //                 })
-        //             }
-        //         }));
-        //     }
-        // }).catch(e => {
-        //     if(e && e.toString().indexOf('User did not grant library permission') > -1){
-        //     Alert.alert('未授权', `图片访问权限没有开启，请前往设置去开启。`, [{
-        //         text: '取消',
-        //         onPress: null,
-        //         },
-        //         {
-        //         text: '去设置',
-        //         onPress: () => {this.handleSetting();},
-        //         },
-        //         ]);
-        //     }
-        // });
     }
     handleSetting = () => {
         if(platform.isAndroid()){

@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Image,
   StyleSheet,
-  View,Platform
+  View,Platform, Text
 } from 'react-native';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image'
@@ -13,6 +13,7 @@ export default class MessageVideo extends React.Component {
   render() {
     const {extend} = this.props.currentMessage;
     const {height, width, duration, coverPath, coverWidth, coverHeight} = extend;
+    console.log(coverWidth, coverHeight)
     const getImageSize = () => {
       const size = {
         width: 0,
@@ -35,8 +36,8 @@ export default class MessageVideo extends React.Component {
             source={{uri: coverPath, priority: FastImage.priority.normal}}
         />
         <View style={styles.playContainer}>
-          <Image
-            ImageComponent={FastImage}
+          <FastImage
+            resizeMode={FastImage.resizeMode.contain}
             source={require('./Images/play.png')}
             style={{
               width: styles.playContainer.width,
@@ -46,7 +47,7 @@ export default class MessageVideo extends React.Component {
         </View>
         <View style={styles.duration}>
           <Text style={styles.durationText}>
-            {Math.ceil(duration/1000) + 's'}
+            {Math.ceil(duration) + 's'}
           </Text>
         </View>
       </View>
@@ -57,22 +58,24 @@ export default class MessageVideo extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
-    // display: 'flex',
-    // justifyContent: 'flex-start',
-    // alignItems: 'flex-start'
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
     borderRadius:5,
   },
   playContainer: {
     position: 'absolute',
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
+    zIndex: 2,
   },
   duration: {
     position: 'absolute',
     right: 10,
-    bottom: 10,
+    bottom: 5,
+    zIndex: 2,
   },
   durationText: {
     fontSize: 12,

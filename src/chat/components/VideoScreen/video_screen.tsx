@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Video from 'react-native-video';
 
 export const VideoScreen = ({
@@ -26,7 +25,6 @@ export const VideoScreen = ({
   const [videoDuration, setDuration] = useState(0);
   const [videoCurrentTime, setCurrentTime] = useState(0);
   const player = useRef<Video | null>();
-  const {bottom, top} = useSafeAreaInsets();
 
   const saveToLocal = async () => {
     if (url) {
@@ -71,7 +69,7 @@ export const VideoScreen = ({
               styles.fill,
               styles.black,
               {
-                marginTop: top,
+                marginTop: 10,
               },
             ]}
           />
@@ -140,7 +138,7 @@ export const VideoScreen = ({
         style={[
           styles.download,
           {
-            paddingBottom: bottom,
+            paddingBottom: 10,
           },
         ]}>
         <Image
@@ -196,6 +194,7 @@ const styles = StyleSheet.create({
   videoScreen: {
     width: Common.window.width,
     height: Common.window.height,
+    position: 'absolute', top: 0, left: 0,
   },
   errorContainer: {
     position: 'absolute',
@@ -236,8 +235,8 @@ const styles = StyleSheet.create({
   },
   playContainer: {
     position: 'absolute',
-    width: 40,
-    height: 40,
+    width: 80,
+    height: 80,
   },
   duration: {
     position: 'absolute',

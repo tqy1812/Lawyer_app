@@ -656,7 +656,8 @@ export function formatMessage(isOutgoing, item, counter) {
     let imageMeta = item.meta ? JSON.parse(item.meta) : {}
     let width = imageMeta.width ? imageMeta.width : 100
     let height = imageMeta.height ? imageMeta.height : 100
-    return  {...base, isOutgoing,  extend:{ imageHeight:height,imageWidth:width, thumbPath:item.content } }
+    let localPath = imageMeta.localPath ? imageMeta.localPath : ''
+    return  {...base, isOutgoing,  extend:{ imageHeight:height,imageWidth:width, thumbPath:item.content, localPath } }
   } else if (item.type == 'file') {
     let fileMeta = item.meta ? JSON.parse(item.meta) : {}
     let size = fileMeta.size ? fileMeta.size : 0
