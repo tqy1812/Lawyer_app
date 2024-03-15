@@ -11,16 +11,16 @@ const { width: windowWidth, height: windowHeight } = Common.window;
 export default class MessageFile extends React.Component {
   render() {
     const {extend} = this.props.currentMessage;
-    const {imageHeight,imageWidth} = extend;
+    const {name,size} = extend;
     return (
-      <View style={[styles.container, this.props.containerStyle, {width:windowWidth * 0.7,height: 70}]}>
+      <View style={[styles.container, this.props.containerStyle, {width:windowWidth * 0.7,height: 70, }]}>
         <View style={styles.titleView}>
-          <Text style={styles.title} numberOflines={2} ellipsizeMode='tail'> {getFileName(extend.thumbPath)} </Text>
+          <Text style={styles.title} numberOflines={2} ellipsizeMode='tail'> { name ? name : getFileName(extend.thumbPath)} </Text>
          </View>
         <Image
             resizeMode={"contain"}
             style={[styles.image, this.props.imageStyle,]}
-            source={getFileType(extend.thumbPath)}
+            source={ name ? getFileType(name): getFileType(extend.thumbPath)}
         />
       </View>
     );
@@ -45,15 +45,16 @@ const styles = StyleSheet.create({
   },
   titleView: {
     width: windowWidth * 0.7 - 50 - 30,
-    height: 70,
+    height: 50,
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 18,
+    alignItems:'center',
   }
 });
 

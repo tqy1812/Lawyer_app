@@ -660,7 +660,10 @@ export function formatMessage(isOutgoing, item, counter) {
   } else if (item.type == 'file') {
     let fileMeta = item.meta ? JSON.parse(item.meta) : {}
     let size = fileMeta.size ? fileMeta.size : 0
-    return  {...base, isOutgoing, extend:{ thumbPath:item.content, size } }
+    let match = item.content.match(/\/([^\/?#]+)[^\/]*$/);
+    let name = fileMeta.name ? fileMeta.name : match && match[1]
+    let localPath = fileMeta.localPath ? fileMeta.localPath : ''
+    return  {...base, isOutgoing, extend:{ thumbPath:item.content, size, name, localPath} }
   } else if (item.type == 'audio' || item.type == 'voice') {
     let voiceMeta = item.meta ? JSON.parse(item.meta) : {}
     let duration = voiceMeta.duration ? voiceMeta.duration : 1000
@@ -672,6 +675,7 @@ export function getFileType(url) {
   if(!url) {
     return null;
   }
+  
   let arr = url.split('.');
   let iconName = arr[arr.length - 1] ? arr[arr.length - 1].toLowerCase() : ''
   if(iconName=='doc' || iconName=='docx') {
@@ -702,23 +706,23 @@ export function getFileName(url) {
 }
 export async function saveFileToLocal(url) {
   try {
-      url = encodeURI(url)
-      const response = await fetch(url); // 发起网络请求获取文件内容
+      let fileUrl = encodeURI(url)
+      const response = await fetch(fileUrl); // 发起网络请求获取文件内容
       
       if (!response.ok) throw new Error('Network request failed');
       var match = url.match(/\/([^\/?#]+)[^\/]*$/);
       var fileName = match && match[1];
       var filePath = '';
       if(platform.isAndroid()) {
-        filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/lawyerapp/`; // 设置保存路径及文件名
+        filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/lawyerapp/file/`; // 设置保存路径及文件名
       }
       else {
-        filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/`; // 设置保存路径及文件名
+        filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/lawyerapp/file/`; // 设置保存路径及文件名
       }
       
       console.log(filePath + fileName)
       const res = await RNFetchBlob.config({ path: filePath + fileName })
-          .fetch('GET', url); // 将文件保存到指定路径
+          .fetch('GET', fileUrl); // 将文件保存到指定路径
           
       return res;
   } catch (error) {

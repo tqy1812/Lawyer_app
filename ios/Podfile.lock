@@ -305,6 +305,8 @@ PODS:
     - React-Core
   - react-native-fetch-blob (0.10.6):
     - React-Core
+  - react-native-image-picker (7.1.1):
+    - React-Core
   - react-native-netinfo (9.3.7):
     - React-Core
   - react-native-pager-view (6.1.2):
@@ -315,6 +317,11 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-video (5.2.1):
+    - React-Core
+    - react-native-video/Video (= 5.2.1)
+  - react-native-video/Video (5.2.1):
+    - React-Core
   - react-native-webview (11.25.1):
     - React-Core
   - React-perflogger (0.69.7)
@@ -476,9 +483,11 @@ DEPENDENCIES:
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -575,12 +584,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-document-picker"
   react-native-fetch-blob:
     :path: "../node_modules/react-native-fetch-blob"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-video:
+    :path: "../node_modules/react-native-video"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -671,9 +684,11 @@ SPEC CHECKSUMS:
   react-native-cameraroll: 6ee4b1c204b571a551e32d57d77c0d524bb89156
   react-native-document-picker: 0fa7991074ad812aab09200bc083ef8f1ac956c1
   react-native-fetch-blob: 0cbdf9764c75d9438c162427395f4bc35a857d5a
+  react-native-image-picker: e2c0a84f4973d1f39a3076ed29524ce38b2f8528
   react-native-netinfo: 85f4311a8272324a2bf56583248f0a0bba5315a8
   react-native-pager-view: 8af1115b8f477db3a73d8e18083ab90b54a2c84e
   react-native-safe-area-context: ec0d85aca8110dae9327430a9541fec165352dab
+  react-native-video: 79a186e378d327b6c08bc3982c17ef455c6bd75c
   react-native-webview: d8de2d8d2f7226d56b23fcb45a7da60c52ed0312
   React-perflogger: 8e832d4e21fdfa613033c76d58d7e617341e804b
   React-RCTActionSheet: 9ca778182a9523991bff6381045885b6e808bb73
