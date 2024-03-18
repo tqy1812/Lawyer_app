@@ -295,6 +295,7 @@ export default {
   insertDataToTable,
   deleteDataFromTable,
   selectDataFromTable,
+  selectListFromTable,
   getMsgInfoFromTable,
   dropTable,
   runCustomSQL

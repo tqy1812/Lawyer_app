@@ -376,7 +376,7 @@ class ChatPage extends BaseComponent {
                     RNFS.exists(localFilePath).then(isExit => {
                         console.log(isExit)
                         if (isExit) {
-                          FileViewer.open(filePath, {showOpenWithDialog: true}) // absolute-path-to-my-local-file.
+                          FileViewer.open(localFilePath, {showOpenWithDialog: true}) // absolute-path-to-my-local-file.
                             .then(() => {
                               console.log('open success');
                             })
@@ -384,7 +384,7 @@ class ChatPage extends BaseComponent {
                               console.log('open file error', error);
                             });
                         } else {
-                            that.downloadFile(filePath);
+                            that.downloadFile(message);
                         }
                     });
                 }
@@ -392,11 +392,17 @@ class ChatPage extends BaseComponent {
         }
         console.log("message press....",message)
     };
-    downloadFile = async(filePath) => {
+    downloadFile = async(message) => {
+        let filePath = message.extend.thumbPath
         console.log('加入下载队列', filePath);
         try {
             const savedResponse = await saveFileToLocal(filePath);
             showToast('下载成功')
+            if(savedResponse.data){
+                this.fileList[filePath] = savedResponse.data
+                message.extend.localPath = savedResponse.data
+                dbHepler.insertDataToTable('LOCAL_FILE', {'OSS_URL': filePath, 'LOCAL_PATH': savedResponse.data})
+            }
             console.log("File saved successfully", savedResponse);
         } catch (error) {
             console.log("Failed to save the file", error);
