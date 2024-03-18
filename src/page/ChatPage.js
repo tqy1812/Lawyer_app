@@ -33,6 +33,8 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import RNFS from 'react-native-fs';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import {createThumbnail} from 'react-native-create-thumbnail';
+import dbHepler from '../utils/dbHelper';
+import * as Storage from '../common/Storage';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const FileTypes = {
     All: DocumentPicker.types.allFiles,// All document types, on Android this is */*, on iOS is public.content (note that some binary and archive types do not inherit from public.content)
@@ -73,24 +75,54 @@ class ChatPage extends BaseComponent {
                 name: props.route.params.name,
                 avatar: props.route.params.avatar
             },
-            imagePath: ''
+            imagePath: '', 
         };
         this.page = 1;
+        this.fileList = {}
     }
     componentDidMount() {
         if (!this.props.isLogin) {
           this.props.navigation.navigate('Login');
         }
         this.page = 1;
-        this.getList()
-        
+        Storage.getIsFirshOpenDb().then((flag) => {
+            console.log('getIsFirshOpenDb  flag='+flag, this.props.userInfo.id)
+            if (flag === '0') {
+                dbHepler.initDB(this.props.userInfo.id, ()=>{
+                    dbHepler.createTable('CREATE TABLE IF NOT EXISTS LOCAL_FILE(OSS_URL VARCHAR, LOCAL_PATH VARCHAR)')
+                })
+                this.getList()
+                Storage.setIsFirshOpenDb('1')
+            } else {
+                dbHepler.initDB(this.props.userInfo.id, ()=>{
+                    dbHepler.selectListFromTable('LOCAL_FILE', (rs, results)=>{
+                        if(rs) {
+                            this.fileList = {};
+                            for(let i = 0; i < results.rows.length; i++){
+                                let info = results.rows.item(i);
+                                let key = info['OSS_URL']
+                                this.fileList[key] = info['LOCAL_PATH']
+                            }
+                            console.log(this.fileList)
+                            this.getList()
+                        } else {
+                            this.getList()
+                        }
+                        
+                    })
+                })
+            }
+        }); 
+    }
+    componentWillUnmount() {
+        dbHepler.closeDB()
     }
     getList = () => {
         if(!this.state.hasMore && this.page > 1) {
             return 
         }
         if(this.state.type===2) {
-            this.props.dispatch(actionChat.getEmployeeChatList(this.page, 10, this.state.id, (rs)=>{
+            this.props.dispatch(actionChat.getEmployeeChatList(this.page, 10, this.state.id, this.fileList, (rs)=>{
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
                     this.messageList.appendToBottom(rs.data)
@@ -98,7 +130,7 @@ class ChatPage extends BaseComponent {
                 }
             }));
         } else {
-            this.props.dispatch(actionChat.getClientChatList(this.page, 10, this.state.id, (rs)=>{
+            this.props.dispatch(actionChat.getClientChatList(this.page, 10, this.state.id, this.fileList, (rs)=>{
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
                     console.log(rs.data)
@@ -655,6 +687,8 @@ class ChatPage extends BaseComponent {
                     this.messageList.updateMsg(sendMsg);
                 }
                 else {
+                    this.fileList[rs.url] = meta.localPath
+                    dbHepler.insertDataToTable('LOCAL_FILE', {'OSS_URL': rs.url, 'LOCAL_PATH': meta.localPath})
                     this.sendApi(rs.url, type, JSON.stringify(meta), (rs, error) => {
                         if(error){
                             sendMsg.status = "send_failed" ;
@@ -677,6 +711,8 @@ class ChatPage extends BaseComponent {
                     this.messageList.updateMsg(sendMsg);
                 }
                 else {
+                    this.fileList[rs.url] = meta.localPath
+                    dbHepler.insertDataToTable('LOCAL_FILE', {'OSS_URL': rs.url, 'LOCAL_PATH': meta.localPath})
                     this.sendApi(rs.url, type, JSON.stringify(meta), (rs, error) => {
                         if(error){
                             sendMsg.status = "send_failed" ;

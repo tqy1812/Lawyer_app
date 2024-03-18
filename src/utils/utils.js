@@ -634,7 +634,7 @@ export function filterSameColor(oldArr) {
   return color;
 }
 
-export function formatMessage(isOutgoing, item, counter) {
+export function formatMessage(isOutgoing, item, counter, localFileList) {
   const msgId = `msgid_${counter}` ;   
   let base = {  
     fromUser: {
@@ -656,22 +656,24 @@ export function formatMessage(isOutgoing, item, counter) {
     let imageMeta = item.meta ? JSON.parse(item.meta) : {}
     let width = imageMeta.width ? imageMeta.width : 100
     let height = imageMeta.height ? imageMeta.height : 100
-    let localPath = imageMeta.localPath ? imageMeta.localPath : ''
+    let localPath = localFileList ? localFileList[item.content] : ''
     return  {...base, isOutgoing,  extend:{ imageHeight:height,imageWidth:width, thumbPath:item.content, localPath } }
   } else if (item.type == 'file') {
     let fileMeta = item.meta ? JSON.parse(item.meta) : {}
     let size = fileMeta.size ? fileMeta.size : 0
     let match = item.content.match(/\/([^\/?#]+)[^\/]*$/);
     let name = fileMeta.name ? fileMeta.name : match && match[1]
-    let localPath = fileMeta.localPath ? fileMeta.localPath : ''
+    let localPath = localFileList ? localFileList[item.content] : ''
     return  {...base, isOutgoing, extend:{ thumbPath:item.content, size, name, localPath} }
   } else if (item.type == 'audio' || item.type == 'voice') {
     let voiceMeta = item.meta ? JSON.parse(item.meta) : {}
     let duration = voiceMeta.duration ? voiceMeta.duration : 1000
-    return  {...base, isOutgoing, extend:{ thumbPath:item.content },isRead: false,playing: false,duration: duration }
+    let localPath = localFileList ? localFileList[item.content] : ''
+    return  {...base, isOutgoing, extend:{ thumbPath:item.content, localPath },isRead: false,playing: false,duration: duration }
   } else if (item.type == 'video') {
     let videoMeta = item.meta ? JSON.parse(item.meta) : {}
-    return  {...base, isOutgoing, extend:{ thumbPath:item.content, ...videoMeta } }
+    let localPath = localFileList ? localFileList[item.content] : ''
+    return  {...base, isOutgoing, extend:{ thumbPath:item.content, ...videoMeta, localPath } }
   }
   return null
 }

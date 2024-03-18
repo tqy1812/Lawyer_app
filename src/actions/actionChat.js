@@ -26,7 +26,7 @@ export default class actionChat {
     }
 
     // 获取对应客户聊天记录
-    static getClientChatList(page, per_page, id, callback = null) {
+    static getClientChatList(page, per_page, id, localFileList, callback = null) {
         return (dispatch, getState) => {
           let state = getState();
           let userInfo = state.Auth && state.Auth.userInfo;
@@ -42,7 +42,7 @@ export default class actionChat {
                 for(let i=0; i<list.length; i++) {
                     console.log(parseInt(list[i].speaker_id), parseInt(userInfo.id))
                   let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
-                  let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page)
+                  let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page, localFileList)
                   newList.push(newItem)
                 }
                 if(page == 1) {
@@ -90,7 +90,7 @@ export default class actionChat {
     }
  
      // 获取对应律师聊天记录
-    static getEmployeeChatList(page, per_page, id, callback = null) {
+    static getEmployeeChatList(page, per_page, id, localFileList, callback = null) {
          return (dispatch, getState) => {
            let state = getState();
            let userInfo = state.Auth && state.Auth.userInfo;
@@ -104,7 +104,7 @@ export default class actionChat {
                   let newList = []
                   for(let i=0; i<list.length; i++) {
                     let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
-                    let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page)
+                    let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page, localFileList)
                     newList.push(newItem)
                   }
                   if(page == 1) {

@@ -15,6 +15,7 @@
 		3CB06C12AD29567F8D981DED /* libPods-LawyerApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7312C715A003AAF1A7802849 /* libPods-LawyerApp.a */; };
 		3E4A2C0AEB8A22CD5B9D6989 /* libPods-LawyerApp-LawyerAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF5813FED772DC61F017277 /* libPods-LawyerApp-LawyerAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A83C2B4D2BA7ED4100EF3E88 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A83C2B4C2BA7ED4100EF3E88 /* libsqlite3.0.tbd */; };
 		A84484F829D1457B00740FAE /* iflyMSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A84484F729D1457B00740FAE /* iflyMSC.framework */; };
 		A851B78F29C4069400D513FD /* SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = A851B78E29C4069400D513FD /* SplashScreen.m */; };
 		A893CC762A3841DE0054A620 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A893CC752A3841DE0054A620 /* main.jsbundle */; };
@@ -66,6 +67,7 @@
 		7312C715A003AAF1A7802849 /* libPods-LawyerApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LawyerApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = LawyerApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A832AEDA29C30AF30066EBF9 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A83C2B4C2BA7ED4100EF3E88 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		A84484F729D1457B00740FAE /* iflyMSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = iflyMSC.framework; sourceTree = "<group>"; };
 		A851B78D29C4062900D513FD /* SplashScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SplashScreen.h; sourceTree = "<group>"; };
 		A851B78E29C4069400D513FD /* SplashScreen.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SplashScreen.m; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A83C2B4D2BA7ED4100EF3E88 /* libsqlite3.0.tbd in Frameworks */,
 				A8C5E73729B5CE7D0078D0A5 /* libicucore.tbd in Frameworks */,
 				A8B079F32994860100717228 /* libz.tbd in Frameworks */,
 				A8B079F1299485EA00717228 /* libc++.tbd in Frameworks */,
@@ -193,6 +196,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A83C2B4C2BA7ED4100EF3E88 /* libsqlite3.0.tbd */,
 				A84484F729D1457B00740FAE /* iflyMSC.framework */,
 				A832AEDA29C30AF30066EBF9 /* MapKit.framework */,
 				A8C5E73629B5CE7D0078D0A5 /* libicucore.tbd */,

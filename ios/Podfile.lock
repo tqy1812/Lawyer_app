@@ -319,6 +319,8 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-sqlite-storage (6.0.1):
+    - React-Core
   - react-native-video (5.2.1):
     - React-Core
     - react-native-video/Video (= 5.2.1)
@@ -490,6 +492,7 @@ DEPENDENCIES:
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-sqlite-storage (from `../node_modules/react-native-sqlite-storage`)
   - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -597,6 +600,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-sqlite-storage:
+    :path: "../node_modules/react-native-sqlite-storage"
   react-native-video:
     :path: "../node_modules/react-native-video"
   react-native-webview:
@@ -694,6 +699,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 85f4311a8272324a2bf56583248f0a0bba5315a8
   react-native-pager-view: 8af1115b8f477db3a73d8e18083ab90b54a2c84e
   react-native-safe-area-context: ec0d85aca8110dae9327430a9541fec165352dab
+  react-native-sqlite-storage: 6df009b8b67fe34c57c5fd06ee8fff7669fece6d
   react-native-video: 79a186e378d327b6c08bc3982c17ef455c6bd75c
   react-native-webview: d8de2d8d2f7226d56b23fcb45a7da60c52ed0312
   React-perflogger: 8e832d4e21fdfa613033c76d58d7e617341e804b

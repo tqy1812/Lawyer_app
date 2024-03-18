@@ -7,6 +7,7 @@ const caseListUseColor = 'caseListUseColor_';
 const version = 'version';
 const isFirstOpen = 'isFirstOpen';
 const isFirstGuide = 'isFirstGuide';
+const isFirstOpenDb = 'isFirstOpenDb';
 export const getUserRecord = async () => {
     return await AsyncStorage.getItem(userRecord)
           .then((user) => {
@@ -121,6 +122,25 @@ export const getUserRecord = async () => {
   // 0：第一次打开  1：非第一次打开
   export const setIsFirshOpen = async (v) => {
     await AsyncStorage.setItem(isFirstOpen, v, null);
+  };
+
+  export const getIsFirshOpenDb = async () => {
+    return await AsyncStorage.getItem(isFirstOpenDb)
+          .then((v) => {
+              if (v) {
+                  return v;
+              } else {
+                  return '0';
+              }
+          })
+          .catch(error => {
+              // logger("::::getAutoLogin"+ error);
+              return '0';
+          });
+  };
+  // 0：第一次打开  1：非第一次打开
+  export const setIsFirshOpenDb = async (v) => {
+    await AsyncStorage.setItem(isFirstOpenDb, v, null);
   };
 
   export const getIsFirshGuide = async () => {
