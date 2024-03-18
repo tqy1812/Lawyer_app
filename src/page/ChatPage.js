@@ -386,6 +386,7 @@ class ChatPage extends BaseComponent {
         const {dispatch} = this.props;
         
         launchCamera({
+            durationLimit: 60,
             mediaType: 'mixed', 
             maxHeight: 256, 
             presentationStyle: 'fullScreen'
