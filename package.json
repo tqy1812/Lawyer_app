@@ -44,7 +44,6 @@
     "react-native-headless-task-worker": "^1.0.0",
     "react-native-image-crop-picker": "^0.39.0",
     "react-native-image-picker": "^7.1.1",
-    "react-native-modal": "^13.0.1",
     "react-native-pager-view": "^6.1.2",
     "react-native-parsed-text": "0.0.22",
     "react-native-push-notification": "^8.1.1",

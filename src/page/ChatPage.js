@@ -23,7 +23,6 @@ import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
 import {getFileName, saveFileToLocal} from '../utils/utils';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player'
-import Modal from "react-native-modal"
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageViewer from '../chat/components/ImageView'
 import {VideoScreen} from '../chat/components/VideoScreen/video_screen'

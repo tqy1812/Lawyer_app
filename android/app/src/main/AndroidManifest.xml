@@ -98,8 +98,8 @@
             </intent-filter>
         </service>
 
-        <service android:name="com.szky.lawyerapp.task.WebSocketTaskService"
-            android:enabled="true" />
+<!--        <service android:name="com.szky.lawyerapp.task.WebSocketTaskService"-->
+<!--            android:enabled="true" />-->
 
 <!--        <service android:name="com.szky.lawyerapp.task.WebSocketTaskService"-->
 <!--            android:enabled="true"-->

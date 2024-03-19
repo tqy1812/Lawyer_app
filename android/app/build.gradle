@@ -291,7 +291,7 @@ dependencies {
     implementation project(':react-native-file-viewer')
     implementation project(':@react-native-camera-roll_camera-roll')
     implementation project(':react-native-video')
-
+    implementation project(':react-native-sqlite-storage')
     implementation 'com.hihonor.mcs:push:7.0.41.301'
     implementation 'com.huawei.hms:push:6.9.0.300'
 
