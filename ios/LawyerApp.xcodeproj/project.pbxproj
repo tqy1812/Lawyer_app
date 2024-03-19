@@ -602,8 +602,8 @@
 				CODE_SIGN_ENTITLEMENTS = LawyerApp/LawyerApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1.4;
-				DEVELOPMENT_TEAM = 9CLV4369T9;
+				CURRENT_PROJECT_VERSION = 1.1.5;
+				DEVELOPMENT_TEAM = T7N25URN4F;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -729,13 +729,13 @@
 					/usr/lib/swift,
 					"\"$(SRCROOT)/../node_modules/react-native-speech-iflytek/ios\"",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.ky.--PRODUCT-NAME-rfc1034identifier-1";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.ky.LawyerApp;
 				PRODUCT_NAME = LawyerApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -758,8 +758,8 @@
 				CODE_SIGN_ENTITLEMENTS = LawyerApp/LawyerApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1.4;
-				DEVELOPMENT_TEAM = 9CLV4369T9;
+				CURRENT_PROJECT_VERSION = 1.1.5;
+				DEVELOPMENT_TEAM = T7N25URN4F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -876,13 +876,13 @@
 					/usr/lib/swift,
 					"\"$(SRCROOT)/../node_modules/react-native-speech-iflytek/ios\"",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.ky.--PRODUCT-NAME-rfc1034identifier-1";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.ky.LawyerApp;
 				PRODUCT_NAME = LawyerApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
