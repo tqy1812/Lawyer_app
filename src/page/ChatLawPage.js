@@ -23,7 +23,7 @@ import Common from '../common/constants';
 import platform from '../utils/platform';
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
-import { logger} from '../utils/utils';
+import { logger, useCurrentRoute} from '../utils/utils';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player'
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageViewer from '../chat/components/ImageView'
@@ -103,6 +103,8 @@ class ChatLawPage extends BaseComponent {
         this.recognizerEventEmitter = new NativeEventEmitter( platform.isAndroid() ? Recognizer : this.RecognizerIos);
         this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
         this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
+
+        console.log(this.useCurrentRoute())
     }
     componentWillUnmount() {
         // dbHepler.closeDB()

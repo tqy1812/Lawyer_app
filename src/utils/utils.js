@@ -5,12 +5,6 @@ import Common from "../common/constants";
 import {PixelRatio} from "react-native";
 import platform from './platform';
 import RNFetchBlob from 'react-native-fetch-blob';
-import { useNavigationState } from '@react-navigation/native';
- 
-export function useCurrentRoute() {
-  const route = useNavigationState((state) => state.routes[state.index]);
-  return route;
-}
 export const locale = {
   name: 'zhCn',
   config: {
