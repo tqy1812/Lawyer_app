@@ -208,8 +208,8 @@ class ChatLawPage extends BaseComponent {
                 showToast(error.info)
             }
             else {
-                let sendMsg = this.formatSendText(false, text,"send_success");
-                this.messageList.appendToTop([sendMsg]);
+                let recMsg = this.formatSendText(false, rs.answer,"send_success");
+                this.messageList.appendToTop([recMsg]);
             }
         })
     };

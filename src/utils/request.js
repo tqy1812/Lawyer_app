@@ -61,8 +61,9 @@ let request = {
      * @param updateCallback
      */
     post: (url, method, data, headers, callback, logoutCallback, updateCallback, isHiddenToast) => {
-        logger(url + method)
+        logger(url + method, 'POST')
         logger(data)
+        logger(headers)
         axios({
             url: url + method,
             method: 'POST',

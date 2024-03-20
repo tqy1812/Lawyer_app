@@ -1136,7 +1136,7 @@ export function sendLawApi(url, method, headers, params, content, callback = nul
         if(method === 'post') {
             request_impl(url, '', params, (res, error) => {
                 if (res) {
-                    let retData = res.data;
+                    let retData = res;
                     if (callback) {
                         callback(retData, error);
                     }
@@ -1150,7 +1150,7 @@ export function sendLawApi(url, method, headers, params, content, callback = nul
         } else {
             request_impl_get(url, '', (res, error) => {
                 if (res) {
-                    let retData = res.data;
+                    let retData = res;
                     if (callback) {
                         callback(retData, error);
                     }
