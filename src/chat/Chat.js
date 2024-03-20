@@ -152,6 +152,7 @@ export default class Chat extends Component {
                               handleFilePicker = { this.onFilePicker }
                               renderTools = { this.props.renderTools }
                               ref={(input)=>this.input = input}
+                              isTools = { this.props.isTools }
                               onSend={ this.onSend }/>
                 <RecordMask  show={ this.state.show }
                              text={ this.state.text }

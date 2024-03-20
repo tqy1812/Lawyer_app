@@ -7,22 +7,22 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 //     // 'Chat', { id: 1, name:'zhangsan', avatar: ''}
 // };
 
-const ContactItem = ({ name, recentNews, id, isFixed, avatar, date, onPress }) => {
+const ContactItem = ({ contact, onPress }) => {
     return (
-        <TouchableOpacity style={[styles.item, isFixed ? styles.fixed : '']} onPress={() => onPress(id, name, avatar)}>
+        <TouchableOpacity style={[styles.item, isFixed ? styles.fixed : '']} onPress={() => onPress(contact)}>
             <View style={styles.number}>
                 <Image
                     style={styles.avatar}
-                    source={{ uri: avatar }}
+                    source={{ uri: contact.avatar }}
                 />
             </View>
             <View style={styles.name_box}>
                 <View style={styles.name}>
-                    <Text style={styles.name_text}>{name}</Text>
-                    <Text style={styles.info_text}>{recentNews}</Text>
+                    <Text style={styles.name_text}>{contact.name}</Text>
+                    <Text style={styles.info_text}>{contact.recentNews}</Text>
                 </View>
 
-                <Text style={styles.time}>{date}</Text>
+                <Text style={styles.time}>{contact.date}</Text>
             </View>
         </TouchableOpacity>
     );

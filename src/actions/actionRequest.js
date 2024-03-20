@@ -918,7 +918,28 @@ export function getConversableClientList(page, per_page, keywords, callback = nu
         }, dispatch);
     };
 }
+//法律大模型
+export function getLawClientList(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/im/expand/list';
+        let data = {};
 
+        request_impl_get(api, method, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 // 获取对应客户聊天记录，每页代表一天的聊天记录
 export function getClientChatList(page, per_page, id, callback = null) {
     return (dispatch, getState) => {
@@ -1013,6 +1034,28 @@ export function getConversableEmployeeList(page, per_page, keywords, callback = 
     };
 }
 
+//法律大模型
+export function getLawEmployeeList(callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'client_api/im/expand/list';
+        let data = {};
+
+        request_impl_get(api, method, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
 // 客户获取对应律师聊天记录，每页代表一天的聊天记录
 export function getEmployeeChatList(page, per_page, id, callback = null) {
     return (dispatch, getState) => {

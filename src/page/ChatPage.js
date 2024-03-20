@@ -65,9 +65,6 @@ class ChatPage extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
-            show:false,
-            text:"",
-            color:"",
             type: props.user.type ? props.user.type : 1,
             id: props.route.params.id,
             hasMore: false,
@@ -708,6 +705,7 @@ class ChatPage extends BaseComponent {
                             canLoadMore={this.state.hasMore}
                             onLoadMoreAsync={this.onLoadMoreAsync}
                             onRefreshAsync={this.onRefreshAsync}
+                            isTools={true}
                 />
         </SafeAreaView>  )
     }

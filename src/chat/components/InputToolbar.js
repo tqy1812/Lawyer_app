@@ -644,7 +644,7 @@ export default class InputToolbar extends React.Component {
             <View style={[Styles.search, shimVisible ? {width: windowWidth, position: 'absolute', zIndex:3, bottom: 5} : {}]}>
                 {mode == MODE_TEXT ? this.renderTextInput() : this.renderReocrdInput()}
                 <View style={{width: windowWidth, height:1, backgroundColor:"lightgray"}}/>
-                {isEmoji ? this._renderEmoji() : this._renderActions()}
+                {isEmoji ? this._renderEmoji() : this.props.isTools ? this._renderActions() : null}
             </View>
         )
     }

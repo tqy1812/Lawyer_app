@@ -5,6 +5,7 @@ import Common from "../common/constants";
 export default class actionChat {
 
     static CHAT_LIST = 'CHAT_LIST'; // 对话列表
+    static LAW_CHAT_LIST = 'LAW_CHAT_LIST'; //法律大模型
    
     static CHAT_MESSAGE_LIST = 'CHAT_MESSAGE_LIST'; // 对话MESSAGE列表
     static CHAT_MESSAGE_LIST_CURRENT_INDEX = 'CHAT_MESSAGE_LIST_CURRENT_INDEX'; 
@@ -24,6 +25,22 @@ export default class actionChat {
               }
          }));
         };
+    }
+
+    static getLawClientList(callback = null) {
+      return (dispatch, getState) => {
+        let state = getState();
+           dispatch(request.getLawClientList((rs, error)=>{
+             if(error) {
+               if(callback) callback(rs, error);
+             }
+             else {
+               let list = rs.expands
+               dispatch({type: actionChat.CHAT_LIST, data: list});
+               if(callback) callback(list, error);
+             }
+        }));
+       };
     }
 
     // 获取对应客户聊天记录
@@ -90,6 +107,22 @@ export default class actionChat {
               }
           }));
          };
+    }
+
+    static getLawEmployeeList(callback = null) {
+      return (dispatch, getState) => {
+        let state = getState();
+           dispatch(request.getLawEmployeeList((rs, error)=>{
+             if(error) {
+               if(callback) callback(rs, error);
+             }
+             else {
+               let list = rs.expands
+               dispatch({type: actionChat.CHAT_LIST, data: list});
+               if(callback) callback(list, error);
+             }
+        }));
+       };
     }
  
      // 获取对应律师聊天记录

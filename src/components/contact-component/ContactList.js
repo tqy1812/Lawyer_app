@@ -7,7 +7,7 @@ const ContactList = ({ contacts, onPress, contentViewScroll }) => {
   return (
     <ScrollView onMomentumScrollEnd={contentViewScroll}>
       {contacts.map((contact, index) => (
-        <ContactItem key={index} {...contact} onPress={onPress} />
+        <ContactItem key={index} contact={contact} onPress={onPress} />
       ))}
     </ScrollView>
   );
