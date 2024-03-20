@@ -66,7 +66,7 @@ class ChatPage extends BaseComponent {
         super(props);
         this.state = {
             type: props.user.type ? props.user.type : 1,
-            id: props.route.params.id,
+            id: props.route.params.contact.id,
             hasMore: false,
             rightUser: {
                 _id: props.userInfo.id,
@@ -74,9 +74,9 @@ class ChatPage extends BaseComponent {
                 avatar: props.userInfo.avatar
             },
             leftUser: {
-                _id: props.route.params.id,
-                name: props.route.params.name,
-                avatar: props.route.params.avatar
+                _id: props.route.params.contact.id,
+                name: props.route.params.contact.name,
+                avatar: props.route.params.contact.avatar
             },
             imagePath: '', 
         };
@@ -193,7 +193,7 @@ class ChatPage extends BaseComponent {
     };
     onSend = (text)=>{ 
         const { id } = this.state;
-        let sendMsg = this.formatSendText(true,text,"send_going") ;
+        let sendMsg = this.formatSendText(true, text,"send_going") ;
         this.messageList.appendToTop([sendMsg]);
         this.sendApi(text, 'text', undefined, (rs, error) => {
             console.log('send succsee', rs, error)

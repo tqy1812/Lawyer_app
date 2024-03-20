@@ -169,5 +169,11 @@ export default class actionChat {
           dispatch(request.employeeFileUpload(file, callback));
         };
     }
-
+    //大模型提问api
+    static sendLawApi(url, method, headers, params, content, callback) {
+      return (dispatch, getState) => {
+        let state = getState();
+        dispatch(request.sendLawApi(url, method, headers, params, content, callback));
+      };
+  }
 }

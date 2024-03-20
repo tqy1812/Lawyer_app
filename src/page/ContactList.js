@@ -117,7 +117,6 @@ class ReportPage extends Component {
                     }; 
                 }
                 this.props.dispatch(actionChat.getConversableEmployeeList(1, 10, "", (rs) => {
-                    
                     for (let i = 0; i < rs.data.length; i++) {
                         //拿到名字后再赋值
                         let obj = {
@@ -141,30 +140,54 @@ class ReportPage extends Component {
                 }));
             }));
         } else {
-            this.props.dispatch(actionChat.getConversableClientList(1, 10, "", (rs) => {
+            this.props.dispatch(actionChat.getLawClientList(law => {
                 let data = [];
-                for (let i = 0; i < rs.data.length; i++) {
-                    //拿到名字后再赋值
-
-                    let obj = {
-                        name: rs.data[i].name,
-                        recentNews: "最近天气怎么样？",
-                        id: rs.data[i].id,
-                        isFixed: false,
-                        avatar: rs.data[i].avatar ? rs.data[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
-                        date: "09:23"
-                    };
-                    data.push(obj);
-                };
-
-                this.setState({
-                    contactsList: data
-                })
-
-                if (rs && rs.data && rs.data.length > 0) {
-                    this.setState({ hasMore: rs.page * rs.per_page < rs.total })
+                if(law) {
+                    for (let i = 0; i < law.length; i++) {
+                        //拿到名字后再赋值
+                        let obj = {
+                            name: law[i].name,
+                            recentNews: "最近天气怎么样？",
+                            id: law[i].id,
+                            isFixed: false,
+                            avatar: law[i].avatar ? law[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
+                            date: "09:23",
+                            type: 'law',
+                            url: law[i].url,
+                            method: law[i].method,
+                            params: law[i].params,
+                            headers: law[i].headers,
+                        };
+                        data.push(obj);
+                    }; 
                 }
+                this.props.dispatch(actionChat.getConversableClientList(1, 10, "", (rs) => {
+                    for (let i = 0; i < rs.data.length; i++) {
+                        //拿到名字后再赋值
+
+                        let obj = {
+                            name: rs.data[i].name,
+                            recentNews: "最近天气怎么样？",
+                            id: rs.data[i].id,
+                            isFixed: false,
+                            avatar: rs.data[i].avatar ? rs.data[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
+                            date: "09:23"
+                        };
+                        data.push(obj);
+                    };
+                    this.setState({
+                        contactsList: data
+                    })
+
+                    if (rs && rs.data && rs.data.length > 0) {
+                        this.setState({ hasMore: rs.page * rs.per_page < rs.total })
+                    }
+                }));
             }));
+        }
+
+        if(platform.isIOS()) {
+            this.RecognizerIos = this.props.route.params.key
         }
     }
 
@@ -223,9 +246,9 @@ class ReportPage extends Component {
     goDetails = (contact) => {
         console.log('goDetails', contact);
         if(contact.type && contact.type=='law') {
-            this.props.navigation.navigate('ChatLaw', { contact.id, contact.name, contact.avatar, contact.url, contact.method, contact.params, contact.headers})
+            this.props.navigation.navigate('ChatLaw', {contact, key: this.RecognizerIos})
         } else {
-            this.props.navigation.navigate('Chat', { contact.id, contact.name, contact.avatar})
+            this.props.navigation.navigate('Chat', { contact })
         }
         // 'Chat', { id: 1, name:'zhangsan', avatar: ''}
     };

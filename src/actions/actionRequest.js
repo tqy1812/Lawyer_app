@@ -1128,6 +1128,43 @@ export function employeeFileUpload(file, callback = null) {
     };
 }
 
+// 大模型提问api
+export function sendLawApi(url, method, headers, params, content, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        params.question = content
+        if(method === 'post') {
+            request_impl(url, '', params, (res, error) => {
+                if (res) {
+                    let retData = res.data;
+                    if (callback) {
+                        callback(retData, error);
+                    }
+                }
+                else {
+                    if (callback) {
+                        callback(res, error);
+                    }
+                }
+            }, dispatch, headers);
+        } else {
+            request_impl_get(url, '', (res, error) => {
+                if (res) {
+                    let retData = res.data;
+                    if (callback) {
+                        callback(retData, error);
+                    }
+                }
+                else {
+                    if (callback) {
+                        callback(res, error);
+                    }
+                }
+            }, dispatch, headers);
+        }
+        
+    };
+}
 function request_impl(url, method, data, callback, dispatch = null, header) {
     let headers = {};
     NetInfo.fetch().then(state => {
@@ -1182,10 +1219,13 @@ function request_impl(url, method, data, callback, dispatch = null, header) {
     });
 }
 
-function request_impl_get(url, method, callback, dispatch = null) {
+function request_impl_get(url, method, callback, dispatch = null, header) {
     let headers = {};
     NetInfo.fetch().then(state => {
         if (state.isConnected) {
+            if (header) {
+                headers = header;
+            }
             Storage.getUserRecord().then((user) => {
                 logger("request_impl_get", user)
                 if (user) {

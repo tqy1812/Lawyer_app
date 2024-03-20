@@ -9,7 +9,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const ContactItem = ({ contact, onPress }) => {
     return (
-        <TouchableOpacity style={[styles.item, isFixed ? styles.fixed : '']} onPress={() => onPress(contact)}>
+        <TouchableOpacity style={[styles.item, contact.isFixed ? styles.fixed : '']} onPress={() => onPress(contact)}>
             <View style={styles.number}>
                 <Image
                     style={styles.avatar}
