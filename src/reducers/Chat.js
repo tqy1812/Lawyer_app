@@ -18,10 +18,18 @@ function chatMessageList(state = [], action) {
   return state;
 }
 
+function chatMessageListImdex(state = 0, action) {
+  if (action.type === actionChat.CHAT_MESSAGE_LIST_CURRENT_INDEX) {
+    return action.data
+  }
+  return state;
+}
+
 
 const Chat = combineReducers({
   chatList,
-  chatMessageList
+  chatMessageList,
+  chatMessageListImdex
 });
 
 export default Chat;

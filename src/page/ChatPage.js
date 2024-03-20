@@ -140,11 +140,11 @@ class ChatPage extends BaseComponent {
                 }
             }));
         } else {
-            this.props.dispatch(actionChat.getClientChatList(this.page, 10, this.state.id, this.fileList, (rs)=>{
+            this.props.dispatch(actionChat.getClientChatList(this.page, 5, this.state.id, this.fileList, (rs)=>{
                 this.loading = false
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
-                    console.log('total......',rs.total)
+                    console.log('total......', rs.total, rs.current_total)
                     this.messageList.appendToBottom(rs.data)
                     this.setState({hasMore: rs.page * rs.per_page < rs.total})
                 }

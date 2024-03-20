@@ -7,6 +7,7 @@ export default class actionChat {
     static CHAT_LIST = 'CHAT_LIST'; // 对话列表
    
     static CHAT_MESSAGE_LIST = 'CHAT_MESSAGE_LIST'; // 对话MESSAGE列表
+    static CHAT_MESSAGE_LIST_CURRENT_INDEX = 'CHAT_MESSAGE_LIST_CURRENT_INDEX'; 
    
     // 获取可对话的客户列表
     static getConversableClientList(page, per_page, keywords, callback = null) {
@@ -30,7 +31,8 @@ export default class actionChat {
         return (dispatch, getState) => {
           let state = getState();
           let userInfo = state.Auth && state.Auth.userInfo;
-            console.log(userInfo)
+          let chatMessageListImdex = state.Chat && state.Chat.chatMessageListImdex;
+            console.log('chatMessageListImdex',chatMessageListImdex, userInfo)
           dispatch(request.getClientChatList(page, per_page, id, (rs, error)=>{
             if(error) {
               if(callback) callback(rs, error);
@@ -42,9 +44,10 @@ export default class actionChat {
                 for(let i=0; i<list.length; i++) {
                     console.log(parseInt(list[i].speaker_id), parseInt(userInfo.id))
                   let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
-                  let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page, localFileList)
+                  let newItem = formatMessage(isRight, list[i], chatMessageListImdex + i, localFileList)
                   newList.push(newItem)
                 }
+                dispatch({type: actionChat.CHAT_MESSAGE_LIST_CURRENT_INDEX, data: chatMessageListImdex + newList.length});
                 if(page == 1) {
                   dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: newList});
                 }
@@ -94,7 +97,8 @@ export default class actionChat {
          return (dispatch, getState) => {
            let state = getState();
            let userInfo = state.Auth && state.Auth.userInfo;
-             console.log(userInfo)
+           let chatMessageListImdex = state.Chat && state.Chat.chatMessageListImdex;
+             console.log('chatMessageListImdex',chatMessageListImdex, userInfo)
               dispatch(request.getEmployeeChatList(page, per_page, id, (rs, error)=>{
                 if(error) {
                   if(callback) callback(rs, error);
@@ -104,9 +108,10 @@ export default class actionChat {
                   let newList = []
                   for(let i=0; i<list.length; i++) {
                     let isRight = parseInt(list[i]['speaker_id']) == parseInt(userInfo.id)
-                    let newItem = formatMessage(isRight, list[i], i + (page-1) * per_page, localFileList)
+                    let newItem = formatMessage(isRight, list[i], i + chatMessageListImdex, localFileList)
                     newList.push(newItem)
                   }
+                  dispatch({type: actionChat.CHAT_MESSAGE_LIST_CURRENT_INDEX, data: chatMessageListImdex + newList.length});
                   if(page == 1) {
                     dispatch({type: actionChat.CHAT_MESSAGE_LIST, data: newList});
                   }
