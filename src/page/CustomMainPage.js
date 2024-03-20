@@ -641,6 +641,15 @@ _keyboardDidHide(e) {
                 <Image resizeMode='contain' style={{ width: 42, height: 42 }} source={ImageArr['custom_menu_report']} />
               </MyButton>
             </View>
+
+            <View style={{ paddingRight: 30, paddingTop: 5, width: windowWidth, }}>
+              <TouchableOpacity style={{ height: 30, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row', width: '100%' }} onPress={() => this.props.navigation.navigate('ContactList')}>
+                <Image
+                  style={{ width: 30, height: 30 }}
+                  resizeMode='contain'
+                  source={{ uri: 'https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/Vector.png' }} />
+              </TouchableOpacity>
+            </View>
           </View>
           {
               !isMic && <ScrollView style={[styles.scorllView, {bottom: 0, height: windowHeight - 80 - menuHeight}]} alwaysBounceVertical={false}>

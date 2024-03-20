@@ -31,6 +31,7 @@ public class NotifyOpenModule extends ReactContextBaseJavaModule {
     private Context mContext;
 
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.RECORD_AUDIO};
+    private static String[] PERMISSIONS_CAMERA = {Manifest.permission.CAMERA};
     private static String[] PERMISSIONS_MEDIA = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static String[] PERMISSIONS_MEDIA1 = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_MEDIA_IMAGES};
     private static int REQUEST_PERMISSION_CODE = 1;
@@ -90,6 +91,26 @@ public class NotifyOpenModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void getRecordCamera(final Promise promise) {
+        Log.i("getRecordCamera", "getRecordCamera");
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                Log.i("getRecordCamera", "shouldShowRequestPermissionRationale="+ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.getActivity(), android.Manifest.permission.CAMERA));
+                if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.getActivity(), android.Manifest.permission.CAMERA)) {
+                    promise.resolve(1);
+                } else {
+                    promise.resolve(0);
+                    if (MainActivity.getActivity() != null) {
+                        ActivityCompat.requestPermissions(MainActivity.getActivity(), PERMISSIONS_CAMERA, REQUEST_PERMISSION_CODE);
+                    }
+                }
+            }
+            else{
+                Log.i("getRecordCamera", "111");
+                promise.resolve(2);
+            }
+
+    }
     @ReactMethod
     public void getMediaPermission(final Promise promise) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU ) {

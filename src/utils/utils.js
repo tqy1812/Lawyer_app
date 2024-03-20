@@ -669,7 +669,7 @@ export function formatMessage(isOutgoing, item, counter, localFileList) {
     let voiceMeta = item.meta ? JSON.parse(item.meta) : {}
     let duration = voiceMeta.duration ? voiceMeta.duration : 1000
     let localPath = localFileList ? localFileList[item.content] : ''
-    return  {...base, isOutgoing, extend:{ thumbPath:item.content, localPath },isRead: false,playing: false,duration: duration }
+    return  {...base, isOutgoing, extend:{ thumbPath:item.content, localPath }, isRead: true, playing: false, duration: duration }
   } else if (item.type == 'video') {
     let videoMeta = item.meta ? JSON.parse(item.meta) : {}
     let localPath = localFileList ? localFileList[item.content] : ''

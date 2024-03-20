@@ -43,6 +43,13 @@ const FileTypes = {
     PDF: DocumentPicker.types.pdf, // PDF documents (application/pdf or com.adobe.pdf)
     Zip: DocumentPicker.types.zip, // Zip files (application/zip or public.zip-archive)
     Csv: DocumentPicker.types.csv, //Csv files (text/csv or public.comma-separated-values-text)
+    Doc: DocumentPicker.types.doc, 
+    Docx: DocumentPicker.types.docx, 
+    Ppt: DocumentPicker.types.ppt, 
+    Pptx: DocumentPicker.types.pptx, 
+    Xls: DocumentPicker.types.xls, 
+    Xlsx: DocumentPicker.types.xlsx, 
+    Video: DocumentPicker.types.video
 };
 
 class ChatPage extends BaseComponent {
@@ -78,6 +85,7 @@ class ChatPage extends BaseComponent {
         };
         this.page = 1;
         this.fileList = {}
+        this.loading = false
     }
     componentDidMount() {
         if (!this.props.isLogin) {
@@ -117,11 +125,14 @@ class ChatPage extends BaseComponent {
         dbHepler.closeDB()
     }
     getList = () => {
-        if(!this.state.hasMore && this.page > 1) {
+        if((!this.state.hasMore && this.page > 1) || this.loading) {
+            console.log('..正在执行')
             return 
         }
+        this.loading = true
         if(this.state.type===2) {
             this.props.dispatch(actionChat.getEmployeeChatList(this.page, 10, this.state.id, this.fileList, (rs)=>{
+                this.loading = false
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
                     this.messageList.appendToBottom(rs.data)
@@ -130,6 +141,7 @@ class ChatPage extends BaseComponent {
             }));
         } else {
             this.props.dispatch(actionChat.getClientChatList(this.page, 10, this.state.id, this.fileList, (rs)=>{
+                this.loading = false
                 if(rs && rs.data && rs.data.length > 0) {
                     this.page = this.page+1
                     console.log('total......',rs.total)
@@ -141,8 +153,14 @@ class ChatPage extends BaseComponent {
     }
     startRecording = async() =>{
         console.log("开始录音...")
-        this.recorderName = new Date().getTime() + '.m4a'
-        const rs = await audioRecorderPlayer.startRecorder(this.recorderName);
+        let rs;
+        if(platform.isAndroid()) {
+            this.recorderName = new Date().getTime() + '.mp3'
+            rs = await audioRecorderPlayer.startRecorder(RNFS.CachesDirectoryPath +'/'+ this.recorderName);
+        } else {
+            this.recorderName = new Date().getTime() + '.m4a'
+            rs = await audioRecorderPlayer.startRecorder(this.recorderName);
+        }
         audioRecorderPlayer.addRecordBackListener((e)=>{
             console.log("startRecording", e)
             this.recorderNameDuration = Math.round(e.currentPosition)
@@ -160,55 +178,13 @@ class ChatPage extends BaseComponent {
         audioRecorderPlayer.removeRecordBackListener();
         const file = {
             uri: this.recorderUrl,
-            name: this.recorderName
+            name: this.recorderName,
+            type: 'audio/mp3'
         }
         let sendMsg = this.formatSendVoice(true, file.uri, false, false, this.recorderNameDuration, "send_going") ;
         this.messageList.appendToTop([sendMsg]);
         let meta = {duration: this.recorderNameDuration}
         this.uploadAip(sendMsg, file, 'voice', meta);
-        // if(that.state.type==2){
-        //     dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-        //         console.log(rs)
-        //         if(error){
-        //             sendMsg.status = "send_failed" ;
-        //             this.messageList.updateMsg(sendMsg);
-        //         }
-        //         else {
-        //             this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
-        //                 if(error){
-        //                     sendMsg.status = "send_failed" ;
-        //                     this.messageList.updateMsg(sendMsg);
-        //                 }
-        //                 else {
-        //                     sendMsg.status = "send_success" ;
-        //                     this.messageList.updateMsg(sendMsg);
-        //                 }
-        //             })
-        //         }
-        //     }));
-        // }
-        // else 
-        // {
-        //     dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-        //         console.log(rs)
-        //         if(error){
-        //             sendMsg.status = "send_failed" ;
-        //             this.messageList.updateMsg(sendMsg);
-        //         }
-        //         else {
-        //             this.sendApi(rs.url, 'voice', JSON.stringify(meta), (rs, error) => {
-        //                 if(error){
-        //                     sendMsg.status = "send_failed" ;
-        //                     this.messageList.updateMsg(sendMsg);
-        //                 }
-        //                 else {
-        //                     sendMsg.status = "send_success" ;
-        //                     this.messageList.updateMsg(sendMsg);
-        //                 }
-        //             })
-        //         }
-        //     }));
-        // }
     };
     sendApi = (content, content_type, meta, callback) => {
         const { id, type } = this.state;
@@ -396,7 +372,7 @@ class ChatPage extends BaseComponent {
         console.log('加入下载队列', filePath);
         try {
             const savedResponse = await saveFileToLocal(filePath);
-            showToast('下载成功')
+            showToast('下载成功，路径:'+savedResponse.data)
             if(savedResponse.data){
                 this.fileList[filePath] = savedResponse.data
                 message.extend.localPath = savedResponse.data
@@ -421,6 +397,24 @@ class ChatPage extends BaseComponent {
     async onCameraPicker(){
         const that = this;
         const {dispatch} = this.props;
+        if(platform.isAndroid()) {
+            let isHasMic = await NativeModules.NotifyOpen.getRecordCamera();
+            if (isHasMic == 0) {
+                return;
+            }
+            else if (isHasMic == 1) {
+                Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+                    text: '取消',
+                    onPress: null,
+                },
+                {
+                    text: '去设置',
+                    onPress: () => { NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission(); },
+                },
+                ]);
+                return;
+            }
+        }
         
         launchCamera({
             durationLimit: 60,
@@ -442,6 +436,7 @@ class ChatPage extends BaseComponent {
             let file = {
                 uri: uri,
                 name: fileName,
+                type: type
             }
             let meta;
             let sendMsg;
@@ -457,7 +452,6 @@ class ChatPage extends BaseComponent {
                     } =thumb;
                     let coverPath = "file://" + path;
                     meta = {width, height, duration, fileSize, localPath: decodeURI(uri), coverPath, coverWidth, coverHeight }
-                    console.log(meta)
                     sendMsg = this.formatSendVideo(true, uri, meta,"send_going") ;
                     this.messageList.appendToTop([sendMsg]);
 
@@ -477,7 +471,7 @@ class ChatPage extends BaseComponent {
                         dispatch(actionChat.reqClientFileUpload(coverPathFile, (rs, error)=>{
                             console.log('coverPath',rs)
                             meta.coverPath = rs.url
-                            this.uploadAip(sendMsg, file, 'video', meta);
+                            that.uploadAip(sendMsg, file, 'video', meta);
                         }));
                     }
                 })
@@ -512,65 +506,18 @@ class ChatPage extends BaseComponent {
             mode: 'open',
             presentationStyle: 'fullScreen',
             copyTo: 'cachesDirectory',
-            type: [FileTypes['All']],
+            type: [FileTypes['Text'], FileTypes['PDF'], FileTypes['Zip'], FileTypes['Csv'], FileTypes['Doc'], FileTypes['Docx'], FileTypes['Ppt'], FileTypes['Pptx'], FileTypes['Xls'], FileTypes['Xlsx']],
         }).then(res => {
             console.log('DocumentPicker',res);
-            // res =  [ { fileCopyUri: null,
-            //     size: 87829,
-            //     name: '111.pdf',
-            //     type: 'application/pdf',
-            //     uri: 'content://com.android.providers.media.documents/document/document%3A50443' } ]
             const file = {
                 uri: res.uri,
-                name: res.name
+                name: res.name,
+                type: res.type
             }
             let meta = {size: res.size, name: res.name, localPath: decodeURI(res.uri)}
             let sendMsg = this.formatSendFile(true, file.uri, res.size, res.name, "send_going") ;
             this.messageList.appendToTop([sendMsg]);
-            this.uploadAip(sendMsg, file, 'file', meta);
-            // if(that.state.type==2){
-            //     dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
-            //         console.log(rs)
-            //         if(error){
-            //             sendMsg.status = "send_failed" ;
-            //             this.messageList.updateMsg(sendMsg);
-            //         }
-            //         else {
-            //             this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
-            //                 if(error){
-            //                     sendMsg.status = "send_failed" ;
-            //                     this.messageList.updateMsg(sendMsg);
-            //                 }
-            //                 else {
-            //                     sendMsg.status = "send_success" ;
-            //                     this.messageList.updateMsg(sendMsg);
-            //                 }
-            //             })
-            //         }
-            //     }));
-            // }
-            // else 
-            // {
-            //     dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
-            //         console.log(rs)
-            //         if(error){
-            //             sendMsg.status = "send_failed" ;
-            //             this.messageList.updateMsg(sendMsg);
-            //         }
-            //         else {
-            //             this.sendApi(rs.url, 'file', JSON.stringify(meta), (rs, error) => {
-            //                 if(error){
-            //                     sendMsg.status = "send_failed" ;
-            //                     this.messageList.updateMsg(sendMsg);
-            //                 }
-            //                 else {
-            //                     sendMsg.status = "send_success" ;
-            //                     this.messageList.updateMsg(sendMsg);
-            //                 }
-            //             })
-            //         }
-            //     }));
-            // }
+            that.uploadAip(sendMsg, file, 'file', meta);
         }).catch(error => {
             console.log('DocumentPicker', error);
         });
@@ -618,19 +565,19 @@ class ChatPage extends BaseComponent {
         if(platform.isAndroid()) {
             let isGrant = await NativeModules.NotifyOpen.getMediaPermission();
             if(isGrant== 0){
-            return;
+                return;
             }
             else if(isGrant== 1){
-            Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
-                text: '取消',
-                onPress: null,
-                },
-                {
-                text: '去设置',
-                onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
-                },
-                ]);
-            return;
+                Alert.alert('未授权', `访问权限没有开启，请前往设置去开启。`, [{
+                    text: '取消',
+                    onPress: null,
+                    },
+                    {
+                    text: '去设置',
+                    onPress: () => {NativeModules.NotifyOpen && NativeModules.NotifyOpen.openPermission();},
+                    },
+                    ]);
+                return;
             }
         }
         launchImageLibrary({
@@ -688,6 +635,7 @@ class ChatPage extends BaseComponent {
             dispatch(actionChat.reqEmployeeFileUpload(file, (rs, error)=>{
                 // console.log(rs)
                 if(error){
+                    showToast(error.info)
                     sendMsg.status = "send_failed" ;
                     this.messageList.updateMsg(sendMsg);
                 }
@@ -712,6 +660,7 @@ class ChatPage extends BaseComponent {
             dispatch(actionChat.reqClientFileUpload(file, (rs, error)=>{
                 // console.log(rs)
                 if(error){
+                    showToast(error.info)
                     sendMsg.status = "send_failed" ;
                     this.messageList.updateMsg(sendMsg);
                 }
@@ -759,7 +708,6 @@ class ChatPage extends BaseComponent {
                             canLoadMore={this.state.hasMore}
                             onLoadMoreAsync={this.onLoadMoreAsync}
                             onRefreshAsync={this.onRefreshAsync}
-                            messages={this.props.chatMessageList}
                 />
         </SafeAreaView>  )
     }
