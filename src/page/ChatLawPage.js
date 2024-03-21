@@ -23,7 +23,7 @@ import Common from '../common/constants';
 import platform from '../utils/platform';
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
-import { logger, useCurrentRoute} from '../utils/utils';
+import { logger } from '../utils/utils';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player'
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageViewer from '../chat/components/ImageView'
@@ -101,15 +101,15 @@ class ChatLawPage extends BaseComponent {
         }
         console.log(this.RecognizerIos,  this.props.route.params)
         this.recognizerEventEmitter = new NativeEventEmitter( platform.isAndroid() ? Recognizer : this.RecognizerIos);
-        this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
-        this.recognizerEventEmitter.addListener('onRecognizerError', this.onRecognizerError);
-
-        console.log(this.useCurrentRoute())
+        this.recognizerEventEmitter.addListener('onLawRecognizerResult', this.onRecognizerResult);
+        this.recognizerEventEmitter.addListener('onLawRecognizerError', this.onRecognizerError);
+        this.props.dispatch(actionChat.setChatLawPage(true));
     }
     componentWillUnmount() {
         // dbHepler.closeDB()
-        this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onRecognizerResult');
-        this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onRecognizerError');
+      this.props.dispatch(actionChat.setChatLawPage(false));
+      this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onLawRecognizerResult');
+      this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onLawRecognizerError');
     }
     onRecognizerResult = (e) => {
       const that = this;
@@ -255,11 +255,8 @@ class ChatLawPage extends BaseComponent {
     };
 
     handleBack = () => {
-        if (this.state.backButtonEnabled) {
-          this.wv && this.wv.current && this.wv.current.goBack();
-        } else {//否则返回到上一个页面
-          this.props.navigation.goBack();
-        }
+      this.props.dispatch(actionChat.setChatLawPage(false));
+      this.props.navigation.goBack();
     }
     render() {
         return (

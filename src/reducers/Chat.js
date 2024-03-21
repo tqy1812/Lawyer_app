@@ -25,11 +25,17 @@ function chatMessageListImdex(state = 0, action) {
   return state;
 }
 
-
+function chatLawPage(state = false, action) {
+  if (action.type === actionChat.CHAT_LAW_PAGE) {
+    return action.data
+  }
+  return state;
+}
 const Chat = combineReducers({
   chatList,
   chatMessageList,
-  chatMessageListImdex
+  chatMessageListImdex,
+  chatLawPage
 });
 
 export default Chat;

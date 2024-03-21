@@ -9,6 +9,7 @@ export default class actionChat {
    
     static CHAT_MESSAGE_LIST = 'CHAT_MESSAGE_LIST'; // 对话MESSAGE列表
     static CHAT_MESSAGE_LIST_CURRENT_INDEX = 'CHAT_MESSAGE_LIST_CURRENT_INDEX'; 
+    static CHAT_LAW_PAGE = 'CHAT_LAW_PAGE'; // 法律大模型页面
    
     // 获取可对话的客户列表
     static getConversableClientList(page, per_page, keywords, callback = null) {
@@ -127,7 +128,7 @@ export default class actionChat {
  
      // 获取对应律师聊天记录
     static getEmployeeChatList(page, per_page, id, localFileList, callback = null) {
-         return (dispatch, getState) => {
+      return (dispatch, getState) => {
            let state = getState();
            let userInfo = state.Auth && state.Auth.userInfo;
            let chatMessageListImdex = state.Chat && state.Chat.chatMessageListImdex;
@@ -152,8 +153,8 @@ export default class actionChat {
                   if(callback) callback(rs, error);
                 }
            }));
-          };
-      }
+      };
+    }
  
       // 给律师发送消息
     static sendEmployeeMessage(id, content, type, meta, callback = null) {
@@ -169,11 +170,18 @@ export default class actionChat {
           dispatch(request.employeeFileUpload(file, callback));
         };
     }
-    //大模型提问api
+    //法律大模型提问api
     static sendLawApi(url, method, headers, params, content, callback) {
       return (dispatch, getState) => {
         let state = getState();
         dispatch(request.sendLawApi(url, method, headers, params, content, callback));
       };
   }
+  //法律大模型页面
+  static setChatLawPage(flag, callback = null) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch({type: actionChat.CHAT_LAW_PAGE, data: flag});
+    };
+ }
 }

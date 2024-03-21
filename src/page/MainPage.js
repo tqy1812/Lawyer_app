@@ -61,6 +61,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { CommonActions, StackActions } from '@react-navigation/native';
 import GuideConfirmModal from '../components/GuideConfirmModal';
 import { Table, Row, Rows } from '../components/react-native-table-component';
+import actionChat from '../actions/actionChat';
 import axios from "axios";
 const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
@@ -78,6 +79,7 @@ class MainPage extends BaseComponent {
     props.planList = state.Process.planList;
     props.userInfo = state.Auth.userInfo;
     props.caseListInfo = state.Case.caseListInfo;
+    props.chatLawPage = state.Chat.chatLawPage;
     return props;
   }
 
@@ -226,7 +228,7 @@ class MainPage extends BaseComponent {
     if (!this.props.isLogin) {
       this.props.navigation.navigate('Login');
     }
-
+    this.props.dispatch(actionChat.setChatLawPage(false));
     this.props.dispatch(actionCase.reqCaseList((list, infoList) => {
       if (list) {
         this.setState({ caseList: list })
@@ -630,6 +632,9 @@ class MainPage extends BaseComponent {
 
   onRecognizerResult = (e) => {
     const that = this;
+    if(this.props.chatLawPage) {
+      return;
+    }
     if (!e.isLast) {
       return;
     }
@@ -959,7 +964,6 @@ class MainPage extends BaseComponent {
     // logger('..onBackButtonPressAndroid', this.props.navigation.getState())
     return (
       <View style={styles.container}>
-
         {showDetail && <ScrollView style={styles.details_box}>
           <Text style={styles.details_title}>我的项目</Text>
           <View style={styles.table}>

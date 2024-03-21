@@ -58,6 +58,7 @@ import ImageArr from '../common/ImageArr';
 import ProcessConfirmModal from '../components/ProcessConfirmModal';
 import NetInfo from '@react-native-community/netinfo';
 import { CommonActions, StackActions } from '@react-navigation/native';
+import actionChat from '../actions/actionChat';
 const { width: windowWidth, height: windowHeight } = Common.window;
 const Toast = Overlay.Toast;
 const distance = 50;
@@ -74,6 +75,7 @@ class CustomMainPage extends BaseComponent {
     props.planList = state.Process.planList;
     props.userInfo = state.Auth.userInfo;
     props.caseListInfo = state.Case.caseListInfo;
+    props.chatLawPage = state.Chat.chatLawPage;
     return props;
   }
 
@@ -178,6 +180,8 @@ class CustomMainPage extends BaseComponent {
     if (!this.props.isLogin) {
       this.props.navigation.navigate('Login');
     }
+
+    this.props.dispatch(actionChat.setChatLawPage(false));
     this.props.dispatch(actionCase.reqClientCaseList((list, infoList)=>{
       if(list) {
         this.setState({caseList: list})
@@ -423,6 +427,9 @@ _keyboardDidHide(e) {
 
   onRecognizerResult = (e) => {
     const that = this;
+    if(this.props.chatLawPage) {
+      return;
+    }
     console.log('....islast', e.isLast)
     if (!e.isLast) {
       return;
