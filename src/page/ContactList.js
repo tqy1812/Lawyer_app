@@ -102,11 +102,11 @@ class ReportPage extends Component {
                         //拿到名字后再赋值
                         let obj = {
                             name: law[i].name,
-                            recentNews: "最近天气怎么样？",
+                            recentNews: "",
                             id: law[i].id,
                             isFixed: false,
                             avatar: law[i].avatar ? law[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
-                            date: "09:23",
+                            date: "",
                             type: 'law',
                             url: law[i].url,
                             method: law[i].method,
@@ -121,11 +121,11 @@ class ReportPage extends Component {
                         //拿到名字后再赋值
                         let obj = {
                             name: rs.data[i].name,
-                            recentNews: "最近天气怎么样？",
+                            recentNews: "",
                             id: rs.data[i].id,
                             isFixed: false,
                             avatar: rs.data[i].avatar ? rs.data[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
-                            date: "09:23"
+                            date: ""
                         };
                         data.push(obj);
                     };
@@ -147,11 +147,11 @@ class ReportPage extends Component {
                         //拿到名字后再赋值
                         let obj = {
                             name: law[i].name,
-                            recentNews: "最近天气怎么样？",
+                            recentNews: "",
                             id: law[i].id,
                             isFixed: false,
                             avatar: law[i].avatar ? law[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
-                            date: "09:23",
+                            date: "",
                             type: 'law',
                             url: law[i].url,
                             method: law[i].method,
@@ -167,11 +167,11 @@ class ReportPage extends Component {
 
                         let obj = {
                             name: rs.data[i].name,
-                            recentNews: "最近天气怎么样？",
+                            recentNews: "",
                             id: rs.data[i].id,
                             isFixed: false,
                             avatar: rs.data[i].avatar ? rs.data[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
-                            date: "09:23"
+                            date: ""
                         };
                         data.push(obj);
                     };
@@ -224,11 +224,11 @@ class ReportPage extends Component {
                 //拿到名字后再赋值
                 let obj = {
                     name: rs.data[i].name,
-                    recentNews: "最近天气怎么样？",
+                    recentNews: "",
                     id: rs.data[i].id,
                     isFixed: false,
                     avatar: rs.data[i].avatar ? rs.data[i].avatar : "https://lawyer-dev.oss-cn-hangzhou.aliyuncs.com/images/init_avatar.png",
-                    date: "09:23"
+                    date: ""
                 };
                 data.push(obj);
             };
