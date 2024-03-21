@@ -259,6 +259,7 @@ const styles = {
             marginRight: 60,
             flexDirection:"row",
             justifyContent:"flex-start",
+            alignItems: 'center'
         },
         wrapper: {
             borderRadius: 5,
@@ -279,6 +280,7 @@ const styles = {
             marginLeft: 60,
             flexDirection:"row",
             justifyContent:"flex-end",
+            alignItems: 'center'
         },
         wrapper: {
             borderRadius: 5,

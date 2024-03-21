@@ -199,7 +199,9 @@ class ChatLawPage extends BaseComponent {
         let sendMsg = this.formatSendText(true, text,"send_success") ;
         this.messageList.appendToTop([sendMsg]);
         let recMsg = this.formatSendText(false, '', "send_going");
-        this.messageList.appendToTop([recMsg]);
+        setTimeout(()=>{
+          this.messageList.appendToTop([recMsg]);
+        }, 300)
         this.sendApi(text, (rs, error) => {
             console.log('send succsee', rs, error)
             if(error) {

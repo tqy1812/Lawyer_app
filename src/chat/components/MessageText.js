@@ -31,8 +31,7 @@ export default class MessageText extends React.Component {
   render() {
     return (
       <View style={[styles[this.props.position].container, this.props.containerStyle[this.props.position]]}>
-        {this.props.currentMessage.statue === 'send_going' ?  <Image style={{alignSelf:"center", width:100, height:10}}
-                               source={require('./Images/loading.gif')}>
+        {this.props.currentMessage.status === 'send_going' ?  <Image style={{width:50, height:18, margin: 10}}  resizeMode={'contain'} source={require('./Images/loading.gif')}>
                         </Image>  : 
         <ParsedText
           style={[styles[this.props.position].text, this.props.textStyle[this.props.position]]}
@@ -53,8 +52,8 @@ export default class MessageText extends React.Component {
 const textStyle = {
   fontSize: 16,
   lineHeight: 20,
-  marginTop: 5,
-  marginBottom: 5,
+  marginTop: 10,
+  marginBottom: 10,
   marginLeft: 10,
   marginRight: 10,
 };
@@ -62,9 +61,6 @@ const textStyle = {
 const styles = {
   left: StyleSheet.create({
     container: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
     },
     text: {
       color: 'black',
@@ -77,9 +73,6 @@ const styles = {
   }),
   right: StyleSheet.create({
     container: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
     },
     text: {
       color: 'white',
