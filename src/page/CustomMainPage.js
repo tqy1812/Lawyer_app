@@ -650,7 +650,7 @@ _keyboardDidHide(e) {
             </View>
 
             <View style={{ paddingRight: 30, paddingTop: 5, width: windowWidth, }}>
-              <TouchableOpacity style={{ height: 30, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row', width: '100%' }} onPress={() => this.props.navigation.navigate('ContactList')}>
+              <TouchableOpacity style={{ height: 30, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row', width: '100%' }} onPress={() => this.props.navigation.navigate('ContactList', {key: this.RecognizerIos, emit: this.recognizerEventEmitter})}>
                 <Image
                   style={{ width: 30, height: 30 }}
                   resizeMode='contain'

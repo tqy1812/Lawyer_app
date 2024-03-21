@@ -99,8 +99,8 @@ class ChatLawPage extends BaseComponent {
         if(platform.isIOS()) {
             this.RecognizerIos = this.props.route.params.key
         }
-        console.log(this.RecognizerIos,  this.props.route.params)
-        this.recognizerEventEmitter = new NativeEventEmitter( platform.isAndroid() ? Recognizer : this.RecognizerIos);
+        this.recognizerEventEmitter = this.props.route.params.emit;
+        console.log(this.RecognizerIos,  this.recognizerEventEmitter)
         this.recognizerEventEmitter.addListener('onLawRecognizerResult', this.onRecognizerResult);
         this.recognizerEventEmitter.addListener('onLawRecognizerError', this.onRecognizerError);
         this.props.dispatch(actionChat.setChatLawPage(true));

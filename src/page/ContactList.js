@@ -189,6 +189,7 @@ class ReportPage extends Component {
         if(platform.isIOS()) {
             this.RecognizerIos = this.props.route.params.key
         }
+        this.recognizerEventEmitter = this.props.route.params.emit
     }
 
     search = (page, per_page, keywords, callback) => {
@@ -246,7 +247,7 @@ class ReportPage extends Component {
     goDetails = (contact) => {
         console.log('goDetails', contact);
         if(contact.type && contact.type=='law') {
-            this.props.navigation.navigate('ChatLaw', {contact, key: this.RecognizerIos})
+            this.props.navigation.navigate('ChatLaw', {contact, key: this.RecognizerIos,  emit: this.recognizerEventEmitter})
         } else {
             this.props.navigation.navigate('Chat', { contact })
         }
