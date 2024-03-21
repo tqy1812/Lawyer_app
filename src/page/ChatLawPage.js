@@ -61,6 +61,7 @@ class ChatLawPage extends BaseComponent {
         props.isLogin = authHelper.logined(state.Auth.user);
         props.userInfo = state.Auth.userInfo;
         props.chatMessageList = state.Chat.chatMessageList;
+        props.chatLawPage = state.Chat.chatLawPage;
         return props;
     }
 
@@ -101,18 +102,18 @@ class ChatLawPage extends BaseComponent {
         }
         this.recognizerEventEmitter = this.props.route.params.emit;
         console.log(this.RecognizerIos,  this.recognizerEventEmitter)
-        this.recognizerEventEmitter.addListener('onLawRecognizerResult', this.onRecognizerResult);
-        this.recognizerEventEmitter.addListener('onLawRecognizerError', this.onRecognizerError);
+        this.recognizerEventEmitter.addListener('onRecognizerResult', this.onRecognizerResult);
         this.props.dispatch(actionChat.setChatLawPage(true));
     }
     componentWillUnmount() {
         // dbHepler.closeDB()
       this.props.dispatch(actionChat.setChatLawPage(false));
-      this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onLawRecognizerResult');
-      this.recognizerEventEmitter && this.recognizerEventEmitter.removeAllListeners('onLawRecognizerError');
     }
     onRecognizerResult = (e) => {
       const that = this;
+      if(!this.props.chatLawPage) {
+        return;
+      }
       if (!e.isLast) {
         return;
       }
@@ -122,13 +123,6 @@ class ChatLawPage extends BaseComponent {
       }
       console.log(e.result + ".............");
       this.onSend(e.result)
-    }
-  
-    onRecognizerError = (result) => {
-      logger("error............." + JSON.stringify(result));
-      if (result.errorCode !== 0) {
-      
-      }
     }
   
     async startRecordAndroid() {
@@ -204,14 +198,17 @@ class ChatLawPage extends BaseComponent {
         const { id } = this.state;
         let sendMsg = this.formatSendText(true, text,"send_success") ;
         this.messageList.appendToTop([sendMsg]);
+        let recMsg = this.formatSendText(false, '', "send_going");
+        this.messageList.appendToTop([recMsg]);
         this.sendApi(text, (rs, error) => {
             console.log('send succsee', rs, error)
             if(error) {
                 showToast(error.info)
             }
             else {
-                let recMsg = this.formatSendText(false, rs.answer,"send_success");
-                this.messageList.appendToTop([recMsg]);
+                recMsg.status = "send_success";
+                recMsg.text = rs.data.answer;
+                this.messageList.updateMsg(recMsg);
             }
         })
     };
@@ -220,13 +217,7 @@ class ChatLawPage extends BaseComponent {
         if(isOutgoing){
             return { text, isOutgoing, msgId, msgType: "text",status,fromUser:this.state.rightUser } ;
         } else {
-            return { text, isOutgoing, msgId, msgType: "text",status,fromUser:this.state.leftUser } ;
-        }
-    };
-    formatSendVoice = (isOutgoing=true,url,isRead=false ,playing=false, duration,status)=>{
-        const msgId = `msgid_${Date.now()}` ;
-        if(isOutgoing){
-            return { extend:{ thumbPath:url }, isOutgoing, msgId, msgType: "voice",status,fromUser:this.state.rightUser,isRead,playing,duration} ;
+            return { text, isOutgoing, msgId, msgType: "text",status, fromUser:this.state.leftUser } ;
         }
     };
     onMessageLongPress = (message)=>{

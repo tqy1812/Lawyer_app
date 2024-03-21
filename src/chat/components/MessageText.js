@@ -3,7 +3,7 @@ import {
   Linking,
   StyleSheet,
   Text,
-  View,
+  View,Image
 } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import PropTypes from 'prop-types';
@@ -31,6 +31,9 @@ export default class MessageText extends React.Component {
   render() {
     return (
       <View style={[styles[this.props.position].container, this.props.containerStyle[this.props.position]]}>
+        {this.props.currentMessage.statue === 'send_going' ?  <Image style={{alignSelf:"center", width:100, height:10}}
+                               source={require('./Images/loading.gif')}>
+                        </Image>  : 
         <ParsedText
           style={[styles[this.props.position].text, this.props.textStyle[this.props.position]]}
           parse={[
@@ -41,6 +44,7 @@ export default class MessageText extends React.Component {
         >
           {this.props.currentMessage.text}
         </ParsedText>
+      }
       </View>
     );
   }
@@ -58,6 +62,9 @@ const textStyle = {
 const styles = {
   left: StyleSheet.create({
     container: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     text: {
       color: 'black',
@@ -70,6 +77,9 @@ const styles = {
   }),
   right: StyleSheet.create({
     container: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     text: {
       color: 'white',
