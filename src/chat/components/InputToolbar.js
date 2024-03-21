@@ -628,12 +628,12 @@ export default class InputToolbar extends React.Component {
                 <Text style={Styles.sendText}>{'发送'}</Text>
             </TouchableOpacity>
 
-        ) : (
+        ) : this.props.isTools ? (
             <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8,paddingRight:8}}
                               onPress={this.onActionsPress.bind(this)}>
                 <Image style={{height:30,width:30}}  source={require('./Images/add.png')}/>
             </TouchableOpacity>
-        );
+        ) : null;
     }
 
 
