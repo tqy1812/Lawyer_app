@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         height: 40,
         borderRadius: 5,
         borderWidth: 1, // 边框宽度  
-        borderColor: '#000000', // 边框颜色  
+        borderColor: '#f0f0f0', // 边框颜色  
         borderStyle: 'solid', // 边框样式  
         width: 40, // 视图宽度  
         height: 40, // 视图高度 

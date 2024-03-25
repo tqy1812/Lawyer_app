@@ -37,7 +37,7 @@ const styles = {
         image: {
             height: 36,
             width: 36,
-            borderRadius: 18,
+            borderRadius: 5,
         },
     }),
     right: StyleSheet.create({
@@ -47,7 +47,7 @@ const styles = {
         image: {
             height: 36,
             width: 36,
-            borderRadius: 18,
+            borderRadius: 5,
         },
     }),
 };

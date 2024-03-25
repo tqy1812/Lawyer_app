@@ -189,7 +189,8 @@ class ChatLawPage extends BaseComponent {
           });
         this.startTimeout && clearTimeout(this.startTimeout)
       }
-
+      getList = () => {
+      }
     sendApi = (content, callback) => {
         const { url, method, headers, params } = this.state;
         this.props.dispatch(actionChat.sendLawApi(url, method, headers, params, content, callback));
