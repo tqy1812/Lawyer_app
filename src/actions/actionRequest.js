@@ -895,6 +895,31 @@ export function addFeedback(title, content, contact, callback = null) {
         }, dispatch);
     };
 }
+//使用提醒启用禁用
+export function usingAlert(value, callback = null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let method = 'api/employee/using_alert'
+        let data = {
+            using_alert: value,
+        };
+
+        request_impl(api, method, data, (res, error) => {
+            if (res) {
+                let retData = res.data;
+                if (callback) {
+                    callback(retData, error);
+                }
+            }
+            else {
+                if (callback) {
+                    callback(res, error);
+                }
+            }
+        }, dispatch);
+    };
+}
+
 
 // 获取可对话的客户列表
 export function getConversableClientList(page, per_page, keywords, callback = null) {

@@ -202,4 +202,11 @@ export default class actionAuth {
       dispatch(request.removeClientAccount(verifyCode, callback));
     };
   }
+  static reqUsingAlert(value, callback) {
+    return (dispatch, getState) => {
+      let state = getState();
+      dispatch(request.usingAlert(value, callback));
+    };
+  }
+
 }

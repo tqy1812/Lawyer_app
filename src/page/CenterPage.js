@@ -31,7 +31,7 @@ import actionCase from '../actions/actionCase';
 import IcomoonIcon from "../components/IcomoonIcon";
 import ImagePicker from 'react-native-image-crop-picker';
 import GlobalData from '../utils/GlobalData';
-import { showToast } from '../components/ShowModal';
+import { showToast, showLoading, destroySibling } from '../components/ShowModal';
 import BaseComponent from '../components/BaseComponent';
 import ImageArr from '../common/ImageArr';
 import moment from 'moment';
@@ -59,6 +59,7 @@ class CenterPage extends BaseComponent {
             caseListInfo: props.caseListInfo,
             appType: props.user.app_type,
             type: props.user.type ? props.user.type : 1,
+            usingAlert: props.userInfo.using_alert
         };
         this.globalDate = GlobalData.getInstance();
     }
@@ -268,6 +269,41 @@ class CenterPage extends BaseComponent {
 
     openClientCommentPage() {
       this.props.navigation.navigate('WebPage', { url: 'feedback/', title: '反馈记录', type: 'ClientComment' })
+    }
+    setAlert() {
+      const that = this;
+      const {dispatch} = this.props;
+      const { usingAlert } = this.state;
+      let value = !usingAlert;
+      let str = value ? '启用' ? '关闭'
+      Alert.alert(
+        "提醒控制",
+        "确定要"+str+"提醒功能么？",
+        [
+          {
+            text: "取消",
+            onPress: () => logger("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "确定", onPress: () => {
+              showLoading();
+              dispatch(actionAuth.reqUsingAlert(value, (result, error)=>{
+                if(error){
+                  destroySibling();
+                  Toast.show(error.info)
+                }
+                else {
+                  let obj = JSON.parse(JSON.stringify(that.props.userInfo));
+                  obj.using_alert = value;
+                  dispatch(actionAuth.refreshUserInfo(obj));
+                  that.setState({usingAlert: value});
+                  destroySibling();
+                }
+              }));
+            }
+          }
+        ]
+      );
     }
     render() {
       const { userInfo, caseList, caseListInfo, comment} = this.props;
