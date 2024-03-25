@@ -275,7 +275,7 @@ class CenterPage extends BaseComponent {
       const {dispatch} = this.props;
       const { usingAlert } = this.state;
       let value = !usingAlert;
-      let str = value ? '启用' ? '关闭'
+      let str = value ? '启用' : '关闭';
       Alert.alert(
         "提醒控制",
         "确定要"+str+"提醒功能么？",
@@ -307,7 +307,7 @@ class CenterPage extends BaseComponent {
     }
     render() {
       const { userInfo, caseList, caseListInfo, comment} = this.props;
-      const { imgAvatar, appType, type } = this.state;
+      const { imgAvatar, appType, type, usingAlert } = this.state;
       const STATUS_BAR_HEIGHT = platform.isIOS() ? this.globalDate.getTop() : Common.statusBarHeight
 
       // logger('..onBackButtonPressAndroid', this.props)
@@ -331,7 +331,11 @@ class CenterPage extends BaseComponent {
 
                 </TouchableOpacity>
                 <View style={styles.infoView}>
+                  <View style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                   <Text style={styles.infoName} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.name}</Text>
+                   {type===1 && <MyButton style={styles.setNoticeView} onPress={() => {this.setAlert()}}><IcomoonIcon name='alert_0' size={30} color={usingAlert ? '#007afe' : '#fff'} /></MyButton>}
+                  </View>
+                  
                   <Text style={styles.infoCompany} numberOfLines={1} ellipsizeMode={'tail'}>{userInfo.org_name}</Text>
                   <Text style={styles.infoPhone} numberOfLines={1} ellipsizeMode={'tail'}>{getPhone(userInfo.phone, '*')}</Text>
                 </View>
@@ -662,5 +666,14 @@ logoutText: {
 right: {
   width: 18,
   height: 22,
-}
+},
+setNoticeView: {
+  backgroundColor: '#eee',
+  width: 30,
+  height: 30,
+  borderRadius: 50,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+},
 });
