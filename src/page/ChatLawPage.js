@@ -91,6 +91,7 @@ class ChatLawPage extends BaseComponent {
         this.page = 1;
         this.fileList = {}
         this.loading = false
+        this.isCancel = false
     }
     componentDidMount() {
         if (!this.props.isLogin) {
@@ -112,6 +113,9 @@ class ChatLawPage extends BaseComponent {
     onRecognizerResult = (e) => {
       const that = this;
       if(!this.props.chatLawPage) {
+        return;
+      }
+      if(this.isCancel) {
         return;
       }
       if (!e.isLast) {
@@ -173,14 +177,16 @@ class ChatLawPage extends BaseComponent {
           }, 60000)
       }
       startRecording = () => {
+        this.isCancel = false
         if(platform.isAndroid()){
             this.startRecordAndroid()
         } else {
             this.startRecordIOS()
         }
       }
-      stopRecording = () => {
+      stopRecording = (canceled) => {
         const that = this;
+        this.isCancel = canceled;
         Recognizer.isListening().then(value => {
             logger('stopRecord..........' + value)
             if (value) {
@@ -250,7 +256,8 @@ class ChatLawPage extends BaseComponent {
 
     handleBack = () => {
       this.props.dispatch(actionChat.setChatLawPage(false));
-      this.props.navigation.goBack();
+      this.
+      props.navigation.goBack();
     }
     render() {
         return (
