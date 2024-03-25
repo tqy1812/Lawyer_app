@@ -39,8 +39,10 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getStatusHeight) {
 }
 RCT_EXPORT_METHOD(IqKeyboardDisable){
   [[IQKeyboardManager sharedManager] setEnable:NO];
+  [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
 }
 RCT_EXPORT_METHOD(IqKeyboardEnable){
   [[IQKeyboardManager sharedManager] setEnable:YES];
+  [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
 }
 @end

@@ -100,6 +100,7 @@ class ChatLawPage extends BaseComponent {
         this.page = 1;
         if(platform.isIOS()) {
             this.RecognizerIos = this.props.route.params.key
+            NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardDisable();
         }
         this.recognizerEventEmitter = this.props.route.params.emit;
         console.log(this.RecognizerIos,  this.recognizerEventEmitter)
@@ -109,6 +110,9 @@ class ChatLawPage extends BaseComponent {
     componentWillUnmount() {
         // dbHepler.closeDB()
       this.props.dispatch(actionChat.setChatLawPage(false));
+      if(platform.isIOS()) {
+        NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardEnable();
+      }
     }
     onRecognizerResult = (e) => {
       const that = this;

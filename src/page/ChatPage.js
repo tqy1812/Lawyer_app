@@ -117,9 +117,15 @@ class ChatPage extends BaseComponent {
                 })
             }
         }); 
+        if(platform.isIOS()) {
+            NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardDisable();
+        }
     }
     componentWillUnmount() {
         dbHepler.closeDB()
+        if(platform.isIOS()) {
+          NativeModules.SplashScreen && NativeModules.SplashScreen.IqKeyboardEnable();
+        }
     }
     getList = () => {
         if((!this.state.hasMore && this.page > 1) || this.loading) {

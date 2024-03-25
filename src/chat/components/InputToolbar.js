@@ -56,7 +56,9 @@ export default class InputToolbar extends React.Component {
         };
 
         this.composerHeight = MIN_COMPOSER_HEIGHT;
-        this.actionBarHeight = 0;
+        this.actionBarHeight = 0;  
+        this.keyHeight = 0;  
+        this.fadeAnim = new Animated.Value(0);  //imput 
     }
 
     componentWillMount(){
@@ -79,12 +81,20 @@ export default class InputToolbar extends React.Component {
             this.setState({
                 shimVisible:true
             });
+            this.keyHeight = keyboardHeight;
+            Animated.timing(this.fadeAnim, {
+                toValue: this.actionBarHeight,
+                duration: 200,
+                useNativeDriver: false,
+              }).start();
+            console.log('keyboardDidShow')
         });
         Keyboard.addListener("keyboardDidHide",(e)=>{ // 关闭软件盘时重置参数
             this.actionBarHeight = 0 ;
             this.setState({
                 shimVisible:false
             })
+            this.fadeAnim.setValue(0);
         });
     }
 
@@ -101,7 +111,9 @@ export default class InputToolbar extends React.Component {
         });
         Animated.timing(
             this.state.actionAnim,
-            {toValue: 0}
+            {toValue: 0,
+                duration: 200,
+            useNativeDriver: false,}
         ).start();
 
         if (isEmoji || actionVisible) {
@@ -136,7 +148,9 @@ export default class InputToolbar extends React.Component {
             }
             Animated.timing(
                 this.state.actionAnim,
-                {toValue: 0}
+                {toValue: 0,
+                    duration: 200,
+                    useNativeDriver: false,}
             ).start();
 
             this.setState({ actionVisible: false, isEmoji: false });
@@ -152,7 +166,9 @@ export default class InputToolbar extends React.Component {
         }
         Animated.timing(
             this.state.actionAnim,
-            {toValue: 1}
+            {toValue: 1,
+                duration: 200,
+                useNativeDriver: false,}
         ).start();
     }
 
@@ -182,7 +198,9 @@ export default class InputToolbar extends React.Component {
         });
         Animated.timing(          // Uses easing functions
             this.state.actionAnim,    // The value to drive
-            {toValue: 1}           // Configuration
+            {toValue: 1,
+                duration: 200,
+                useNativeDriver: false,}           // Configuration
         ).start();
     }
 
@@ -223,8 +241,18 @@ export default class InputToolbar extends React.Component {
         });
         Animated.timing(
             this.state.actionAnim,
-            {toValue: 1}
+            {toValue: 1,
+                duration: 200,
+                useNativeDriver: false,}
         ).start();
+        if(Platform.OS === "ios") {
+            Animated.timing(this.fadeAnim, {
+                toValue: this.keyHeight,
+                duration: 200,
+                useNativeDriver: false,
+              }).start();
+        }
+        console.log('handleFocusSearch')
     }
 
     /**
@@ -455,12 +483,15 @@ export default class InputToolbar extends React.Component {
         let { renderTools } = this.props ;
         let { shimVisible, actionVisible } = this.state ; // 如果当前是软键盘弹出则添加一个垫子，防止输入框被键盘遮住
         let height = actionVisible?ACTION_BUTTON_HEIGHT:0;
-        return shimVisible?( null ):(
-            actionVisible?(
+        console.log(this.keyHeight, shimVisible)
+        return shimVisible ? ( <View style={[{ position: 'absolute', backgroundColor: '#e8ebef', bottom: 0, width: '100%',  height: this.keyHeight }]}>
+
+        </View> ) : (
+            actionVisible ? (
                 <Animated.View style={[Styles.iconRow,{ height:height-5 }]}>
                     {renderTools? renderTools(this._renderTools()):this._renderTools() }
                 </Animated.View>
-            ):null
+            ) : null
         );
     }
 
@@ -489,10 +520,10 @@ export default class InputToolbar extends React.Component {
      * @returns {XML}
      */
     renderTextInput() {
-        const {value = '' } = this.state;
+        const {value = '', shimVisible } = this.state;
         var height = this.composerHeight + (MIN_INPUT_TOOLBAR_HEIGHT - MIN_COMPOSER_HEIGHT);
         return (
-            <View style={[Styles.inputRow, {height:height}]}>
+            <Animated.View style={[Styles.inputRow, {height:height}, shimVisible ? {width: '100%', position: 'absolute', zIndex:3, bottom: Platform.OS === "ios" ? this.fadeAnim : 5} : {}]}>
                 <TouchableOpacity style={{alignSelf:"stretch",justifyContent:"center",paddingLeft:8}}
                                   onPress={this.handleRecordMode.bind(this)}>
                     <Image style={{height:30,width:30}} source={require('./Images/chatBar_record.png')}/>
@@ -519,7 +550,7 @@ export default class InputToolbar extends React.Component {
                 </View>
                 {/* { this._renderEmojiButton() } */}
                 { this._renderSendButton() }
-            </View>
+            </Animated.View>
         );
     }
 
@@ -641,10 +672,10 @@ export default class InputToolbar extends React.Component {
         const {　isEmoji, mode, shimVisible　} = this.state;
         var height = this.composerHeight + (MIN_INPUT_TOOLBAR_HEIGHT - MIN_COMPOSER_HEIGHT);
         return (
-            <View style={[Styles.search, shimVisible ? {width: windowWidth, position: 'absolute', zIndex:3, bottom: 5} : {}]}>
+            <View style={[Styles.search, ]}>
                 {mode == MODE_TEXT ? this.renderTextInput() : this.renderReocrdInput()}
                 <View style={{width: windowWidth, height:1, backgroundColor:"lightgray"}}/>
-                {isEmoji ? this._renderEmoji() : this.props.isTools ? this._renderActions() : null}
+                {isEmoji ? this._renderEmoji() : this._renderActions()}
             </View>
         )
     }
